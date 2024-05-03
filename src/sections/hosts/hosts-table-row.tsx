@@ -35,6 +35,7 @@ export function RenderHostCrypt({ params }: ParamsProps) {
 }
 
 export function RenderLookerStudioUrl({ params }: ParamsProps) {
+  //
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
   const handleCopy = (event: React.MouseEvent) => {
