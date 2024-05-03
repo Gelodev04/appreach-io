@@ -48,7 +48,7 @@ export default function HeaderSimple() {
         <Logo />
 
         <Stack direction="row" alignItems="center" spacing={1}>
-          <Link color="inherit" sx={{ typography: 'subtitle2' }} href={paths.website}>
+          <Link color="inherit" sx={{ typography: 'subtitle2' }} href={paths.website.root}>
             Need help?
           </Link>
         </Stack>

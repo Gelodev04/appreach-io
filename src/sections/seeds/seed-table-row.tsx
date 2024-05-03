@@ -43,9 +43,10 @@ export function RenderCellResultsTotal({ params }: ParamsProps) {
 export function RenderCellToken({ params }: ParamsProps) {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
-  const handleCopy = () => {
+  const handleCopy = (event: React.MouseEvent) => {
+    event.stopPropagation();
     copy(params.row.token);
-    enqueueSnackbar('Copied to clipboard');
+    enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
   return (
     <Stack direction="row" alignItems="center">

@@ -102,11 +102,11 @@ export default function JwtRegisterView() {
       }}
     >
       {'By signing up, I agree to '}
-      <Link underline="always" color="text.primary" href={paths.website}>
+      <Link underline="always" color="text.primary" href={paths.website.terms}>
         Terms of Service
       </Link>
       {' and '}
-      <Link underline="always" color="text.primary" href={paths.website}>
+      <Link underline="always" color="text.primary" href={paths.website.privacy}>
         Privacy Policy
       </Link>
       .

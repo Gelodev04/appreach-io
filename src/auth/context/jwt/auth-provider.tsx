@@ -186,6 +186,7 @@ export function AuthProvider({ children }: Props) {
     dispatch({
       type: Types.LOGOUT,
     });
+    window.location.href = '/auth/jwt/login';
   }, []);
 
   // ----------------------------------------------------------------------

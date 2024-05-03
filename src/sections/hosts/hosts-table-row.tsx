@@ -37,9 +37,14 @@ export function RenderHostCrypt({ params }: ParamsProps) {
 export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
-  const handleCopy = () => {
+  const handleCopy = (event: React.MouseEvent) => {
+    event.stopPropagation();
     copy(params.row.lookerStudioUrl);
-    enqueueSnackbar('Copied to clipboard');
+    enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
+  };
+  const handleGoToUrl = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    window.open(params.row.lookerStudioUrl, '_blank');
   };
   return (
     <Stack direction="row">
@@ -49,7 +54,7 @@ export function RenderLookerStudioUrl({ params }: ParamsProps) {
         </IconButton>
       </Tooltip>
       <Tooltip title="Go to url" placement="top">
-        <IconButton href={params.row.lookerStudioUrl} target="_blank" sx={{ zIndex: 20 }}>
+        <IconButton onClick={handleGoToUrl} sx={{ zIndex: 20 }}>
           <Iconify icon="humbleicons:external-link" />
         </IconButton>
       </Tooltip>

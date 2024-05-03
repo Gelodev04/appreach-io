@@ -9,7 +9,11 @@ const ROOTS = {
 // ----------------------------------------------------------------------
 
 export const paths = {
-  website: 'https://outreachmagic.io',
+  website: {
+    root: ROOTS.MAIN_WEBSITE,
+    terms: `${ROOTS.MAIN_WEBSITE}/terms-of-uses/`,
+    privacy: `${ROOTS.MAIN_WEBSITE}/privacy/`,
+  },
   // AUTH
   auth: {
     jwt: {
