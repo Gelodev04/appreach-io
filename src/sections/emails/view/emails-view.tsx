@@ -23,8 +23,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { useGetSeeds } from 'src/api/seeds';
-import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
+import { useGetEmails } from 'src/api/emails';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -33,18 +32,17 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { ISeed } from 'src/types/seeds';
+import { IEmail } from 'src/types/emails';
 
-import {
-  RenderCellToken,
-  RenderCellPublish,
-  RenderCellDateAdded,
-  RenderCellImportName,
-  RenderCellResultsTotal,
-  RenderCellGenerateTotal,
-} from '../seed-table-row';
+import RenderEmailCell from '../email-cell';
+import EmailTestRowDialog from '../email-test-row-dialog';
 
 // ----------------------------------------------------------------------
+
+const STATUS_OPTIONS = [
+  { value: 'active', label: 'Active' },
+  { value: 'disabled', label: 'Disabled' },
+];
 
 const HIDE_COLUMNS = {
   category: false,
@@ -54,16 +52,18 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 // ----------------------------------------------------------------------
 
-export default function SeedsView() {
+export default function EmailsView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const confirmRows = useBoolean();
 
+  const openTest = useBoolean(false);
+
   const settings = useSettingsContext();
 
-  const { seeds, seedsLoading } = useGetSeeds();
+  const { seeds, seedsLoading } = useGetEmails();
 
-  const [tableData, setTableData] = useState<ISeed[]>([]);
+  const [tableData, setTableData] = useState<IEmail[]>([]);
 
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
 
@@ -116,48 +116,89 @@ export default function SeedsView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'dateAdded',
-      headerName: 'Date added',
+      field: 'email',
+      headerName: 'Email',
+      flex: 1,
+      minWidth: 300,
+      hideable: false,
+      renderCell: (params) => <RenderEmailCell params={params} type="email" />,
+    },
+    {
+      field: 'host',
+      headerName: 'Host',
       flex: 1,
       minWidth: 160,
       hideable: false,
-      renderCell: (params) => <RenderCellDateAdded params={params} />,
+      renderCell: (params) => <RenderEmailCell params={params} type="host" />,
     },
     {
-      field: 'name',
-      headerName: 'Import name',
-      flex: 1,
-      minWidth: 200,
-      hideable: false,
-      renderCell: (params) => <RenderCellImportName params={params} />,
-    },
-    {
-      field: 'generateTotal',
-      headerName: 'Generate total',
+      field: 'server',
+      headerName: 'Server',
       width: 160,
-      renderCell: (params) => <RenderCellGenerateTotal params={params} />,
+      renderCell: (params) => <RenderEmailCell params={params} type="server" />,
     },
     {
-      field: 'resultsTotal',
-      headerName: 'Results total',
+      field: 'inboxPlacement',
+      headerName: 'Inbox Placement',
       width: 160,
-      type: 'singleSelect',
-      valueOptions: PRODUCT_STOCK_OPTIONS,
-      renderCell: (params) => <RenderCellResultsTotal params={params} />,
+      renderCell: (params) => <RenderEmailCell params={params} type="inboxPlacement" />,
     },
     {
-      field: 'token',
-      headerName: 'Token',
+      field: 'inboxEngagement',
+      headerName: 'Inbox Engagement',
+      width: 160,
+      renderCell: (params) => <RenderEmailCell params={params} type="inboxEngagement" />,
+    },
+    {
+      field: 'placementAccount',
+      headerName: 'Placement Account',
+      width: 160,
+      renderCell: (params) => <RenderEmailCell params={params} type="placementAccount" />,
+    },
+    {
+      field: 'engagementAccount',
+      headerName: 'Engagement Account',
+      width: 160,
+      renderCell: (params) => <RenderEmailCell params={params} type="engagementAccount" />,
+    },
+    {
+      field: 'inboxReset',
+      headerName: 'Inbox Reset',
       width: 120,
-      editable: true,
-      renderCell: (params) => <RenderCellToken params={params} />,
+      renderCell: (params) => <RenderEmailCell params={params} type="inboxReset" />,
+    },
+    {
+      field: 'relayAccount',
+      headerName: 'Relay Account',
+      width: 120,
+      renderCell: (params) => <RenderEmailCell params={params} type="relayAccount" />,
+    },
+    {
+      field: 'vpsName',
+      headerName: 'VPS Name',
+      width: 160,
+      renderCell: (params) => <RenderEmailCell params={params} type="vpsName" />,
+    },
+    {
+      field: 'smtp',
+      headerName: 'SMTP',
+      width: 80,
+      renderCell: (params) => <RenderEmailCell params={params} type="smtp" />,
+    },
+    {
+      field: 'imap',
+      headerName: 'IMAP',
+      width: 80,
+      renderCell: (params) => <RenderEmailCell params={params} type="imap" />,
     },
     {
       field: 'status',
       headerName: 'Status',
       width: 80,
       type: 'singleSelect',
-      renderCell: (params) => <RenderCellPublish params={params} />,
+      editable: true,
+      valueOptions: STATUS_OPTIONS,
+      renderCell: (params) => <RenderEmailCell params={params} type="status" />,
     },
     {
       type: 'actions',
@@ -172,8 +213,14 @@ export default function SeedsView() {
       getActions: (params) => [
         <GridActionsCellItem
           showInMenu
-          icon={<Iconify icon="solar:eye-bold" />}
-          label="Download CSV"
+          icon={<Iconify icon="fluent-emoji-high-contrast:test-tube" />}
+          label="Test"
+          onClick={openTest.onTrue}
+        />,
+        <GridActionsCellItem
+          showInMenu
+          icon={<Iconify icon="bxs:edit" />}
+          label="Edit"
           onClick={() => handleViewRow(params.row.id)}
         />,
         <GridActionsCellItem
@@ -205,22 +252,29 @@ export default function SeedsView() {
         }}
       >
         <CustomBreadcrumbs
-          heading="Seeds"
+          heading="Email accounts"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             {
-              name: 'Seeds',
+              name: 'Emails',
             },
           ]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
-                component={RouterLink}
-                href={paths.dashboard.seeds.new}
+                // component={RouterLink}
+                // href={paths.dashboard.seeds.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Generate seed emails
+                Add email account to host
+              </Button>
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.emails.addEmailsBulk}
+                startIcon={<Iconify icon="mdi:email-multiple" />}
+              >
+                Add emails in bulk
               </Button>
             </Stack>
           }
@@ -298,6 +352,8 @@ export default function SeedsView() {
         </Card>
       </Container>
 
+      <EmailTestRowDialog open={openTest.value} handleClose={openTest.onFalse} />
+
       <ConfirmDialog
         open={confirmRows.value}
         onClose={confirmRows.onFalse}
@@ -326,6 +382,6 @@ export default function SeedsView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData }: { inputData: ISeed[] }) {
+function applyFilter({ inputData }: { inputData: IEmail[] }) {
   return inputData;
 }

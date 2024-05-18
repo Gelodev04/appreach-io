@@ -9,7 +9,6 @@ import Container from '@mui/material/Container';
 import {
   DataGrid,
   GridColDef,
-  GridActionsCellItem,
   GridToolbarContainer,
   GridRowSelectionModel,
   GridToolbarQuickFilter,
@@ -23,8 +22,8 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { useGetSeeds } from 'src/api/seeds';
 import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
+import { useGetCsvUploads } from 'src/api/csv-uploads';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -33,18 +32,16 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { ISeed } from 'src/types/seeds';
+import { ICsvUpload } from 'src/types/csv-uploads';
 
-import {
-  RenderCellToken,
-  RenderCellPublish,
-  RenderCellDateAdded,
-  RenderCellImportName,
-  RenderCellResultsTotal,
-  RenderCellGenerateTotal,
-} from '../seed-table-row';
+import RenderCsvUploadCell from '../csv-upload-cell';
 
 // ----------------------------------------------------------------------
+
+const PUBLISH_OPTIONS = [
+  { value: 'published', label: 'Published' },
+  { value: 'draft', label: 'Draft' },
+];
 
 const HIDE_COLUMNS = {
   category: false,
@@ -54,16 +51,16 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 // ----------------------------------------------------------------------
 
-export default function SeedsView() {
+export default function CsvUploadsView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const confirmRows = useBoolean();
 
   const settings = useSettingsContext();
 
-  const { seeds, seedsLoading } = useGetSeeds();
+  const { csvUploads, csvUploadsLoading } = useGetCsvUploads();
 
-  const [tableData, setTableData] = useState<ISeed[]>([]);
+  const [tableData, setTableData] = useState<ICsvUpload[]>([]);
 
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
 
@@ -71,25 +68,25 @@ export default function SeedsView() {
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
   useEffect(() => {
-    if (seeds.length) {
-      setTableData(seeds);
+    if (csvUploads.length) {
+      setTableData(csvUploads);
     }
-  }, [seeds]);
+  }, [csvUploads]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
   });
 
-  const handleDeleteRow = useCallback(
-    (id: string) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+  // const handleDeleteRow = useCallback(
+  //   (id: string) => {
+  //     const deleteRow = tableData.filter((row) => row.id !== id);
 
-      enqueueSnackbar('Delete success!');
+  //     enqueueSnackbar('Delete success!');
 
-      setTableData(deleteRow);
-    },
-    [enqueueSnackbar, tableData]
-  );
+  //     setTableData(deleteRow);
+  //   },
+  //   [enqueueSnackbar, tableData]
+  // );
 
   const handleDeleteRows = useCallback(() => {
     const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
@@ -106,86 +103,92 @@ export default function SeedsView() {
   //   [router]
   // );
 
-  const handleViewRow = useCallback(
-    (id: string) => {
-      // router.push(paths.dashboard.product.details(id));
-    },
-    // [router]
-    []
-  );
+  // const handleViewRow = useCallback(
+  //   (id: string) => {
+  //     // router.push(paths.dashboard.product.details(id));
+  //   },
+  //   // [router]
+  //   []
+  // );
 
   const columns: GridColDef[] = [
     {
-      field: 'dateAdded',
-      headerName: 'Date added',
+      field: 'host',
+      headerName: 'Host',
       flex: 1,
       minWidth: 160,
       hideable: false,
-      renderCell: (params) => <RenderCellDateAdded params={params} />,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="host" />,
     },
     {
-      field: 'name',
+      field: 'importName',
       headerName: 'Import name',
       flex: 1,
-      minWidth: 200,
+      minWidth: 240,
       hideable: false,
-      renderCell: (params) => <RenderCellImportName params={params} />,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="importName" />,
     },
     {
-      field: 'generateTotal',
-      headerName: 'Generate total',
+      field: 'importSource',
+      headerName: 'Import Source',
       width: 160,
-      renderCell: (params) => <RenderCellGenerateTotal params={params} />,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="importSource" />,
     },
     {
-      field: 'resultsTotal',
-      headerName: 'Results total',
+      field: 'companyCreated',
+      headerName: 'Company Created',
       width: 160,
       type: 'singleSelect',
       valueOptions: PRODUCT_STOCK_OPTIONS,
-      renderCell: (params) => <RenderCellResultsTotal params={params} />,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="companyCreated" />,
     },
     {
-      field: 'token',
-      headerName: 'Token',
+      field: 'companyUpdated',
+      headerName: 'Company Updated',
+      width: 140,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="companyUpdated" />,
+    },
+    {
+      field: 'companyIgnored',
+      headerName: 'Company Ignored',
+      width: 130,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="companyIgnored" />,
+    },
+    {
+      field: 'personCreated',
+      headerName: 'Person Updated',
+      width: 130,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="personCreated" />,
+    },
+    {
+      field: 'personUpdated',
+      headerName: 'Person Updated',
+      width: 130,
+      editable: true,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="personUpdated" />,
+    },
+    {
+      field: 'errors',
+      headerName: 'Errors',
+      width: 80,
+      editable: true,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="errors" />,
+    },
+    {
+      field: 'dateUploaded',
+      headerName: 'Date Updated',
       width: 120,
       editable: true,
-      renderCell: (params) => <RenderCellToken params={params} />,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="dateUploaded" />,
     },
     {
       field: 'status',
       headerName: 'Status',
       width: 80,
       type: 'singleSelect',
-      renderCell: (params) => <RenderCellPublish params={params} />,
-    },
-    {
-      type: 'actions',
-      field: 'actions',
-      headerName: ' ',
-      align: 'right',
-      headerAlign: 'right',
-      width: 80,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:eye-bold" />}
-          label="Download CSV"
-          onClick={() => handleViewRow(params.row.id)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:trash-bin-trash-bold" />}
-          label="Delete"
-          onClick={() => {
-            handleDeleteRow(params.row.id);
-          }}
-          sx={{ color: 'error.main' }}
-        />,
-      ],
+      editable: true,
+      valueOptions: PUBLISH_OPTIONS,
+      renderCell: (params) => <RenderCsvUploadCell params={params} type="status" />,
     },
   ];
 
@@ -205,22 +208,22 @@ export default function SeedsView() {
         }}
       >
         <CustomBreadcrumbs
-          heading="Seeds"
+          heading="Attribute Uploads"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             {
-              name: 'Seeds',
+              name: 'Attribute Uploads',
             },
           ]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
-                href={paths.dashboard.seeds.new}
+                href={paths.dashboard.csvUploads.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Generate seed emails
+                Upload CSV file
               </Button>
             </Stack>
           }
@@ -245,7 +248,7 @@ export default function SeedsView() {
             disableRowSelectionOnClick
             rows={dataFiltered}
             columns={columns}
-            loading={seedsLoading}
+            loading={csvUploadsLoading}
             getRowHeight={() => 'auto'}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
@@ -261,30 +264,30 @@ export default function SeedsView() {
             slots={{
               toolbar: () => (
                 <GridToolbarContainer>
-                    <GridToolbarQuickFilter />
+                  <GridToolbarQuickFilter />
 
-                    <Stack
-                      spacing={1}
-                      flexGrow={1}
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="flex-end"
-                    >
-                      {!!selectedRowIds.length && (
-                        <Button
-                          size="small"
-                          color="error"
-                          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-                          onClick={confirmRows.onTrue}
-                        >
-                          Delete ({selectedRowIds.length})
-                        </Button>
-                      )}
+                  <Stack
+                    spacing={1}
+                    flexGrow={1}
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                  >
+                    {!!selectedRowIds.length && (
+                      <Button
+                        size="small"
+                        color="error"
+                        startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                        onClick={confirmRows.onTrue}
+                      >
+                        Delete ({selectedRowIds.length})
+                      </Button>
+                    )}
 
-                      <GridToolbarColumnsButton />
-                      <GridToolbarFilterButton />
-                    </Stack>
-                  </GridToolbarContainer>
+                    <GridToolbarColumnsButton />
+                    <GridToolbarFilterButton />
+                  </Stack>
+                </GridToolbarContainer>
               ),
               noRowsOverlay: () => <EmptyContent title="No Data" />,
               noResultsOverlay: () => <EmptyContent title="No results found" />,
@@ -326,6 +329,6 @@ export default function SeedsView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData }: { inputData: ISeed[] }) {
+function applyFilter({ inputData }: { inputData: ICsvUpload[] }) {
   return inputData;
 }

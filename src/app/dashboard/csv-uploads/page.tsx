@@ -1,11 +1,11 @@
-import OneView from 'src/sections/looker-studio-dashboard/view';
+import { CsvUploadsView } from 'src/sections/csv-uploads/view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Google Looker Studio | Outreach Magic',
+  title: 'Attribute uploads | Outreach Magic',
 };
 
 export default function Page() {
-  return <OneView />;
+  return <CsvUploadsView />;
 }

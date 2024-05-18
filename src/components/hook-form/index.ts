@@ -1,3 +1,4 @@
+export * from './rhf-upload';
 export * from './rhf-select';
 export * from './rhf-checkbox';
 

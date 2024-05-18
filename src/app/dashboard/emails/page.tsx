@@ -1,11 +1,11 @@
-import OneView from 'src/sections/looker-studio-dashboard/view';
+import { EmailsView } from 'src/sections/emails/view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Google Looker Studio | Outreach Magic',
+  title: 'Email Accounts | Outreach Magic',
 };
 
 export default function Page() {
-  return <OneView />;
+  return <EmailsView />;
 }

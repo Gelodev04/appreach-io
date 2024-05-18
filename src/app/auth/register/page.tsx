@@ -1,4 +1,4 @@
-import { JwtRegisterView } from 'src/sections/auth/jwt';
+import { RegisterView } from 'src/sections/auth';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function RegisterPage() {
-  return <JwtRegisterView />;
+  return <RegisterView />;
 }

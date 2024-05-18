@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -20,22 +21,21 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
+  RHFSwitch,
+  RHFSelect,
+  RHFCheckbox,
   RHFTextField,
   RHFAutocomplete,
-  RHFMultiCheckbox,
 } from 'src/components/hook-form';
 
-import { IHost } from 'src/types/hosts';
-
-import SeedAccountsGenerator from './seed-accounts-generator';
-
+import { IAddEmailsBulk } from 'src/types/emails';
 // ----------------------------------------------------------------------
 
 type Props = {
-  currentItem?: IHost;
+  currentItem?: IAddEmailsBulk;
 };
 
-export default function SeedsNewEditForm({ currentItem }: Props) {
+export default function AddEmailsBulkForm({ currentItem }: Props) {
   const router = useRouter();
 
   const theme = useTheme();
@@ -45,20 +45,22 @@ export default function SeedsNewEditForm({ currentItem }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    timezone: Yup.string().required('Timezone is required'),
-    notificationAddresses: Yup.string().required('Notification addresses are required'),
-    externalSenderAddresses: Yup.string(),
-    inboxEngagement: Yup.array().of(Yup.string()),
+    host: Yup.string().required('Host is required'),
+    accounts: Yup.string().required('Accounts are required'),
+    status: Yup.string().required('Status is required'),
+    engagementAccount: Yup.boolean(),
+    placementAccount: Yup.boolean(),
+    engagementApi: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentItem?.name || '',
-      timezone: currentItem?.timezone || '',
-      notificationAddresses: currentItem?.notificationAddresses || '',
-      externalSenderAddresses: currentItem?.externalSenderAddresses || '',
-      inboxEngagement: currentItem?.inboxEngagement || [],
+      host: currentItem?.host || '',
+      accounts: currentItem?.accounts || '',
+      status: currentItem?.status || 'Active',
+      engagementAccount: currentItem?.engagementAccount || false,
+      placementAccount: currentItem?.placementAccount || false,
+      engagementApi: currentItem?.engagementApi || false,
     }),
     [currentItem]
   );
@@ -92,19 +94,9 @@ export default function SeedsNewEditForm({ currentItem }: Props) {
     }
   });
 
-  const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
+  const accountsPlaceholder = `carlos@outreachmagic.io ⏎
 mark@outreachmagic.io ⏎
 abdulrehman@outreachmagic.io ⏎`;
-
-  const INBOX_ENGAGEMENT_OPTIONS = [
-    { value: 'Remove from spam', label: 'Remove from spam' },
-    { value: 'Mark as important', label: 'Mark as important' },
-    { value: 'Reply message', label: 'Reply message' },
-    { value: 'Move to primary', label: 'Move to primary' },
-    { value: 'Click link', label: 'Click link' },
-    { value: 'Download message', label: 'Download message' },
-    { value: 'Scroll message', label: 'Scroll message' },
-  ];
 
   const HOSTS = ['outreachmagic', 'adelaidemetrics', 'cw_us', 'cw_uk', 'cw_au'];
 
@@ -124,13 +116,6 @@ abdulrehman@outreachmagic.io ⏎`;
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField
-                name="name"
-                label="List name"
-                placeholder="Assig a name to this list"
-                disabled={!!currentItem}
-              />
-
               <RHFAutocomplete
                 name="timezone"
                 label="Choose a host"
@@ -138,26 +123,34 @@ abdulrehman@outreachmagic.io ⏎`;
                 options={HOSTS.map((host) => `${host}`)}
                 getOptionLabel={(option) => option}
               />
+
+              <RHFSelect name="status">
+                <MenuItem value="Active" sx={{ color: 'text.secondary' }}>
+                  Active
+                </MenuItem>
+                <MenuItem value="Disabled" sx={{ color: 'text.secondary' }}>
+                  Disabled
+                </MenuItem>
+              </RHFSelect>
             </Box>
 
             <RHFTextField
-              name="externalSenderAddresses"
-              label="External sender addresses (separated by newlines)"
+              name="accounts"
+              label="Accounts (separated by newlines)"
               rows={3}
               multiline
-              placeholder={externalSenderAddressesPlaceholder}
+              placeholder={accountsPlaceholder}
             />
 
-            <SeedAccountsGenerator />
-
             <Stack spacing={1}>
-              <Typography variant="subtitle2">Update settings</Typography>
-              <RHFMultiCheckbox
-                row
-                name="inboxEngagement"
-                spacing={2}
-                options={INBOX_ENGAGEMENT_OPTIONS}
-              />
+              <Typography variant="subtitle2">Settings</Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between">
+                <Stack direction={{ xs: 'column', sm: 'row' }}>
+                  <RHFCheckbox name="engagementAccount" label="Engagement Account" />
+                  <RHFCheckbox name="placementAccount" label="Placement Account" />
+                </Stack>
+                <RHFSwitch name="engagementApi" label="Engagement API" />
+              </Stack>
             </Stack>
           </Stack>
         </Card>
@@ -165,7 +158,7 @@ abdulrehman@outreachmagic.io ⏎`;
       <Grid xs={12} md={4}>
         <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
           <Image
-            src="/assets/illustrations/seeds/person.png"
+            src="/assets/illustrations/emails/emails-bulk.png"
             alt="seeds"
             width={250}
             height={250}
@@ -184,7 +177,7 @@ abdulrehman@outreachmagic.io ⏎`;
             loading={isSubmitting}
             sx={{ boxShadow: theme.customShadows.primary }}
           >
-            {!currentItem ? 'Register new seed' : 'Save Changes'}
+            {!currentItem ? 'Add emails' : 'Save Changes'}
           </LoadingButton>
         </Stack>
       </Grid>

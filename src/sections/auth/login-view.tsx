@@ -13,29 +13,24 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { useAuthContext } from 'src/auth/hooks';
-import { PATH_AFTER_LOGIN } from 'src/config-global';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
-export default function JwtLoginView() {
-  const { login } = useAuthContext();
-
+export default function LoginView() {
   const router = useRouter();
 
   // const [errorMsg, setErrorMsg] = useState('');
 
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  const returnTo = searchParams.get('returnTo');
+  // const returnTo = searchParams.get('returnTo');
 
   const password = useBoolean();
 
@@ -80,7 +75,7 @@ export default function JwtLoginView() {
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2">New user?</Typography>
 
-        <Link component={RouterLink} href={paths.auth.jwt.register} variant="subtitle2">
+        <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
           Create an account
         </Link>
       </Stack>
@@ -111,7 +106,7 @@ export default function JwtLoginView() {
         color="inherit"
         underline="always"
         sx={{ alignSelf: 'flex-end' }}
-        href={paths.auth.jwt.forgotPassword}
+        href={paths.auth.forgotPassword}
       >
         Forgot password?
       </Link>

@@ -21,7 +21,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
-export default function JwtForgotPasswordView() {
+export default function ForgotPasswordView() {
   const { forgotPassword } = useAuthContext();
 
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function JwtForgotPasswordView() {
     try {
       await forgotPassword?.(data.email);
 
-      const href = `${paths.auth.jwt.forgotPassword}`;
+      const href = `${paths.auth.forgotPassword}`;
       router.push(href);
     } catch (error) {
       console.error(error);
@@ -71,7 +71,7 @@ export default function JwtForgotPasswordView() {
 
       <Link
         component={RouterLink}
-        href={paths.auth.jwt.login}
+        href={paths.auth.login}
         color="inherit"
         variant="subtitle2"
         sx={{

@@ -1,4 +1,4 @@
-import { JwtForgotPasswordView } from 'src/sections/auth/jwt';
+import { ForgotPasswordView } from 'src/sections/auth';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function ForgotPasswordPage() {
-  return <JwtForgotPasswordView />;
+  return <ForgotPasswordView />;
 }

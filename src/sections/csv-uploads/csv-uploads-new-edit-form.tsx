@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
@@ -20,14 +21,14 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
+  RHFSelect,
+  RHFSwitch,
+  RHFUpload,
   RHFTextField,
   RHFAutocomplete,
-  RHFMultiCheckbox,
 } from 'src/components/hook-form';
 
 import { IHost } from 'src/types/hosts';
-
-import SeedAccountsGenerator from './seed-accounts-generator';
 
 // ----------------------------------------------------------------------
 
@@ -35,7 +36,7 @@ type Props = {
   currentItem?: IHost;
 };
 
-export default function SeedsNewEditForm({ currentItem }: Props) {
+export default function CsvUploadsNewEditForm({ currentItem }: Props) {
   const router = useRouter();
 
   const theme = useTheme();
@@ -92,20 +93,6 @@ export default function SeedsNewEditForm({ currentItem }: Props) {
     }
   });
 
-  const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
-mark@outreachmagic.io ⏎
-abdulrehman@outreachmagic.io ⏎`;
-
-  const INBOX_ENGAGEMENT_OPTIONS = [
-    { value: 'Remove from spam', label: 'Remove from spam' },
-    { value: 'Mark as important', label: 'Mark as important' },
-    { value: 'Reply message', label: 'Reply message' },
-    { value: 'Move to primary', label: 'Move to primary' },
-    { value: 'Click link', label: 'Click link' },
-    { value: 'Download message', label: 'Download message' },
-    { value: 'Scroll message', label: 'Scroll message' },
-  ];
-
   const HOSTS = ['outreachmagic', 'adelaidemetrics', 'cw_us', 'cw_uk', 'cw_au'];
 
   const renderProperties = (
@@ -114,7 +101,7 @@ abdulrehman@outreachmagic.io ⏎`;
         <Card>
           {!mdUp && <CardHeader title="Properties" />}
 
-          <Stack spacing={3} sx={{ p: 3 }}>
+          <Stack spacing={2} sx={{ p: 3 }}>
             <Box
               columnGap={2}
               rowGap={3}
@@ -124,13 +111,6 @@ abdulrehman@outreachmagic.io ⏎`;
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField
-                name="name"
-                label="List name"
-                placeholder="Assig a name to this list"
-                disabled={!!currentItem}
-              />
-
               <RHFAutocomplete
                 name="timezone"
                 label="Choose a host"
@@ -138,38 +118,41 @@ abdulrehman@outreachmagic.io ⏎`;
                 options={HOSTS.map((host) => `${host}`)}
                 getOptionLabel={(option) => option}
               />
+
+              <RHFSelect name="status" label="Sourced from">
+                <MenuItem value="Apollo" sx={{ color: 'text.secondary' }}>
+                  Apollo
+                </MenuItem>
+                <MenuItem value="Disabled" sx={{ color: 'text.secondary' }}>
+                  GrowMeOrganic (LinkedIn)
+                </MenuItem>
+              </RHFSelect>
             </Box>
-
-            <RHFTextField
-              name="externalSenderAddresses"
-              label="External sender addresses (separated by newlines)"
-              rows={3}
-              multiline
-              placeholder={externalSenderAddressesPlaceholder}
-            />
-
-            <SeedAccountsGenerator />
-
-            <Stack spacing={1}>
-              <Typography variant="subtitle2">Update settings</Typography>
-              <RHFMultiCheckbox
-                row
-                name="inboxEngagement"
-                spacing={2}
-                options={INBOX_ENGAGEMENT_OPTIONS}
-              />
+            <Stack>
+              <Typography variant="subtitle2">How would you describe this upload?</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }} gutterBottom>
+                This is the most important name on the report, be descriptive. IE: translation
+                companies, 51-200hc, us
+              </Typography>
+              <RHFTextField name="externalSenderAddresses" placeholder="placeholder text" />
             </Stack>
+
+            <RHFUpload name="csvFile" accept={{ 'text/csv': [] }} />
+
+            <RHFSwitch
+              name="engagementAccount"
+              label="Replace attributes on records with existing import name"
+            />
           </Stack>
         </Card>
       </Grid>
       <Grid xs={12} md={4}>
         <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
           <Image
-            src="/assets/illustrations/seeds/person.png"
+            src="/assets/illustrations/csv-uploads/upload-file.png"
             alt="seeds"
             width={250}
             height={250}
-            priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             Placeholder text
