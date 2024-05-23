@@ -1,20 +1,27 @@
-// import { MongoDBAdapter } from '@auth/mongodb-adapter';
-// import NextAuth from 'next-auth';
-// import { Adapter } from 'next-auth/adapters';
-// import Google from 'next-auth/providers/google';
-// import clientPromise from './lib/db';
+import NextAuth from 'next-auth/next';
+import { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+// import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 
-// export const { handlers, signIn, signOut, auth } = NextAuth({
-//   trustHost: true,
-//   theme: {
-//     logo: '/logo.png',
-//   },
-//   adapter: MongoDBAdapter(clientPromise) as Adapter,
-//   callbacks: {
-//     session({ session, user }) {
-//       session.user.role = user.role;
-//       return session;
-//     },
-//   },
-//   providers: [Google],
-// });
+// import clientPromise from 'src/auth/lib/mongodb';
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+
+const authOption: NextAuthOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+  //   adapter: MongoDBAdapter(clientPromise),
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOption);
+
+declare module 'next-auth' {
+  interface Session {
+    accessToken?: string;
+  }
+}

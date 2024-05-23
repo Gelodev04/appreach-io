@@ -1,7 +1,6 @@
 'use client';
 
 import * as Yup from 'yup';
-// import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -18,6 +17,8 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { signIn } from 'src/auth';
+
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
@@ -25,12 +26,6 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 export default function LoginView() {
   const router = useRouter();
-
-  // const [errorMsg, setErrorMsg] = useState('');
-
-  // const searchParams = useSearchParams();
-
-  // const returnTo = searchParams.get('returnTo');
 
   const password = useBoolean();
 
@@ -40,8 +35,8 @@ export default function LoginView() {
   });
 
   const defaultValues = {
-    email: 'demo@minimals.cc',
-    password: 'demo1234',
+    email: '',
+    password: '',
   };
 
   const methods = useForm({
@@ -57,6 +52,7 @@ export default function LoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      await signIn(data.email, data.password);
       router.push(paths.dashboard.root);
       // await login?.(data.email, data.password);
 
