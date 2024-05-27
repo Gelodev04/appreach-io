@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const { MONGODB_URI } = process.env;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error('MONGODB_URI must be defined');
@@ -12,9 +12,8 @@ export const connectDB = async () => {
     if (connection.readyState === 1) {
       console.log('MongoDB Connected');
       return true;
-    } 
-      return false; // Added to handle the case where connection.readyState is not 1
-    
+    }
+    return false; // Added to handle the case where connection.readyState is not 1
   } catch (error) {
     console.error(error);
     return false; // Changed to return false instead of rejecting the promise

@@ -6,7 +6,7 @@ import { paths } from 'src/routes/paths';
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 
-export const {DATABASE_URL} = process.env;
+export const { DATABASE_URL } = process.env;
 
 export const FIREBASE_API = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,7 +18,7 @@ export const FIREBASE_API = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-export const { MONGODB_URI } = process.env;
+export const MONGODB_URI = process.env.MONGODB_URI;
 
 export const AMPLIFY_API = {
   userPoolId: process.env.NEXT_PUBLIC_AWS_AMPLIFY_USER_POOL_ID,
