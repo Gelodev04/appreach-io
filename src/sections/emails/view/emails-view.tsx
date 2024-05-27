@@ -23,7 +23,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { useGetEmails } from 'src/api/emails';
+import { useGetEmails } from 'src/app/api/emails';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -315,30 +315,30 @@ export default function EmailsView() {
             slots={{
               toolbar: () => (
                 <GridToolbarContainer>
-                    <GridToolbarQuickFilter />
+                  <GridToolbarQuickFilter />
 
-                    <Stack
-                      spacing={1}
-                      flexGrow={1}
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="flex-end"
-                    >
-                      {!!selectedRowIds.length && (
-                        <Button
-                          size="small"
-                          color="error"
-                          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-                          onClick={confirmRows.onTrue}
-                        >
-                          Delete ({selectedRowIds.length})
-                        </Button>
-                      )}
+                  <Stack
+                    spacing={1}
+                    flexGrow={1}
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                  >
+                    {!!selectedRowIds.length && (
+                      <Button
+                        size="small"
+                        color="error"
+                        startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                        onClick={confirmRows.onTrue}
+                      >
+                        Delete ({selectedRowIds.length})
+                      </Button>
+                    )}
 
-                      <GridToolbarColumnsButton />
-                      <GridToolbarFilterButton />
-                    </Stack>
-                  </GridToolbarContainer>
+                    <GridToolbarColumnsButton />
+                    <GridToolbarFilterButton />
+                  </Stack>
+                </GridToolbarContainer>
               ),
               noRowsOverlay: () => <EmptyContent title="No Data" />,
               noResultsOverlay: () => <EmptyContent title="No results found" />,

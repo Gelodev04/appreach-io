@@ -1,6 +1,7 @@
 'use client';
 
 import * as Yup from 'yup';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -12,12 +13,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+// import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { signIn } from 'src/auth';
 
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -25,7 +24,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-  const router = useRouter();
+  // const router = useRouter();
 
   const password = useBoolean();
 
@@ -45,21 +44,23 @@ export default function LoginView() {
   });
 
   const {
-    reset,
+    // reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+    });
     try {
-      await signIn(data.email, data.password);
-      router.push(paths.dashboard.root);
+      // router.push(paths.dashboard.root);
       // await login?.(data.email, data.password);
-
       // router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
-      reset();
+      // reset();
       // setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   });

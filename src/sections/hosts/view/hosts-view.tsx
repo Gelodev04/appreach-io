@@ -24,7 +24,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { useGetHosts } from 'src/api/hosts';
+import { useGetHosts } from 'src/app/api/hosts';
 import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
 
 import Iconify from 'src/components/iconify';
@@ -35,17 +35,11 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import { IHost } from 'src/types/hosts';
-import { IProductTableFilters } from 'src/types/product';
 
 import HostsAddExistingHost from '../hosts-add-existing-host';
 import { RenderHostName, RenderHostCrypt, RenderLookerStudioUrl } from '../hosts-table-row';
 
 // ----------------------------------------------------------------------
-
-const defaultFilters: IProductTableFilters = {
-  publish: [],
-  stock: [],
-};
 
 const HIDE_COLUMNS = {
   category: false,
@@ -74,14 +68,14 @@ export default function HostsView() {
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
   useEffect(() => {
-    if (hosts.length) {
-      setTableData(hosts);
-    }
+    console.log(hosts);
+    // if (hosts.length) {
+    //   setTableData(hosts);
+    // }
   }, [hosts]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
-    filters: defaultFilters,
   });
 
   const handleDeleteRow = useCallback(
@@ -306,12 +300,6 @@ export default function HostsView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({
-  inputData,
-  filters,
-}: {
-  inputData: IHost[];
-  filters: IProductTableFilters;
-}) {
+function applyFilter({ inputData }: { inputData: IHost[] }) {
   return inputData;
 }

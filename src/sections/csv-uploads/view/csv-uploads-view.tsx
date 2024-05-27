@@ -23,7 +23,7 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
-import { useGetCsvUploads } from 'src/api/csv-uploads';
+import { useGetCsvUploads } from 'src/app/api/csv-uploads';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';

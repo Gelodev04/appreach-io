@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model UserSettings {
+  id                  String                   @id @default(auto()) @map("_id") @db.ObjectId
+  appLogin            UserSettingsAppLogin
+  hosts               String[]                 @db.ObjectId
+  resetPassword       UserSettingsResetPassword
+  verification        UserSettingsVerification
+  lookerStudio        UserSettingsLookerStudio
+  approval            UserSettingsApproval
+  seeds               UserSettingsSeeds
+}
+
+type UserSettingsAppLogin {
+  username        String
+  currentLogin    DateTime @db.Date
+  lastLogin       DateTime @db.Date
+  password        String
+  adminView       Boolean
+  verified        Boolean
+  approved        Boolean
+  view            String
+}
+
+type UserSettingsResetPassword {
+  lastReset       DateTime @db.Date
+  token           String?
+  tokenExpiration DateTime?
+}
+
+type UserSettingsVerification {
+  lastSent        DateTime @db.Date
+  token           String
+  tokenExpiration DateTime @db.Date
+  verifiedOn      DateTime @db.Date
+}
+
+type UserSettingsLookerStudio {
+  embedUrl        String
+  hasToRegenerate Boolean
+}
+
+type UserSettingsApproval {
+  lastSent        DateTime @db.Date
+  token           String
+  tokenExpiration DateTime @db.Date
+  verifiedOn      DateTime @db.Date
+}
+
+type UserSettingsSeeds {
+  assignedCount   Int
+}

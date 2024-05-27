@@ -2,6 +2,8 @@
 
 import { useMemo, useEffect, useReducer, useCallback } from 'react';
 
+import { paths } from 'src/routes/paths';
+
 import axios, { endpoints } from 'src/utils/axios';
 
 import { AuthContext } from './auth-context';
@@ -186,7 +188,7 @@ export function AuthProvider({ children }: Props) {
     dispatch({
       type: Types.LOGOUT,
     });
-    window.location.href = '/auth/jwt/login';
+    window.location.href = paths.auth.login;
   }, []);
 
   // ----------------------------------------------------------------------
