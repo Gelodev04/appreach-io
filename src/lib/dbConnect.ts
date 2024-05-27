@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 import { MONGODB_URI } from 'src/config-global';
 
-if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI must be defined');
-}
-
 export const connectDB = async () => {
   try {
     const { connection } = await mongoose.connect(MONGODB_URI as string);
