@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+mongoose.connect(process.env.MONGODB_URI as string);
+mongoose.Promise = global.Promise;
+
 const appLoginSchema = new mongoose.Schema({
   username: { type: String, required: true },
   currentLogin: { type: Date, required: true },
@@ -50,4 +53,5 @@ const userSchema = new mongoose.Schema({
   seeds: { type: seedsSchema, required: true },
 });
 
-export const User = mongoose.model('User', userSchema);
+const User = mongoose.models.modelName || mongoose.model('User', userSchema);
+export default User;

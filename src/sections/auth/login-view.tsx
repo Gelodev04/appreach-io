@@ -13,7 +13,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
-// import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -24,8 +23,6 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-  // const router = useRouter();
-
   const password = useBoolean();
 
   const LoginSchema = Yup.object().shape({
@@ -44,24 +41,18 @@ export default function LoginView() {
   });
 
   const {
-    // reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-    });
     try {
-      // router.push(paths.dashboard.root);
-      // await login?.(data.email, data.password);
-      // router.push(returnTo || PATH_AFTER_LOGIN);
+      await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+      });
     } catch (error) {
       console.error(error);
-      // reset();
-      // setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   });
 
