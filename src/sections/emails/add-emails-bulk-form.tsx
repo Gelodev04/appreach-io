@@ -87,7 +87,7 @@ export default function AddEmailsBulkForm({ currentItem }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.hosts.root);
+      router.push(paths.dashboard.host.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);

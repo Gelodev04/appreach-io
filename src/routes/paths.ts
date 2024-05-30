@@ -1,5 +1,7 @@
 // ----------------------------------------------------------------------
 
+import { ObjectId } from 'mongodb';
+
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
@@ -23,10 +25,10 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    hosts: {
-      root: `${ROOTS.DASHBOARD}/hosts`,
-      new: `${ROOTS.DASHBOARD}/hosts/new`,
-      edit: `${ROOTS.DASHBOARD}/hosts/edit`,
+    host: {
+      root: `${ROOTS.DASHBOARD}/host`,
+      new: `${ROOTS.DASHBOARD}/host/new`,
+      edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/host/edit/?id=${id.toString()}`,
     },
     seeds: {
       root: `${ROOTS.DASHBOARD}/seeds`,

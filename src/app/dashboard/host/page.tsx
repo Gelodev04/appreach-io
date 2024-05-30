@@ -1,11 +1,11 @@
-import { LookerStudioView } from 'src/sections/looker-studio/view';
+import { HostListView } from 'src/sections/host/view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Analytics | Outreach Magic',
+  title: 'Hosts | Outreach Magic',
 };
 
 export default function Page() {
-  return <LookerStudioView />;
+  return <HostListView />;
 }

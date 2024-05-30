@@ -25,14 +25,14 @@ import FormProvider, {
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
 
-import { IHost } from 'src/types/hosts';
+import { ISeedForm } from 'src/types/seeds';
 
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  currentItem?: IHost;
+  currentItem?: ISeedForm;
 };
 
 export default function SeedsNewEditForm({ currentItem }: Props) {
@@ -85,7 +85,7 @@ export default function SeedsNewEditForm({ currentItem }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.hosts.root);
+      router.push(paths.dashboard.host.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);

@@ -28,12 +28,12 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
-import { IHost } from 'src/types/hosts';
+import { ICsvUploadForm } from 'src/types/csv-uploads';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  currentItem?: IHost;
+  currentItem?: ICsvUploadForm;
 };
 
 export default function CsvUploadsNewEditForm({ currentItem }: Props) {
@@ -55,7 +55,7 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: currentItem?.name || '',
+      name: currentItem?.host || '',
       timezone: currentItem?.timezone || '',
       notificationAddresses: currentItem?.notificationAddresses || '',
       externalSenderAddresses: currentItem?.externalSenderAddresses || '',
@@ -86,7 +86,7 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.hosts.root);
+      router.push(paths.dashboard.csvUploads.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);

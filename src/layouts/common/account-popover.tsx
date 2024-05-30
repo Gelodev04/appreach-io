@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { useMockedUser } from 'src/hooks/use-mocked-user';
@@ -46,9 +47,8 @@ export default function AccountPopover() {
   const handleLogout = async () => {
     try {
       await signOut();
+      router.push(paths.auth.login);
       popover.onClose();
-      console.log('Logged out');
-      router.replace('/');
     } catch (error) {
       console.error(error);
     }

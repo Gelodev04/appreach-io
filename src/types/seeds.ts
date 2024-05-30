@@ -8,3 +8,14 @@ export type ISeed = {
   status: 'success' | 'error' | 'expired';
   csvUrl: string;
 };
+
+export interface ISeedForm {
+  id: string;
+  name: string;
+  hostCrypt: string;
+  lookerStudioUrl: string;
+  timezone: string;
+  notificationAddresses: string;
+  externalSenderAddresses: string;
+  inboxEngagement: string[];
+}

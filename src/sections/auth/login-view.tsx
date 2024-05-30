@@ -18,11 +18,13 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import Iconify from 'src/components/iconify';
+import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
+  const { enqueueSnackbar } = useSnackbar();
   const password = useBoolean();
 
   const LoginSchema = Yup.object().shape({
@@ -52,7 +54,7 @@ export default function LoginView() {
         password: data.password,
       });
     } catch (error) {
-      console.error(error);
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
 

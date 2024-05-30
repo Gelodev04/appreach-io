@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback } from 'react';
 
 import { paths } from 'src/routes/paths';
@@ -10,7 +11,7 @@ import { useAuthContext } from '../hooks';
 // ----------------------------------------------------------------------
 
 const loginPaths: Record<string, string> = {
-  jwt: paths.auth.login,
+  nextAuth: paths.auth.login,
 };
 
 // ----------------------------------------------------------------------
@@ -29,14 +30,18 @@ export default function AuthGuard({ children }: Props) {
 
 function Container({ children }: Props) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  console.log('session', session);
+  console.log('status', status);
+  const authenticated = !!session;
 
-  const { authenticated, method } = useAuthContext();
+  // const { authenticated, method } = useAuthContext();
 
   const [checked, setChecked] = useState(false);
 
   const check = useCallback(() => {
     if (!authenticated) {
-      const loginPath = loginPaths[method];
+      const loginPath = loginPaths.nextAuth;
 
       const href = `${loginPath}`;
 
@@ -44,7 +49,7 @@ function Container({ children }: Props) {
     } else {
       setChecked(true);
     }
-  }, [authenticated, method, router]);
+  }, [authenticated, router]);
 
   useEffect(() => {
     check();

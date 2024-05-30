@@ -13,3 +13,14 @@ export interface ICsvUpload {
   dateUploaded: Date;
   status: string;
 }
+
+export interface ICsvUploadForm {
+  id: string;
+  host: string;
+  hostCrypt: string;
+  lookerStudioUrl: string;
+  timezone: string;
+  notificationAddresses: string;
+  externalSenderAddresses: string;
+  inboxEngagement: string[];
+}

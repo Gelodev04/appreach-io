@@ -19,7 +19,7 @@ export function useNavData() {
           },
           {
             title: 'Hosts',
-            path: paths.dashboard.hosts.root,
+            path: paths.dashboard.host.root,
             icon: <Iconify icon="bx:server" />,
           },
           {
@@ -27,11 +27,11 @@ export function useNavData() {
             path: paths.dashboard.seeds.root,
             icon: <Iconify icon="pepicons-pop:seedling" />,
           },
-          {
-            title: 'Emails',
-            path: paths.dashboard.emails.root,
-            icon: <Iconify icon="entypo:email" />,
-          },
+          // {
+          //   title: 'Emails',
+          //   path: paths.dashboard.emails.root,
+          //   icon: <Iconify icon="entypo:email" />,
+          // },
           {
             title: 'Attribute uploads',
             path: paths.dashboard.csvUploads.root,
