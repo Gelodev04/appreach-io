@@ -12,7 +12,6 @@ interface ISlack {
 interface IUserSettings {
   timezone: string;
   notificationAddressArray: string[];
-  notificationAddressString: string;
   externalSenderAddresses: string[];
 }
 

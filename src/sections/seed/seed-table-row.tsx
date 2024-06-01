@@ -41,23 +41,7 @@ export function RenderCellResultsTotal({ params }: ParamsProps) {
 }
 
 export function RenderCellToken({ params }: ParamsProps) {
-  const { copy } = useCopyToClipboard();
-  const { enqueueSnackbar } = useSnackbar();
-  const handleCopy = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    copy(params.row.token);
-    enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
-  };
-  return (
-    <Stack direction="row" alignItems="center">
-      <Typography variant="body2">{params.row.token}</Typography>
-      <Tooltip title="Copy token" placement="top">
-        <IconButton onClick={handleCopy} sx={{ zIndex: 20 }}>
-          <Iconify icon="uil:copy" />
-        </IconButton>
-      </Tooltip>
-    </Stack>
-  );
+  return <Typography variant="body2">{params.row.token}</Typography>;
 }
 
 export function RenderCellPublish({ params }: ParamsProps) {

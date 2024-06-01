@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { ISeed } from 'src/types/seeds';
+import { ISeed } from 'src/types/seed';
 
 // ----------------------------------------------------------------------
 

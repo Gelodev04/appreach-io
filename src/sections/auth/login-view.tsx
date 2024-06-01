@@ -49,7 +49,7 @@ export default function LoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signIn('credentials', {
+      await signIn('jwt', {
         email: data.email,
         password: data.password,
       });

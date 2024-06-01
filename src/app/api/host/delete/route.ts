@@ -1,10 +1,9 @@
 import { ObjectId } from 'mongodb';
-
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
 export async function POST(request: Request) {
   const data = await request.json();
-  const {ids} = data;
+  const { ids } = data;
 
   try {
     const client = await clientPromise;

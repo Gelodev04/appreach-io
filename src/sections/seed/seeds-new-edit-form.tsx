@@ -25,7 +25,7 @@ import FormProvider, {
   RHFMultiCheckbox,
 } from 'src/components/hook-form';
 
-import { ISeedForm } from 'src/types/seeds';
+import { ISeedForm } from 'src/types/seed';
 
 import SeedAccountsGenerator from './seed-accounts-generator';
 
@@ -150,7 +150,7 @@ abdulrehman@outreachmagic.io ⏎`;
 
             <SeedAccountsGenerator />
 
-            <Stack spacing={1}>
+            {/* <Stack spacing={1}>
               <Typography variant="subtitle2">Update settings</Typography>
               <RHFMultiCheckbox
                 row
@@ -158,7 +158,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 spacing={2}
                 options={INBOX_ENGAGEMENT_OPTIONS}
               />
-            </Stack>
+            </Stack> */}
           </Stack>
         </Card>
       </Grid>

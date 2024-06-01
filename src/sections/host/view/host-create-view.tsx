@@ -7,11 +7,11 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import HostsNewEditForm from '../hosts-new-edit-form';
+import HostsNewEditForm from '../host-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function HostsCreateView() {
+export default function HostCreateView() {
   const settings = useSettingsContext();
 
   return (

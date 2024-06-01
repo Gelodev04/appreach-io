@@ -24,7 +24,7 @@ export function useNavData() {
           },
           {
             title: 'Seeds',
-            path: paths.dashboard.seeds.root,
+            path: paths.dashboard.seed.root,
             icon: <Iconify icon="pepicons-pop:seedling" />,
           },
           // {

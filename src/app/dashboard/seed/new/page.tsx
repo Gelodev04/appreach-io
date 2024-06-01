@@ -1,4 +1,4 @@
-import SeedsCreateView from 'src/sections/seeds/view/seeds-create-view';
+import { SeedCreateView } from 'src/sections/seed/view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function HostsCreatePage() {
-  return <SeedsCreateView />;
+  return <SeedCreateView />;
 }

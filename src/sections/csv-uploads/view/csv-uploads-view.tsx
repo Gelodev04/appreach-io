@@ -22,7 +22,6 @@ import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
 import { useGetCsvUploads } from 'src/app/api/csv-uploads';
 
 import Iconify from 'src/components/iconify';
@@ -139,7 +138,6 @@ export default function CsvUploadsView() {
       headerName: 'Company Created',
       width: 160,
       type: 'singleSelect',
-      valueOptions: PRODUCT_STOCK_OPTIONS,
       renderCell: (params) => <RenderCsvUploadCell params={params} type="companyCreated" />,
     },
     {

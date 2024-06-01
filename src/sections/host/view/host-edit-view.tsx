@@ -15,11 +15,11 @@ import EmptyContent from 'src/components/empty-content';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import { HostSkeleton } from '../host-skeleton';
-import HostsNewEditForm from '../hosts-new-edit-form';
+import HostNewEditForm from '../host-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function HostsEditView() {
+export default function HostEditView() {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
 
@@ -48,7 +48,7 @@ export default function HostsEditView() {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
-        heading="Add a new host"
+        heading="Edit host"
         links={[
           {
             name: 'Dashboard',
@@ -65,7 +65,7 @@ export default function HostsEditView() {
         }}
       />
 
-      <HostsNewEditForm currentItem={host} />
+      <HostNewEditForm currentItem={host} />
     </Container>
   );
 }

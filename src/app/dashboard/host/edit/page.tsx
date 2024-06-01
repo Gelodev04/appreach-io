@@ -1,4 +1,4 @@
-import HostsEditView from 'src/sections/host/view/host-edit-view';
+import { HostEditView } from 'src/sections/host/view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function HostsEditPage() {
-  return <HostsEditView />;
+  return <HostEditView />;
 }

@@ -26,8 +26,6 @@ import { RouterLink } from 'src/routes/components';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
-
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import EmptyContent from 'src/components/empty-content';
@@ -35,9 +33,10 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
+import { endpoints } from 'src/utils/swr';
 import { IHost } from 'src/types/host';
 
-import HostsAddExistingHost from '../hosts-add-existing-host';
+import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostName, RenderHostCrypt, RenderLookerStudioUrl } from '../host-table-row';
 
 // ----------------------------------------------------------------------
@@ -79,7 +78,7 @@ export default function HostListView() {
   const handleDeleteRow = useCallback(
     async (id: string) => {
       try {
-        await fetch('/api/host/delete', {
+        await fetch(endpoints.host.delete, {
           method: 'POST',
           body: JSON.stringify({ ids: [id] }),
         });
@@ -98,7 +97,7 @@ export default function HostListView() {
 
   const handleDeleteRows = useCallback(async () => {
     try {
-      await fetch('/api/host/delete', {
+      await fetch(endpoints.host.delete, {
         method: 'POST',
         body: JSON.stringify({ ids: selectedRowIds }),
       });
@@ -142,7 +141,6 @@ export default function HostListView() {
       type: 'singleSelect',
       headerAlign: 'center',
       align: 'center',
-      valueOptions: PRODUCT_STOCK_OPTIONS,
       renderCell: (params) => <RenderLookerStudioUrl params={params} />,
     },
     {
@@ -200,7 +198,7 @@ export default function HostListView() {
           ]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostsAddExistingHost />
+              <HostAddExistingHost />
 
               <Button
                 component={RouterLink}

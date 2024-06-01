@@ -24,7 +24,6 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { useGetSeeds } from 'src/app/api/seeds';
-import { PRODUCT_STOCK_OPTIONS } from 'src/_mock';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -33,7 +32,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { ISeed } from 'src/types/seeds';
+import { ISeed } from 'src/types/seed';
 
 import {
   RenderCellToken,
@@ -54,7 +53,7 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 // ----------------------------------------------------------------------
 
-export default function SeedsView() {
+export default function SeedView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const confirmRows = useBoolean();
@@ -142,7 +141,6 @@ export default function SeedsView() {
       headerName: 'Results total',
       width: 160,
       type: 'singleSelect',
-      valueOptions: PRODUCT_STOCK_OPTIONS,
       renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
     {
@@ -216,7 +214,7 @@ export default function SeedsView() {
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
-                href={paths.dashboard.seeds.new}
+                href={paths.dashboard.seed.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >

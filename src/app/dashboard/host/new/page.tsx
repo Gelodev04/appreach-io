@@ -1,4 +1,4 @@
-import HostsCreateView from 'src/sections/host/view/hosts-create-view';
+import { HostCreateView } from 'src/sections/host/view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function HostsCreatePage() {
-  return <HostsCreateView />;
+  return <HostCreateView />;
 }

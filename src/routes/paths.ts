@@ -30,10 +30,10 @@ export const paths = {
       new: `${ROOTS.DASHBOARD}/host/new`,
       edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/host/edit/?id=${id.toString()}`,
     },
-    seeds: {
-      root: `${ROOTS.DASHBOARD}/seeds`,
-      new: `${ROOTS.DASHBOARD}/seeds/new`,
-      edit: `${ROOTS.DASHBOARD}/seeds/edit`,
+    seed: {
+      root: `${ROOTS.DASHBOARD}/seed`,
+      new: `${ROOTS.DASHBOARD}/seed/new`,
+      edit: `${ROOTS.DASHBOARD}/seed/edit`,
     },
     emails: {
       root: `${ROOTS.DASHBOARD}/emails`,

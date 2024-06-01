@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useMemo } from 'react';
 
 import { fetcher, endpoints } from 'src/utils/swr';
@@ -12,6 +12,10 @@ export function useGetHosts() {
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
+  const revalidateHosts = async () => {
+    await mutate(URL);
+  };
+
   const memoizedValue = useMemo(
     () => ({
       hosts: (data?.hosts as IHost[]) || [],
@@ -19,6 +23,7 @@ export function useGetHosts() {
       hostsError: error,
       hostsValidating: isValidating,
       hostsEmpty: !isLoading && !data?.hosts.length,
+      revalidateHosts,
     }),
     [data?.hosts, error, isLoading, isValidating]
   );

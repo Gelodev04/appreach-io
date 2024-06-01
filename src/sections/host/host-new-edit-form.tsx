@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { paths } from 'src/routes/paths';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -21,6 +22,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 
+import { endpoints } from 'src/utils/swr';
 import { IHost } from 'src/types/host';
 
 // ----------------------------------------------------------------------
@@ -29,7 +31,7 @@ type Props = {
   currentItem?: IHost;
 };
 
-export default function HostsNewEditForm({ currentItem }: Props) {
+export default function HostNewEditForm({ currentItem }: Props) {
   const router = useRouter();
 
   const theme = useTheme();
@@ -43,7 +45,7 @@ export default function HostsNewEditForm({ currentItem }: Props) {
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
     timezone: Yup.string().required('Timezone is required'),
-    notificationAddresses: Yup.string().required('Notification addresses are required'),
+    notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
     slack: Yup.object().shape({
       notificationChannelId: Yup.string(),
@@ -67,20 +69,22 @@ export default function HostsNewEditForm({ currentItem }: Props) {
     () => ({
       host: currentItem?.host || '',
       timezone: currentItem?.userSettings.timezone || '',
-      notificationAddresses: currentItem?.userSettings.notificationAddressString || '',
+      notificationAddresses: Array.isArray(currentItem?.userSettings.notificationAddressArray)
+        ? currentItem.userSettings.notificationAddressArray.join('\n')
+        : currentItem?.userSettings.notificationAddressArray || '',
       externalSenderAddresses: Array.isArray(currentItem?.userSettings.externalSenderAddresses)
         ? currentItem.userSettings.externalSenderAddresses.join('\n')
         : currentItem?.userSettings.externalSenderAddresses || '',
       slack: currentItem?.slack || { notificationChannelId: '' },
       smartLead: currentItem?.smartlead || { apiKey: '', webhook: '' },
-      inboxEngagement: currentItem?.inboxEngagement || {
-        markImportant: false,
-        removeSpam: false,
-        replyMessage: false,
-        clickLink: false,
-        downloadMessage: false,
-        movePrimary: false,
-        scrollMessage: false,
+      inboxEngagement: {
+        markImportant: currentItem?.inboxEngagement?.markImportant || false,
+        removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
+        replyMessage: currentItem?.inboxEngagement?.replyMessage || false,
+        clickLink: currentItem?.inboxEngagement?.clickLink || false,
+        downloadMessage: currentItem?.inboxEngagement?.downloadMessage || false,
+        movePrimary: currentItem?.inboxEngagement?.movePrimary || false,
+        scrollMessage: currentItem?.inboxEngagement?.scrollMessage || false,
       },
     }),
     [currentItem]
@@ -105,21 +109,40 @@ export default function HostsNewEditForm({ currentItem }: Props) {
 
   const onEdit = handleSubmit(async (data) => {
     try {
-      const res = await fetch('/api/host/edit', {
+      const res = await fetch(endpoints.host.edit, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          _id: currentItem?._id,
+        }),
       });
-      console.log('res', res.json());
-      reset();
-      enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      // router.push(paths.dashboard.host.root);
-      console.info('DATA', data);
+
+      if (!res.ok) {
+        throw new Error('Failed to update host');
+      }
+      enqueueSnackbar('Update success!');
+      router.push(paths.dashboard.host.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
 
-  const onCreate = handleSubmit(async (data) => {});
+  const onCreate = handleSubmit(async (data) => {
+    try {
+      const res = await fetch('/api/host/create', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to create host');
+      }
+      enqueueSnackbar('Create success!');
+      router.push(paths.dashboard.host.root);
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  });
 
   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
 mark@outreachmagic.io ⏎
@@ -238,7 +261,7 @@ abdulrehman@outreachmagic.io ⏎`;
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={onEdit}>
+    <FormProvider methods={methods} onSubmit={currentItem ? onEdit : onCreate}>
       <Grid container spacing={3}>
         {renderProperties}
       </Grid>

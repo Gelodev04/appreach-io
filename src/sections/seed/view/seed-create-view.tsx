@@ -11,7 +11,7 @@ import SeedsNewEditForm from '../seeds-new-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function SeedsCreateView() {
+export default function SeedCreateView() {
   const settings = useSettingsContext();
 
   return (
@@ -25,7 +25,7 @@ export default function SeedsCreateView() {
           },
           {
             name: 'Seeds',
-            href: paths.dashboard.seeds.root,
+            href: paths.dashboard.seed.root,
           },
           { name: 'New seed' },
         ]}

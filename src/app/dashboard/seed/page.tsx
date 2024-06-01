@@ -1,4 +1,4 @@
-import SeedsView from 'src/sections/seeds/view/seeds-view';
+import { SeedView } from 'src/sections/seed/view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SeedsView />;
+  return <SeedView />;
 }
