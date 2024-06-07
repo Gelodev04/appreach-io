@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
 
-import { useSnackbar } from 'src/components/snackbar';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { useGetHosts } from 'src/hooks/api/host';
+import { useBoolean } from 'src/hooks/use-boolean';
+
 import { endpoints } from 'src/utils/swr';
+
+import { useSnackbar } from 'src/components/snackbar';
 
 // --------------------------------------------------------
 
@@ -36,7 +38,7 @@ export const useAddExistingHost = () => {
       setHostName('');
       setSubmitting(false);
     }
-  }, [hostName]);
+  }, [hostName, revalidateHosts, enqueueSnackbar, open]);
 
   return { addExistingHost, submitting, hostName, setHostName, open };
 };

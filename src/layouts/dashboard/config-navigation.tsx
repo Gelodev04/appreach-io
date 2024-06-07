@@ -33,8 +33,8 @@ export function useNavData() {
           //   icon: <Iconify icon="entypo:email" />,
           // },
           {
-            title: 'Attribute uploads',
-            path: paths.dashboard.csvUploads.root,
+            title: 'Upload attributes',
+            path: paths.dashboard.csvUpload.root,
             icon: <Iconify icon="mage:file-upload-fill" />,
           },
         ],

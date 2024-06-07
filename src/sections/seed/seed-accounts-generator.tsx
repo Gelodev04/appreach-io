@@ -1,10 +1,7 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-
-import { useResponsive } from 'src/hooks/use-responsive';
 
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
@@ -23,8 +20,7 @@ const SEED_ACCOUNTS = [
   { name: 'yahoo_personal', amount: 236 },
 ];
 
-export default function SeedAccountsGenerator() {
-  const isMobile = useResponsive('down', 'sm');
+export default function SeedAccountsGenerator({ assignedCount }: { assignedCount: number }) {
   return (
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
@@ -40,9 +36,8 @@ export default function SeedAccountsGenerator() {
           />
         </Stack>
 
-        <Divider orientation={isMobile ? 'horizontal' : 'vertical'} flexItem />
         <Box sx={{ width: '100%' }}>
-          <SeedAccountsAssigned totalAssignedAccounts={100} />
+          <SeedAccountsAssigned totalAssignedAccounts={assignedCount} />
         </Box>
       </Stack>
 

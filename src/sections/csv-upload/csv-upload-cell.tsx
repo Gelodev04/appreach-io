@@ -35,17 +35,17 @@ const RenderCsvUploadCell = ({ params, type }: RenderCsvUploadCellProps) => {
     case 'importSource':
       return <Typography variant="body2">{params.row.importSource}</Typography>;
     case 'companyCreated':
-      return <Typography variant="body2">{params.row.companyCreated}</Typography>;
+      return <Typography variant="body2">{params.row.results.company.created}</Typography>;
     case 'companyUpdated':
-      return <Typography variant="body2">{params.row.companyUpdated}</Typography>;
+      return <Typography variant="body2">{params.row.results.company.updated}</Typography>;
     case 'companyIgnored':
-      return <Typography variant="body2">{params.row.companyIgnored}</Typography>;
+      return <Typography variant="body2">{params.row.results.company.ignored}</Typography>;
     case 'personCreated':
-      return <Typography variant="body2">{params.row.personCreated}</Typography>;
+      return <Typography variant="body2">{params.row.results.person.ignored}</Typography>;
     case 'personUpdated':
-      return <Typography variant="body2">{params.row.personUpdated}</Typography>;
+      return <Typography variant="body2">{params.row.results.person.updated}</Typography>;
     case 'errors':
-      return <Typography variant="body2">{params.row.errors}</Typography>;
+      return <Typography variant="body2">{params.row.results.errors}</Typography>;
     case 'dateUploaded':
       return <Typography variant="body2">{fDateTime(params.row.dateUploaded)}</Typography>;
     case 'status':

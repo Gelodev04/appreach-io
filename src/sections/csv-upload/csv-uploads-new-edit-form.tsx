@@ -17,6 +17,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
+import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { useSnackbar } from 'src/components/snackbar';
@@ -28,7 +29,7 @@ import FormProvider, {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
-import { ICsvUploadForm } from 'src/types/csv-uploads';
+import { ICsvUploadForm } from 'src/types/csv-upload';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,8 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
 
   const mdUp = useResponsive('up', 'md');
 
+  const { hosts } = useGetSeedSettings();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
@@ -51,6 +54,7 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
     notificationAddresses: Yup.string().required('Notification addresses are required'),
     externalSenderAddresses: Yup.string(),
     inboxEngagement: Yup.array().of(Yup.string()),
+    engagementAccount: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
@@ -60,6 +64,7 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
       notificationAddresses: currentItem?.notificationAddresses || '',
       externalSenderAddresses: currentItem?.externalSenderAddresses || '',
       inboxEngagement: currentItem?.inboxEngagement || [],
+      engagementAccount: true,
     }),
     [currentItem]
   );
@@ -86,14 +91,14 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.csvUploads.root);
+      router.push(paths.dashboard.csvUpload.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);
     }
   });
 
-  const HOSTS = ['outreachmagic', 'adelaidemetrics', 'cw_us', 'cw_uk', 'cw_au'];
+  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   const renderProperties = (
     <>
@@ -112,11 +117,10 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
               }}
             >
               <RHFAutocomplete
-                name="timezone"
+                name="host"
                 label="Choose a host"
                 placeholder="outreachmagic"
-                options={HOSTS.map((host) => `${host}`)}
-                getOptionLabel={(option) => option}
+                options={hostOptions}
               />
 
               <RHFSelect name="status" label="Sourced from">
@@ -131,18 +135,20 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
             <Stack>
               <Typography variant="subtitle2">How would you describe this upload?</Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }} gutterBottom>
-                This is the most important name on the report, be descriptive. IE: translation
-                companies, 51-200hc, us
+                This will be on the report describing the uploaded attributes.
               </Typography>
-              <RHFTextField name="externalSenderAddresses" placeholder="placeholder text" />
+              <RHFTextField
+                name="externalSenderAddresses"
+                placeholder="Translation companies, 51-200hc, us"
+              />
             </Stack>
-
-            <RHFUpload name="csvFile" accept={{ 'text/csv': [] }} />
 
             <RHFSwitch
               name="engagementAccount"
               label="Replace attributes on records with existing import name"
             />
+
+            <RHFUpload name="csvFile" accept={{ 'text/csv': [] }} />
           </Stack>
         </Card>
       </Grid>
@@ -151,11 +157,12 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
           <Image
             src="/assets/illustrations/csv-uploads/upload-file.png"
             alt="seeds"
-            width={250}
-            height={250}
+            width={220}
+            height={220}
+            quality={100}
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Placeholder text
+            Additional functions and attributes
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
             Additional functions and attributes...

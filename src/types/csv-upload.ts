@@ -1,8 +1,11 @@
+import { ObjectId } from 'mongodb';
+
 export interface ICsvUpload {
-  id: string;
+  _id: ObjectId;
   host: string;
   importName: string;
   importSource: string;
+  status: string;
   companyCreated: number;
   companyUpdated: number;
   companyIgnored: number;
@@ -11,7 +14,6 @@ export interface ICsvUpload {
   personIgnored: number;
   errors: number;
   dateUploaded: Date;
-  status: string;
 }
 
 export interface ICsvUploadForm {

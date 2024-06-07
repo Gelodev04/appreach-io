@@ -7,7 +7,7 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import SeedsNewEditForm from '../seeds-new-edit-form';
+import SeedNewEditForm from '../seed-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ export default function SeedCreateView() {
         }}
       />
 
-      <SeedsNewEditForm />
+      <SeedNewEditForm />
     </Container>
   );
 }

@@ -1,28 +1,15 @@
-import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db();
-
-    const userSettings = await db
-      .collection('userSettings')
-      .findOne({ 'appLogin.username': 'michael@outreachmagic.io' });
-
-    if (!userSettings) {
-      throw { message: 'No user found with the provided username.', statusCode: 404 };
-    }
+    const userSettings = await getUser()
 
     if (!userSettings.lookerStudio) {
-      throw {
-        message:
-          'No lookerStudio settings found for the user. Please ensure the user has the necessary settings configured.',
-        statusCode: 404,
-      };
+      return Response.json({ error: 'No lookerStudio settings found for the user. Please ensure the user has the necessary settings configured.' }, { status: 500 });
     }
 
     return Response.json({ embedUrl: userSettings.lookerStudio.embedUrl });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: error.statusCode || 500 });
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }

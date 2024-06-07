@@ -3,19 +3,16 @@ import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import Credentials from 'next-auth/providers/credentials';
 
-import { paths } from 'src/routes/paths';
-
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   pages: {
     signIn: '/auth/login',
-    error: '/',
+    error: '/auth/error',
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -23,11 +20,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: 'Credentials',
       credentials: {
         email: {
-          label: 'email:',
           type: 'text',
         },
         password: {
-          label: 'password:',
           type: 'password',
         },
       },
@@ -57,7 +52,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error('Invalid password');
           }
 
-          // Update the lastLogin field with the current date
           await db.collection('userSettings').updateOne(
             { 'appLogin.username': credentials.email },
             {
@@ -71,40 +65,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return {
             id: user._id.toString(),
             email: user.appLogin.username,
+            role: user.appLogin.view,
           };
         } catch (error) {
-          throw new Error(error);
+          console.log(error.message);
+          return null;
         }
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;
-      }
-      return session;
-    },
-    async signIn() {
-      return paths.dashboard.root;
-    },
-  },
-  events: {
-    async signIn(message) {
-      console.log('signIn event', message);
-    },
-    async signOut(message) {
-      console.log('signOut event', message);
-    },
-  },
 });
 
 declare module 'next-auth' {

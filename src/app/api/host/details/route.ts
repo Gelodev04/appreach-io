@@ -10,17 +10,17 @@ export async function GET(request: Request) {
     const db = client.db();
 
     if (!id || !ObjectId.isValid(id)) {
-      throw { message: "This host doesn't exist or was deleted", statusCode: 404 };
+      return Response.json({ error: "This host doesn't exist or was deleted" }, { status: 404 });
     }
 
     const host = await db.collection('hosts').findOne({ _id: new ObjectId(id) });
 
     if (!host) {
-      throw { message: "This host doesn't exist or was deleted", statusCode: 404 };
+      return Response.json({ error: "This host doesn't exist or was deleted" }, { status: 404 });
     }
 
     return Response.json({ host });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: error.statusCode || 500 });
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }

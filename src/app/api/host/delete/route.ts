@@ -1,4 +1,6 @@
 import { ObjectId } from 'mongodb';
+
+import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
 export async function POST(request: Request) {
@@ -8,35 +10,37 @@ export async function POST(request: Request) {
   try {
     const client = await clientPromise;
     const db = client.db();
+    const session = await auth();
 
-    const deletedIds = [];
-    for (const id of ids) {
-      if (!ObjectId.isValid(id)) {
-        throw { message: `Invalid id: ${id}`, statusCode: 400 };
-      }
+    // Validate all IDs first to avoid partial deletion if any ID is invalid
+    const invalidId = ids.find((id: string) => !ObjectId.isValid(id));
+    if (invalidId) {
+      return Response.json({ error: `Invalid id: ${invalidId}` }, { status: 400 });
+    }
 
-      const result = await db
-        .collection('hosts')
-        .deleteOne({ _id: ObjectId.createFromHexString(id) });
-      if (result.deletedCount === 0) {
-        throw {
-          message: `Host with id: ${id} doesn't exist or was already deleted`,
-          statusCode: 404,
-        };
-      }
+    // Use Promise.all to delete hosts and update userSettings in parallel
+    const deleteOperations = ids.map((id: string) =>
+      db.collection('hosts').deleteOne({ _id: ObjectId.createFromHexString(id) })
+    );
+    const deleteResults = await Promise.all(deleteOperations);
 
-      await db
-        .collection('userSettings')
-        .updateOne(
-          { 'appLogin.username': 'michael@outreachmagic.io' },
-          { $pull: { hosts: ObjectId.createFromHexString(id) as any } }
-        );
+    const updateOperations = ids.map((id: string) =>
+      db.collection('userSettings').updateOne(
+        { 'appLogin.username': session?.user.email },
+        { $pull: { hosts: ObjectId.createFromHexString(id) as any } }
+      )
+    );
+    await Promise.all(updateOperations);
 
-      deletedIds.push(id);
+    // Filter out IDs that were not deleted (i.e., deletedCount === 0)
+    const deletedIds = ids.filter((id: string, index: number) => deleteResults[index].deletedCount > 0);
+
+    if (deletedIds.length === 0) {
+      return Response.json({ error: `Hosts don't exist or were already deleted` }, { status: 400 });
     }
 
     return Response.json({ deletedIds });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: error.statusCode || 500 });
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }

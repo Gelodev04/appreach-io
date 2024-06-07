@@ -26,6 +26,8 @@ import { RouterLink } from 'src/routes/components';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
 
+import { endpoints } from 'src/utils/swr';
+
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import EmptyContent from 'src/components/empty-content';
@@ -33,7 +35,6 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { endpoints } from 'src/utils/swr';
 import { IHost } from 'src/types/host';
 
 import HostAddExistingHost from '../host-add-existing-host';
@@ -78,10 +79,15 @@ export default function HostListView() {
   const handleDeleteRow = useCallback(
     async (id: string) => {
       try {
-        await fetch(endpoints.host.delete, {
+        const res = await fetch(endpoints.host.delete, {
           method: 'POST',
           body: JSON.stringify({ ids: [id] }),
         });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error);
+        }
 
         enqueueSnackbar('Item deleted', { variant: 'warning' });
 
@@ -97,10 +103,15 @@ export default function HostListView() {
 
   const handleDeleteRows = useCallback(async () => {
     try {
-      await fetch(endpoints.host.delete, {
+      const res = await fetch(endpoints.host.delete, {
         method: 'POST',
         body: JSON.stringify({ ids: selectedRowIds }),
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error);
+      }
 
       enqueueSnackbar('Items deleted', { variant: 'warning' });
 

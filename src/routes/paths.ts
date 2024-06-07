@@ -6,11 +6,16 @@ const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
   MAIN_WEBSITE: 'https://outreachmagic.io',
+  FLASK_APP: 'https://app.outreachmagic.io',
 };
 
 // ----------------------------------------------------------------------
 
 export const paths = {
+  flaskApp: {
+    root: ROOTS.FLASK_APP,
+    seedCsv: (id: ObjectId) => `${ROOTS.FLASK_APP}/seeds/${id.toString()}`,
+  },
   website: {
     root: ROOTS.MAIN_WEBSITE,
     terms: `${ROOTS.MAIN_WEBSITE}/terms-of-uses/`,
@@ -41,10 +46,10 @@ export const paths = {
       addEmailsBulk: `${ROOTS.DASHBOARD}/emails/add-emails-bulk`,
       edit: `${ROOTS.DASHBOARD}/emails/edit`,
     },
-    csvUploads: {
-      root: `${ROOTS.DASHBOARD}/csv-uploads`,
-      new: `${ROOTS.DASHBOARD}/csv-uploads/new`,
-      edit: `${ROOTS.DASHBOARD}/csv-uploads/edit`,
+    csvUpload: {
+      root: `${ROOTS.DASHBOARD}/csv-upload`,
+      new: `${ROOTS.DASHBOARD}/csv-upload/new`,
+      edit: `${ROOTS.DASHBOARD}/csv-upload/edit`,
     },
   },
 };

@@ -24,10 +24,10 @@ export default function UploadNewCsvView() {
             href: paths.dashboard.root,
           },
           {
-            name: 'Attribute Uploads',
-            href: paths.dashboard.csvUploads.root,
+            name: 'Upload attributes',
+            href: paths.dashboard.csvUpload.root,
           },
-          { name: 'Upload CSV' },
+          { name: 'Add new' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

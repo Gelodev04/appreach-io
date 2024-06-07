@@ -1,5 +1,6 @@
 'use client';
 
+import { ObjectId } from 'mongodb';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
@@ -21,9 +22,10 @@ import {
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { useGetSeeds } from 'src/hooks/api/seed';
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { useGetSeeds } from 'src/app/api/seeds';
+import { endpoints } from 'src/utils/swr';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -80,38 +82,55 @@ export default function SeedView() {
   });
 
   const handleDeleteRow = useCallback(
-    (id: string) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
+    async (id: string) => {
+      try {
+        const res = await fetch(endpoints.seed.delete, {
+          method: 'POST',
+          body: JSON.stringify({ ids: [id] }),
+        });
 
-      enqueueSnackbar('Delete success!');
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error);
+        }
 
-      setTableData(deleteRow);
+        enqueueSnackbar('Item deleted', { variant: 'warning' });
+
+        const newTableData = tableData.filter((row) => row._id.toString() !== id);
+
+        setTableData(newTableData);
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+      }
     },
     [enqueueSnackbar, tableData]
   );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
+  const handleDeleteRows = useCallback(async () => {
+    try {
+      const res = await fetch(endpoints.seed.delete, {
+        method: 'POST',
+        body: JSON.stringify({ ids: selectedRowIds }),
+      });
 
-    enqueueSnackbar('Delete success!');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error);
+      }
 
-    setTableData(deleteRows);
+      enqueueSnackbar('Items deleted', { variant: 'warning' });
+
+      const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
+
+      setTableData(deleteRows);
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   }, [enqueueSnackbar, selectedRowIds, tableData]);
 
-  // const handleEditRow = useCallback(
-  //   (id: string) => {
-  //     // router.push(paths.dashboard.product.edit(id));
-  //   },
-  //   [router]
-  // );
-
-  const handleViewRow = useCallback(
-    (id: string) => {
-      // router.push(paths.dashboard.product.details(id));
-    },
-    // [router]
-    []
-  );
+  const handleDownloadCsv = useCallback((_id: ObjectId) => {
+    window.open(paths.flaskApp.seedCsv(_id), '_blank');
+  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -131,13 +150,13 @@ export default function SeedView() {
       renderCell: (params) => <RenderCellImportName params={params} />,
     },
     {
-      field: 'generateTotal',
+      field: 'generate.total',
       headerName: 'Generate total',
       width: 160,
       renderCell: (params) => <RenderCellGenerateTotal params={params} />,
     },
     {
-      field: 'resultsTotal',
+      field: 'results.total',
       headerName: 'Results total',
       width: 160,
       type: 'singleSelect',
@@ -147,7 +166,6 @@ export default function SeedView() {
       field: 'token',
       headerName: 'Token',
       width: 120,
-      editable: true,
       renderCell: (params) => <RenderCellToken params={params} />,
     },
     {
@@ -172,14 +190,14 @@ export default function SeedView() {
           showInMenu
           icon={<Iconify icon="solar:eye-bold" />}
           label="Download CSV"
-          onClick={() => handleViewRow(params.row.id)}
+          onClick={() => handleDownloadCsv(params.row._id)}
         />,
         <GridActionsCellItem
           showInMenu
           icon={<Iconify icon="solar:trash-bin-trash-bold" />}
           label="Delete"
           onClick={() => {
-            handleDeleteRow(params.row.id);
+            handleDeleteRow(params.row._id);
           }}
           sx={{ color: 'error.main' }}
         />,
@@ -218,7 +236,7 @@ export default function SeedView() {
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Generate seed emails
+                Generate seed list
               </Button>
             </Stack>
           }
@@ -245,6 +263,7 @@ export default function SeedView() {
             columns={columns}
             loading={seedsLoading}
             getRowHeight={() => 'auto'}
+            getRowId={(row) => row._id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {

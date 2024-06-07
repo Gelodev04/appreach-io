@@ -1,5 +1,4 @@
 import { getUser } from 'src/auth/lib/mongodb/get-user';
-import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
@@ -20,7 +19,6 @@ export async function POST(request: Request) {
 
     const client = await clientPromise;
     const db = client.db();
-    const session = await auth();
 
     const user = await getUser()
 
@@ -51,7 +49,7 @@ export async function POST(request: Request) {
     await db
       .collection('userSettings')
       .updateOne(
-        { 'appLogin.username': session?.user.email },
+        { 'appLogin.username': 'michael@outreachmagic.io' },
         { $set: { hosts: user.hosts } }
       );
 

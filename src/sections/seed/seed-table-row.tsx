@@ -1,18 +1,9 @@
-import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import { GridCellParams } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
-import LinearProgress from '@mui/material/LinearProgress';
 
-import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
-
-import { fTime, fDate } from 'src/utils/format-time';
+import { fDate } from 'src/utils/format-time';
 
 import Label from 'src/components/label';
-import Iconify from 'src/components/iconify/iconify';
-import { useSnackbar } from 'src/components/snackbar';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +14,7 @@ type ParamsProps = {
 export function RenderCellDateAdded({ params }: ParamsProps) {
   return (
     <Typography variant="body2" sx={{ my: 2 }}>
-      {params.row.dateAdded}
+      {fDate(params.row.dateAdded)}
     </Typography>
   );
 }
@@ -33,11 +24,11 @@ export function RenderCellImportName({ params }: ParamsProps) {
 }
 
 export function RenderCellGenerateTotal({ params }: ParamsProps) {
-  return <Typography variant="body2">{params.row.generateTotal}</Typography>;
+  return <Typography variant="body2">{params.row.generate.total}</Typography>;
 }
 
 export function RenderCellResultsTotal({ params }: ParamsProps) {
-  return <Typography variant="body2">{params.row.resultsTotal}</Typography>;
+  return <Typography variant="body2">{params.row.results.total}</Typography>;
 }
 
 export function RenderCellToken({ params }: ParamsProps) {
@@ -45,42 +36,27 @@ export function RenderCellToken({ params }: ParamsProps) {
 }
 
 export function RenderCellPublish({ params }: ParamsProps) {
+  const {status} = params.row;
+
+  if (status === 'success') {
+    return (
+      <Label variant="soft" color="success">
+        Success
+      </Label>
+    );
+  }
+
+  if (status === 'expired') {
+    return (
+      <Label variant="soft" color="warning">
+        Expired
+      </Label>
+    );
+  }
+
   return (
-    <Label variant="soft" color={(params.row.status === 'success' && 'success') || 'error'}>
-      {params.row.status}
+    <Label variant="soft" color="error">
+      Error
     </Label>
-  );
-}
-
-export function RenderCellCreatedAt({ params }: ParamsProps) {
-  return (
-    <ListItemText
-      primary={fDate(params.row.createdAt)}
-      secondary={fTime(params.row.createdAt)}
-      primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-      secondaryTypographyProps={{
-        mt: 0.5,
-        component: 'span',
-        typography: 'caption',
-      }}
-    />
-  );
-}
-
-export function RenderCellStock({ params }: ParamsProps) {
-  return (
-    <Stack sx={{ typography: 'caption', color: 'text.secondary' }}>
-      <LinearProgress
-        value={(params.row.available * 100) / params.row.quantity}
-        variant="determinate"
-        color={
-          (params.row.inventoryType === 'out of stock' && 'error') ||
-          (params.row.inventoryType === 'low stock' && 'warning') ||
-          'success'
-        }
-        sx={{ mb: 1, height: 6, maxWidth: 80 }}
-      />
-      {!!params.row.available && params.row.available} {params.row.inventoryType}
-    </Stack>
   );
 }

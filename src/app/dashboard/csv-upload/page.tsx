@@ -1,4 +1,4 @@
-import { CsvUploadsView } from 'src/sections/csv-uploads/view';
+import { CsvUploadView } from 'src/sections/csv-upload/view';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <CsvUploadsView />;
+  return <CsvUploadView />;
 }

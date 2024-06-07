@@ -21,8 +21,7 @@ import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { useGetCsvUploads } from 'src/app/api/csv-uploads';
+import { useGetCsvUploads } from 'src/hooks/api/csv-upload';
 
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -31,16 +30,11 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import { ICsvUpload } from 'src/types/csv-uploads';
+import { ICsvUpload } from 'src/types/csv-upload';
 
 import RenderCsvUploadCell from '../csv-upload-cell';
 
 // ----------------------------------------------------------------------
-
-const PUBLISH_OPTIONS = [
-  { value: 'published', label: 'Published' },
-  { value: 'draft', label: 'Draft' },
-];
 
 const HIDE_COLUMNS = {
   category: false,
@@ -50,14 +44,14 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 // ----------------------------------------------------------------------
 
-export default function CsvUploadsView() {
+export default function CsvUploadView() {
   const { enqueueSnackbar } = useSnackbar();
 
   const confirmRows = useBoolean();
 
   const settings = useSettingsContext();
 
-  const { csvUploads, csvUploadsLoading } = useGetCsvUploads();
+  const { csvUpload, csvUploadLoading } = useGetCsvUploads();
 
   const [tableData, setTableData] = useState<ICsvUpload[]>([]);
 
@@ -67,10 +61,10 @@ export default function CsvUploadsView() {
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
   useEffect(() => {
-    if (csvUploads.length) {
-      setTableData(csvUploads);
+    if (csvUpload.length) {
+      setTableData(csvUpload);
     }
-  }, [csvUploads]);
+  }, [csvUpload]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
@@ -88,7 +82,7 @@ export default function CsvUploadsView() {
   // );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
+    const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
 
     enqueueSnackbar('Delete success!');
 
@@ -185,7 +179,6 @@ export default function CsvUploadsView() {
       width: 80,
       type: 'singleSelect',
       editable: true,
-      valueOptions: PUBLISH_OPTIONS,
       renderCell: (params) => <RenderCsvUploadCell params={params} type="status" />,
     },
   ];
@@ -217,7 +210,7 @@ export default function CsvUploadsView() {
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
-                href={paths.dashboard.csvUploads.new}
+                href={paths.dashboard.csvUpload.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
@@ -246,8 +239,9 @@ export default function CsvUploadsView() {
             disableRowSelectionOnClick
             rows={dataFiltered}
             columns={columns}
-            loading={csvUploadsLoading}
+            loading={csvUploadLoading}
             getRowHeight={() => 'auto'}
+            getRowId={(row) => row._id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {

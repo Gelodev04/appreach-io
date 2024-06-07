@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { paths } from 'src/routes/paths';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -15,14 +14,16 @@ import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
+import { endpoints } from 'src/utils/swr';
+
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 
-import { endpoints } from 'src/utils/swr';
 import { IHost } from 'src/types/host';
 
 // ----------------------------------------------------------------------

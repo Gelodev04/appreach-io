@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
 export async function GET() {
@@ -7,20 +8,10 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db();
 
-    const userSettings = await db
-      .collection('userSettings')
-      .findOne({ 'appLogin.username': 'michael@outreachmagic.io' });
-
-    if (!userSettings) {
-      throw { message: 'No user found with the provided username.', statusCode: 404 };
-    }
+    const userSettings = await getUser();
 
     if (!userSettings.hosts || userSettings.hosts.length === 0) {
-      throw {
-        message:
-          'No hosts found for the user. Please ensure the user has the necessary hosts configured.',
-        statusCode: 404,
-      };
+      return Response.json({ error: 'No hosts found for the user. Please ensure the user has the necessary hosts configured.' }, { status: 400 });
     }
 
     let hosts = await Promise.all(

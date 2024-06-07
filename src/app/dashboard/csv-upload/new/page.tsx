@@ -1,4 +1,4 @@
-import UploadNewCsvView from 'src/sections/csv-uploads/view/upload-new-csv-view';
+import { UploadNewCsvView } from 'src/sections/csv-upload/view';
 
 // ----------------------------------------------------------------------
 
