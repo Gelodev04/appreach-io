@@ -1,6 +1,5 @@
 'use client';
 
-import { ObjectId } from 'mongodb';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
@@ -128,8 +127,13 @@ export default function SeedView() {
     }
   }, [enqueueSnackbar, selectedRowIds, tableData]);
 
-  const handleDownloadCsv = useCallback((_id: ObjectId) => {
-    window.open(paths.flaskApp.seedCsv(_id), '_blank');
+  const handleDownloadCsv = useCallback((csvUrl?: string) => {
+    if (!csvUrl) {
+      enqueueSnackbar('No CSV file found', { variant: 'error' });
+      return;
+    }
+
+    window.open(csvUrl, '_blank');
   }, []);
 
   const columns: GridColDef[] = [
@@ -190,7 +194,7 @@ export default function SeedView() {
           showInMenu
           icon={<Iconify icon="solar:eye-bold" />}
           label="Download CSV"
-          onClick={() => handleDownloadCsv(params.row._id)}
+          onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
         />,
         <GridActionsCellItem
           showInMenu

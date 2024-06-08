@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -21,10 +21,10 @@ import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { useSnackbar } from 'src/components/snackbar';
+import UploadDocument from 'src/components/upload/upload-document';
 import FormProvider, {
   RHFSelect,
   RHFSwitch,
-  RHFUpload,
   RHFTextField,
   RHFAutocomplete,
 } from 'src/components/hook-form';
@@ -38,6 +38,7 @@ type Props = {
 };
 
 export default function CsvUploadsNewEditForm({ currentItem }: Props) {
+  const [file, setFile] = useState<File | null>(null);
   const router = useRouter();
 
   const theme = useTheme();
@@ -85,6 +86,10 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
       reset(defaultValues);
     }
   }, [currentItem, defaultValues, reset]);
+
+  const handleDrop = useCallback((acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
+  }, []);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -147,8 +152,12 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
               name="engagementAccount"
               label="Replace attributes on records with existing import name"
             />
-
-            <RHFUpload name="csvFile" accept={{ 'text/csv': [] }} />
+            <UploadDocument
+              file={file}
+              onDrop={handleDrop}
+              onDelete={() => setFile(null)}
+              accept={{ 'text/csv': [] }}
+            />
           </Stack>
         </Card>
       </Grid>

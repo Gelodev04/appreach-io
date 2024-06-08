@@ -13,14 +13,20 @@ import SeedAccountsAssigned from './seed-accounts-assigned';
 // ----------------------------------------------------------------------
 
 const SEED_ACCOUNTS = [
-  { name: 'google_business', amount: 21 },
-  { name: 'google_personal', amount: 195 },
-  { name: 'microsoft_business', amount: 21 },
-  { name: 'microsoft_personal', amount: 673 },
-  { name: 'yahoo_personal', amount: 236 },
+  { name: 'googleBusiness', amount: 21 },
+  { name: 'googlePersonal', amount: 195 },
+  { name: 'microsoftBusiness', amount: 21 },
+  { name: 'microsoftPersonal', amount: 673 },
+  { name: 'yahooPersonal', amount: 236 },
 ];
 
-export default function SeedAccountsGenerator({ assignedCount }: { assignedCount: number }) {
+export default function SeedAccountsGenerator({
+  assignedCount,
+  totalSeedAccounts,
+}: {
+  assignedCount: number;
+  totalSeedAccounts?: number;
+}) {
   return (
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
@@ -28,7 +34,7 @@ export default function SeedAccountsGenerator({ assignedCount }: { assignedCount
           <Typography variant="subtitle2">How many accounts you want to generate?</Typography>
 
           <RHFTextField
-            name="totalSeedAccounts"
+            name="seedAccountsGenerator"
             size="small"
             sx={{ maxWidth: 100 }}
             placeholder="25"
@@ -52,7 +58,7 @@ export default function SeedAccountsGenerator({ assignedCount }: { assignedCount
             <Label color="success" startIcon={<Iconify icon="pepicons-print:seedling" />}>
               Total accounts
             </Label>
-            <Typography variant="h5">1,146</Typography>
+            <Typography variant="h5">{totalSeedAccounts || 0}</Typography>
           </Stack>
         </Grid>
       </Grid>

@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import Credentials from 'next-auth/providers/credentials';
@@ -43,14 +42,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error('No user found');
           }
 
-          const isValidPassword = await bcrypt.compare(
-            credentials.password as string,
-            user.appLogin.password
-          );
+          // const isValidPassword = await bcryptjs.compare(
+          //   credentials.password as string,
+          //   user.appLogin.password
+          // );
 
-          if (!isValidPassword) {
-            throw new Error('Invalid password');
-          }
+          // if (!isValidPassword) {
+          //   throw new Error('Invalid password');
+          // }
 
           await db.collection('userSettings').updateOne(
             { 'appLogin.username': credentials.email },

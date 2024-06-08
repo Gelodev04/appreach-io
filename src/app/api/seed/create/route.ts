@@ -1,59 +1,46 @@
-import { getUser } from 'src/auth/lib/mongodb/get-user';
+import { ObjectId } from 'mongodb';
+
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
-import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
 
     const {
-      host,
-      externalSenderAddresses,
-      inboxEngagement,
-      notificationAddresses,
-      slack,
-      smartLead,
-      timezone,
+      name,
+      hostId,
+      googleBusiness,
+      googlePersonal,
+      microsoftBusiness,
+      microsoftPersonal,
+      yahooPersonal,
+      totalSeedAccounts
     } = data;
 
     const client = await clientPromise;
     const db = client.db();
 
-    const user = await getUser()
-
-    const hostCrypt = generateHostCrypt(host);
-    const lookerStudioUrl = generateLookerStudioUrl(hostCrypt);
-    const externalSenderAddressesArray = externalSenderAddresses.split('\n');
-    const notificationAddressesArray = notificationAddresses.split('\n');
-
-    // Create a new host and get the _id of the new document
-    const result = await db.collection('hosts').insertOne({
-      host,
-      hostCrypt,
-      userSettings: {
-        timezone,
-        externalSenderAddresses: externalSenderAddressesArray,
-        notificationAddressArray: notificationAddressesArray,
+    await db.collection('seedBatches').insertOne({
+      name,
+      dateAdded: new Date(),
+      generate: {
+        total: totalSeedAccounts,
+        esps: {
+          googleBusiness,
+          googlePersonal,
+          microsoftBusiness,
+          microsoftPersonal,
+          yahooPersonal
+        }
       },
-      lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
-      slack,
-      smartlead: smartLead,
-      inboxEngagement,
-    });
+      hostId: new ObjectId(hostId.value),
+      status: 'pending',
+      token: generateRandomChars()
+    })
 
-    const newHostId = result.insertedId;
-
-    // Add the new _id to the hosts array in the userSettings document
-    user.hosts.push(newHostId);
-    await db
-      .collection('userSettings')
-      .updateOne(
-        { 'appLogin.username': 'michael@outreachmagic.io' },
-        { $set: { hosts: user.hosts } }
-      );
-
-    return Response.json({ message: 'Host created and added to user settings successfully' });
+    return Response.json({ message: 'Seed batch created successfully' });
   } catch (error) {
     console.error('Error:', error);
     return Response.json({ error: error.message }, { status: error.statusCode || 500 });

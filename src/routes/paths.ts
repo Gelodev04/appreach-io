@@ -14,7 +14,6 @@ const ROOTS = {
 export const paths = {
   flaskApp: {
     root: ROOTS.FLASK_APP,
-    seedCsv: (id: ObjectId) => `${ROOTS.FLASK_APP}/seeds/${id.toString()}`,
   },
   website: {
     root: ROOTS.MAIN_WEBSITE,

@@ -26,3 +26,17 @@ export interface UploadProps extends DropzoneOptions {
   onRemove?: (file: CustomFile | string) => void;
   onRemoveAll?: VoidFunction;
 }
+
+// ---------------------------------------
+
+export interface UploadDocumentProps extends DropzoneOptions {
+  error?: boolean;
+  sx?: SxProps<Theme>;
+  thumbnail?: boolean;
+  placeholder?: React.ReactNode;
+  helperText?: React.ReactNode;
+  disableMultiple?: boolean;
+  //
+  file: (File | string) | null;
+  onDelete?: (file: File | string) => void;
+}

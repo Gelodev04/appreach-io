@@ -24,19 +24,19 @@ export function RenderCellImportName({ params }: ParamsProps) {
 }
 
 export function RenderCellGenerateTotal({ params }: ParamsProps) {
-  return <Typography variant="body2">{params.row.generate.total}</Typography>;
+  return <Typography variant="body2">{params.row.generate?.total}</Typography>;
 }
 
 export function RenderCellResultsTotal({ params }: ParamsProps) {
-  return <Typography variant="body2">{params.row.results.total}</Typography>;
+  return <Typography variant="body2">{params.row.results?.total}</Typography>;
 }
 
 export function RenderCellToken({ params }: ParamsProps) {
-  return <Typography variant="body2">{params.row.token}</Typography>;
+  return <Typography variant="body2">{params.row?.token}</Typography>;
 }
 
 export function RenderCellPublish({ params }: ParamsProps) {
-  const {status} = params.row;
+  const { status } = params.row;
 
   if (status === 'success') {
     return (
@@ -50,6 +50,14 @@ export function RenderCellPublish({ params }: ParamsProps) {
     return (
       <Label variant="soft" color="warning">
         Expired
+      </Label>
+    );
+  }
+
+  if (status === 'pending') {
+    return (
+      <Label variant="soft" color="info">
+        Pending
       </Label>
     );
   }

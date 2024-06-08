@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import { useEffect, useCallback } from 'react';
 
 import { paths } from 'src/routes/paths';
@@ -28,7 +29,8 @@ function Container({ children }: Props) {
 
   const returnTo = searchParams.get('returnTo') || paths.dashboard.root;
 
-  const { authenticated } = useAuthContext();
+  const { status } = useSession();
+  const authenticated = status === 'authenticated' || status === 'loading';
 
   const check = useCallback(() => {
     if (authenticated) {

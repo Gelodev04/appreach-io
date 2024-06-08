@@ -33,6 +33,13 @@ type Props = {
   currentItem?: ISeedForm;
 };
 
+type SeedAccountType =
+  | 'googleBusiness'
+  | 'googlePersonal'
+  | 'microsoftBusiness'
+  | 'microsoftPersonal'
+  | 'yahooPersonal';
+
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
 
@@ -46,35 +53,33 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    hostId: Yup.string().required('Host is required'),
-    generate: Yup.object().shape({
-      esps: Yup.object().shape({
-        googleBusiness: Yup.number(),
-        googlePersonal: Yup.number(),
-        microsoftBusiness: Yup.number(),
-        microsoftPersonal: Yup.number(),
-        yahooPersonal: Yup.number(),
-      }),
-      type: Yup.string(),
-      total: Yup.number().required('Total is required'),
+    hostId: Yup.object().shape({
+      label: Yup.string(),
+      value: Yup.string(),
     }),
+    googleBusiness: Yup.number(),
+    googlePersonal: Yup.number(),
+    microsoftBusiness: Yup.number(),
+    microsoftPersonal: Yup.number(),
+    yahooPersonal: Yup.number(),
+    totalSeedAccounts: Yup.number(),
+    seedAccountsGenerator: Yup.number(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentItem?.name || '',
-      hostId: currentItem?.hostId || '',
-      generate: currentItem?.generate || {
-        esps: {
-          googleBusiness: 0,
-          googlePersonal: 0,
-          microsoftBusiness: 0,
-          microsoftPersonal: 0,
-          yahooPersonal: 0,
-        },
-        total: 0,
-        type: '',
+      name: '',
+      hostId: {
+        label: '',
+        value: '',
       },
+      googleBusiness: currentItem?.generate.esps.googleBusiness || 0,
+      googlePersonal: currentItem?.generate.esps.googlePersonal || 0,
+      microsoftBusiness: currentItem?.generate.esps.microsoftBusiness || 0,
+      microsoftPersonal: currentItem?.generate.esps.microsoftPersonal || 0,
+      yahooPersonal: currentItem?.generate.esps.yahooPersonal || 0,
+      totalSeedAccounts: currentItem?.generate.total || 0,
+      seedAccountsGenerator: 0,
     }),
     [currentItem]
   );
@@ -88,7 +93,17 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = methods;
+
+  const totalSeedAccounts = watch('totalSeedAccounts');
+  const seedAccountsGenerator = watch('seedAccountsGenerator');
+  const googleBusiness = watch('googleBusiness');
+  const googlePersonal = watch('googlePersonal');
+  const microsoftBusiness = watch('microsoftBusiness');
+  const microsoftPersonal = watch('microsoftPersonal');
+  const yahooPersonal = watch('yahooPersonal');
 
   useEffect(() => {
     if (currentItem) {
@@ -98,17 +113,60 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.host.root);
-      console.info('DATA', data);
+      const res = await fetch('/api/seed/create', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to create seed batch');
+      }
+      enqueueSnackbar('Create success!');
+      router.push(paths.dashboard.seed.root);
     } catch (error) {
       console.error(error);
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
+
+  useEffect(() => {
+    const distributeAccounts = (total: number) => {
+      const types: SeedAccountType[] = [
+        'googleBusiness',
+        'googlePersonal',
+        'microsoftBusiness',
+        'microsoftPersonal',
+        'yahooPersonal',
+      ];
+      const count = Math.floor(total / types.length);
+      const remainder = total % types.length;
+
+      types.forEach((type, index) => {
+        setValue(type, count + (index < remainder ? 1 : 0));
+      });
+    };
+
+    distributeAccounts(seedAccountsGenerator as number);
+  }, [seedAccountsGenerator, setValue]);
+
+  useEffect(() => {
+    const total =
+      (googleBusiness ?? 0) +
+      (googlePersonal ?? 0) +
+      (microsoftBusiness ?? 0) +
+      (microsoftPersonal ?? 0) +
+      (yahooPersonal ?? 0);
+    setValue('totalSeedAccounts', total);
+  }, [
+    googleBusiness,
+    googlePersonal,
+    microsoftBusiness,
+    microsoftPersonal,
+    yahooPersonal,
+    setValue,
+  ]);
 
   const renderProperties = (
     <>
@@ -134,7 +192,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
               />
 
               <RHFAutocomplete
-                name="host"
+                name="hostId"
                 label="Choose a host"
                 placeholder="outreachmagic"
                 options={hostOptions}
@@ -143,7 +201,10 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
             <Divider />
 
-            <SeedAccountsGenerator assignedCount={assignedCount} />
+            <SeedAccountsGenerator
+              assignedCount={assignedCount}
+              totalSeedAccounts={totalSeedAccounts}
+            />
           </Stack>
         </Card>
       </Grid>

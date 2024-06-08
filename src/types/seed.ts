@@ -3,8 +3,17 @@ import { ObjectId } from 'mongodb';
 export interface ISeedForm {
   dateAdded: Date;
   generate: ISeedGenerate;
-  hostId: string;
+  hostId: { 
+    label: string;
+    value: string;
+   }
   name: string;
+  googleBusiness: number;
+  googlePersonal: number;
+  microsoftBusiness: number;
+  microsoftPersonal: number;
+  yahooPersonal: number;
+  totalSeedAccounts: number;
 }
 
 export interface ISeed {
