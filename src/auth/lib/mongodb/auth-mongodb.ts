@@ -41,16 +41,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (!user) {
             throw new Error('No user found');
           }
-
-          // const isValidPassword = await bcryptjs.compare(
-          //   credentials.password as string,
-          //   user.appLogin.password
-          // );
-
-          // if (!isValidPassword) {
-          //   throw new Error('Invalid password');
-          // }
-
           await db.collection('userSettings').updateOne(
             { 'appLogin.username': credentials.email },
             {
