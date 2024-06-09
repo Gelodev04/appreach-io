@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import axios from 'axios';
 
 import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
@@ -33,12 +34,15 @@ export async function POST(request: Request) {
           microsoftBusiness,
           microsoftPersonal,
           yahooPersonal
-        }
+        },
+        type: 'engagement'
       },
       hostId: new ObjectId(hostId.value),
-      status: 'pending',
+      status: 'ready',
       token: generateRandomChars()
     })
+
+    await axios.post(process.env.SEED_EMAIL_GENERATOR as string)
 
     return Response.json({ message: 'Seed batch created successfully' });
   } catch (error) {

@@ -38,10 +38,10 @@ export function RenderCellToken({ params }: ParamsProps) {
 export function RenderCellPublish({ params }: ParamsProps) {
   const { status } = params.row;
 
-  if (status === 'success') {
+  if (status === 'ready') {
     return (
-      <Label variant="soft" color="success">
-        Success
+      <Label variant="soft" color="info">
+        Ready
       </Label>
     );
   }
@@ -54,10 +54,10 @@ export function RenderCellPublish({ params }: ParamsProps) {
     );
   }
 
-  if (status === 'pending') {
+  if (status === 'success') {
     return (
-      <Label variant="soft" color="info">
-        Pending
+      <Label variant="soft" color="success">
+        Success
       </Label>
     );
   }
