@@ -127,14 +127,17 @@ export default function SeedView() {
     }
   }, [enqueueSnackbar, selectedRowIds, tableData]);
 
-  const handleDownloadCsv = useCallback((csvUrl?: string) => {
-    if (!csvUrl) {
-      enqueueSnackbar('No CSV file found', { variant: 'error' });
-      return;
-    }
+  const handleDownloadCsv = useCallback(
+    (csvUrl?: string) => {
+      if (!csvUrl) {
+        enqueueSnackbar('No CSV file found', { variant: 'error' });
+        return;
+      }
 
-    window.open(csvUrl, '_blank');
-  }, []);
+      window.open(csvUrl, '_blank');
+    },
+    [enqueueSnackbar]
+  );
 
   const columns: GridColDef[] = [
     {

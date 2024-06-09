@@ -6,8 +6,6 @@ import { useRouter } from 'src/routes/hooks';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
-import { useAuthContext } from '../hooks';
-
 // ----------------------------------------------------------------------
 
 const loginPaths: Record<string, string> = {
@@ -21,9 +19,9 @@ type Props = {
 };
 
 export default function AuthGuard({ children }: Props) {
-  const { loading } = useAuthContext();
+  const { status } = useSession();
 
-  return <>{loading ? <SplashScreen /> : <Container>{children}</Container>}</>;
+  return <>{status === 'loading' ? <SplashScreen /> : <Container>{children}</Container>}</>;
 }
 
 // ----------------------------------------------------------------------

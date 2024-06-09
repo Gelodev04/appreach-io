@@ -1,5 +1,5 @@
+import useSWR from 'swr';
 import { useMemo } from 'react';
-import useSWR, { mutate } from 'swr';
 
 import { fetcher, endpoints } from 'src/utils/swr';
 
@@ -13,10 +13,6 @@ export function useGetSeeds() {
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
-  const revalidateData = async () => {
-    await mutate(URL);
-  };
-
   const memoizedValue = useMemo(
     () => ({
       seeds: (data?.seeds as ISeed[]) || [],
@@ -24,7 +20,6 @@ export function useGetSeeds() {
       seedsError: error,
       seedsValidating: isValidating,
       seedsEmpty: !isLoading && !data?.seeds.length,
-      revalidateData,
     }),
     [data?.seeds, error, isLoading, isValidating]
   );
@@ -35,11 +30,7 @@ export function useGetSeeds() {
 export function useGetSeedSettings() {
   const URL = endpoints.seed.settings;
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
-  const revalidateData = async () => {
-    await mutate(URL);
-  };
+  const { data, error, isValidating } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -47,9 +38,8 @@ export function useGetSeedSettings() {
       assignedCount: (data?.assignedCount as number) || 0,
       error,
       validating: isValidating,
-      revalidateData,
     }),
-    [data?.seeds, error, isLoading, isValidating]
+    [data?.assignedCount, data?.hosts, error, isValidating]
   );
 
   return memoizedValue;

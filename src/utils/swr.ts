@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 
-export const revalidateData = async ({ url }: { url: string }) => {
+export const revalidateData = async (url:string) => {
   await mutate(url);
 };
 

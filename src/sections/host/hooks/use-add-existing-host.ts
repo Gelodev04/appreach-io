@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
 
-import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { endpoints } from 'src/utils/swr';
+import { endpoints, revalidateData } from 'src/utils/swr';
 
 import { useSnackbar } from 'src/components/snackbar';
 
@@ -11,7 +10,6 @@ import { useSnackbar } from 'src/components/snackbar';
 
 export const useAddExistingHost = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { revalidateHosts } = useGetHosts();
 
   const [hostName, setHostName] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +27,7 @@ export const useAddExistingHost = () => {
       if (!res.ok) {
         throw new Error((await res.json()).error);
       }
-      await revalidateHosts();
+      await revalidateData(endpoints.host.list);
       enqueueSnackbar('Host added successfully', { variant: 'success' });
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -38,7 +36,7 @@ export const useAddExistingHost = () => {
       setHostName('');
       setSubmitting(false);
     }
-  }, [hostName, revalidateHosts, enqueueSnackbar, open]);
+  }, [hostName, enqueueSnackbar, open]);
 
   return { addExistingHost, submitting, hostName, setHostName, open };
 };

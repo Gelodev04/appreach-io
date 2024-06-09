@@ -1,5 +1,5 @@
+import useSWR from 'swr';
 import { useMemo } from 'react';
-import useSWR, { mutate } from 'swr';
 
 import { fetcher, endpoints } from 'src/utils/swr';
 
@@ -12,10 +12,6 @@ export function useGetCsvUploads() {
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
-  const revalidateData = async () => {
-    await mutate(URL);
-  };
-
   const memoizedValue = useMemo(
     () => ({
       csvUpload: (data?.csvUpload as ICsvUpload[]) || [],
@@ -23,7 +19,6 @@ export function useGetCsvUploads() {
       csvUploadError: error,
       csvUploadValidating: isValidating,
       csvUploadEmpty: !isLoading && !data?.csvUpload.length,
-      revalidateData,
     }),
     [data?.csvUpload, error, isLoading, isValidating]
   );

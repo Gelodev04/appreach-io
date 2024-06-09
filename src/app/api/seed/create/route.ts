@@ -1,7 +1,7 @@
+import axios from 'axios';
 import { ObjectId } from 'mongodb';
 
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import axios from 'axios';
 
 import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
