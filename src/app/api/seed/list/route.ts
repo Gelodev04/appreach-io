@@ -6,7 +6,7 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
     const userSettings = await getUser()
 

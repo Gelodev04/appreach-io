@@ -8,7 +8,8 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 async function getUser(email: string) {
   try {
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+
     const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
     if (!user) {
       throw new Error('No user found');

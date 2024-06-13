@@ -19,6 +19,7 @@ export const FIREBASE_API = {
 };
 
 export const {MONGODB_URI} = process.env;
+export const {MONGODB_DATABSE} = process.env;
 
 export const AMPLIFY_API = {
   userPoolId: process.env.NEXT_PUBLIC_AWS_AMPLIFY_USER_POOL_ID,

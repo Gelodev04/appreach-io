@@ -10,7 +10,7 @@ export async function getUser() {
   }
 
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
   const userSettings = await db.collection('userSettings').findOne({ 'appLogin.username': username });
 

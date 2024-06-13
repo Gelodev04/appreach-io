@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import Credentials from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
 
 import clientPromise from './db-mongo';
 
@@ -28,8 +29,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         try {
           const client = await clientPromise;
-          const db = client.db();
 
+          const db = client.db(process.env.MONGODB_DATABASE || undefined);
           const user = await db
             .collection('userSettings')
             .findOne({ 'appLogin.username': credentials.email });
@@ -42,7 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error('No user found');
           }
 
-          // const isValidPassword = await bcryptjs.compare(
+          // const isValidPassword = await bcrypt.compare(
           //   credentials.password as string,
           //   user.appLogin.password
           // );
