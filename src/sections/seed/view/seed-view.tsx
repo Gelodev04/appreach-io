@@ -351,5 +351,13 @@ export default function SeedView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData }: { inputData: ISeed[] }) {
-  return inputData;
+  // Sort the inputData based on the dateAdded field in descending order
+  const sortedData = inputData.slice().sort((a, b) => {
+    const dateA = new Date(a.dateAdded).getTime();
+    const dateB = new Date(b.dateAdded).getTime();
+    return dateB - dateA; // Sort in descending order
+  });
+
+  return sortedData;
 }
+
