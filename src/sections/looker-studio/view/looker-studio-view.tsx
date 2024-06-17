@@ -1,14 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 
+import { useGetHosts } from 'src/hooks/api/host';
 import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
 
 import Error from 'src/components/error/error';
-
 import { LookerStudioSkeleton } from '../looker-studio-skeleton';
-import { useGetHosts } from 'src/hooks/api/host';
-import { useEffect, useState } from 'react';
 
 export default function LookerStudioView() {
   const { url, urlLoading, urlError } = useGetLookerStudioUrl();
