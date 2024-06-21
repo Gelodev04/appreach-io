@@ -19,6 +19,7 @@ import { useAuthContext } from 'src/auth/hooks';
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useState } from 'react';
+import { useSnackbar } from 'src/components/snackbar';
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +27,7 @@ export default function ForgotPasswordView() {
   const { forgotPassword } = useAuthContext();
 const [resp,setResp]=useState<any>("");
   const router = useRouter();
-
+  const { enqueueSnackbar } = useSnackbar();
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
   });
@@ -73,18 +74,22 @@ const [resp,setResp]=useState<any>("");
         body,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reset password');
-      }
+    
 
       const responseData = await response.json();
+      
+      if (!response.ok) {
+    
+        throw new Error(responseData?.errors?.email || 'Failed to reset password');
+      }
       setResp(responseData)
       console.log('Reset password response:', responseData);
-
       // Redirect or handle success as needed
       const href = `${paths.auth.forgotPassword}`;
       router.push(href);
     } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+
       console.error('Error resetting password:', error);
       // Handle error, show error message, etc.
     }
