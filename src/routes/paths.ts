@@ -7,6 +7,7 @@ const ROOTS = {
   DASHBOARD: '/dashboard',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
+
 };
 
 // ----------------------------------------------------------------------
@@ -26,6 +27,8 @@ export const paths = {
     register: `${ROOTS.AUTH}/register`,
     forgotPassword: `${ROOTS.AUTH}/forgot-password`,
   },
+  resetPassword: (id: ObjectId,token:string) => `/reset-password/id=${id.toString()}/${token}`,
+
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
@@ -52,3 +55,4 @@ export const paths = {
     },
   },
 };
+

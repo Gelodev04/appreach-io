@@ -47,16 +47,37 @@ export default function LoginView() {
     formState: { isSubmitting },
   } = methods;
 
+  // const onSubmit = handleSubmit(async (data) => {
+  //   try {
+  //     await signIn('credentials', {
+  //       email: data.email,
+  //       password: data.password,
+  //     });
+  //   } catch (error) {
+  //     enqueueSnackbar(error.message, { variant: 'error' });
+  //   }
+  // });
   const onSubmit = handleSubmit(async (data) => {
+    console.log('Email:', data.email);
+    console.log('Password:', data.password);
+
     try {
-      await signIn('credentials', {
+      const result = await signIn('credentials', {
+        redirect: false,
         email: data.email,
         password: data.password,
       });
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      enqueueSnackbar('Login successful', { variant: 'success' });
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
+
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
