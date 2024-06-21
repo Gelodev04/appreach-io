@@ -21,9 +21,11 @@ export default function ResetPasswordView() {
   const { forgotPassword } = useAuthContext();
   const router = useRouter();
 
+
   const [id, setId] = useState<any>("");
   const [token, setToken] = useState<any>("");
   const { enqueueSnackbar } = useSnackbar();
+  const URL=process.env.NEXT_PUBLIC_API_URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const Id = urlParams.get('id');
@@ -35,9 +37,9 @@ export default function ResetPasswordView() {
   const ResetPasswordSchema = Yup.object().shape({
     password: Yup.string()
       .required('Password is required')
-      .min(12, 'Password must be at least 12 characters long')
+      .min(6, 'Password must be at least 6 characters')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
     confirmPassword: Yup.string()
@@ -45,6 +47,7 @@ export default function ResetPasswordView() {
       .nullable()
       .required('Confirm Password is required'),
   });
+  
 
   const defaultValues = {
     password: '',
@@ -66,8 +69,7 @@ export default function ResetPasswordView() {
       if (!id || !token) {
         throw new Error('Invalid or missing URL parameters');
       }
-
-      const url = `https://be0f-2a02-c206-2181-7947-00-1.ngrok-free.app/reset-password/?id=${id}&token=${token}`; // Replace with your API endpoint
+      const url = `${URL}/reset-password/?id=${id}&token=${token}`; // Replace with your API endpoint
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
       };
