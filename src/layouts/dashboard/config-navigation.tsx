@@ -18,8 +18,8 @@ export function useNavData() {
             icon: <Iconify icon="codicon:graph" />,
           },
           {
-            title: 'Hosts',
-            path: paths.dashboard.host.root,
+            title: 'Settings',
+            path: paths.dashboard.settings.root,
             icon: <Iconify icon="bx:server" />,
           },
           {
@@ -32,10 +32,15 @@ export function useNavData() {
           //   path: paths.dashboard.emails.root,
           //   icon: <Iconify icon="entypo:email" />,
           // },
+          // {
+          //   title: 'Upload attributes',
+          //   path: paths.dashboard.csvUpload.root,
+          //   icon: <Iconify icon="mage:file-upload-fill" />,
+          // },
           {
-            title: 'Upload attributes',
-            path: paths.dashboard.csvUpload.root,
-            icon: <Iconify icon="mage:file-upload-fill" />,
+            title: 'Logout',
+            path: paths.dashboard.logout.root,
+            icon: <Iconify icon="hugeicons:logout-04" />,
           },
         ],
       },

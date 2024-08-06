@@ -32,10 +32,10 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    host: {
-      root: `${ROOTS.DASHBOARD}/host`,
-      new: `${ROOTS.DASHBOARD}/host/new`,
-      edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/host/edit/?id=${id.toString()}`,
+    settings: {
+      root: `${ROOTS.DASHBOARD}/settings`,
+      new: `${ROOTS.DASHBOARD}/settings/new`,
+      edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/settings/edit/?id=${id.toString()}`,
     },
     seed: {
       root: `${ROOTS.DASHBOARD}/seed`,
@@ -52,6 +52,9 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/csv-upload`,
       new: `${ROOTS.DASHBOARD}/csv-upload/new`,
       edit: `${ROOTS.DASHBOARD}/csv-upload/edit`,
+    },
+    logout: {
+      root: `${ROOTS.DASHBOARD}/logout`,
     },
   },
 };

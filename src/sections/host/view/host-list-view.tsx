@@ -125,7 +125,7 @@ export default function HostListView() {
 
   const handleEditRow = useCallback(
     (id: ObjectId) => {
-      router.push(paths.dashboard.host.edit(id));
+      router.push(paths.dashboard.settings.edit(id));
     },
     [router]
   );
@@ -200,11 +200,11 @@ export default function HostListView() {
         }}
       >
         <CustomBreadcrumbs
-          heading="Hosts"
+          heading="Settings"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             {
-              name: 'Hosts',
+              name: 'Settings',
             },
           ]}
           action={
@@ -213,7 +213,7 @@ export default function HostListView() {
 
               <Button
                 component={RouterLink}
-                href={paths.dashboard.host.new}
+                href={paths.dashboard.settings.new}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}

@@ -33,7 +33,7 @@ export default function HostEditView() {
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.host.root}
+            href={paths.dashboard.settings.root}
             startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
             sx={{ mt: 3 }}
           >
@@ -56,7 +56,7 @@ export default function HostEditView() {
           },
           {
             name: 'Hosts',
-            href: paths.dashboard.host.root,
+            href: paths.dashboard.settings.root,
           },
           { name: 'Edit host' },
         ]}
