@@ -25,7 +25,7 @@ export default function HostCreateView() {
           },
           {
             name: 'Hosts',
-            href: paths.dashboard.host.root,
+            href: paths.dashboard.settings.root,
           },
           { name: 'New host' },
         ]}

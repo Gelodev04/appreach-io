@@ -8,7 +8,7 @@ import { NAV, HEADER } from '../config-layout';
 
 // ----------------------------------------------------------------------
 
-const SPACING = 8;
+const SPACING = 5;
 
 export default function Main({ children, sx, ...other }: BoxProps) {
   const settings = useSettingsContext();
