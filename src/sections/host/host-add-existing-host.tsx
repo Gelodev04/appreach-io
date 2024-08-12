@@ -17,7 +17,7 @@ export default function HostAddExistingHost() {
         startIcon={<Iconify icon="mingcute:add-line" />}
         onClick={open.onTrue}
       >
-        Add an existing host
+        Add an existing infrastructure
       </Button>
       <ConfirmDialog
         title="Add an existing host"
