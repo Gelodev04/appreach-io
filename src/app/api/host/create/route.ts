@@ -22,7 +22,11 @@ export async function POST(request: Request) {
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
     const session = await auth();
 
-    const user = await getUser()
+    const user = await getUser();
+
+    // Check if a host with the same name already exists
+    const existingHost = await db.collection('hosts').findOne({ host });
+    if (existingHost) throw new Error('Infrastructure already exists, try another name');
 
     const hostCrypt = generateHostCrypt(host);
     const lookerStudioUrl = generateLookerStudioUrl(hostCrypt);

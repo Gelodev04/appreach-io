@@ -136,7 +136,8 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create host');
+        const body = await res.json();      
+        throw new Error(body.error ?? 'Failed to create host');
       }
       enqueueSnackbar('Create success!');
       router.push(paths.dashboard.settings.root);
