@@ -242,10 +242,10 @@ abdulrehman@outreachmagic.io ⏎`;
             priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Placeholder text
+            Register new Infrastructure
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            Additional functions and attributes...
+            Add your sender accounts and engagement settings.
           </Typography>
           <LoadingButton
             type="submit"
@@ -254,7 +254,7 @@ abdulrehman@outreachmagic.io ⏎`;
             loading={isSubmitting}
             sx={{ boxShadow: theme.customShadows.primary }}
           >
-            {!currentItem ? 'Register new host' : 'Save Changes'}
+            {currentItem ? 'Save Changes' : 'Add infrastructure'}
           </LoadingButton>
         </Stack>
       </Grid>
