@@ -48,11 +48,11 @@ export default function HostNewEditForm({ currentItem }: Props) {
     timezone: Yup.string().required('Timezone is required'),
     notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    slack: Yup.object().shape({
-      notificationChannelId: Yup.string(),
-    }),
+    // slack: Yup.object().shape({
+    //   notificationChannelId: Yup.string(),
+    // }),
     smartLead: Yup.object().shape({
-      apiKey: Yup.string(),
+      // apiKey: Yup.string(),
       webhook: Yup.string(),
     }),
     inboxEngagement: Yup.object().shape({
@@ -76,8 +76,8 @@ export default function HostNewEditForm({ currentItem }: Props) {
       externalSenderAddresses: Array.isArray(currentItem?.userSettings.externalSenderAddresses)
         ? currentItem.userSettings.externalSenderAddresses.join('\n')
         : currentItem?.userSettings.externalSenderAddresses || '',
-      slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: currentItem?.smartlead || { apiKey: '', webhook: '' },
+      // slack: currentItem?.slack || { notificationChannelId: '' },
+      smartLead: currentItem?.smartlead || { /* apiKey: '', */webhook: '' },
       inboxEngagement: {
         markImportant: currentItem?.inboxEngagement?.markImportant || false,
         removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
@@ -136,7 +136,8 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create host');
+        const body = await res.json();      
+        throw new Error(body.error ?? 'Failed to create host');
       }
       enqueueSnackbar('Create success!');
       router.push(paths.dashboard.settings.root);
@@ -195,17 +196,17 @@ abdulrehman@outreachmagic.io ⏎`;
               placeholder={externalSenderAddressesPlaceholder}
             />
 
-            <RHFTextField
+            {/* <RHFTextField
               name="slack.notificationChannelId"
               label="Slack notification channel ID"
               placeholder="C06SWJC9V47"
-            />
+            /> */}
 
-            <RHFTextField
+            {/* <RHFTextField
               name="smartLead.apiKey"
               label="Smart lead API key"
               placeholder="cfeda7bf-2f21-4d9e-8bf2-082f31f29acb_o26lz3v"
-            />
+            /> */}
 
             <Stack spacing={1}>
               <Typography variant="subtitle2">Inbox engagement</Typography>
