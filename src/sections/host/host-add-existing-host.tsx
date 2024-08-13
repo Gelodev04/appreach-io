@@ -17,10 +17,10 @@ export default function HostAddExistingHost() {
         startIcon={<Iconify icon="mingcute:add-line" />}
         onClick={open.onTrue}
       >
-        Add an existing host
+        Add an existing infrastructure
       </Button>
       <ConfirmDialog
-        title="Add an existing host"
+        title="Add an existing infrastructure"
         open={open.value}
         onClose={() => {
           open.onFalse();
@@ -30,7 +30,7 @@ export default function HostAddExistingHost() {
           <TextField
             fullWidth
             sx={{ mt: 1 }}
-            placeholder="host-name"
+            placeholder="crypt"
             value={hostName}
             onChange={(e) => setHostName(e.target.value)}
           />
