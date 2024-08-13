@@ -133,7 +133,7 @@ export default function HostListView() {
   const columns: GridColDef[] = [
     {
       field: 'host',
-      headerName: 'Host',
+      headerName: 'Infrastructure',
       flex: 1,
       minWidth: 220,
       hideable: false,
@@ -141,13 +141,13 @@ export default function HostListView() {
     },
     {
       field: 'hostCrypt',
-      headerName: 'Host crypt',
+      headerName: 'Crypt',
       width: 220,
       renderCell: (params) => <RenderHostCrypt params={params} />,
     },
     {
       field: 'lookerStudio',
-      headerName: 'Looker Studio URL',
+      headerName: 'Reporting URL',
       width: 160,
       type: 'singleSelect',
       headerAlign: 'center',
@@ -203,9 +203,7 @@ export default function HostListView() {
           heading="Settings"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            {
-              name: 'Settings',
-            },
+            { name: 'Settings' },
           ]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
@@ -218,7 +216,7 @@ export default function HostListView() {
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Add new host
+                Add new infrastructure
               </Button>
             </Stack>
           }

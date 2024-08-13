@@ -17,7 +17,7 @@ export default function HostCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add a new host"
+        heading="Register a new infrastructure"
         links={[
           {
             name: 'Dashboard',
