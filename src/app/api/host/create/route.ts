@@ -1,6 +1,6 @@
-import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
@@ -54,10 +54,7 @@ export async function POST(request: Request) {
     user.hosts.push(newHostId);
     await db
       .collection('userSettings')
-      .updateOne(
-        { 'appLogin.username': session?.user.email },
-        { $set: { hosts: user.hosts } }
-      );
+      .updateOne({ 'appLogin.username': session?.user.email }, { $set: { hosts: user.hosts } });
 
     return Response.json({ message: 'Host created and added to user settings successfully' });
   } catch (error) {
