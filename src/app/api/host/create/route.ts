@@ -1,7 +1,6 @@
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { getUser } from 'src/auth/lib/mongodb/get-user';
-
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
 export async function POST(request: Request) {
