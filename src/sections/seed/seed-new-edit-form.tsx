@@ -1,30 +1,24 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
+import Grid from '@mui/material/Unstable_Grid2';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
-
-import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
-
+import * as Yup from 'yup';
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 // ----------------------------------------------------------------------
@@ -219,7 +213,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             quality={100}
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Create new list
+            Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
             You can send to {assignedCount} email accounts each day. Contact us if you have
