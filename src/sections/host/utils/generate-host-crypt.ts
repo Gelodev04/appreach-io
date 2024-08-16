@@ -10,7 +10,7 @@ export function generateRandomChars(): string {
 }
 
 export function generateHostCrypt(host: string): string {
-  const secretKey = 'da65e7ec-7de9-420c-b00d-5b12e6754c06'; // Hardcoded
+  const secretKey = process.env.HOST_CRYPT_SECRET;
   const hash = crypto.createHash('sha1');
   hash.update(secretKey + host);
   const longHash = hash.digest();
