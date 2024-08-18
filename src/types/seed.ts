@@ -3,10 +3,10 @@ import { ObjectId } from 'mongodb';
 export interface ISeedForm {
   dateAdded: Date;
   generate: ISeedGenerate;
-  hostId: { 
+  hostId: {
     label: string;
     value: string;
-   }
+  };
   name: string;
   googleBusiness: number;
   googlePersonal: number;

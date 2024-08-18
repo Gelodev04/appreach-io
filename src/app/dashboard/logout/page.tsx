@@ -52,13 +52,10 @@ export default function Page() {
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary', mb: 2 }}>
-            You are being logged out of your account.
-            This may take a few seconds.
-            Hope to see you again soon!
+            You are being logged out of your account. This may take a few seconds. Hope to see you
+            again soon!
           </Typography>
         </m.div>
-
-
       </MotionContainer>
     </Stack>
   );

@@ -1,31 +1,30 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { useRouter } from 'src/routes/hooks';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useAuthContext } from 'src/auth/hooks';
-import { RouterLink } from 'src/routes/components';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
-import { paths } from 'src/routes/paths';
 import { useSnackbar } from 'src/components/snackbar';
+import { RouterLink } from 'src/routes/components';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
+import * as Yup from 'yup';
 
 export default function ResetPasswordView() {
   const { forgotPassword } = useAuthContext();
   const router = useRouter();
 
-
-  const [id, setId] = useState<any>("");
-  const [token, setToken] = useState<any>("");
+  const [id, setId] = useState<any>('');
+  const [token, setToken] = useState<any>('');
   const { enqueueSnackbar } = useSnackbar();
-  const URL=process.env.NEXT_PUBLIC_API_URL
+  const URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const Id = urlParams.get('id');
@@ -47,7 +46,6 @@ export default function ResetPasswordView() {
       .nullable()
       .required('Confirm Password is required'),
   });
-  
 
   const defaultValues = {
     password: '',
@@ -84,14 +82,15 @@ export default function ResetPasswordView() {
         body,
       });
 
-   
       const responseData = await response.json();
       if (!response.ok) {
         throw new Error(responseData.message || 'Failed to reset password');
       }
-     
+
       console.log('Reset password response:', responseData);
-      enqueueSnackbar(responseData?.message || 'Password reset successfully', { variant: 'success' });
+      enqueueSnackbar(responseData?.message || 'Password reset successfully', {
+        variant: 'success',
+      });
       // Redirect or handle success as needed
       const href = `${paths.auth.login}`;
       router.push(href);
@@ -147,7 +146,8 @@ export default function ResetPasswordView() {
         <Typography variant="h3">Create Your New Password</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Please ensure your new password is at least 12 characters long and includes a mix of letters, numbers, and symbols.
+          Please ensure your new password is at least 12 characters long and includes a mix of
+          letters, numbers, and symbols.
         </Typography>
       </Stack>
     </Stack>
@@ -155,7 +155,6 @@ export default function ResetPasswordView() {
 
   return (
     <>
-
       {renderHead}
       <FormProvider methods={methods} onSubmit={onSubmit}>
         {renderForm}

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       microsoftBusiness,
       microsoftPersonal,
       yahooPersonal,
-      totalSeedAccounts
+      totalSeedAccounts,
     } = data;
 
     const client = await clientPromise;
@@ -33,16 +33,16 @@ export async function POST(request: Request) {
           googlePersonal,
           microsoftBusiness,
           microsoftPersonal,
-          yahooPersonal
+          yahooPersonal,
         },
-        type: 'engagement'
+        type: 'engagement',
       },
       hostId: new ObjectId(hostId.value),
       status: 'ready',
-      token: generateRandomChars()
-    })
+      token: generateRandomChars(),
+    });
 
-    await axios.post(process.env.SEED_EMAIL_GENERATOR as string)
+    await axios.post(process.env.SEED_EMAIL_GENERATOR as string);
 
     return Response.json({ message: 'Seed batch created successfully' });
   } catch (error) {

@@ -16,19 +16,23 @@ export async function POST(request: Request) {
     const invalidId = ids.find((id: string) => !ObjectId.isValid(id));
     if (invalidId) {
       return Response.json({ error: `Invalid id: ${invalidId}` }, { status: 400 });
-    } 
+    }
 
     // Use Promise.all to update all userSettings in parallel
     const updateOperations = ids.map((id: string) =>
-      db.collection('userSettings').updateOne(
-        { 'appLogin.username': session?.user.email },
-        { $pull: { hosts: ObjectId.createFromHexString(id) as any } }
-      )
+      db
+        .collection('userSettings')
+        .updateOne(
+          { 'appLogin.username': session?.user.email },
+          { $pull: { hosts: ObjectId.createFromHexString(id) as any } }
+        )
     );
-    const updateResults = await Promise.all(updateOperations);    
+    const updateResults = await Promise.all(updateOperations);
 
     // Filter out IDs that were not deleted (i.e., modifiedCount === 0)
-    const deletedIds = ids.filter((id: string, index: number) => updateResults[index].modifiedCount > 0);
+    const deletedIds = ids.filter(
+      (id: string, index: number) => updateResults[index].modifiedCount > 0
+    );
 
     if (deletedIds.length === 0) {
       return Response.json({ error: `Hosts don't exist or were already deleted` }, { status: 400 });

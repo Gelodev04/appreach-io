@@ -25,10 +25,10 @@ import { useSnackbar } from 'src/components/snackbar';
 
 export default function ForgotPasswordView() {
   const { forgotPassword } = useAuthContext();
-const [resp,setResp]=useState<any>("");
+  const [resp, setResp] = useState<any>('');
   const router = useRouter();
-  const URL=process.env.NEXT_PUBLIC_API_URL
- 
+  const URL = process.env.NEXT_PUBLIC_API_URL;
+
   const { enqueueSnackbar } = useSnackbar();
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -76,15 +76,12 @@ const [resp,setResp]=useState<any>("");
         body,
       });
 
-    
-
       const responseData = await response.json();
-      
+
       if (!response.ok) {
-    
         throw new Error(responseData?.errors?.email || 'Failed to reset password');
       }
-      setResp(responseData)
+      setResp(responseData);
       console.log('Reset password response:', responseData);
       // Redirect or handle success as needed
       const href = `${paths.auth.forgotPassword}`;
@@ -149,20 +146,23 @@ const [resp,setResp]=useState<any>("");
 
   return (
     <>
-     {resp===""?(<> {renderHead}
+      {resp === '' ? (
+        <>
+          {' '}
+          {renderHead}
+          <FormProvider methods={methods} onSubmit={onSubmit}>
+            {renderForm}
+          </FormProvider>
+        </>
+      ) : (
+        <Stack spacing={1} sx={{ mt: 3, mb: 5 }}>
+          <Typography variant="h3">Check Your Mail</Typography>
 
-      <FormProvider methods={methods} onSubmit={onSubmit}>
-        {renderForm}
-      </FormProvider></>):(
-    
-   <Stack spacing={1} sx={{ mt: 3, mb: 5 }}>
-   <Typography variant="h3">Check Your Mail</Typography>
-
-   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-     {resp?.message}
-   </Typography>
- </Stack>)
-      }
-</>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {resp?.message}
+          </Typography>
+        </Stack>
+      )}
+    </>
   );
 }
