@@ -1,12 +1,9 @@
 'use client';
 
 import Container from '@mui/material/Container';
-
-import { paths } from 'src/routes/paths';
-
-import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
+import { useSettingsContext } from 'src/components/settings';
+import { paths } from 'src/routes/paths';
 import HostsNewEditForm from '../host-new-edit-form';
 
 // ----------------------------------------------------------------------
@@ -24,10 +21,10 @@ export default function HostCreateView() {
             href: paths.dashboard.root,
           },
           {
-            name: 'Hosts',
+            name: 'Settings',
             href: paths.dashboard.settings.root,
           },
-          { name: 'New host' },
+          { name: 'New infrastructure' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

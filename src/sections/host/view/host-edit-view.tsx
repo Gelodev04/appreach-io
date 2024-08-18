@@ -1,21 +1,16 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
-import { useGetHost } from 'src/hooks/api/host';
-
-import Iconify from 'src/components/iconify/iconify';
-import EmptyContent from 'src/components/empty-content';
+import { useSearchParams } from 'next/navigation';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
-import { HostSkeleton } from '../host-skeleton';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify/iconify';
+import { useGetHost } from 'src/hooks/api/host';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import HostNewEditForm from '../host-new-edit-form';
+import { HostSkeleton } from '../host-skeleton';
 
 // ----------------------------------------------------------------------
 
@@ -48,17 +43,17 @@ export default function HostEditView() {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
-        heading="Edit host"
+        heading="Edit infrastructure"
         links={[
           {
             name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: 'Hosts',
+            name: 'Settings',
             href: paths.dashboard.settings.root,
           },
-          { name: 'Edit host' },
+          { name: 'Edit infrastructure' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

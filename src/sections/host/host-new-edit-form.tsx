@@ -1,30 +1,24 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import moment from 'moment-timezone';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
-import { useResponsive } from 'src/hooks/use-responsive';
-
-import { endpoints } from 'src/utils/swr';
-
+import Grid from '@mui/material/Unstable_Grid2';
+import moment from 'moment-timezone';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFAutocomplete, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
+import { useResponsive } from 'src/hooks/use-responsive';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
+import { endpoints } from 'src/utils/swr';
+import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
 
@@ -136,7 +130,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        const body = await res.json();      
+        const body = await res.json();
         throw new Error(body.error ?? 'Failed to create host');
       }
       enqueueSnackbar('Create success!');
@@ -190,7 +184,7 @@ abdulrehman@outreachmagic.io ⏎`;
             />
             <RHFTextField
               name="externalSenderAddresses"
-              label="External sender addresses (separated by newlines)"
+              label="Sender addresses (separated by newlines)"
               minRows={3}
               multiline
               placeholder={externalSenderAddressesPlaceholder}
