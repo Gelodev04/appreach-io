@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (existingHost) throw new Error('Infrastructure already exists, try another name');
 
     const hostCrypt = generateHostCrypt(host);
-    const lookerStudioUrl = generateLookerStudioUrl(hostCrypt);
+    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
     const externalSenderAddressesArray = externalSenderAddresses.split('\n');
     const notificationAddressesArray = notificationAddresses.split('\n');
 

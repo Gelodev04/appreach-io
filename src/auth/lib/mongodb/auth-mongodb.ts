@@ -44,12 +44,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
 
           const isValidPassword = await bcrypt.compare(
-             credentials.password as string,
-             user.appLogin.password
+            credentials.password as string,
+            user.appLogin.password
           );
 
           if (!isValidPassword) {
-             throw new Error('Invalid password');
+            throw new Error('Invalid password');
           }
 
           await db.collection('userSettings').updateOne(

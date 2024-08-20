@@ -71,7 +71,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         ? currentItem.userSettings.externalSenderAddresses.join('\n')
         : currentItem?.userSettings.externalSenderAddresses || '',
       // slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: currentItem?.smartlead || { /* apiKey: '', */webhook: '' },
+      smartLead: currentItem?.smartlead || { /* apiKey: '', */ webhook: '' },
       inboxEngagement: {
         markImportant: currentItem?.inboxEngagement?.markImportant || false,
         removeSpam: currentItem?.inboxEngagement?.removeSpam || false,

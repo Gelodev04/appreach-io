@@ -360,4 +360,3 @@ function applyFilter({ inputData }: { inputData: ISeed[] }) {
 
   return sortedData;
 }
-

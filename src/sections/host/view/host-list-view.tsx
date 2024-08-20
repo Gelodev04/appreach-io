@@ -1,44 +1,37 @@
 'use client';
 
-import { ObjectId } from 'mongodb';
-import { useState, useEffect, useCallback } from 'react';
-
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridColDef,
   GridActionsCellItem,
-  GridToolbarContainer,
-  GridRowSelectionModel,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridToolbarColumnsButton,
+  GridColDef,
   GridColumnVisibilityModel,
+  GridRowSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
-
+import { ObjectId } from 'mongodb';
+import { useCallback, useEffect, useState } from 'react';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { endpoints } from 'src/utils/swr';
-
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
-import EmptyContent from 'src/components/empty-content';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
+import { RouterLink } from 'src/routes/components';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
-
+import { endpoints } from 'src/utils/swr';
 import HostAddExistingHost from '../host-add-existing-host';
-import { RenderHostName, RenderHostCrypt, RenderLookerStudioUrl } from '../host-table-row';
+import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -201,10 +194,7 @@ export default function HostListView() {
       >
         <CustomBreadcrumbs
           heading="Settings"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Settings' },
-          ]}
+          links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Settings' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost />

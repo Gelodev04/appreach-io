@@ -69,18 +69,16 @@ export default function LoginView() {
       });
 
       if (result?.error) {
-        console.log(result,"result")
-        throw new Error("Invalid Credentials");
-
+        console.log(result, 'result');
+        throw new Error('Invalid Credentials');
       }
 
       enqueueSnackbar('Login successful', { variant: 'success' });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
-
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>

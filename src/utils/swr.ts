@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 
-export const revalidateData = async (url:string) => {
+export const revalidateData = async (url: string) => {
   await mutate(url);
 };
 
@@ -10,7 +10,7 @@ export const fetcher = (url: string) =>
   fetch(url).then((response) => {
     if (!response.ok) {
       return response.json().then((json) => {
-        throw new Error(json.error)
+        throw new Error(json.error);
       });
     }
     return response.json();

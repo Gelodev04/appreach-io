@@ -1,7 +1,7 @@
 'use client';
 
 import DashboardLayout from 'src/layouts/dashboard';
-import { AuthGuard , GuestGuard } from 'src/auth/guard';
+import { AuthGuard, GuestGuard } from 'src/auth/guard';
 
 // ----------------------------------------------------------------------
 

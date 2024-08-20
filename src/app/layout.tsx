@@ -1,18 +1,15 @@
-/* eslint-disable perfectionist/sort-imports */
 import 'src/global.css';
 
 // ----------------------------------------------------------------------
 
+import { SessionProvider } from 'next-auth/react';
+import { AuthProvider } from 'src/auth/context/jwt';
+import { MotionLazy } from 'src/components/animate/motion-lazy';
+import ProgressBar from 'src/components/progress-bar';
+import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
+import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-
-import ProgressBar from 'src/components/progress-bar';
-import { MotionLazy } from 'src/components/animate/motion-lazy';
-import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
-import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
-
-import { AuthProvider } from 'src/auth/context/jwt';
-import { SessionProvider } from 'next-auth/react';
 
 // ----------------------------------------------------------------------
 
