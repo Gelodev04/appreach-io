@@ -44,7 +44,7 @@ export default function LookerStudioView() {
   );
 
   return (
-    <Box sx={{ height: '90vh' }}>
+    <Box sx={{ height: '100%' }}>
       {urlLoading && renderSkeleton}
       {urlError && renderError}
       {url && renderLookerStudioIframe}
