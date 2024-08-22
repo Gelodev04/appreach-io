@@ -1,10 +1,8 @@
-import useSWR from 'swr';
 import { useMemo } from 'react';
-
-import { fetcher, endpoints } from 'src/utils/swr';
-
 import { IHost } from 'src/types/host';
 import { ISeed } from 'src/types/seed';
+import { endpoints, fetcher } from 'src/utils/swr';
+import useSWR from 'swr';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +38,30 @@ export function useGetSeedSettings() {
       validating: isValidating,
     }),
     [data?.assignedCount, data?.hosts, error, isValidating]
+  );
+
+  return memoizedValue;
+}
+
+export function useGetSeedAccounts() {
+  const URL = endpoints.seed.counts;
+
+  const { data, error, isValidating } = useSWR(URL, fetcher);
+
+  const memoizedValue = useMemo(
+    () => ({
+      seedAccounts: (data?.seedAccounts as { name: string; amount: number }[]) || [],
+      seedAccountsLoading: !error && !data,
+      seedAccountsError: error,
+      seedAccountsValidating: isValidating,
+      totalSeedAccounts: data?.seedAccounts
+        ? data.seedAccounts.reduce(
+            (sum: number, account: { name: string; amount: number }) => sum + account.amount,
+            0
+          )
+        : 0,
+    }),
+    [data, error, isValidating]
   );
 
   return memoizedValue;
