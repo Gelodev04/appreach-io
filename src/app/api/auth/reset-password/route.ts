@@ -1,0 +1,48 @@
+import { randomBytes } from 'crypto';
+import { addDays } from 'date-fns';
+import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { sendEmail } from 'src/auth/lib/sendgrid';
+
+export async function POST(request: Request) {
+  try {
+    const data = await request.json();
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+
+    const username = data.email;
+    if (!username) throw new Error('Email is required');
+
+    const user = await db.collection('userSettings').findOne({ 'appLogin.username': username });
+    if (!user) throw new Error('Could not find any user with the given email');
+
+    // Generate a new reset token
+    const resetPasswordToken = randomBytes(32).toString('hex');
+
+    // Set token expiration to 24h from now
+    const tokenExpiration = addDays(new Date(), 1);
+
+    await db.collection('userSettings').updateOne(
+      { 'appLogin.username': username },
+      {
+        $set: {
+          'resetPassword.token': resetPasswordToken,
+          'resetPassword.tokenExpiration': tokenExpiration,
+          'resetPassword.lastReset': new Date().toISOString(),
+        },
+      }
+    );
+
+    // Send the reset password email
+    await sendEmail(
+      username,
+      'Reset Password',
+      `Your reset password token is: ${resetPasswordToken}`
+    );
+
+    return Response.json({
+      message: 'If your email is in our database, you will receive a reset password email.',
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

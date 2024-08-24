@@ -1,33 +1,27 @@
 'use client';
 
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
-
-import { useAuthContext } from 'src/auth/hooks';
-
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Image from 'next/image';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
+import { RouterLink } from 'src/routes/components';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
+import { endpoints } from 'src/utils/swr';
+import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
 
 export default function ForgotPasswordView() {
-  const { forgotPassword } = useAuthContext();
   const [resp, setResp] = useState<any>('');
   const router = useRouter();
-  const URL = process.env.NEXT_PUBLIC_API_URL;
 
   const { enqueueSnackbar } = useSnackbar();
   const ForgotPasswordSchema = Yup.object().shape({
@@ -60,7 +54,7 @@ export default function ForgotPasswordView() {
   // });
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const url = `${URL}/reset-password`; // Replace with your API endpoint
+      const url = endpoints.auth.resetPassword;
       const headers = {
         'Content-Type': 'application/json',
         // 'Cookie': 'session=.eJztkk1rwzAMhv-K8DmUNEm71NdCxwa7bLmMUYJSK4lZYneWsw5K__u8lnbs6zbYBjsJW3pe6UXairLukFtiIe-2AnwIgpyzTkRibk2tXQ9rZN5YpyQsNHUK-oE9VAT0MGAH3p4KRmK5iz6osKtD0T0ZCUVLML-5XhzeoBl6zaxN84bsiRkbCuytHdxJHVrk0DZwjpj8CEIWVmjA2A10ttHm0_Y_ZOJIXphH7LQC64Ce1tqROnD_s_6C4zga3jOvWi4MT-y_l1ijw548Of6LVV_6XUZiFZZYHg5Finia40RVqDDHs4TqPKZ8lSo1m6XjNKUkSausquKXBe41y6OmkNP3X6VCT0KGmUJWFO0QQRLD5WBCSDIYJ3KSyfEEzq8Ksds9A3H_nVg.ZnQqjw.2fKH5U8oqvggFegzjNGiWNDOFDM' // Replace with your actual session cookie value
@@ -77,12 +71,9 @@ export default function ForgotPasswordView() {
       });
 
       const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData?.error || 'Failed to reset password');
 
-      if (!response.ok) {
-        throw new Error(responseData?.errors?.email || 'Failed to reset password');
-      }
       setResp(responseData);
-      console.log('Reset password response:', responseData);
       // Redirect or handle success as needed
       const href = `${paths.auth.forgotPassword}`;
       router.push(href);
@@ -93,6 +84,7 @@ export default function ForgotPasswordView() {
       // Handle error, show error message, etc.
     }
   });
+
   const renderForm = (
     <Stack spacing={3} alignItems="center">
       <RHFTextField name="email" label="Email address" />
