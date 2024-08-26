@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
+import { ISeedAccount } from 'src/types/seed';
 import SeedAccountsAssigned from './seed-accounts-assigned';
 import SeedAccountsBatch from './seed-accounts-batch';
 
@@ -16,7 +17,7 @@ export default function SeedAccountsGenerator({
   totalSeedAccounts,
 }: {
   assignedCount: number;
-  seedAccounts: { name: string; amount: number }[];
+  seedAccounts: ISeedAccount[];
   totalSeedAccounts?: number;
 }) {
   return (

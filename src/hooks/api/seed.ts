@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { IHost } from 'src/types/host';
-import { ISeed } from 'src/types/seed';
+import { ISeed, ISeedAccount } from 'src/types/seed';
 import { endpoints, fetcher } from 'src/utils/swr';
 import useSWR from 'swr';
 
@@ -8,7 +8,6 @@ import useSWR from 'swr';
 
 export function useGetSeeds() {
   const URL = endpoints.seed.list;
-
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -27,7 +26,6 @@ export function useGetSeeds() {
 
 export function useGetSeedSettings() {
   const URL = endpoints.seed.settings;
-
   const { data, error, isValidating } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
@@ -45,24 +43,16 @@ export function useGetSeedSettings() {
 
 export function useGetSeedAccounts() {
   const URL = endpoints.seed.counts;
-
   const { data, error, isValidating } = useSWR(URL, fetcher);
+  const totalSeedAccounts = data?.seedAccounts
+    ? data.seedAccounts.reduce((sum: number, account: ISeedAccount) => sum + account.amount, 0)
+    : 0;
 
-  const memoizedValue = useMemo(
-    () => ({
-      seedAccounts: (data?.seedAccounts as { name: string; amount: number }[]) || [],
-      seedAccountsLoading: !error && !data,
-      seedAccountsError: error,
-      seedAccountsValidating: isValidating,
-      totalSeedAccounts: data?.seedAccounts
-        ? data.seedAccounts.reduce(
-            (sum: number, account: { name: string; amount: number }) => sum + account.amount,
-            0
-          )
-        : 0,
-    }),
-    [data, error, isValidating]
-  );
-
-  return memoizedValue;
+  return {
+    seedAccounts: (data?.seedAccounts as ISeedAccount[]) || [],
+    seedAccountsLoading: !error && !data,
+    seedAccountsError: error,
+    seedAccountsValidating: isValidating,
+    totalSeedAccounts,
+  };
 }
