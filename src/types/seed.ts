@@ -27,6 +27,11 @@ export interface ISeed {
   status: string;
 }
 
+export interface ISeedAccount {
+  name: string;
+  amount: number;
+}
+
 interface ISeedGenerate {
   esps: ISeedEsps;
   total: number;
