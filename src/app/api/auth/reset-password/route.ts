@@ -31,11 +31,19 @@ export async function POST(request: Request) {
       }
     );
 
+    // Get the current host from the request headers
+    const host = request.headers.get('host');
+    if (!host) throw new Error('Unable to determine the host domain');
+
+    // Construct the reset password link using the current host
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const resetPasswordLink = `${protocol}://${host}/reset-password/${user._id}/${resetPasswordToken}`;
+
     // Send the reset password email
     await sendEmail(
       username,
       'Reset Password',
-      `Your reset password token is: ${resetPasswordToken}`
+      `Your reset password link is: ${resetPasswordLink}`
     );
 
     return Response.json({
