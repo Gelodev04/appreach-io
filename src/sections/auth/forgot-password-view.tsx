@@ -57,7 +57,6 @@ export default function ForgotPasswordView() {
       const url = endpoints.auth.resetPassword;
       const headers = {
         'Content-Type': 'application/json',
-        // 'Cookie': 'session=.eJztkk1rwzAMhv-K8DmUNEm71NdCxwa7bLmMUYJSK4lZYneWsw5K__u8lnbs6zbYBjsJW3pe6UXairLukFtiIe-2AnwIgpyzTkRibk2tXQ9rZN5YpyQsNHUK-oE9VAT0MGAH3p4KRmK5iz6osKtD0T0ZCUVLML-5XhzeoBl6zaxN84bsiRkbCuytHdxJHVrk0DZwjpj8CEIWVmjA2A10ttHm0_Y_ZOJIXphH7LQC64Ce1tqROnD_s_6C4zga3jOvWi4MT-y_l1ijw548Of6LVV_6XUZiFZZYHg5Finia40RVqDDHs4TqPKZ8lSo1m6XjNKUkSausquKXBe41y6OmkNP3X6VCT0KGmUJWFO0QQRLD5WBCSDIYJ3KSyfEEzq8Ksds9A3H_nVg.ZnQqjw.2fKH5U8oqvggFegzjNGiWNDOFDM' // Replace with your actual session cookie value
       };
 
       const body = JSON.stringify({
