@@ -22,6 +22,7 @@ export const endpoints = {
   lookerStudio: '/api/looker-studio',
   auth: {
     resetPassword: '/api/auth/reset-password',
+    confirmResetPassword: '/api/auth/confirm-reset-password',
   },
   host: {
     list: '/api/host/list',

@@ -24,7 +24,7 @@ export const paths = {
   auth: {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
-    forgotPassword: `${ROOTS.AUTH}/forgot-password`,
+    forgotPassword: `/reset-password`,
   },
   resetPassword: (id: ObjectId, token: string) => `/reset-password/id=${id.toString()}/${token}`,
 
