@@ -41,9 +41,18 @@ export async function POST(request: Request) {
 
     // Send the reset password email
     await sendEmail(
-      username,
-      'Reset Password',
-      `Your reset password link is: ${resetPasswordLink}`
+      {
+        to: username,
+        dynamicTemplateData: {
+          first_name: username,
+          subject: 'Reset password',
+          headline: 'Reset password',
+          message: 'Please click the button below to reset your password.',
+          button_label: 'Reset password',
+          button_url: resetPasswordLink,
+        },
+      },
+      'd-c80c540d168e48ea9d9aa8e95614f541'
     );
 
     return Response.json({

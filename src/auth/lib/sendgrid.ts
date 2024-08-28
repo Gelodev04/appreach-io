@@ -1,21 +1,22 @@
 import sgMail from '@sendgrid/mail';
 
-export const sendEmail = async (to: string, subject: string, text: string) => {
+type EmailData = Omit<sgMail.MailDataRequired, 'from'>;
+
+export const sendEmail = async (data: EmailData, templateId: string) => {
   const apiKey = process.env.SENDGRID_API_TOKEN;
   if (!apiKey) throw new Error('Sendgrid API token is not defined');
 
   sgMail.setApiKey(apiKey);
 
-  const msg = {
-    to,
+  const msg: sgMail.MailDataRequired = {
     from: 'omteam@outreachmagic.io', // ! TO BE REPLACED
-    subject,
-    text,
+    templateId,
+    ...data,
   };
 
   try {
     await sgMail.send(msg);
-    console.log(`Email sent to ${to}`);
+    console.log(`Email sent to ${data?.to}`);
   } catch (error) {
     console.error(error);
 
