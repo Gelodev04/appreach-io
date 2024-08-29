@@ -1,8 +1,8 @@
 import { useSession } from 'next-auth/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -36,7 +36,6 @@ function Container({ children }: Props) {
   const check = useCallback(() => {
     if (!authenticated) {
       const loginPath = loginPaths.nextAuth;
-
       const href = `${loginPath}`;
 
       router.replace(href);

@@ -15,19 +15,12 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   const settings = useSettingsContext();
-
   const lgUp = useResponsive('up', 'lg');
-
   const nav = useBoolean();
-
   const isHorizontal = settings.themeLayout === 'horizontal';
-
   const isMini = settings.themeLayout === 'mini';
-
   const renderNavMini = <NavMini />;
-
   const renderHorizontal = <NavHorizontal />;
-
   const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
 
   if (isHorizontal) {

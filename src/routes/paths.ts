@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
+  SETTINGS: '/settings',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
 };
@@ -31,11 +32,6 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    settings: {
-      root: `${ROOTS.DASHBOARD}/settings`,
-      new: `${ROOTS.DASHBOARD}/settings/new`,
-      edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/settings/edit/?id=${id.toString()}`,
-    },
     seed: {
       root: `${ROOTS.DASHBOARD}/seed`,
       new: `${ROOTS.DASHBOARD}/seed/new`,
@@ -55,5 +51,12 @@ export const paths = {
     logout: {
       root: `${ROOTS.DASHBOARD}/logout`,
     },
+  },
+
+  // SETTINGS
+  settings: {
+    root: ROOTS.SETTINGS,
+    new: `${ROOTS.SETTINGS}/new`,
+    edit: (id: ObjectId) => `${ROOTS.SETTINGS}/edit/?id=${id.toString()}`,
   },
 };

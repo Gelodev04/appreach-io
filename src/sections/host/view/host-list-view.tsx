@@ -118,7 +118,7 @@ export default function HostListView() {
 
   const handleEditRow = useCallback(
     (id: ObjectId) => {
-      router.push(paths.dashboard.settings.edit(id));
+      router.push(paths.settings.edit(id));
     },
     [router]
   );
@@ -201,7 +201,7 @@ export default function HostListView() {
 
               <Button
                 component={RouterLink}
-                href={paths.dashboard.settings.new}
+                href={paths.settings.new}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}

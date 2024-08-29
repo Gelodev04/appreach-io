@@ -19,7 +19,7 @@ export function useNavData() {
           },
           {
             title: 'Settings',
-            path: paths.dashboard.settings.root,
+            path: paths.settings.root,
             icon: <Iconify icon="bx:server" />,
           },
           {
