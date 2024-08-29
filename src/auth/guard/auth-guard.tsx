@@ -1,10 +1,8 @@
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
-
+import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-
-import { SplashScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
