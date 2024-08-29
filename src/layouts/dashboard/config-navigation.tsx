@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-
-import { paths } from 'src/routes/paths';
-
 import Iconify from 'src/components/iconify/iconify';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +22,7 @@ export function useNavData() {
           },
           {
             title: 'Seeds',
-            path: paths.dashboard.seed.root,
+            path: paths.seed.root,
             icon: <Iconify icon="pepicons-pop:seedling" />,
           },
           // {

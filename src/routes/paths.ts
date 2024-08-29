@@ -6,6 +6,7 @@ const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
+  SEEDS: '/seeds',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
 };
@@ -32,11 +33,6 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    seed: {
-      root: `${ROOTS.DASHBOARD}/seed`,
-      new: `${ROOTS.DASHBOARD}/seed/new`,
-      edit: `${ROOTS.DASHBOARD}/seed/edit`,
-    },
     emails: {
       root: `${ROOTS.DASHBOARD}/emails`,
       new: `${ROOTS.DASHBOARD}/emails/new`,
@@ -58,5 +54,12 @@ export const paths = {
     root: ROOTS.SETTINGS,
     new: `${ROOTS.SETTINGS}/new`,
     edit: (id: ObjectId) => `${ROOTS.SETTINGS}/edit/?id=${id.toString()}`,
+  },
+
+  // SEEDS
+  seed: {
+    root: ROOTS.SEEDS,
+    new: `${ROOTS.SEEDS}/new`,
+    edit: `${ROOTS.SEEDS}/edit`,
   },
 };

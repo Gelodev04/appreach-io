@@ -17,12 +17,8 @@ export default function SeedCreateView() {
         heading="Generate seed list"
         links={[
           {
-            name: 'Dashboard',
-            href: paths.dashboard.root,
-          },
-          {
             name: 'Seeds',
-            href: paths.dashboard.seed.root,
+            href: paths.seed.root,
           },
           { name: 'Generate seed list' },
         ]}

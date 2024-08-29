@@ -187,7 +187,7 @@ export default function HostListView() {
       >
         <CustomBreadcrumbs
           heading="Settings"
-          links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Settings' }]}
+          links={[{ name: 'Settings' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost />
