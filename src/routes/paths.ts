@@ -27,6 +27,7 @@ export const paths = {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
     forgotPassword: `${ROOTS.AUTH}/forgot-password`,
+    logout: `${ROOTS.AUTH}/logout`,
   },
   resetPassword: (id: ObjectId, token: string) => `/reset-password/id=${id.toString()}/${token}`,
 
@@ -43,9 +44,6 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/csv-upload`,
       new: `${ROOTS.DASHBOARD}/csv-upload/new`,
       edit: `${ROOTS.DASHBOARD}/csv-upload/edit`,
-    },
-    logout: {
-      root: `${ROOTS.DASHBOARD}/logout`,
     },
   },
 

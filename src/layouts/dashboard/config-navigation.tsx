@@ -37,7 +37,7 @@ export function useNavData() {
           // },
           {
             title: 'Logout',
-            path: paths.dashboard.logout.root,
+            path: paths.auth.logout,
             icon: <Iconify icon="hugeicons:logout-04" />,
           },
         ],
