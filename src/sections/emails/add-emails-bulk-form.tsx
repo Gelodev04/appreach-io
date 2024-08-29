@@ -1,32 +1,32 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
 
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Grid from '@mui/material/Unstable_Grid2';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, {
-  RHFSwitch,
-  RHFSelect,
-  RHFCheckbox,
-  RHFTextField,
   RHFAutocomplete,
+  RHFCheckbox,
+  RHFSelect,
+  RHFSwitch,
+  RHFTextField,
 } from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
 
 import { IAddEmailsBulk } from 'src/types/emails';
 // ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ export default function AddEmailsBulkForm({ currentItem }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentItem ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.settings.root);
+      router.push(paths.settings.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);

@@ -10,7 +10,7 @@ import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 
 export default function LookerStudioView() {
   const { url, urlLoading, urlError } = useGetLookerStudioUrl();
-  const { hosts, hostsLoading } = useGetHosts();
+  const { hosts } = useGetHosts();
   const [mappedHosts, setMappedHosts] = useState<string[]>([]);
 
   // Use useEffect to map hosts and set hostCrypt into mappedHosts
