@@ -45,19 +45,12 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function HostListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const confirmRows = useBoolean();
-
   const router = useRouter();
-
   const settings = useSettingsContext();
-
   const { hosts, hostsLoading } = useGetHosts();
-
   const [tableData, setTableData] = useState<IHost[]>([]);
-
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
@@ -185,7 +178,7 @@ export default function HostListView() {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'md'}
+        maxWidth={settings.themeStretch ? false : 'lg'}
         sx={{
           flexGrow: 1,
           display: 'flex',
