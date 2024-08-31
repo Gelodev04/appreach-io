@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAuthContext } from 'src/auth/hooks';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
@@ -18,9 +17,7 @@ import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
 export default function ResetPasswordView() {
-  const { forgotPassword } = useAuthContext();
   const router = useRouter();
-
   const [id, setId] = useState<any>('');
   const [token, setToken] = useState<any>('');
   const { enqueueSnackbar } = useSnackbar();

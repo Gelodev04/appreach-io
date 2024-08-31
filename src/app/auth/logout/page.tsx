@@ -1,17 +1,14 @@
 'use client';
 
-import Image from 'next/image';
-import { useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { m } from 'framer-motion';
 import { signOut } from 'next-auth/react';
-
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
-import Stack from '@mui/material/Stack';
-
-import { LoadingScreen } from '../../../components/loading-screen';
-import { MotionContainer, varBounce } from '../../../components/animate';
+import Image from 'next/image';
+import { useEffect } from 'react';
+import { MotionContainer, varBounce } from 'src/components/animate';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 const handleLogout = async () => {
   try {

@@ -1,47 +1,47 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridColDef,
   GridActionsCellItem,
-  GridToolbarContainer,
-  GridRowSelectionModel,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridToolbarColumnsButton,
+  GridColDef,
   GridColumnVisibilityModel,
+  GridRowSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 
-import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 
 import { useGetSeeds } from 'src/hooks/api/seed';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { endpoints } from 'src/utils/swr';
 
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
-import EmptyContent from 'src/components/empty-content';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
 
 import { ISeed } from 'src/types/seed';
 
 import {
-  RenderCellToken,
-  RenderCellPublish,
   RenderCellDateAdded,
-  RenderCellImportName,
-  RenderCellResultsTotal,
   RenderCellGenerateTotal,
+  RenderCellImportName,
+  RenderCellPublish,
+  RenderCellResultsTotal,
+  RenderCellToken,
 } from '../seed-table-row';
 
 // ----------------------------------------------------------------------
@@ -229,17 +229,12 @@ export default function SeedView() {
       >
         <CustomBreadcrumbs
           heading="Seeds"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            {
-              name: 'Seeds',
-            },
-          ]}
+          links={[{ name: 'Seeds' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
-                href={paths.dashboard.seed.new}
+                href={paths.seed.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >

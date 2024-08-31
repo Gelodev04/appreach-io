@@ -1,8 +1,8 @@
-import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import { paths } from 'src/routes/paths';
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -29,7 +29,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         try {
           const client = await clientPromise;
-
           const db = client.db(process.env.MONGODB_DATABASE || undefined);
           const user = await db
             .collection('userSettings')
@@ -74,6 +73,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    // Redirect after successful sign in
+    async redirect() {
+      return paths.dashboard.root;
+    },
+  },
 });
 
 declare module 'next-auth' {

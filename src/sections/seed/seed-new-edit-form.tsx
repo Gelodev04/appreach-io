@@ -111,7 +111,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
         throw new Error('Failed to create seed batch');
       }
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.seed.root);
+      router.push(paths.seed.root);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });
