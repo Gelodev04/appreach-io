@@ -9,7 +9,10 @@ export const sendEmail = async (data: EmailData, templateId: string) => {
   sgMail.setApiKey(apiKey);
 
   const msg: sgMail.MailDataRequired = {
-    from: 'omteam@outreachmagic.io', // ! TO BE REPLACED
+    from: {
+      email: 'no-reply@outreachmagic.io',
+      name: 'Outreach Magic',
+    },
     templateId,
     ...data,
   };
