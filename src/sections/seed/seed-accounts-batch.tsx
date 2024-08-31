@@ -1,17 +1,12 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-import Label from 'src/components/label/label';
 import { RHFTextField } from 'src/components/hook-form';
+import Label from 'src/components/label/label';
+import { ISeedAccount } from 'src/types/seed';
 
 // ----------------------------------------------------------------------
 
-interface SeedAccountsBatchProps {
-  name: string;
-  amount: number;
-}
-
-export default function SeedAccountsBatch({ seed }: { seed: SeedAccountsBatchProps }) {
+export default function SeedAccountsBatch({ seed }: { seed: ISeedAccount }) {
   return (
     <Stack direction="row" gap={1} alignItems="center">
       <Label color="primary">{seed.amount}</Label>

@@ -17,12 +17,8 @@ export default function HostCreateView() {
         heading="Register a new infrastructure"
         links={[
           {
-            name: 'Dashboard',
-            href: paths.dashboard.root,
-          },
-          {
             name: 'Settings',
-            href: paths.dashboard.settings.root,
+            href: paths.settings.root,
           },
           { name: 'New infrastructure' },
         ]}

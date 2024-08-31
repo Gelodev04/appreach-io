@@ -45,19 +45,12 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function HostListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const confirmRows = useBoolean();
-
   const router = useRouter();
-
   const settings = useSettingsContext();
-
   const { hosts, hostsLoading } = useGetHosts();
-
   const [tableData, setTableData] = useState<IHost[]>([]);
-
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
@@ -118,7 +111,7 @@ export default function HostListView() {
 
   const handleEditRow = useCallback(
     (id: ObjectId) => {
-      router.push(paths.dashboard.settings.edit(id));
+      router.push(paths.settings.edit(id));
     },
     [router]
   );
@@ -185,7 +178,7 @@ export default function HostListView() {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'md'}
+        maxWidth={settings.themeStretch ? false : 'lg'}
         sx={{
           flexGrow: 1,
           display: 'flex',
@@ -194,14 +187,14 @@ export default function HostListView() {
       >
         <CustomBreadcrumbs
           heading="Settings"
-          links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'Settings' }]}
+          links={[{ name: 'Settings' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost />
 
               <Button
                 component={RouterLink}
-                href={paths.dashboard.settings.new}
+                href={paths.settings.new}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}

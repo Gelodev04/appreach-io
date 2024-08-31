@@ -13,7 +13,7 @@ import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetSeedSettings } from 'src/hooks/api/seed';
+import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
@@ -36,13 +36,10 @@ type SeedAccountType =
 
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
-
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
-
   const { hosts, assignedCount } = useGetSeedSettings();
-
+  const { seedAccounts, totalSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
@@ -82,7 +79,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
-
   const {
     reset,
     handleSubmit,
@@ -91,7 +87,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     setValue,
   } = methods;
 
-  const totalSeedAccounts = watch('totalSeedAccounts');
   const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
   const googlePersonal = watch('googlePersonal');
@@ -116,7 +111,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
         throw new Error('Failed to create seed batch');
       }
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.seed.root);
+      router.push(paths.seed.root);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -197,6 +192,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
             <SeedAccountsGenerator
               assignedCount={assignedCount}
+              seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
             />
           </Stack>

@@ -34,6 +34,7 @@ export const endpoints = {
   },
   seed: {
     list: '/api/seed/list',
+    counts: '/api/seed/counts',
     create: '/api/seed/create',
     settings: '/api/seed/settings',
     delete: '/api/seed/delete',

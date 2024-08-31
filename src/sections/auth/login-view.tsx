@@ -1,25 +1,21 @@
 'use client';
 
-import * as Yup from 'yup';
-import { signIn } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
-import { useBoolean } from 'src/hooks/use-boolean';
-
+import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { useBoolean } from 'src/hooks/use-boolean';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
+import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
 
@@ -47,23 +43,10 @@ export default function LoginView() {
     formState: { isSubmitting },
   } = methods;
 
-  // const onSubmit = handleSubmit(async (data) => {
-  //   try {
-  //     await signIn('credentials', {
-  //       email: data.email,
-  //       password: data.password,
-  //     });
-  //   } catch (error) {
-  //     enqueueSnackbar(error.message, { variant: 'error' });
-  //   }
-  // });
   const onSubmit = handleSubmit(async (data) => {
-    console.log('Email:', data.email);
-    console.log('Password:', data.password);
-
     try {
       const result = await signIn('credentials', {
-        redirect: false,
+        redirect: true,
         email: data.email,
         password: data.password,
       });

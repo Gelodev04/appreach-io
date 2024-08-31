@@ -17,7 +17,6 @@ import { HostSkeleton } from '../host-skeleton';
 export default function HostEditView() {
   const searchParams = useSearchParams();
   const search = searchParams.get('id');
-
   const { host, hostError, hostLoading } = useGetHost(search as string);
 
   if (hostError)
@@ -28,7 +27,7 @@ export default function HostEditView() {
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.settings.root}
+            href={paths.settings.root}
             startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
             sx={{ mt: 3 }}
           >
@@ -46,12 +45,8 @@ export default function HostEditView() {
         heading="Edit infrastructure"
         links={[
           {
-            name: 'Dashboard',
-            href: paths.dashboard.root,
-          },
-          {
             name: 'Settings',
-            href: paths.dashboard.settings.root,
+            href: paths.settings.root,
           },
           { name: 'Edit infrastructure' },
         ]}

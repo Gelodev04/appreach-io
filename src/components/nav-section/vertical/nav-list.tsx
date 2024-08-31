@@ -1,20 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-
 import Collapse from '@mui/material/Collapse';
-
+import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'src/routes/hooks';
 import { useActiveLink } from 'src/routes/hooks/use-active-link';
-
-import NavItem from './nav-item';
 import { NavListProps, NavSubListProps } from '../types';
+import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------
 
 export default function NavList({ data, depth, slotProps }: NavListProps) {
   const pathname = usePathname();
-
-  const active = useActiveLink(data.path, !!data.children);
-
+  const active = useActiveLink(data.path);
   const [openMenu, setOpenMenu] = useState(active);
 
   useEffect(() => {

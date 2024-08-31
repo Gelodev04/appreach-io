@@ -1,11 +1,7 @@
 import { useSession } from 'next-auth/react';
-import { useEffect, useCallback } from 'react';
-
-import { paths } from 'src/routes/paths';
-import { useRouter, useSearchParams } from 'src/routes/hooks';
-
+import { useCallback, useEffect } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
-
+import { useRouter, useSearchParams } from 'src/routes/hooks';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -24,16 +20,14 @@ export default function GuestGuard({ children }: Props) {
 
 function Container({ children }: Props) {
   const router = useRouter();
-
   const searchParams = useSearchParams();
-
-  const returnTo = searchParams.get('returnTo') || paths.dashboard.root;
-
+  // const returnTo = searchParams.get('returnTo') || paths.dashboard.root;
+  const returnTo = searchParams.get('returnTo');
   const { status } = useSession();
   const authenticated = status === 'authenticated' || status === 'loading';
 
   const check = useCallback(() => {
-    if (authenticated) {
+    if (authenticated && returnTo) {
       router.replace(returnTo);
     }
   }, [authenticated, returnTo, router]);

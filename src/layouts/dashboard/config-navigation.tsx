@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-
-import { paths } from 'src/routes/paths';
-
 import Iconify from 'src/components/iconify/iconify';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -19,12 +17,12 @@ export function useNavData() {
           },
           {
             title: 'Settings',
-            path: paths.dashboard.settings.root,
+            path: paths.settings.root,
             icon: <Iconify icon="bx:server" />,
           },
           {
             title: 'Seeds',
-            path: paths.dashboard.seed.root,
+            path: paths.seed.root,
             icon: <Iconify icon="pepicons-pop:seedling" />,
           },
           // {
@@ -39,7 +37,7 @@ export function useNavData() {
           // },
           {
             title: 'Logout',
-            path: paths.dashboard.logout.root,
+            path: paths.auth.logout,
             icon: <Iconify icon="hugeicons:logout-04" />,
           },
         ],

@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { sendEmail } from 'src/auth/lib/sendgrid';
+import { paths } from 'src/routes/paths';
 
 export async function POST(request: Request) {
   try {
@@ -37,7 +38,8 @@ export async function POST(request: Request) {
 
     // Construct the reset password link using the current host
     const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const resetPasswordLink = `${protocol}://${host}/reset-password/${user._id}/${resetPasswordToken}`;
+    const url = paths.auth.resetPassword(user._id, resetPasswordToken);
+    const resetPasswordLink = `${protocol}://${host}${url}`;
 
     // Send the reset password email
     await sendEmail(

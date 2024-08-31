@@ -116,7 +116,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         throw new Error('Failed to update host');
       }
       enqueueSnackbar('Update success!');
-      router.push(paths.dashboard.settings.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -134,7 +134,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         throw new Error(body.error ?? 'Failed to create host');
       }
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.settings.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
