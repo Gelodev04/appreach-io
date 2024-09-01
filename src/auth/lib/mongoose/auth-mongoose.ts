@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-
 import dbMongoose from './db-mongoose';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({

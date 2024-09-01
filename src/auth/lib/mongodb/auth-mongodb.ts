@@ -78,7 +78,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     // Allow sign in if user has been verified
     async signIn({ user }) {
-      return user.verified;
+      return user?.verified || false;
     },
   },
 });
@@ -93,7 +93,7 @@ declare module 'next-auth' {
   }
 
   interface User {
-    role: string;
-    verified: boolean;
+    role?: string;
+    verified?: boolean;
   }
 }
