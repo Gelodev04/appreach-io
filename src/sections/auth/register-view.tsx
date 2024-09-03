@@ -32,12 +32,15 @@ export default function RegisterView() {
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
+    companyName: Yup.string()
+      .required('Company name required')
+      .max(20, 'Company name can not be longer than 20 characters'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-#<>[\]\\])[A-Za-z\d@$!%*?&\-#<>[\]\\]{6,}$/,
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!/@$%^&*-]).{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
     confirmPassword: Yup.string()
@@ -51,6 +54,7 @@ export default function RegisterView() {
     defaultValues: {
       firstName: '',
       lastName: '',
+      companyName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -65,7 +69,13 @@ export default function RegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await register?.(data.email, data.password, data.firstName, data.lastName);
+      await register?.({
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        companyName: data.companyName,
+      });
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
@@ -118,6 +128,7 @@ export default function RegisterView() {
         <RHFTextField name="lastName" label="Last name" />
       </Stack>
 
+      <RHFTextField name="companyName" label="Company name" />
       <RHFTextField name="email" label="Email address" />
 
       <RHFTextField

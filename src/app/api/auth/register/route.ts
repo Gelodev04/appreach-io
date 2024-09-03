@@ -8,7 +8,7 @@ import { paths } from 'src/routes/paths';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { email, password, firstName, lastName } = data;
+    const { email, password, firstName, lastName, companyName } = data;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
         username: email,
         firstName,
         lastName,
+        companyName,
         approved: false,
         currentLogin: null,
         lastLogin: null,

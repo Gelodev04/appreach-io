@@ -72,8 +72,6 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
   return state;
 };
 
-// ----------------------------------------------------------------------
-
 const STORAGE_KEY = 'accessToken';
 
 type Props = {
@@ -91,7 +89,6 @@ export function AuthProvider({ children }: Props) {
         setSession(accessToken);
 
         const res = await axios.get(endpoints.auth.me);
-
         const { user } = res.data;
 
         dispatch({
@@ -134,7 +131,6 @@ export function AuthProvider({ children }: Props) {
     };
 
     const res = await axios.post(endpoints.auth.login, data);
-
     const { accessToken, user } = res.data;
 
     setSession(accessToken);
@@ -152,16 +148,14 @@ export function AuthProvider({ children }: Props) {
 
   // REGISTER
   const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
-      const data = {
-        email,
-        password,
-        firstName,
-        lastName,
-      };
-
+    async (data: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      companyName: string;
+    }) => {
       const res = await axios.post(endpoints.auth.register, data);
-
       const { accessToken, user } = res.data;
 
       sessionStorage.setItem(STORAGE_KEY, accessToken);
