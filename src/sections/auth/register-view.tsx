@@ -37,7 +37,7 @@ export default function RegisterView() {
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-#<>[\]\\])[A-Za-z\d@$!%*?&\-#<>[\]\\]{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
     confirmPassword: Yup.string()
