@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { paths } from 'src/routes/paths';
-import axios, { endpoints } from 'src/utils/axios';
+import axios from 'src/utils/axios';
+import { endpoints } from 'src/utils/swr';
 import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';

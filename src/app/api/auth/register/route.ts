@@ -12,7 +12,9 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
-    if (!email || !password || !firstName || !lastName) throw new Error('Missing required fields');
+    if (!email || !password || !firstName || !lastName || !companyName) {
+      throw new Error('Missing required fields');
+    }
 
     const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
     if (user) throw new Error('There is already a user with the given email');
