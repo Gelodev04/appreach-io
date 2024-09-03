@@ -27,9 +27,11 @@ export const paths = {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
     forgotPassword: `${ROOTS.AUTH}/reset-password`,
+    logout: `${ROOTS.AUTH}/logout`,
     resetPassword: (id: ObjectId, token: string) =>
       `${ROOTS.AUTH}/reset-password/${id.toString()}/${token}`,
-    logout: `${ROOTS.AUTH}/logout`,
+    verifyAccount: (id: ObjectId, token: string) =>
+      `${ROOTS.AUTH}/verify-account/${id.toString()}/${token}`,
   },
 
   // DASHBOARD
