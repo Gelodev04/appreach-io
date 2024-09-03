@@ -15,6 +15,7 @@ export async function POST(request: Request) {
       .collection('userSettings')
       .findOne({ _id: ObjectId.createFromHexString(id) });
     if (!user) throw new Error('Could not find any user with the given id');
+    if (user.verification.token !== token) throw new Error('The token is invalid');
 
     await db.collection('userSettings').updateOne(
       { _id: ObjectId.createFromHexString(id) },

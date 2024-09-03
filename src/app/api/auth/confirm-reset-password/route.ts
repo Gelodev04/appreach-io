@@ -8,14 +8,16 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
-    const { id, password } = data;
+    const { id, password, token } = data;
     if (!id) throw new Error('Id is required');
+    if (!token) throw new Error('Token is required');
     if (!password) throw new Error('Password is required');
 
     const user = await db
       .collection('userSettings')
       .findOne({ _id: ObjectId.createFromHexString(id) });
     if (!user) throw new Error('Could not find any user with the given id');
+    if (user.resetPassword.token !== token) throw new Error('The token is invalid');
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 12);
