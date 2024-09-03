@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
@@ -17,19 +16,29 @@ import { paths } from 'src/routes/paths';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-export default function ResetPasswordView() {
+export default function ConfirmResetPasswordView({ id, token }: { id: string; token: string }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [resp, setResp] = useState<any>('');
 
-  const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+  const ResetPasswordSchema = Yup.object().shape({
+    password: Yup.string()
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-#])[A-Za-z\d@$!%*?&\-#]{6,}$/,
+        'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
+      ),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), ''], 'Passwords must match')
+      .nullable()
+      .required('Confirm Password is required'),
   });
 
   const methods = useForm({
-    resolver: yupResolver(ForgotPasswordSchema),
+    resolver: yupResolver(ResetPasswordSchema),
     defaultValues: {
-      email: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -38,51 +47,36 @@ export default function ResetPasswordView() {
     formState: { isSubmitting },
   } = methods;
 
-  // const onSubmit = handleSubmit(async (data) => {
-  //   try {
-  //     await forgotPassword?.(data.email);
-
-  //     const href = `${paths.auth.forgotPassword}`;
-  //     router.push(href);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // });
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const url = endpoints.auth.resetPassword;
-      const headers = {
-        'Content-Type': 'application/json',
-      };
+      if (!id || !token) throw new Error('Invalid or missing URL parameters');
 
-      const body = JSON.stringify({
-        email: data.email,
-      });
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body,
-      });
-
+      const url = endpoints.auth.confirmResetPassword;
+      const body = JSON.stringify({ id, password: data.password, token });
+      const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData?.error || 'Failed to reset password');
 
-      setResp(responseData);
+      if (!response.ok) throw new Error(responseData.message || 'Failed to reset password');
+
+      console.log('Reset password response:', responseData);
+      enqueueSnackbar(responseData?.message || 'Password reset successfully', {
+        variant: 'success',
+      });
+
       // Redirect or handle success as needed
-      const href = `${paths.auth.forgotPassword}`;
+      const href = `${paths.auth.login}`;
       router.push(href);
     } catch (error) {
+      console.log('Error resetting password:', error.message);
       enqueueSnackbar(error.message, { variant: 'error' });
-
-      console.error('Error resetting password:', error);
       // Handle error, show error message, etc.
     }
   });
 
   const renderForm = (
     <Stack spacing={3} alignItems="center">
-      <RHFTextField name="email" label="Email address" />
+      <RHFTextField name="password" type="password" label="Password" />
+      <RHFTextField name="confirmPassword" type="password" label="Confirm Password" />
 
       <LoadingButton
         fullWidth
@@ -91,7 +85,7 @@ export default function ResetPasswordView() {
         variant="contained"
         loading={isSubmitting}
       >
-        Send Request
+        Reset Password
       </LoadingButton>
 
       <Link
@@ -121,11 +115,11 @@ export default function ResetPasswordView() {
       />
 
       <Stack spacing={1} sx={{ mt: 3, mb: 5 }}>
-        <Typography variant="h3">Forgot your password?</Typography>
+        <Typography variant="h3">Create Your New Password</Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Please enter the email address associated with your account and We will email you a link
-          to reset your password.
+          Please ensure your new password is at least 12 characters long and includes a mix of
+          letters, numbers, and symbols.
         </Typography>
       </Stack>
     </Stack>
@@ -133,23 +127,10 @@ export default function ResetPasswordView() {
 
   return (
     <>
-      {resp === '' ? (
-        <>
-          {' '}
-          {renderHead}
-          <FormProvider methods={methods} onSubmit={onSubmit}>
-            {renderForm}
-          </FormProvider>
-        </>
-      ) : (
-        <Stack spacing={1} sx={{ mt: 3, mb: 5 }}>
-          <Typography variant="h3">Check Your Mail</Typography>
-
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {resp?.message}
-          </Typography>
-        </Stack>
-      )}
+      {renderHead}
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        {renderForm}
+      </FormProvider>
     </>
   );
 }

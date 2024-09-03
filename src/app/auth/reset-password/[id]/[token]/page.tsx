@@ -1,13 +1,13 @@
-import { ResetPasswordView } from 'src/sections/auth';
+import { ConfirmResetPasswordView } from 'src/sections/auth';
 
 export const metadata = {
   title: 'Create New Password | Outreach Magic',
 };
 
-export default function CreateNewPasswordPage({
+export default function ConfirmResetPasswordPage({
   params,
 }: {
   params: { id: string; token: string };
 }) {
-  return <ResetPasswordView id={params.id} token={params.token} />;
+  return <ConfirmResetPasswordView id={params.id} token={params.token} />;
 }
