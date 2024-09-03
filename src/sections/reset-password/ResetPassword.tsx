@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
@@ -14,28 +13,19 @@ import { useSnackbar } from 'src/components/snackbar';
 import { RouterLink } from 'src/routes/components';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-export default function ResetPasswordView() {
+export default function ResetPasswordView({ id, token }: { id: string; token: string }) {
   const router = useRouter();
-  const [id, setId] = useState<any>('');
-  const [token, setToken] = useState<any>('');
   const { enqueueSnackbar } = useSnackbar();
-  const URL = process.env.NEXT_PUBLIC_API_URL;
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const Id = urlParams.get('id');
-    const Token = urlParams.get('token');
-    setId(Id);
-    setToken(Token);
-  }, []); // Only run once on component mount
 
   const ResetPasswordSchema = Yup.object().shape({
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-#])[A-Za-z\d@$!%*?&\-#]{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
     confirmPassword: Yup.string()
@@ -44,14 +34,12 @@ export default function ResetPasswordView() {
       .required('Confirm Password is required'),
   });
 
-  const defaultValues = {
-    password: '',
-    confirmPassword: '',
-  };
-
   const methods = useForm({
     resolver: yupResolver(ResetPasswordSchema),
-    defaultValues,
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const {
@@ -61,33 +49,20 @@ export default function ResetPasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if (!id || !token) {
-        throw new Error('Invalid or missing URL parameters');
-      }
-      const url = `${URL}/reset-password/?id=${id}&token=${token}`; // Replace with your API endpoint
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      };
+      if (!id || !token) throw new Error('Invalid or missing URL parameters');
 
-      const body = new URLSearchParams({
-        password: data.password,
-      }).toString();
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body,
-      });
-
+      const url = endpoints.auth.confirmResetPassword;
+      const body = JSON.stringify({ id, password: data.password });
+      const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.message || 'Failed to reset password');
-      }
+
+      if (!response.ok) throw new Error(responseData.message || 'Failed to reset password');
 
       console.log('Reset password response:', responseData);
       enqueueSnackbar(responseData?.message || 'Password reset successfully', {
         variant: 'success',
       });
+
       // Redirect or handle success as needed
       const href = `${paths.auth.login}`;
       router.push(href);

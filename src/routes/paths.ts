@@ -26,10 +26,11 @@ export const paths = {
   auth: {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
-    forgotPassword: `${ROOTS.AUTH}/forgot-password`,
+    forgotPassword: `${ROOTS.AUTH}/reset-password`,
+    resetPassword: (id: ObjectId, token: string) =>
+      `${ROOTS.AUTH}/reset-password/${id.toString()}/${token}`,
     logout: `${ROOTS.AUTH}/logout`,
   },
-  resetPassword: (id: ObjectId, token: string) => `/reset-password/id=${id.toString()}/${token}`,
 
   // DASHBOARD
   dashboard: {
