@@ -39,18 +39,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new Error('No credentials provided');
           }
 
-          if (!user) {
-            throw new Error('No user found');
-          }
+          if (!user) throw new Error('No user found');
 
           const isValidPassword = await bcrypt.compare(
             credentials.password as string,
             user.appLogin.password
           );
 
-          if (!isValidPassword) {
-            throw new Error('Invalid password');
-          }
+          if (!isValidPassword) throw new Error('Invalid password');
 
           await db.collection('userSettings').updateOne(
             { 'appLogin.username': credentials.email },
@@ -66,6 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: user._id.toString(),
             email: user.appLogin.username,
             role: user.appLogin.view,
+            verified: user.appLogin.verified,
           };
         } catch (error) {
           console.log(error.message);
@@ -79,6 +76,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async redirect() {
       return paths.dashboard.root;
     },
+
+    // Allow sign in if user has been verified
+    async signIn({ user }) {
+      return user?.verified || false;
+    },
   },
 });
 
@@ -89,5 +91,10 @@ declare module 'next-auth' {
       email: string;
     };
     accessToken?: string;
+  }
+
+  interface User {
+    role?: string;
+    verified?: boolean;
   }
 }

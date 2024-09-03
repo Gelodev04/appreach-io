@@ -1,4 +1,4 @@
-import ResetPasswordView from 'src/sections/reset-password/ResetPassword';
+import { ForgotPasswordView } from 'src/sections/auth';
 
 // ----------------------------------------------------------------------
 
@@ -7,5 +7,5 @@ export const metadata = {
 };
 
 export default function CreateNewPasswordPage() {
-  return <ResetPasswordView />;
+  return <ForgotPasswordView />;
 }

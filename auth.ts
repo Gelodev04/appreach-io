@@ -1,9 +1,7 @@
 import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
-
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-// import bcrypt from 'bcrypt';
+import { authConfig } from './auth.config';
 
 async function getUser(email: string) {
   try {
@@ -19,8 +17,11 @@ async function getUser(email: string) {
       id: user._id.toString(),
       email: user.appLogin.username,
       password: user.appLogin.password,
+      verified: user.appLogin.verified,
     };
-  } catch (error) {}
+  } catch (error) {
+    // Do nothing
+  }
 }
 
 export const { auth, signIn, signOut } = NextAuth({
@@ -28,21 +29,21 @@ export const { auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        if (!credentials.email || !credentials.password) {
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         const user = await getUser(credentials.email as string);
 
-        if (user) return user;
+        if (user) {
+          return {
+            id: user.id,
+            email: user.email,
+            verified: user.verified,
+          };
+        }
 
         return null;
-
-        // if (user && (await bcrypt.compare(credentials.password as string, user.password))) {
-        //   return user;
-        // } else {
-        //   return null;
-        // }
       },
     }),
   ],
