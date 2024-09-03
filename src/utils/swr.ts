@@ -4,8 +4,6 @@ export const revalidateData = async (url: string) => {
   await mutate(url);
 };
 
-// ----------------------------------------------------------------------
-
 export const fetcher = (url: string) =>
   fetch(url).then((response) => {
     if (!response.ok) {
@@ -16,13 +14,12 @@ export const fetcher = (url: string) =>
     return response.json();
   });
 
-// ----------------------------------------------------------------------
-
 export const endpoints = {
   lookerStudio: '/api/looker-studio',
   auth: {
     resetPassword: '/api/auth/reset-password',
     confirmResetPassword: '/api/auth/confirm-reset-password',
+    verifyAccount: '/api/auth/verify-account',
   },
   host: {
     list: '/api/host/list',
