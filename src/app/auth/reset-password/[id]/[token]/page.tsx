@@ -1,6 +1,4 @@
-import ResetPasswordView from 'src/sections/reset-password/ResetPassword';
-
-// ----------------------------------------------------------------------
+import { ResetPasswordView } from 'src/sections/auth';
 
 export const metadata = {
   title: 'Create New Password | Outreach Magic',
