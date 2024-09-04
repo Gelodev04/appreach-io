@@ -16,7 +16,7 @@ import { paths } from 'src/routes/paths';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-export default function ResetPasswordView({ id, token }: { id: string; token: string }) {
+export default function ConfirmResetPasswordView({ id, token }: { id: string; token: string }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -25,7 +25,7 @@ export default function ResetPasswordView({ id, token }: { id: string; token: st
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-#])[A-Za-z\d@$!%*?&\-#]{6,}$/,
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!/@$%^&*-]).{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
     confirmPassword: Yup.string()
@@ -52,7 +52,7 @@ export default function ResetPasswordView({ id, token }: { id: string; token: st
       if (!id || !token) throw new Error('Invalid or missing URL parameters');
 
       const url = endpoints.auth.confirmResetPassword;
-      const body = JSON.stringify({ id, password: data.password });
+      const body = JSON.stringify({ id, password: data.password, token });
       const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
 

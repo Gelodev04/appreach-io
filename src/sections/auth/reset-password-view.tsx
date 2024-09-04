@@ -17,24 +17,20 @@ import { paths } from 'src/routes/paths';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-// ----------------------------------------------------------------------
-
-export default function ForgotPasswordView() {
-  const [resp, setResp] = useState<any>('');
+export default function ResetPasswordView() {
   const router = useRouter();
-
   const { enqueueSnackbar } = useSnackbar();
+  const [resp, setResp] = useState<any>('');
+
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
   });
 
-  const defaultValues = {
-    email: '',
-  };
-
   const methods = useForm({
     resolver: yupResolver(ForgotPasswordSchema),
-    defaultValues,
+    defaultValues: {
+      email: '',
+    },
   });
 
   const {

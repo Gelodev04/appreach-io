@@ -1,62 +1,64 @@
 'use client';
 
-import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-
-import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import InputAdornment from '@mui/material/InputAdornment';
-
-import { paths } from 'src/routes/paths';
+import { useAuthContext } from 'src/auth/hooks';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Iconify from 'src/components/iconify';
+import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { useBoolean } from 'src/hooks/use-boolean';
 import { RouterLink } from 'src/routes/components';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
-
-import { useBoolean } from 'src/hooks/use-boolean';
-
-import { useAuthContext } from 'src/auth/hooks';
-import { PATH_AFTER_LOGIN } from 'src/config-global';
-
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
-
-// ----------------------------------------------------------------------
+import { paths } from 'src/routes/paths';
+import * as Yup from 'yup';
 
 export default function RegisterView() {
   const { register } = useAuthContext();
-
   const router = useRouter();
-
   const [errorMsg, setErrorMsg] = useState('');
-
   const searchParams = useSearchParams();
-
   const returnTo = searchParams.get('returnTo');
-
   const password = useBoolean();
+  const confirmPassword = useBoolean();
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
+    companyName: Yup.string()
+      .required('Company name required')
+      .max(20, 'Company name can not be longer than 20 characters'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters')
+      .matches(
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!/@$%^&*-]).{6,}$/,
+        'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
+      ),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), ''], 'Passwords must match')
+      .nullable()
+      .required('Confirm Password is required'),
   });
-
-  const defaultValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
 
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
-    defaultValues,
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      companyName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const {
@@ -67,7 +69,13 @@ export default function RegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await register?.(data.email, data.password, data.firstName, data.lastName);
+      await register?.({
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        companyName: data.companyName,
+      });
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
@@ -78,7 +86,7 @@ export default function RegisterView() {
   });
 
   const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
+    <Stack spacing={2} sx={{ mb: 3, position: 'relative' }}>
       <Typography variant="h4">Get started absolutely free</Typography>
 
       <Stack direction="row" spacing={0.5}>
@@ -120,6 +128,7 @@ export default function RegisterView() {
         <RHFTextField name="lastName" label="Last name" />
       </Stack>
 
+      <RHFTextField name="companyName" label="Company name" />
       <RHFTextField name="email" label="Email address" />
 
       <RHFTextField
@@ -131,6 +140,23 @@ export default function RegisterView() {
             <InputAdornment position="end">
               <IconButton onClick={password.onToggle} edge="end">
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <RHFTextField
+        name="confirmPassword"
+        label="Confirm Password"
+        type={confirmPassword.value ? 'text' : 'password'}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={confirmPassword.onToggle} edge="end">
+                <Iconify
+                  icon={confirmPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
+                />
               </IconButton>
             </InputAdornment>
           ),
@@ -155,7 +181,7 @@ export default function RegisterView() {
       {renderHead}
 
       {!!errorMsg && (
-        <Alert severity="error" sx={{ m: 3 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {errorMsg}
         </Alert>
       )}
