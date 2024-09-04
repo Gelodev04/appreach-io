@@ -4,6 +4,7 @@ import { addDays } from 'date-fns';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { sendEmail } from 'src/auth/lib/sendgrid';
 import { paths } from 'src/routes/paths';
+import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
 export async function POST(request: Request) {
   try {
@@ -16,8 +17,10 @@ export async function POST(request: Request) {
       throw new Error('Missing required fields');
     }
 
-    const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
-    if (user) throw new Error('There is already a user with the given email');
+    const existingUser = await db
+      .collection('userSettings')
+      .findOne({ 'appLogin.username': email });
+    if (existingUser) throw new Error('There is already a user with the given email');
 
     // Hash the given password
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -28,7 +31,8 @@ export async function POST(request: Request) {
     // Set token expiration to 24h from now
     const tokenExpiration = addDays(new Date(), 1);
 
-    const { insertedId } = await db.collection('userSettings').insertOne({
+    // Create user
+    const { insertedId: userId } = await db.collection('userSettings').insertOne({
       appLogin: {
         username: email,
         firstName,
@@ -62,13 +66,49 @@ export async function POST(request: Request) {
       },
     });
 
+    // Generate a unique host name
+    const generateUniqueHostName = async (baseHostName: string, counter: number = 1) => {
+      // Check if a host with the same name exists in the 'hosts' collection
+      const hostName = counter === 1 ? baseHostName : `${baseHostName}${counter}`;
+      const hostExists = await db.collection('hosts').findOne({ host: hostName });
+
+      // If host exists, call this function recursively with an incremented counter
+      if (hostExists) return generateUniqueHostName(baseHostName, counter + 1);
+
+      return hostName;
+    };
+
+    const baseHostName = companyName.toLowerCase().replace(/\s+/g, '');
+    const defaultHostName = await generateUniqueHostName(baseHostName);
+    const defaultHostCrypt = generateHostCrypt(defaultHostName);
+    const defaultHostLookerStudioUrl = generateLookerStudioUrl([defaultHostCrypt]);
+
+    // Create default host
+    const { insertedId: hostId } = await db.collection('hosts').insertOne({
+      host: defaultHostName,
+      hostCrypt: defaultHostCrypt,
+      lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
+      inboxEngagement: {
+        markImportant: true,
+        removeSpam: true,
+        replyMessage: false,
+        clickLink: true,
+        downloadMessage: true,
+        movePrimary: true,
+        scrollMessage: true,
+      },
+    });
+
+    // Update the user with the new host ObjectId
+    await db.collection('userSettings').updateOne({ _id: userId }, { $push: { hosts: hostId } });
+
     // Get the current host from the request headers
     const host = request.headers.get('host');
     if (!host) throw new Error('Unable to determine the host domain');
 
     // Construct the reset password link using the current host
     const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const url = paths.auth.verifyAccount(insertedId, verificationToken);
+    const url = paths.auth.verifyAccount(userId, verificationToken);
     const resetPasswordLink = `${protocol}://${host}${url}`;
 
     // Send verification email
