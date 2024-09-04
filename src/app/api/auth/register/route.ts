@@ -67,7 +67,10 @@ export async function POST(request: Request) {
     });
 
     // Generate a unique host name
-    const generateUniqueHostName = async (baseHostName: string, counter: number = 1) => {
+    const generateUniqueHostName = async (
+      baseHostName: string,
+      counter: number = 1
+    ): Promise<string> => {
       // Check if a host with the same name exists in the 'hosts' collection
       const hostName = counter === 1 ? baseHostName : `${baseHostName}${counter}`;
       const hostExists = await db.collection('hosts').findOne({ host: hostName });
@@ -100,7 +103,7 @@ export async function POST(request: Request) {
     });
 
     // Update the user with the new host ObjectId
-    await db.collection('userSettings').updateOne({ _id: userId }, { $push: { hosts: hostId } });
+    await db.collection('userSettings').updateOne({ _id: userId }, { $set: { hosts: [hostId] } });
 
     // Get the current host from the request headers
     const host = request.headers.get('host');
