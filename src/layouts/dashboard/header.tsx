@@ -15,25 +15,17 @@ import NotificationsPopover from '../common/notifications-popover';
 import Searchbar from '../common/searchbar';
 import { HEADER, NAV } from '../config-layout';
 
-// ----------------------------------------------------------------------
-
 type Props = {
   onOpenNav?: VoidFunction;
 };
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-
   const settings = useSettingsContext();
-
   const isNavHorizontal = settings.themeLayout === 'horizontal';
-
   const isNavMini = settings.themeLayout === 'mini';
-
   const lgUp = useResponsive('up', 'lg');
-
   const offset = useOffSetTop(HEADER.H_DESKTOP);
-
   const offsetTop = offset && !isNavHorizontal;
 
   const renderContent = (
