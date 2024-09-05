@@ -1,11 +1,7 @@
-import { forwardRef } from 'react';
-
-import Link from '@mui/material/Link';
 import Box, { BoxProps } from '@mui/material/Box';
-
+import Link from '@mui/material/Link';
+import { forwardRef } from 'react';
 import { RouterLink } from 'src/routes/components';
-
-// ----------------------------------------------------------------------
 
 export interface LogoProps extends BoxProps {
   disabledLink?: boolean;
@@ -16,14 +12,12 @@ const LogoSymbol = forwardRef<HTMLDivElement, LogoProps>(({ disabledLink = false
     <Box
       ref={ref}
       component="img"
-      src="/logo/logo_symbol.png"
+      src="/logo/symbol_color.svg"
       sx={{ width: 54, height: 47, cursor: 'pointer', ...sx }}
     />
   );
 
-  if (disabledLink) {
-    return logo;
-  }
+  if (disabledLink) return logo;
 
   return (
     <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
