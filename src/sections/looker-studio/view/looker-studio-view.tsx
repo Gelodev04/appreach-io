@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Error from 'src/components/error/error';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
+import { useResponsive } from 'src/hooks/use-responsive';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
 import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 
@@ -12,6 +13,7 @@ export default function LookerStudioView() {
   const { url, urlLoading, urlError } = useGetLookerStudioUrl();
   const { hosts } = useGetHosts();
   const [mappedHosts, setMappedHosts] = useState<string[]>([]);
+  const lgUp = useResponsive('up', 'lg');
 
   // Use useEffect to map hosts and set hostCrypt into mappedHosts
   useEffect(() => {
@@ -34,12 +36,10 @@ export default function LookerStudioView() {
 
   const renderLookerStudioIframe = (
     <iframe
-      // src={url}
       src={generateLookerStudioUrl(mappedHosts)}
       width="100%"
-      height="100%"
       title="Looker Studio Dashboard"
-      style={{ borderRadius: '10px', border: 'none' }}
+      style={{ borderRadius: '10px', border: 'none', height: lgUp ? '100%' : '100vh' }}
     />
   );
 
