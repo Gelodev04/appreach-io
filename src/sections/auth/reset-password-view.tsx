@@ -51,20 +51,9 @@ export default function ResetPasswordView() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const url = endpoints.auth.resetPassword;
-      const headers = {
-        'Content-Type': 'application/json',
-      };
+      const body = JSON.stringify({ email: data.email });
 
-      const body = JSON.stringify({
-        email: data.email,
-      });
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body,
-      });
-
+      const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData?.error || 'Failed to reset password');
 
