@@ -3,8 +3,6 @@
 import { AuthGuard, GuestGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
-// ----------------------------------------------------------------------
-
 type Props = {
   children: React.ReactNode;
 };

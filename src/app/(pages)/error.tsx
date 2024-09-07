@@ -1,15 +1,11 @@
 'use client';
 
-import Image from 'next/image';
-import { m } from 'framer-motion';
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
-import { varBounce, MotionContainer } from 'src/components/animate';
-
-// ----------------------------------------------------------------------
+import { m } from 'framer-motion';
+import Image from 'next/image';
+import { MotionContainer, varBounce } from 'src/components/animate';
 
 export default function Error({
   error,
