@@ -1,3 +1,4 @@
+import { Box, Stack } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
@@ -28,9 +29,16 @@ export default function Header({ onOpenNav }: Props) {
       {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
-        <IconButton onClick={onOpenNav}>
-          <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
-        </IconButton>
+        <>
+          <Box position="absolute" height="full">
+            <IconButton onClick={onOpenNav}>
+              <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
+            </IconButton>
+          </Box>
+          <Stack flexGrow={1} direction="row" alignItems="center" justifyContent="center">
+            <Logo display="flex" />
+          </Stack>
+        </>
       )}
 
       {/* <Searchbar /> */}
