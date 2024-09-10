@@ -1,24 +1,17 @@
-import { useEffect } from 'react';
-
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
-
-import { usePathname } from 'src/routes/hooks';
-
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-import { useResponsive } from 'src/hooks/use-responsive';
-
+import { useEffect } from 'react';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
-
+import { useMockedUser } from 'src/hooks/use-mocked-user';
+import { useResponsive } from 'src/hooks/use-responsive';
+import { usePathname } from 'src/routes/hooks';
 import NavToggleButton from '../common/nav-toggle-button';
 import NavUpgrade from '../common/nav-upgrade';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   openNav: boolean;

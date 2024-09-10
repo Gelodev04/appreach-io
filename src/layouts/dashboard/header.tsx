@@ -1,6 +1,5 @@
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
 import Logo from 'src/components/logo';
@@ -9,13 +8,7 @@ import SvgColor from 'src/components/svg-color';
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { bgBlur } from 'src/theme/css';
-
-import AccountPopover from '../common/account-popover';
-import NotificationsPopover from '../common/notifications-popover';
-import Searchbar from '../common/searchbar';
 import { HEADER, NAV } from '../config-layout';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   onOpenNav?: VoidFunction;
@@ -23,17 +16,11 @@ type Props = {
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-
   const settings = useSettingsContext();
-
   const isNavHorizontal = settings.themeLayout === 'horizontal';
-
   const isNavMini = settings.themeLayout === 'mini';
-
   const lgUp = useResponsive('up', 'lg');
-
   const offset = useOffSetTop(HEADER.H_DESKTOP);
-
   const offsetTop = offset && !isNavHorizontal;
 
   const renderContent = (
@@ -46,9 +33,9 @@ export default function Header({ onOpenNav }: Props) {
         </IconButton>
       )}
 
-      <Searchbar />
+      {/* <Searchbar /> */}
 
-      <Stack
+      {/* <Stack
         flexGrow={1}
         direction="row"
         alignItems="center"
@@ -57,7 +44,7 @@ export default function Header({ onOpenNav }: Props) {
       >
         <NotificationsPopover />
         <AccountPopover />
-      </Stack>
+      </Stack> */}
     </>
   );
 
