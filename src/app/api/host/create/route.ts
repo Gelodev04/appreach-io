@@ -1,7 +1,6 @@
-import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
 export async function POST(request: Request) {
@@ -22,10 +21,14 @@ export async function POST(request: Request) {
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
     const session = await auth();
 
-    const user = await getUser()
+    const user = await getUser();
+
+    // Check if a host with the same name already exists
+    const existingHost = await db.collection('hosts').findOne({ host });
+    if (existingHost) throw new Error('Infrastructure already exists, try another name');
 
     const hostCrypt = generateHostCrypt(host);
-    const lookerStudioUrl = generateLookerStudioUrl(hostCrypt);
+    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
     const externalSenderAddressesArray = externalSenderAddresses.split('\n');
     const notificationAddressesArray = notificationAddresses.split('\n');
 
@@ -50,10 +53,7 @@ export async function POST(request: Request) {
     user.hosts.push(newHostId);
     await db
       .collection('userSettings')
-      .updateOne(
-        { 'appLogin.username': session?.user.email },
-        { $set: { hosts: user.hosts } }
-      );
+      .updateOne({ 'appLogin.username': session?.user.email }, { $set: { hosts: user.hosts } });
 
     return Response.json({ message: 'Host created and added to user settings successfully' });
   } catch (error) {

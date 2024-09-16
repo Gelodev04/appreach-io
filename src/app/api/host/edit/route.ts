@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       .findOne({ _id: ObjectId.createFromHexString(_id) });
 
     if (!currentHost) {
-    return Response.json({ message: 'This host does not exist' }, { status: 404 });
+      return Response.json({ message: 'This host does not exist' }, { status: 404 });
     }
 
     const externalSenderAddressesArray = externalSenderAddresses.split('\n');

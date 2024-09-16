@@ -1,44 +1,37 @@
 'use client';
 
-import { ObjectId } from 'mongodb';
-import { useState, useEffect, useCallback } from 'react';
-
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridColDef,
   GridActionsCellItem,
-  GridToolbarContainer,
-  GridRowSelectionModel,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridToolbarColumnsButton,
+  GridColDef,
   GridColumnVisibilityModel,
+  GridRowSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
-
+import { ObjectId } from 'mongodb';
+import { useCallback, useEffect, useState } from 'react';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { endpoints } from 'src/utils/swr';
-
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
-import EmptyContent from 'src/components/empty-content';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
+import { RouterLink } from 'src/routes/components';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
-
+import { endpoints } from 'src/utils/swr';
 import HostAddExistingHost from '../host-add-existing-host';
-import { RenderHostName, RenderHostCrypt, RenderLookerStudioUrl } from '../host-table-row';
+import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -52,19 +45,12 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function HostListView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const confirmRows = useBoolean();
-
   const router = useRouter();
-
   const settings = useSettingsContext();
-
   const { hosts, hostsLoading } = useGetHosts();
-
   const [tableData, setTableData] = useState<IHost[]>([]);
-
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
@@ -125,7 +111,7 @@ export default function HostListView() {
 
   const handleEditRow = useCallback(
     (id: ObjectId) => {
-      router.push(paths.dashboard.host.edit(id));
+      router.push(paths.settings.edit(id));
     },
     [router]
   );
@@ -133,7 +119,7 @@ export default function HostListView() {
   const columns: GridColDef[] = [
     {
       field: 'host',
-      headerName: 'Host',
+      headerName: 'Infrastructure',
       flex: 1,
       minWidth: 220,
       hideable: false,
@@ -141,13 +127,13 @@ export default function HostListView() {
     },
     {
       field: 'hostCrypt',
-      headerName: 'Host crypt',
+      headerName: 'Crypt',
       width: 220,
       renderCell: (params) => <RenderHostCrypt params={params} />,
     },
     {
       field: 'lookerStudio',
-      headerName: 'Looker Studio URL',
+      headerName: 'Reporting URL',
       width: 160,
       type: 'singleSelect',
       headerAlign: 'center',
@@ -192,7 +178,7 @@ export default function HostListView() {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'md'}
+        maxWidth={settings.themeStretch ? false : 'lg'}
         sx={{
           flexGrow: 1,
           display: 'flex',
@@ -200,25 +186,20 @@ export default function HostListView() {
         }}
       >
         <CustomBreadcrumbs
-          heading="Hosts"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            {
-              name: 'Hosts',
-            },
-          ]}
+          heading="Settings"
+          links={[{ name: 'Settings' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost />
 
               <Button
                 component={RouterLink}
-                href={paths.dashboard.host.new}
+                href={paths.settings.new}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Add new host
+                Add new infrastructure
               </Button>
             </Stack>
           }

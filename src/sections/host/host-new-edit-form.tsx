@@ -1,30 +1,24 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import moment from 'moment-timezone';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
-import { useResponsive } from 'src/hooks/use-responsive';
-
-import { endpoints } from 'src/utils/swr';
-
+import Grid from '@mui/material/Unstable_Grid2';
+import moment from 'moment-timezone';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFAutocomplete, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
+import { useResponsive } from 'src/hooks/use-responsive';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
+import { endpoints } from 'src/utils/swr';
+import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------
 
@@ -48,11 +42,11 @@ export default function HostNewEditForm({ currentItem }: Props) {
     timezone: Yup.string().required('Timezone is required'),
     notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    slack: Yup.object().shape({
-      notificationChannelId: Yup.string(),
-    }),
+    // slack: Yup.object().shape({
+    //   notificationChannelId: Yup.string(),
+    // }),
     smartLead: Yup.object().shape({
-      apiKey: Yup.string(),
+      // apiKey: Yup.string(),
       webhook: Yup.string(),
     }),
     inboxEngagement: Yup.object().shape({
@@ -76,8 +70,8 @@ export default function HostNewEditForm({ currentItem }: Props) {
       externalSenderAddresses: Array.isArray(currentItem?.userSettings.externalSenderAddresses)
         ? currentItem.userSettings.externalSenderAddresses.join('\n')
         : currentItem?.userSettings.externalSenderAddresses || '',
-      slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: currentItem?.smartlead || { apiKey: '', webhook: '' },
+      // slack: currentItem?.slack || { notificationChannelId: '' },
+      smartLead: currentItem?.smartlead || { /* apiKey: '', */ webhook: '' },
       inboxEngagement: {
         markImportant: currentItem?.inboxEngagement?.markImportant || false,
         removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
@@ -122,7 +116,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         throw new Error('Failed to update host');
       }
       enqueueSnackbar('Update success!');
-      router.push(paths.dashboard.host.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -136,10 +130,11 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create host');
+        const body = await res.json();
+        throw new Error(body.error ?? 'Failed to create host');
       }
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.host.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -189,23 +184,23 @@ abdulrehman@outreachmagic.io ⏎`;
             />
             <RHFTextField
               name="externalSenderAddresses"
-              label="External sender addresses (separated by newlines)"
+              label="Sender addresses (separated by newlines)"
               minRows={3}
               multiline
               placeholder={externalSenderAddressesPlaceholder}
             />
 
-            <RHFTextField
+            {/* <RHFTextField
               name="slack.notificationChannelId"
               label="Slack notification channel ID"
               placeholder="C06SWJC9V47"
-            />
+            /> */}
 
-            <RHFTextField
+            {/* <RHFTextField
               name="smartLead.apiKey"
               label="Smart lead API key"
               placeholder="cfeda7bf-2f21-4d9e-8bf2-082f31f29acb_o26lz3v"
-            />
+            /> */}
 
             <Stack spacing={1}>
               <Typography variant="subtitle2">Inbox engagement</Typography>
@@ -242,10 +237,10 @@ abdulrehman@outreachmagic.io ⏎`;
             priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Placeholder text
+            Register new Infrastructure
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            Additional functions and attributes...
+            Add your sender accounts and engagement settings.
           </Typography>
           <LoadingButton
             type="submit"
@@ -254,7 +249,7 @@ abdulrehman@outreachmagic.io ⏎`;
             loading={isSubmitting}
             sx={{ boxShadow: theme.customShadows.primary }}
           >
-            {!currentItem ? 'Register new host' : 'Save Changes'}
+            {currentItem ? 'Save Changes' : 'Add infrastructure'}
           </LoadingButton>
         </Stack>
       </Grid>

@@ -5,9 +5,10 @@ import { ObjectId } from 'mongodb';
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
+  SETTINGS: '/settings',
+  SEEDS: '/seeds',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
-
 };
 
 // ----------------------------------------------------------------------
@@ -25,23 +26,17 @@ export const paths = {
   auth: {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
-    forgotPassword: `${ROOTS.AUTH}/forgot-password`,
+    forgotPassword: `${ROOTS.AUTH}/reset-password`,
+    logout: `${ROOTS.AUTH}/logout`,
+    resetPassword: (id: ObjectId, token: string) =>
+      `${ROOTS.AUTH}/reset-password/${id.toString()}/${token}`,
+    verifyAccount: (id: ObjectId, token: string) =>
+      `${ROOTS.AUTH}/verify-account/${id.toString()}/${token}`,
   },
-  resetPassword: (id: ObjectId,token:string) => `/reset-password/id=${id.toString()}/${token}`,
 
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    host: {
-      root: `${ROOTS.DASHBOARD}/host`,
-      new: `${ROOTS.DASHBOARD}/host/new`,
-      edit: (id: ObjectId) => `${ROOTS.DASHBOARD}/host/edit/?id=${id.toString()}`,
-    },
-    seed: {
-      root: `${ROOTS.DASHBOARD}/seed`,
-      new: `${ROOTS.DASHBOARD}/seed/new`,
-      edit: `${ROOTS.DASHBOARD}/seed/edit`,
-    },
     emails: {
       root: `${ROOTS.DASHBOARD}/emails`,
       new: `${ROOTS.DASHBOARD}/emails/new`,
@@ -54,5 +49,18 @@ export const paths = {
       edit: `${ROOTS.DASHBOARD}/csv-upload/edit`,
     },
   },
-};
 
+  // SETTINGS
+  settings: {
+    root: ROOTS.SETTINGS,
+    new: `${ROOTS.SETTINGS}/new`,
+    edit: (id: ObjectId) => `${ROOTS.SETTINGS}/edit/?id=${id.toString()}`,
+  },
+
+  // SEEDS
+  seed: {
+    root: ROOTS.SEEDS,
+    new: `${ROOTS.SEEDS}/new`,
+    edit: `${ROOTS.SEEDS}/edit`,
+  },
+};

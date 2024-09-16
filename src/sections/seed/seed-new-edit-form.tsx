@@ -1,30 +1,24 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
-import { useGetSeedSettings } from 'src/hooks/api/seed';
-import { useResponsive } from 'src/hooks/use-responsive';
-
+import Grid from '@mui/material/Unstable_Grid2';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
+import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
+import { useResponsive } from 'src/hooks/use-responsive';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
-
+import * as Yup from 'yup';
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 // ----------------------------------------------------------------------
@@ -42,13 +36,10 @@ type SeedAccountType =
 
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
-
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
-
   const { hosts, assignedCount } = useGetSeedSettings();
-
+  const { seedAccounts, totalSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
@@ -88,7 +79,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
-
   const {
     reset,
     handleSubmit,
@@ -97,7 +87,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     setValue,
   } = methods;
 
-  const totalSeedAccounts = watch('totalSeedAccounts');
   const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
   const googlePersonal = watch('googlePersonal');
@@ -122,7 +111,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
         throw new Error('Failed to create seed batch');
       }
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.seed.root);
+      router.push(paths.seed.root);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -203,6 +192,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
             <SeedAccountsGenerator
               assignedCount={assignedCount}
+              seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
             />
           </Stack>
@@ -219,7 +209,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             quality={100}
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Create new list
+            Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
             You can send to {assignedCount} email accounts each day. Contact us if you have

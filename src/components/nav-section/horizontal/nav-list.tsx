@@ -1,23 +1,17 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
-
-import Stack from '@mui/material/Stack';
 import Popover from '@mui/material/Popover';
-
+import Stack from '@mui/material/Stack';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'src/routes/hooks';
 import { useActiveLink } from 'src/routes/hooks/use-active-link';
-
-import NavItem from './nav-item';
 import { NavListProps, NavSubListProps } from '../types';
+import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------
 
 export default function NavList({ data, depth, slotProps }: NavListProps) {
   const navRef = useRef<HTMLDivElement | null>(null);
-
   const pathname = usePathname();
-
-  const active = useActiveLink(data.path, !!data.children);
-
+  const active = useActiveLink(data.path);
   const [openMenu, setOpenMenu] = useState(false);
 
   useEffect(() => {

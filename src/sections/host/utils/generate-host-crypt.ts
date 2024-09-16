@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export function generateRandomChars(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomChars = '';
@@ -8,6 +10,11 @@ export function generateRandomChars(): string {
 }
 
 export function generateHostCrypt(host: string): string {
-  const randomChars = generateRandomChars();
-  return `${host  }_${  randomChars}`;
+  const secretKey = process.env.HOST_CRYPT_SECRET;
+  const hash = crypto.createHash('sha1');
+  hash.update(secretKey + host);
+  const longHash = hash.digest();
+
+  const encodedHash = Buffer.from(longHash).toString('base64url');
+  return `${host}_${encodedHash.slice(0, 5)}`;
 }

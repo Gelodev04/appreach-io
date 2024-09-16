@@ -1,12 +1,9 @@
 'use client';
 
 import Container from '@mui/material/Container';
-
-import { paths } from 'src/routes/paths';
-
-import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
+import { useSettingsContext } from 'src/components/settings';
+import { paths } from 'src/routes/paths';
 import SeedNewEditForm from '../seed-new-edit-form';
 
 // ----------------------------------------------------------------------
@@ -17,17 +14,13 @@ export default function SeedCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Add a new seed"
+        heading="Generate seed list"
         links={[
           {
-            name: 'Dashboard',
-            href: paths.dashboard.root,
-          },
-          {
             name: 'Seeds',
-            href: paths.dashboard.seed.root,
+            href: paths.seed.root,
           },
-          { name: 'New seed' },
+          { name: 'Generate seed list' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

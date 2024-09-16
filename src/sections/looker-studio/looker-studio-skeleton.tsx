@@ -1,10 +1,10 @@
-import Skeleton from '@mui/material/Skeleton';
 import Container from '@mui/material/Container';
+import Skeleton from '@mui/material/Skeleton';
 
 export function LookerStudioSkeleton() {
   return (
-    <Container maxWidth="xl">
-      <Skeleton height={500} />
+    <Container maxWidth="xl" sx={{ height: '100%' }}>
+      <Skeleton sx={{ height: '100%' }} />
     </Container>
   );
 }

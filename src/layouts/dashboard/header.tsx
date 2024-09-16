@@ -1,24 +1,15 @@
-import Stack from '@mui/material/Stack';
+import { Box, Stack } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-
+import Logo from 'src/components/logo';
+import { useSettingsContext } from 'src/components/settings';
+import SvgColor from 'src/components/svg-color';
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
-
 import { bgBlur } from 'src/theme/css';
-
-import Logo from 'src/components/logo';
-import SvgColor from 'src/components/svg-color';
-import { useSettingsContext } from 'src/components/settings';
-
-import Searchbar from '../common/searchbar';
-import { NAV, HEADER } from '../config-layout';
-import AccountPopover from '../common/account-popover';
-import NotificationsPopover from '../common/notifications-popover';
-
-// ----------------------------------------------------------------------
+import { HEADER, NAV } from '../config-layout';
 
 type Props = {
   onOpenNav?: VoidFunction;
@@ -26,17 +17,11 @@ type Props = {
 
 export default function Header({ onOpenNav }: Props) {
   const theme = useTheme();
-
   const settings = useSettingsContext();
-
   const isNavHorizontal = settings.themeLayout === 'horizontal';
-
   const isNavMini = settings.themeLayout === 'mini';
-
   const lgUp = useResponsive('up', 'lg');
-
   const offset = useOffSetTop(HEADER.H_DESKTOP);
-
   const offsetTop = offset && !isNavHorizontal;
 
   const renderContent = (
@@ -44,14 +29,21 @@ export default function Header({ onOpenNav }: Props) {
       {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
-        <IconButton onClick={onOpenNav}>
-          <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
-        </IconButton>
+        <>
+          <Box position="absolute" height="full">
+            <IconButton onClick={onOpenNav}>
+              <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
+            </IconButton>
+          </Box>
+          <Stack flexGrow={1} direction="row" alignItems="center" justifyContent="center">
+            <Logo display="flex" />
+          </Stack>
+        </>
       )}
 
-      <Searchbar />
+      {/* <Searchbar /> */}
 
-      <Stack
+      {/* <Stack
         flexGrow={1}
         direction="row"
         alignItems="center"
@@ -60,7 +52,7 @@ export default function Header({ onOpenNav }: Props) {
       >
         <NotificationsPopover />
         <AccountPopover />
-      </Stack>
+      </Stack> */}
     </>
   );
 

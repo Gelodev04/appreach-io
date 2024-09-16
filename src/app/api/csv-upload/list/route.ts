@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
-import { getUser } from 'src/auth/lib/mongodb/get-user';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 
 export async function GET() {
   try {
@@ -11,7 +11,13 @@ export async function GET() {
     const userSettings = await getUser();
 
     if (!userSettings.hosts || userSettings.hosts.length === 0) {
-      return Response.json({ error: 'No hosts found for the user. Please ensure the user has the necessary hosts configured.' }, { status: 404 });
+      return Response.json(
+        {
+          error:
+            'No hosts found for the user. Please ensure the user has the necessary hosts configured.',
+        },
+        { status: 404 }
+      );
     }
 
     let hosts = await Promise.all(
