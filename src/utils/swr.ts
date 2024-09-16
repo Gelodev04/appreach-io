@@ -43,4 +43,7 @@ export const endpoints = {
     list: '/api/csv-upload/list/',
     create: '/api/csv-upload/create/',
   },
+  stripe: {
+    checkoutSession: '/api/stripe/checkout-session/',
+  },
 };
