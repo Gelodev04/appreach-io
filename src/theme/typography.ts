@@ -1,4 +1,4 @@
-import { Barlow, Public_Sans } from 'next/font/google';
+import { Open_Sans, Work_Sans } from 'next/font/google';
 
 // ----------------------------------------------------------------------
 
@@ -31,14 +31,14 @@ declare module '@mui/material/styles' {
   }
 }
 
-export const primaryFont = Public_Sans({
-  weight: ['400', '500', '600', '700', '800', '900'],
+export const primaryFont = Open_Sans({
+  weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
   display: 'swap',
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 });
 
-export const secondaryFont = Barlow({
+export const secondaryFont = Work_Sans({
   weight: ['400', '500', '600', '700', '800', '900'],
   subsets: ['latin'],
   display: 'swap',
@@ -58,36 +58,42 @@ export const typography = {
   fontWeightSemiBold: 600,
   fontWeightBold: 700,
   h1: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 800,
     lineHeight: 80 / 64,
     fontSize: pxToRem(40),
     ...responsiveFontSizes({ sm: 52, md: 58, lg: 64 }),
   },
   h2: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 800,
     lineHeight: 64 / 48,
     fontSize: pxToRem(32),
     ...responsiveFontSizes({ sm: 40, md: 44, lg: 48 }),
   },
   h3: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 700,
     lineHeight: 1.5,
     fontSize: pxToRem(24),
     ...responsiveFontSizes({ sm: 26, md: 30, lg: 32 }),
   },
   h4: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 700,
     lineHeight: 1.5,
     fontSize: pxToRem(20),
     ...responsiveFontSizes({ sm: 20, md: 24, lg: 24 }),
   },
   h5: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 700,
     lineHeight: 1.5,
     fontSize: pxToRem(18),
     ...responsiveFontSizes({ sm: 19, md: 20, lg: 20 }),
   },
   h6: {
+    fontFamily: secondaryFont.style.fontFamily,
     fontWeight: 700,
     lineHeight: 28 / 18,
     fontSize: pxToRem(17),

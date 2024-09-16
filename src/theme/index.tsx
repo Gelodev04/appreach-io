@@ -1,24 +1,21 @@
 'use client';
 
-import { useMemo } from 'react';
-import merge from 'lodash/merge';
-
 import CssBaseline from '@mui/material/CssBaseline';
-import { createTheme, ThemeOptions, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-
+import { createTheme, ThemeProvider as MuiThemeProvider, ThemeOptions } from '@mui/material/styles';
+import merge from 'lodash/merge';
+import { useMemo } from 'react';
 import { useSettingsContext } from 'src/components/settings';
-
 // system
 import { palette } from './palette';
 import { shadows } from './shadows';
 import { typography } from './typography';
 // options
-import RTL from './options/right-to-left';
 import { customShadows } from './custom-shadows';
-import { componentsOverrides } from './overrides';
-import { createPresets } from './options/presets';
-import { createContrast } from './options/contrast';
 import NextAppDirEmotionCacheProvider from './next-emotion-cache';
+import { createContrast } from './options/contrast';
+import { createPresets } from './options/presets';
+import RTL from './options/right-to-left';
+import { componentsOverrides } from './overrides';
 
 // ----------------------------------------------------------------------
 
@@ -28,9 +25,7 @@ type Props = {
 
 export default function ThemeProvider({ children }: Props) {
   const settings = useSettingsContext();
-
   const presets = createPresets(settings.themeColorPresets);
-
   const contrast = createContrast(settings.themeContrast, settings.themeMode);
 
   const memoizedValue = useMemo(
