@@ -26,7 +26,7 @@ export const endpoints = {
   },
   host: {
     list: '/api/host/list/',
-    details: (hostId: string) => `/api/host/details/?hostId=${hostId}/`,
+    details: (hostId: string) => `/api/host/details/?hostId=${hostId}`,
     addExistingHost: '/api/host/add-existing-host/',
     create: '/api/host/create/',
     edit: '/api/host/edit/',
