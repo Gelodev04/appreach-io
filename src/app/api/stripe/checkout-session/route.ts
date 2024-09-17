@@ -13,10 +13,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    // Construct the base URL using the current host
-    const protocol = request.headers.get('x-forwarded-proto') || 'http';
-    const host = request.headers.get('host');
-    const baseUrl = `${protocol}://${host}`;
+    const baseUrl = request.headers.get('origin');
 
     // Create a checkout session
     const session = await stripe.checkout.sessions.create({
