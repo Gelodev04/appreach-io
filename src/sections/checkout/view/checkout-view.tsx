@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
-import { endpoints } from 'src/utils/swr';
+import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object
@@ -17,7 +17,6 @@ export default function CheckoutView() {
 
   const handleCheckout = async (priceId: string) => {
     setLoading(true);
-    setError(null);
 
     const stripe: Stripe | null = await stripePromise;
 
@@ -28,19 +27,8 @@ export default function CheckoutView() {
     }
 
     try {
-      const res = await fetch(endpoints.stripe.checkoutSession, {
-        method: 'POST',
-        body: JSON.stringify({
-          priceId,
-          customerEmail: 'customer@example.com', // Replace with dynamic email
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.sessionId) throw new Error('Failed to create Stripe session.');
-
-      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (result.error) throw new Error(result.error.message || 'An error occurred');
+      const sessionId = await createCheckoutSession(priceId, 'customer@example.com');
+      await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
     } finally {
