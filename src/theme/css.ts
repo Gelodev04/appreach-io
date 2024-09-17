@@ -1,10 +1,8 @@
-import { alpha, Theme } from '@mui/material/styles';
-import { dividerClasses } from '@mui/material/Divider';
-import { checkboxClasses } from '@mui/material/Checkbox';
-import { menuItemClasses } from '@mui/material/MenuItem';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
-
-// ----------------------------------------------------------------------
+import { checkboxClasses } from '@mui/material/Checkbox';
+import { dividerClasses } from '@mui/material/Divider';
+import { menuItemClasses } from '@mui/material/MenuItem';
+import { alpha, Theme } from '@mui/material/styles';
 
 export const paper = ({
   theme,
@@ -37,8 +35,6 @@ export const paper = ({
   }),
 });
 
-// ----------------------------------------------------------------------
-
 export const menuItem = (theme: Theme) => ({
   ...theme.typography.body2,
   padding: theme.spacing(0.75, 1),
@@ -68,8 +64,6 @@ export const menuItem = (theme: Theme) => ({
     margin: theme.spacing(0.5, 0),
   },
 });
-
-// ----------------------------------------------------------------------
 
 type BgBlurProps = {
   blur?: number;
@@ -110,8 +104,6 @@ export function bgBlur(props?: BgBlurProps) {
   };
 }
 
-// ----------------------------------------------------------------------
-
 type BgGradientProps = {
   direction?: string;
   color?: string;
@@ -143,8 +135,6 @@ export function bgGradient(props?: BgGradientProps) {
   };
 }
 
-// ----------------------------------------------------------------------
-
 export function textGradient(value: string) {
   return {
     background: `-webkit-linear-gradient(${value})`,
@@ -152,8 +142,6 @@ export function textGradient(value: string) {
     WebkitTextFillColor: 'transparent',
   };
 }
-
-// ----------------------------------------------------------------------
 
 export const hideScroll = {
   x: {
