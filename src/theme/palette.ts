@@ -1,7 +1,5 @@
 import { alpha } from '@mui/material/styles';
 
-// ----------------------------------------------------------------------
-
 export type ColorSchema = 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error';
 
 declare module '@mui/material/styles/createPalette' {
@@ -35,10 +33,10 @@ export const grey = {
 
 export const primary = {
   lighter: '#C8FAD6',
-  light: '#5BE49B',
-  main: '#00A76F',
-  dark: '#007867',
-  darker: '#004B50',
+  light: '#1a4593',
+  main: '#003087',
+  dark: '#002b7a',
+  darker: '#00266c',
   contrastText: '#FFFFFF',
 };
 
@@ -122,7 +120,7 @@ export function palette(mode: 'light' | 'dark') {
     ...base,
     mode: 'light',
     text: {
-      primary: grey[800],
+      primary: '#222222',
       secondary: grey[600],
       disabled: grey[500],
     },
