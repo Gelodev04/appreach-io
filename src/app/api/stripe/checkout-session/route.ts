@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { paths } from 'src/routes/paths';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -29,8 +30,8 @@ export async function POST(request: Request) {
       subscription_data: {
         trial_period_days: 7, // Free trial for 7 days
       },
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cancel`,
+      success_url: `${baseUrl}${paths.checkout.success}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}${paths.checkout.root}`,
     });
 
     return NextResponse.json({ sessionId: session.id });
