@@ -4,6 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
+import { STRIPE } from 'src/config-global';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
@@ -46,12 +47,12 @@ export default function CheckoutView() {
         <CheckoutElement
           title="Starter"
           price="$150/month"
-          onClick={() => handleCheckout('price_1YourStarterPriceId')}
+          onClick={() => handleCheckout(STRIPE.prices.starter)}
         />
         <CheckoutElement
           title="Established"
           price="$499/month"
-          onClick={() => handleCheckout('price_1YourEstablishedPriceId')}
+          onClick={() => handleCheckout(STRIPE.prices.established)}
         />
       </Box>
     </>
