@@ -20,8 +20,6 @@ import { IHost } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-// ----------------------------------------------------------------------
-
 type Props = {
   currentItem?: IHost;
 };

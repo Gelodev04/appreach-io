@@ -90,6 +90,11 @@ export async function POST(request: Request) {
     const { insertedId: hostId } = await db.collection('hosts').insertOne({
       host: defaultHostName,
       hostCrypt: defaultHostCrypt,
+      userSettings: {
+        timezone: '',
+        externalSenderAddresses: [],
+        notificationAddressArray: [],
+      },
       lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
       inboxEngagement: {
         markImportant: true,
