@@ -14,34 +14,34 @@
 
 ## Environment Variables
 
-MONGODB_URI=""
+`MONGODB_URI=""`
 
-<!-- The connection string for the MongoDB database. This URI includes the username, password, cluster address, and default database. -->
+> The connection string for the MongoDB database. This URI includes the username, password, cluster address, and default database.
 
-MONGODB_DATABASE=""
+`MONGODB_DATABASE=""`
 
-<!-- Specifies the name of the MongoDB database to use within the application. (e.g., sandbox or v4) -->
+> Specifies the name of the MongoDB database to use within the application. (e.g., sandbox or v4)
 
-SEED_EMAIL_GENERATOR=""
+`SEED_EMAIL_GENERATOR=""`
 
-<!-- The URL endpoint for the Seed Emails Generator Cloud Function. This function is used to generate seed emails. -->
+> The URL endpoint for the Seed Emails Generator Cloud Function. This function is used to generate seed emails.
 
-NEXTAUTH_SECRET=""
+`NEXTAUTH_SECRET=""`
 
-<!-- A secret key used by NextAuth.js to encrypt session data and generate tokens. -->
+> A secret key used by NextAuth.js to encrypt session data and generate tokens.
 
-NEXT_PUBLIC_LOOKER_URL=""
+`NEXT_PUBLIC_LOOKER_URL=""`
 
-<!-- The public URL used to embed Looker Studio reports within the application. -->
+> The public URL used to embed Looker Studio reports within the application.
 
-SENDGRID_API_TOKEN=""
+`SENDGRID_API_TOKEN=""`
 
-<!-- The API token for SendGrid, used for sending emails from your application. -->
+> The API token for SendGrid, used for sending emails from your application.
 
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=""
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=""`
 
-<!-- The publishable (public) key for Stripe, used on the client side to process payments. -->
+> The publishable (public) key for Stripe, used on the client side to process payments.
 
-STRIPE_SECRET_KEY=""
+`STRIPE_SECRET_KEY=""`
 
-<!-- The secret key for Stripe, used on the server side to process payments securely. -->
+> The secret key for Stripe, used on the server side to process payments securely.
