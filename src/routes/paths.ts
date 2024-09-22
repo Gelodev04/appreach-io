@@ -63,4 +63,9 @@ export const paths = {
     new: `${ROOTS.SEEDS}/new`,
     edit: `${ROOTS.SEEDS}/edit`,
   },
+
+  checkout: {
+    root: '/checkout',
+    success: '/checkout/success',
+  },
 };
