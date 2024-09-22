@@ -8,6 +8,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
@@ -17,9 +18,8 @@ import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
-// ----------------------------------------------------------------------
-
 export default function LoginView() {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const password = useBoolean();
 
@@ -46,7 +46,7 @@ export default function LoginView() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const result = await signIn('credentials', {
-        redirect: true,
+        redirect: false,
         email: data.email,
         password: data.password,
       });
@@ -54,6 +54,11 @@ export default function LoginView() {
       if (result?.error) {
         console.log(result, 'result');
         throw new Error('Invalid Credentials');
+      }
+
+      // Handle redirect after successful login if needed
+      if (result?.url) {
+        router.push(result.url);
       }
 
       enqueueSnackbar('Login successful', { variant: 'success' });

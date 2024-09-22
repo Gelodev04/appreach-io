@@ -2,7 +2,7 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { paths } from 'src/routes/paths';
+import { PATH_AFTER_LOGIN } from 'src/config-global';
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -73,8 +73,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     // Redirect after successful sign in
-    async redirect() {
-      return paths.dashboard.root;
+    async redirect({ baseUrl }) {
+      return `${baseUrl}${PATH_AFTER_LOGIN}`;
     },
 
     // Allow sign in if user has been verified
