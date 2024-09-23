@@ -26,8 +26,8 @@ export async function POST(request: Request) {
     }
 
     // Find the active subscription
-    const activeSubscription = subscriptions.data.find(
-      (subscription) => subscription.status === 'active' || subscription.status === 'trialing'
+    const activeSubscription = subscriptions.data.find(({ status }) =>
+      ['active', 'trialing'].includes(status)
     );
 
     return NextResponse.json({ subscription: activeSubscription });
