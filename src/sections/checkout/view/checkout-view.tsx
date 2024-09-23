@@ -38,7 +38,7 @@ export default function CheckoutView() {
   };
 
   const renderHead = (
-    <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={2} mb={4}>
+    <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       <Stack direction="row" display="inline-block" spacing={2}>
         <Typography variant="h2" fontWeight={600}>
           Outreach Magic
@@ -60,9 +60,26 @@ export default function CheckoutView() {
   const renderOptions = (
     <Box display="flex" gap={4}>
       <CheckoutElement
-        title="Starter"
-        price="$150"
         onClick={() => handleCheckout(STRIPE.prices.starter)}
+        title="Starter"
+        subtitle="*Price per domain"
+        price="$150"
+        features={[
+          'Works with all email providers to audit and monitor your existing domain.',
+          'Inbox placement report for popular ESPs (Microsoft Business, Microsoft Personal, Google Business, Google Personal, Yahoo).',
+          'Segment reports by email subject, ip, domain, ESP, mail server, region and monitor inbox health.',
+        ]}
+      />
+      <CheckoutElement
+        onClick={() => handleCheckout(STRIPE.prices.established)}
+        title="Established"
+        subtitle="5 domains included"
+        price="$499"
+        features={[
+          'Everything in the reporting only package plus',
+          'Show a large volume of positive engagement to different ESPs from your IP and domain name',
+          'Warm up a new IP, repair damaged domain or fix a low sender reputation',
+        ]}
       />
       <CheckoutElement
         title="Established"
@@ -78,7 +95,9 @@ export default function CheckoutView() {
         alignItems="center"
         justifyContent="center"
         textAlign="center"
+        height="100%"
         width="100%"
+        spacing={4}
         sx={{ padding: 4, margin: '0 auto' }}
       >
         {renderHead}

@@ -12,14 +12,17 @@ import {
 type Props = {
   onClick: () => Promise<void> | undefined;
   title: string | number;
+  subtitle?: string;
   price: string | number;
+  features?: string[];
 };
 
-export function CheckoutElement({ onClick, title, price }: Props) {
+export function CheckoutElement({ onClick, title, subtitle, price, features }: Props) {
   return (
     <Stack
+      flex={1}
       minWidth={320}
-      height={400}
+      minHeight={480}
       borderRadius={2}
       overflow="hidden"
       sx={{
@@ -49,18 +52,20 @@ export function CheckoutElement({ onClick, title, price }: Props) {
         </Stack>
 
         <Typography fontSize={16} fontWeight={700}>
-          *Price per domain
+          {subtitle}
         </Typography>
       </Stack>
 
-      <Stack px={4} py={2}>
+      <Stack justifyContent="space-between" height="100%" px={4} py={2}>
         <List>
-          <ListItem>
-            <ListItemIcon sx={{ color: '#b3c1db' }}>
-              <Icon icon="icon-park-solid:check-one" />
-            </ListItemIcon>
-            <ListItemText secondary="Works with all email providers to audit and monitor your existing domain." />
-          </ListItem>
+          {features?.map((text) => (
+            <ListItem sx={{ alignItems: 'start', pl: 0 }}>
+              <ListItemIcon sx={{ mt: 1, mr: 1.5, color: '#b3c1db' }}>
+                <Icon icon="icon-park-solid:check-one" />
+              </ListItemIcon>
+              <ListItemText secondary={text} />
+            </ListItem>
+          ))}
         </List>
 
         <Button
