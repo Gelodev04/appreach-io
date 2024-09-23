@@ -2,9 +2,11 @@
 
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
+import { paths } from 'src/routes/paths';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
@@ -12,6 +14,7 @@ import { CheckoutElement } from '../checkout-element';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function CheckoutView() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -60,7 +63,7 @@ export default function CheckoutView() {
   const renderOptions = (
     <Box display="flex" gap={4}>
       <CheckoutElement
-        onClick={() => handleCheckout(STRIPE.prices.starter)}
+        onClick={() => router.push(paths.checkout.trial)}
         title="Starter"
         subtitle="*Price per domain"
         price="$150"

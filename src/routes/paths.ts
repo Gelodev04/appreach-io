@@ -67,5 +67,6 @@ export const paths = {
   checkout: {
     root: '/checkout',
     success: '/checkout/success',
+    trial: '/trial',
   },
 };

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 
 type Props = {
-  onClick: () => Promise<void> | undefined;
+  onClick: () => void | Promise<void> | undefined;
   title: string | number;
   subtitle?: string;
   price: string | number;
