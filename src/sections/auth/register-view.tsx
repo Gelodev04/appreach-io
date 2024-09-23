@@ -26,6 +26,7 @@ export default function RegisterView() {
   const [successful, setSuccessful] = useState(false);
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
+  const email = searchParams.get('email');
   const password = useBoolean();
   const confirmPassword = useBoolean();
 
@@ -55,7 +56,7 @@ export default function RegisterView() {
       firstName: '',
       lastName: '',
       companyName: '',
-      email: '',
+      email: email ?? '',
       password: '',
       confirmPassword: '',
     },
