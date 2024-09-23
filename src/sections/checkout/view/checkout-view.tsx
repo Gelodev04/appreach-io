@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
@@ -37,35 +37,54 @@ export default function CheckoutView() {
     }
   };
 
-  const renderOptions = (
-    <>
-      <Typography variant="h3" mb={4}>
-        Choose your plan
-      </Typography>
+  const renderHead = (
+    <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={2} mb={4}>
+      <Stack direction="row" display="inline-block" spacing={2}>
+        <Typography variant="h2" fontWeight={600}>
+          Outreach Magic
+          <Box display="inline-flex" ml={2}>
+            <Typography variant="h2" fontWeight={600} color="primary">
+              Pricing Plans
+            </Typography>
+          </Box>
+        </Typography>
+      </Stack>
 
-      <Box display="flex" gap={4}>
-        <CheckoutElement
-          title="Starter"
-          price="$150/month"
-          onClick={() => handleCheckout(STRIPE.prices.starter)}
-        />
-        <CheckoutElement
-          title="Established"
-          price="$499/month"
-          onClick={() => handleCheckout(STRIPE.prices.established)}
-        />
-      </Box>
-    </>
+      <Typography maxWidth="sm" variant="body1" color="text.secondary" fontWeight={700}>
+        Outreach Magic Pricing plans are transparent and all-inclusive focused on email
+        deliverability first. Contact us if you have any questions.
+      </Typography>
+    </Stack>
+  );
+
+  const renderOptions = (
+    <Box display="flex" gap={4}>
+      <CheckoutElement
+        title="Starter"
+        price="$150"
+        onClick={() => handleCheckout(STRIPE.prices.starter)}
+      />
+      <CheckoutElement
+        title="Established"
+        price="$499"
+        onClick={() => handleCheckout(STRIPE.prices.established)}
+      />
+    </Box>
   );
 
   return (
-    <Stack
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      sx={{ padding: 4, maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}
-    >
-      {renderOptions}
-    </Stack>
+    <Container maxWidth="lg" sx={{ height: '100vh' }}>
+      <Stack
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        width="100%"
+        sx={{ padding: 4, margin: '0 auto' }}
+      >
+        {renderHead}
+
+        {renderOptions}
+      </Stack>
+    </Container>
   );
 }
