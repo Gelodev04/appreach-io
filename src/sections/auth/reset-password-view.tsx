@@ -38,16 +38,6 @@ export default function ResetPasswordView() {
     formState: { isSubmitting },
   } = methods;
 
-  // const onSubmit = handleSubmit(async (data) => {
-  //   try {
-  //     await forgotPassword?.(data.email);
-
-  //     const href = `${paths.auth.forgotPassword}`;
-  //     router.push(href);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // });
   const onSubmit = handleSubmit(async (data) => {
     try {
       const url = endpoints.auth.resetPassword;
