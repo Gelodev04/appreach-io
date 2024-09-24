@@ -4,7 +4,7 @@ import { SessionProvider } from 'next-auth/react';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import ProgressBar from 'src/components/progress-bar';
-import { DatabaseInfo, SettingsDrawer, SettingsProvider } from 'src/components/settings';
+import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
@@ -56,7 +56,6 @@ export default function RootLayout({ children }: Props) {
                     <SettingsDrawer />
                     <ProgressBar />
                     {children}
-                    {process.env.NODE_ENV !== 'production' && <DatabaseInfo />}
                   </SnackbarProvider>
                 </MotionLazy>
               </ThemeProvider>
