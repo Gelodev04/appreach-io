@@ -8,10 +8,7 @@ export async function createCheckoutSession(
   customerEmail: string
 ): Promise<string> {
   const stripe: Stripe | null = await stripePromise;
-
-  if (!stripe) {
-    throw new Error('Stripe.js failed to load.');
-  }
+  if (!stripe) throw new Error('Stripe.js failed to load.');
 
   const res = await fetch(endpoints.stripe.checkoutSession, {
     method: 'POST',
@@ -28,7 +25,6 @@ export async function createCheckoutSession(
 
 export async function redirectToCheckout(sessionId: string): Promise<void> {
   const stripe: Stripe | null = await stripePromise;
-
   if (!stripe) throw new Error('Stripe.js failed to load.');
 
   const result = await stripe.redirectToCheckout({ sessionId });
