@@ -1,16 +1,12 @@
 import mongoose from 'mongoose';
-
-import { MONGODB_URI } from 'src/config-global';
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
+import { getMongoUri } from '../mongodb/get-uri';
 
 const dbMongoose = async () => {
   if (mongoose.connections[0].readyState) return;
 
   try {
-    await mongoose.connect(MONGODB_URI as string);
+    const uri = getMongoUri();
+    await mongoose.connect(uri);
     console.log('Mongo Connection successfully established.');
   } catch (error) {
     throw new Error('Error connecting to Mongoose');

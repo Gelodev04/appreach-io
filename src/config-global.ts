@@ -7,7 +7,7 @@ export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 
 export const { DATABASE_URL } = process.env;
-export const { MONGODB_URI } = process.env;
+export const { MONGODB_URI_PROD, MONGODB_URI_TEST } = process.env;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
