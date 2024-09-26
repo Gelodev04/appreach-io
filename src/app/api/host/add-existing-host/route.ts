@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { getUser } from 'src/auth/lib/mongodb/get-user';
@@ -10,10 +9,9 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { hostName } = data;
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     const user = await getUser();
-
     const host = await db.collection('hosts').findOne({ hostCrypt: hostName });
 
     if (!host) {
