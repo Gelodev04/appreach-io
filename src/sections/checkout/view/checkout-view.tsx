@@ -63,7 +63,7 @@ export default function CheckoutView() {
   const renderOptions = (
     <Box display="flex" gap={4}>
       <CheckoutElement
-        onClick={() => router.push(paths.checkout.trial)}
+        onClick={() => router.push(paths.checkout.trial1)}
         title="Starter"
         subtitle="*Price per domain"
         price="$150"

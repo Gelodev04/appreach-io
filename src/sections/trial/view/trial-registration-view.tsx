@@ -29,7 +29,7 @@ export default function TrialRegistrationView() {
 
   // Redirect to register with email as query parameter
   const onSubmit = handleSubmit((data) => {
-    router.push(`${paths.auth.register}?email=${data.email}`);
+    router.push(`${paths.checkout.trial2}?email=${data.email}`);
   });
 
   const renderForm = (

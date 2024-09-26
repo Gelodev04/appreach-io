@@ -1,24 +1,19 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { alpha, useTheme } from '@mui/material/styles';
-
-import { useResponsive } from 'src/hooks/use-responsive';
-
-import { bgGradient } from 'src/theme/css';
-
 import Logo from 'src/components/logo';
+import { useResponsive } from 'src/hooks/use-responsive';
+import { bgGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  title?: string;
   image?: string;
   children: React.ReactNode;
 };
 
-export default function AuthClassicLayout({ children, image, title }: Props) {
+export default function AuthClassicLayout({ children, image }: Props) {
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
 
   const renderLogo = (
