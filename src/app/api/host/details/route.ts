@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const id = searchParams.get('hostId');
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     if (!id || !ObjectId.isValid(id)) {
       return Response.json({ error: "This host doesn't exist or was deleted" }, { status: 404 });

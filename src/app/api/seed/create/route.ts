@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
-
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-
 import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
 export async function POST(request: Request) {
@@ -21,7 +19,7 @@ export async function POST(request: Request) {
     } = data;
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     await db.collection('seedBatches').insertOne({
       name,
