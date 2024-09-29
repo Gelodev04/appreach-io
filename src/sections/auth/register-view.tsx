@@ -2,6 +2,7 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -12,7 +13,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from 'src/auth/hooks';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { RouterLink } from 'src/routes/components';
@@ -52,6 +53,9 @@ export default function RegisterView({ expanded }: Props) {
       .oneOf([Yup.ref('password'), ''], 'Passwords must match')
       .nullable()
       .required('Confirm Password is required'),
+    emailsPerDay: Yup.string().nullable(),
+    hearAboutUs: Yup.string().nullable(),
+    freePhoneSupport: Yup.boolean(),
   });
 
   const methods = useForm({
@@ -63,12 +67,16 @@ export default function RegisterView({ expanded }: Props) {
       email: email ?? '',
       password: '',
       confirmPassword: '',
+      emailsPerDay: '',
+      hearAboutUs: '',
+      freePhoneSupport: false,
     },
   });
 
   const {
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = methods;
 
@@ -142,8 +150,8 @@ export default function RegisterView({ expanded }: Props) {
     </Typography>
   );
 
-  const renderForm = (
-    <Stack spacing={2.5}>
+  const renderCommonOptions = (
+    <>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <RHFTextField name="firstName" label="First name" />
         <RHFTextField name="lastName" label="Last name" />
@@ -183,6 +191,63 @@ export default function RegisterView({ expanded }: Props) {
           ),
         }}
       />
+    </>
+  );
+
+  const renderExpandedOptions = (
+    <>
+      <RHFSelect name="emailsPerDay" label="How many emails do you send per day?">
+        <MenuItem value="upTo1k" sx={{ color: 'text.secondary' }}>
+          Up To 1K
+        </MenuItem>
+        <MenuItem value="1kto10k" sx={{ color: 'text.secondary' }}>
+          1K-10K
+        </MenuItem>
+        <MenuItem value="10kto100k" sx={{ color: 'text.secondary' }}>
+          10K-100K
+        </MenuItem>
+        <MenuItem value="over100k" sx={{ color: 'text.secondary' }}>
+          Over 100K
+        </MenuItem>
+      </RHFSelect>
+
+      <RHFTextField name="hearAboutUs" label="How did you hear about us?" />
+
+      <RHFCheckbox name="freePhoneSupport" label="Get free phone support" />
+
+      {watch('freePhoneSupport') && (
+        <Stack spacing={1}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Enter your phone number below to get free phone support
+          </Typography>
+
+          <RHFTextField
+            name="phoneNumber"
+            label="Phone Number"
+            type="tel"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <Iconify icon="solar:phone-bold" />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
+      )}
+    </>
+  );
+
+  const renderForm = (
+    <Stack spacing={2.5}>
+      {expanded ? (
+        <Stack spacing={2.5} p={1} sx={{ overflowY: 'scroll', maxHeight: 280 }}>
+          {renderCommonOptions}
+          {expanded && renderExpandedOptions}
+        </Stack>
+      ) : (
+        renderCommonOptions
+      )}
 
       <LoadingButton
         fullWidth
