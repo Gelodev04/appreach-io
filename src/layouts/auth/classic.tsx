@@ -21,7 +21,7 @@ export default function AuthClassicLayout({ children, expanded, image }: Props) 
     <Logo
       sx={{
         zIndex: 9,
-        position: 'absolute',
+        position: { md: 'absolute' },
         m: { xs: 2, md: 5 },
       }}
     />
@@ -76,9 +76,10 @@ export default function AuthClassicLayout({ children, expanded, image }: Props) 
   return (
     <Stack
       component="main"
-      direction="row"
+      direction={{ md: 'row' }}
       sx={{
-        minHeight: '100vh',
+        paddingY: { xs: 1, md: 0 },
+        minHeight: { md: '100vh' },
       }}
     >
       {renderLogo}

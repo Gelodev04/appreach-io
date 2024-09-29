@@ -241,7 +241,7 @@ export default function RegisterView({ expanded }: Props) {
   const renderForm = (
     <Stack spacing={2.5}>
       {expanded ? (
-        <Stack spacing={2.5} p={1} sx={{ overflowY: 'scroll', maxHeight: 280 }}>
+        <Stack spacing={2.5} p={1} sx={{ overflowY: 'scroll', maxHeight: { md: 280 } }}>
           {renderCommonOptions}
           {expanded && renderExpandedOptions}
         </Stack>
