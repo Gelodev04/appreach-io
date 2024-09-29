@@ -5,5 +5,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <RegisterView />;
+  return <RegisterView expanded />;
 }

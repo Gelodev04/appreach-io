@@ -10,7 +10,7 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <GuestGuard>
-      <AuthClassicLayout image="/assets/illustrations/auth/register.png">
+      <AuthClassicLayout image="/assets/illustrations/auth/register.png" expanded>
         {children}
       </AuthClassicLayout>
     </GuestGuard>

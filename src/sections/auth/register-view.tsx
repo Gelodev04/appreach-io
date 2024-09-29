@@ -20,7 +20,11 @@ import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
-export default function RegisterView() {
+type Props = {
+  expanded?: boolean;
+};
+
+export default function RegisterView({ expanded }: Props) {
   const { register } = useAuthContext();
   const [errorMsg, setErrorMsg] = useState('');
   const [successful, setSuccessful] = useState(false);
@@ -89,15 +93,30 @@ export default function RegisterView() {
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 3, position: 'relative' }}>
-      <Typography variant="h4">Get started absolutely free</Typography>
+      <Stack spacing={1}>
+        <Typography variant="h4">Get started absolutely free</Typography>
 
-      <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2"> Already have an account? </Typography>
+        <Stack direction="row" spacing={0.5}>
+          <Typography variant="body2"> Already have an account? </Typography>
 
-        <Link href={paths.auth.login} component={RouterLink} variant="subtitle2">
-          Sign in
-        </Link>
+          <Link href={paths.auth.login} component={RouterLink} variant="subtitle2">
+            Sign in
+          </Link>
+        </Stack>
       </Stack>
+
+      {expanded && (
+        <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            {`You will be getting a trial plan which let's you send to 50 of our seed emails per day for
+        10 days.`}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {`If you require additional features to evaluate our service, let us know about your
+            specific use case after completing this registration.`}
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   );
 

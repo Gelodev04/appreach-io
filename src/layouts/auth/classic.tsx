@@ -9,10 +9,11 @@ import { bgGradient } from 'src/theme/css';
 
 type Props = {
   image?: string;
+  expanded?: boolean;
   children: React.ReactNode;
 };
 
-export default function AuthClassicLayout({ children, image }: Props) {
+export default function AuthClassicLayout({ children, expanded, image }: Props) {
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
 
@@ -30,11 +31,11 @@ export default function AuthClassicLayout({ children, image }: Props) {
     <Stack
       sx={{
         width: 1,
+        height: 'full',
+        justifyContent: 'center',
         mx: 'auto',
-        maxWidth: 480,
+        maxWidth: expanded ? 520 : 480,
         px: { xs: 2, md: 8 },
-        pt: { xs: 15, md: 20 },
-        pb: { xs: 15, md: 0 },
       }}
     >
       {children}
