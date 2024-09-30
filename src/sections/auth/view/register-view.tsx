@@ -2,7 +2,7 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { MenuItem } from '@mui/material';
+import { Box, MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -29,11 +29,20 @@ export default function RegisterView({ expanded }: Props) {
   const { register } = useAuthContext();
   const [errorMsg, setErrorMsg] = useState('');
   const [successful, setSuccessful] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const email = searchParams.get('email');
   const password = useBoolean();
   const confirmPassword = useBoolean();
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    if (event.currentTarget.scrollTop === 0) {
+      setShowOverlay(true);
+    } else {
+      setShowOverlay(false);
+    }
+  };
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
@@ -228,9 +237,32 @@ export default function RegisterView({ expanded }: Props) {
   const renderForm = (
     <Stack spacing={2.5}>
       {expanded ? (
-        <Stack spacing={2.5} p={1} sx={{ overflowY: 'scroll', maxHeight: { md: 280 } }}>
+        <Stack
+          position="relative"
+          spacing={2.5}
+          p={1}
+          sx={{ overflowY: 'scroll', maxHeight: { md: 280 } }}
+          onScroll={handleScroll}
+        >
           {renderCommonOptions}
           {expanded && renderExpandedOptions}
+
+          {expanded && showOverlay && (
+            <Box
+              position="absolute"
+              bottom={0}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              width={1}
+              height={20}
+              sx={{
+                background: 'linear-gradient(to top, rgba(255,255,255, 1), rgba(255,255,255, 0))',
+              }}
+            >
+              <Iconify icon="mingcute:arrow-down-line" width={20} height={20} />
+            </Box>
+          )}
         </Stack>
       ) : (
         renderCommonOptions

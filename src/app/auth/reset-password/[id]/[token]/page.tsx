@@ -1,4 +1,4 @@
-import { ConfirmResetPasswordView } from 'src/sections/auth';
+import { ConfirmResetPasswordView } from 'src/sections/auth/view';
 
 export const metadata = {
   title: 'Create New Password | Outreach Magic',

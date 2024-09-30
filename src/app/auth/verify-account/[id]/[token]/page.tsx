@@ -1,4 +1,4 @@
-import { VerifyAccountView } from 'src/sections/auth';
+import { VerifyAccountView } from 'src/sections/auth/view';
 
 export const metadata = {
   title: 'Verify Account | Outreach Magic',
