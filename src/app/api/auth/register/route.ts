@@ -9,7 +9,18 @@ import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/ut
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { email, password, firstName, lastName, companyName } = data;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      companyName,
+      phoneNumber,
+      hearAboutUs,
+      emailsSendsPerDay,
+      callRequested,
+    } = data;
+
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE || undefined);
 
@@ -38,12 +49,18 @@ export async function POST(request: Request) {
         firstName,
         lastName,
         companyName,
+        phone: phoneNumber,
         approved: false,
         currentLogin: null,
         lastLogin: null,
         password: hashedPassword,
         verified: false,
         view: 'inboxPlacementAudit',
+      },
+      trackingMarketing: {
+        hearAboutUs,
+        emailsSendsPerDay,
+        callRequested,
       },
       approval: {
         lastSent: null,

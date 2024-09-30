@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -15,11 +14,11 @@ import { useForm } from 'react-hook-form';
 import { useAuthContext } from 'src/auth/hooks';
 import FormProvider, { RHFCheckbox, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
+import RegisterCommonForm from '../register-common-form';
 
 type Props = {
   expanded?: boolean;
@@ -33,8 +32,6 @@ export default function RegisterView({ expanded }: Props) {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const email = searchParams.get('email');
-  const password = useBoolean();
-  const confirmPassword = useBoolean();
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     if (event.currentTarget.scrollTop === 0) {
@@ -62,9 +59,10 @@ export default function RegisterView({ expanded }: Props) {
       .oneOf([Yup.ref('password'), ''], 'Passwords must match')
       .nullable()
       .required('Confirm Password is required'),
-    emailsPerDay: Yup.string().nullable(),
+    emailsSendsPerDay: Yup.string().nullable(),
     hearAboutUs: Yup.string().nullable(),
     freePhoneSupport: Yup.boolean(),
+    phoneNumber: Yup.string().nullable(),
   });
 
   const methods = useForm({
@@ -76,7 +74,7 @@ export default function RegisterView({ expanded }: Props) {
       email: email ?? '',
       password: '',
       confirmPassword: '',
-      emailsPerDay: '',
+      emailsSendsPerDay: '',
       hearAboutUs: '',
       freePhoneSupport: false,
     },
@@ -97,6 +95,12 @@ export default function RegisterView({ expanded }: Props) {
         firstName: data.firstName,
         lastName: data.lastName,
         companyName: data.companyName,
+        ...(expanded && {
+          phoneNumber: data.phoneNumber ?? undefined,
+          hearAboutUs: data.hearAboutUs ?? undefined,
+          emailsSendsPerDay: data.emailsSendsPerDay ?? undefined,
+          callRequested: data.freePhoneSupport ?? false,
+        }),
       });
 
       setSuccessful(true);
@@ -146,53 +150,9 @@ export default function RegisterView({ expanded }: Props) {
     </Typography>
   );
 
-  const renderCommonOptions = (
-    <>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <RHFTextField name="firstName" label="First name" />
-        <RHFTextField name="lastName" label="Last name" />
-      </Stack>
-
-      <RHFTextField name="companyName" label="Company name" />
-      <RHFTextField name="email" label="Email address" />
-
-      <RHFTextField
-        name="password"
-        label="Password"
-        type={password.value ? 'text' : 'password'}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
-                <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      <RHFTextField
-        name="confirmPassword"
-        label="Confirm Password"
-        type={confirmPassword.value ? 'text' : 'password'}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={confirmPassword.onToggle} edge="end">
-                <Iconify
-                  icon={confirmPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
-                />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </>
-  );
-
   const renderExpandedOptions = (
     <>
-      <RHFSelect name="emailsPerDay" label="How many emails do you send per day?">
+      <RHFSelect name="emailsSendsPerDay" label="How many emails do you send per day?">
         <MenuItem value="upTo1k" sx={{ color: 'text.secondary' }}>
           Up To 1K
         </MenuItem>
@@ -209,28 +169,30 @@ export default function RegisterView({ expanded }: Props) {
 
       <RHFTextField name="hearAboutUs" label="How did you hear about us?" />
 
-      <RHFCheckbox name="freePhoneSupport" label="Get free phone support" />
+      <Stack spacing={1}>
+        <RHFCheckbox name="freePhoneSupport" label="Get free phone support" />
 
-      {watch('freePhoneSupport') && (
-        <Stack spacing={1}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Enter your phone number below to get free phone support
-          </Typography>
+        {watch('freePhoneSupport') && (
+          <Stack spacing={1}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Enter your phone number below to get free phone support
+            </Typography>
 
-          <RHFTextField
-            name="phoneNumber"
-            label="Phone Number"
-            type="tel"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="solar:phone-bold" />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-      )}
+            <RHFTextField
+              name="phoneNumber"
+              label="Phone Number"
+              type="tel"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <Iconify icon="solar:phone-bold" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+        )}
+      </Stack>
     </>
   );
 
@@ -244,7 +206,7 @@ export default function RegisterView({ expanded }: Props) {
           sx={{ overflowY: 'scroll', maxHeight: { md: 280 } }}
           onScroll={handleScroll}
         >
-          {renderCommonOptions}
+          <RegisterCommonForm />
           {expanded && renderExpandedOptions}
 
           {expanded && showOverlay && (
@@ -265,7 +227,7 @@ export default function RegisterView({ expanded }: Props) {
           )}
         </Stack>
       ) : (
-        renderCommonOptions
+        <RegisterCommonForm />
       )}
 
       {expanded && (
