@@ -112,19 +112,6 @@ export default function RegisterView({ expanded }: Props) {
           </Link>
         </Stack>
       </Stack>
-
-      {expanded && (
-        <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
-            {`You will be getting a trial plan which let's you send to 50 of our seed emails per day for
-        10 days.`}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {`If you require additional features to evaluate our service, let us know about your
-            specific use case after completing this registration.`}
-          </Typography>
-        </Stack>
-      )}
     </Stack>
   );
 
@@ -247,6 +234,19 @@ export default function RegisterView({ expanded }: Props) {
         </Stack>
       ) : (
         renderCommonOptions
+      )}
+
+      {expanded && (
+        <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            {`You will be getting a trial plan which let's you send to 50 of our seed emails per day for
+        10 days.`}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {`If you require additional features to evaluate our service, let us know about your
+            specific use case after completing this registration.`}
+          </Typography>
+        </Stack>
       )}
 
       <LoadingButton
