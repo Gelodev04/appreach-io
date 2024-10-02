@@ -40,7 +40,7 @@ export default function TrialRegistrationView() {
         type="submit"
         color="primary"
         variant="contained"
-        sx={{ px: 6, height: 50 }}
+        sx={{ px: 6, height: 50, width: { xs: '100%', md: 'auto' } }}
       >
         Continue
       </Button>
@@ -57,7 +57,15 @@ export default function TrialRegistrationView() {
         minHeight="100%"
         width="100%"
       >
-        <Logo sx={{ width: 300, height: 60 }} />
+        <Stack
+          sx={{
+            position: { xs: 'absolute', md: 'inherit' },
+            top: { xs: 32, md: 'inherit' },
+          }}
+        >
+          <Logo sx={{ width: 300, height: 60 }} />
+        </Stack>
+
         <Typography fontSize={24}>
           Getting started is fast and easy. Just let us know your business email. No credit card
           required.
