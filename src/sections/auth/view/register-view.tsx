@@ -38,11 +38,8 @@ export default function RegisterView({ expanded }: Props) {
   const email = searchParams.get('email');
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    if (event.currentTarget.scrollTop === 0) {
-      setShowOverlay(true);
-    } else {
-      setShowOverlay(false);
-    }
+    const shouldShowOverlay = event.currentTarget.scrollTop === 0;
+    setShowOverlay(shouldShowOverlay);
   };
 
   const RegisterSchema = Yup.object().shape({
@@ -196,17 +193,22 @@ export default function RegisterView({ expanded }: Props) {
           position="relative"
           spacing={2.5}
           p={1}
-          sx={{ overflowY: 'scroll', maxHeight: { md: 280 } }}
           onScroll={handleScroll}
+          sx={{
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+            maxHeight: { md: 280 },
+          }}
         >
           <RegisterCommonForm />
           {expanded && renderExpandedOptions}
 
+          {/* Blurred arrow */}
           {expanded && showOverlay && (
             <Box
               position="absolute"
               bottom={0}
-              display="flex"
+              display={{ xs: 'none', md: 'flex' }}
               justifyContent="center"
               alignItems="center"
               width={1}
