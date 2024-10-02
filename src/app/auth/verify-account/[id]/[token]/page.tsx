@@ -1,7 +1,7 @@
 import { VerifyAccountView } from 'src/sections/auth';
 
 export const metadata = {
-  title: 'Verify Account | Outreach Magic',
+  title: 'Verify Account | Inbox Daddy',
 };
 
 export default function VerifyAccountPage({ params }: { params: { id: string; token: string } }) {

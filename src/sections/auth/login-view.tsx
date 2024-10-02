@@ -70,7 +70,7 @@ export default function LoginView() {
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
-      <Typography variant="h4">Sign in to Outreach Magic</Typography>
+      <Typography variant="h4">Sign in to Inbox Daddy</Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2">New user?</Typography>
