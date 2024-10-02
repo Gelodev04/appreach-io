@@ -60,11 +60,13 @@ export default function RegisterView({ expanded }: Props) {
       .oneOf([Yup.ref('password'), ''], 'Passwords must match')
       .nullable()
       .required('Confirm Password is required'),
-    emailsSendsPerDay: Yup.string().nullable(),
-    hearAboutUs: Yup.string().nullable(),
-    freePhoneSupport: Yup.boolean(),
-    phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
-      return freePhoneSupport ? schema.required('Phone number is required') : schema.nullable();
+    ...(expanded && {
+      emailsSendsPerDay: Yup.string().required('Choose an option'),
+      hearAboutUs: Yup.string().required(' '),
+      freePhoneSupport: Yup.boolean(),
+      phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
+        return freePhoneSupport ? schema.required('Phone number is required') : schema.nullable();
+      }),
     }),
   });
 
