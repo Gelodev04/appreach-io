@@ -63,7 +63,9 @@ export default function RegisterView({ expanded }: Props) {
     emailsSendsPerDay: Yup.string().nullable(),
     hearAboutUs: Yup.string().nullable(),
     freePhoneSupport: Yup.boolean(),
-    phoneNumber: Yup.string().nullable(),
+    phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
+      return freePhoneSupport ? schema.required('Phone number is required') : schema.nullable();
+    }),
   });
 
   const methods = useForm({
@@ -78,6 +80,7 @@ export default function RegisterView({ expanded }: Props) {
       emailsSendsPerDay: '',
       hearAboutUs: '',
       freePhoneSupport: false,
+      phoneNumber: '',
     },
   });
 
@@ -176,7 +179,7 @@ export default function RegisterView({ expanded }: Props) {
         {watch('freePhoneSupport') && (
           <Stack spacing={1}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Enter your phone number below to get free phone support
+              Enter your phone number below to get free phone support (ex: +1 555-555-5555)
             </Typography>
 
             <RHFPhoneField name="phoneNumber" label="Phone Number" />

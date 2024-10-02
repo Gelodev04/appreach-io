@@ -1,4 +1,4 @@
-import { InputAdornment, OutlinedInput } from '@mui/material';
+import { Box, FormHelperText, InputAdornment, OutlinedInput } from '@mui/material';
 import { TextFieldProps } from '@mui/material/TextField';
 import { forwardRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -36,20 +36,29 @@ export default function RHFPhoneField({ name }: Props) {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <OutlinedInput
-          {...field}
-          fullWidth
-          type="tel"
-          value={field.value}
-          inputComponent={TextMask as any}
-          error={!!error}
-          endAdornment={
-            <InputAdornment position="start">
-              <Iconify icon="solar:phone-bold" />
-            </InputAdornment>
-          }
-          // helperText={error ? error?.message : helperText}
-        />
+        <>
+          <OutlinedInput
+            {...field}
+            fullWidth
+            type="tel"
+            value={field.value}
+            inputComponent={TextMask as any}
+            error={!!error}
+            endAdornment={
+              <InputAdornment position="start">
+                <Iconify icon="solar:phone-bold" />
+              </InputAdornment>
+            }
+          />
+
+          {error?.message && (
+            <Box mx="14px">
+              <FormHelperText error margin="dense">
+                {error.message}
+              </FormHelperText>
+            </Box>
+          )}
+        </>
       )}
     />
   );
