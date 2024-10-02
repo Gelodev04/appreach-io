@@ -1,7 +1,7 @@
 import { TrialRegistrationView } from 'src/sections/trial/view';
 
 export const metadata = {
-  title: 'Settings | Outreach Magic',
+  title: 'Register | Inbox Daddy',
 };
 
 export default function Page() {
