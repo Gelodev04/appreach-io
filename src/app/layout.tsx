@@ -17,7 +17,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Outreach Magic',
+  title: 'Inbox Daddy',
   description:
     'Leverage our powerful email deliverability tools to ensure your emails land directly in the primary inbox. ',
   keywords: 'react,material,kit,application,dashboard,admin,template',
