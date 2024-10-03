@@ -26,6 +26,7 @@ export async function POST(request: Request) {
           // Clear the reset token and token expiration
           'verification.token': null,
           'verification.tokenExpiration': null,
+          lastUpdated: new Date().toISOString(),
         },
       }
     );
