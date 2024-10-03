@@ -2,7 +2,7 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, MenuItem } from '@mui/material';
+import { Box, InputAdornment, MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -11,12 +11,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from 'src/auth/hooks';
-import FormProvider, {
-  RHFCheckbox,
-  RHFPhoneField,
-  RHFSelect,
-  RHFTextField,
-} from 'src/components/hook-form';
+import FormProvider, { RHFCheckbox, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
@@ -184,7 +179,17 @@ export default function RegisterView({ expanded }: Props) {
               Enter your phone number below to get free phone support (ex: +1 555-555-5555)
             </Typography>
 
-            <RHFPhoneField name="phoneNumber" label="Phone Number" />
+            <RHFTextField
+              name="phoneNumber"
+              label="Phone Number"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Iconify icon="solar:phone-bold" />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Stack>
         )}
       </Stack>

@@ -4,7 +4,6 @@ export * from './rhf-upload';
 
 export { default } from './form-provider';
 export { default as RHFAutocomplete } from './rhf-autocomplete';
-export { default as RHFPhoneField } from './rhf-phone-field';
 export { default as RHFRadioGroup } from './rhf-radio-group';
 export { default as RHFSlider } from './rhf-slider';
 export { default as RHFSwitch } from './rhf-switch';
