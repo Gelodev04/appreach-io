@@ -1,11 +1,8 @@
-import Image from 'next/image';
-
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-// ----------------------------------------------------------------------
+import Image from 'next/image';
 
 export default function NavUpgrade() {
   const url = `https://outreachmagic.io/email-reporting-tutorial/`;
@@ -33,7 +30,7 @@ export default function NavUpgrade() {
           <Typography variant="subtitle1">Have questions?</Typography>
 
           <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-            Take a look at our training library on how to get the most out of Outreach Magic
+            Take a look at our training library on how to get the most out of Inbox Daddy
           </Typography>
         </Stack>
 

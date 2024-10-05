@@ -60,6 +60,10 @@ export type JWTContextType = CanRemove & {
     firstName: string;
     lastName: string;
     companyName: string;
+    phoneNumber?: string;
+    hearAboutUs?: string;
+    emailsSendsPerDay?: string;
+    callRequested?: boolean;
   }) => Promise<void>;
   logout: () => Promise<void>;
 };

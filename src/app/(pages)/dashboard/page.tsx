@@ -1,7 +1,7 @@
 import { LookerStudioView } from 'src/sections/looker-studio/view';
 
 export const metadata = {
-  title: 'Analytics | Outreach Magic',
+  title: 'Analytics | Inbox Daddy',
 };
 
 export default function Page() {
