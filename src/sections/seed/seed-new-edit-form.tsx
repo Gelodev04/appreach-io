@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { format } from 'date-fns';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -58,7 +59,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: '',
+      name: currentItem?.name || format(new Date(), 'MMM co yyyy'),
       hostId: {
         label: '',
         value: '',
