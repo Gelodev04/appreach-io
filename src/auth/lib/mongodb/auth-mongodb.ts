@@ -52,8 +52,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             { 'appLogin.username': credentials.email },
             {
               $set: {
-                'appLogin.lastLogin': new Date(),
-                'appLogin.currentLogin': new Date(),
+                'appLogin.lastLogin': new Date().toISOString(),
+                'appLogin.currentLogin': new Date().toISOString(),
               },
             }
           );

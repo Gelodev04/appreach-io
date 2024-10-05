@@ -81,6 +81,8 @@ export async function POST(request: Request) {
         tokenExpiration,
         verifiedOn: null,
       },
+      created: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
     });
 
     // Generate a unique host name
