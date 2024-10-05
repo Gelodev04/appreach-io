@@ -1,10 +1,12 @@
 'use client';
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
+import { paths } from 'src/routes/paths';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
@@ -12,6 +14,7 @@ import { CheckoutElement } from '../checkout-element';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function CheckoutView() {
+  const router = useRouter();
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -29,35 +32,73 @@ export default function CheckoutView() {
     }
   };
 
-  const renderOptions = (
-    <>
-      <Typography variant="h3" mb={4}>
-        Choose your plan
-      </Typography>
+  const renderHead = (
+    <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
+      <Stack direction="row" display="inline-block" spacing={2}>
+        <Typography variant="h2" fontWeight={600}>
+          Outreach Magic
+          <Box display="inline-flex" ml={2}>
+            <Typography variant="h2" fontWeight={600} color="primary">
+              Pricing Plans
+            </Typography>
+          </Box>
+        </Typography>
+      </Stack>
 
-      <Box display="flex" gap={4}>
-        <CheckoutElement
-          title="Starter"
-          price="$150/month"
-          onClick={() => handleCheckout(STRIPE.prices.starter)}
-        />
-        <CheckoutElement
-          title="Established"
-          price="$499/month"
-          onClick={() => handleCheckout(STRIPE.prices.established)}
-        />
-      </Box>
-    </>
+      <Typography maxWidth="sm" variant="body1" color="text.secondary" fontWeight={700}>
+        Outreach Magic Pricing plans are transparent and all-inclusive focused on email
+        deliverability first. Contact us if you have any questions.
+      </Typography>
+    </Stack>
+  );
+
+  const renderOptions = (
+    <Box display="flex" gap={4}>
+      <CheckoutElement
+        onClick={() => router.push(paths.checkout.trial1)}
+        title="Starter"
+        subtitle="*Price per domain"
+        price="$150"
+        features={[
+          'Works with all email providers to audit and monitor your existing domain.',
+          'Inbox placement report for popular ESPs (Microsoft Business, Microsoft Personal, Google Business, Google Personal, Yahoo).',
+          'Segment reports by email subject, ip, domain, ESP, mail server, region and monitor inbox health.',
+        ]}
+      />
+      <CheckoutElement
+        onClick={() => handleCheckout(STRIPE.prices.established)}
+        title="Established"
+        subtitle="5 domains included"
+        price="$499"
+        features={[
+          'Everything in the reporting only package plus',
+          'Show a large volume of positive engagement to different ESPs from your IP and domain name',
+          'Warm up a new IP, repair damaged domain or fix a low sender reputation',
+        ]}
+      />
+      <CheckoutElement
+        title="Established"
+        price="$499"
+        onClick={() => handleCheckout(STRIPE.prices.established)}
+      />
+    </Box>
   );
 
   return (
-    <Stack
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      sx={{ padding: 4, maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}
-    >
-      {renderOptions}
-    </Stack>
+    <Container maxWidth="lg" sx={{ height: '100vh' }}>
+      <Stack
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        height="100%"
+        width="100%"
+        spacing={4}
+        sx={{ padding: 4, margin: '0 auto' }}
+      >
+        {renderHead}
+
+        {renderOptions}
+      </Stack>
+    </Container>
   );
 }

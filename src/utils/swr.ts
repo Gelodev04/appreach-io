@@ -23,6 +23,7 @@ export const endpoints = {
     resetPassword: '/api/auth/reset-password/',
     confirmResetPassword: '/api/auth/confirm-reset-password/',
     verifyAccount: '/api/auth/verify-account/',
+    checkEmailExists: (email: string) => `/api/auth/check-email-exists/?email=${email}`,
   },
   host: {
     list: '/api/host/list/',

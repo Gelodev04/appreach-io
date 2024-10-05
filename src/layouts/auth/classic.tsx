@@ -1,31 +1,27 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { alpha, useTheme } from '@mui/material/styles';
-
-import { useResponsive } from 'src/hooks/use-responsive';
-
-import { bgGradient } from 'src/theme/css';
-
 import Logo from 'src/components/logo';
+import { useResponsive } from 'src/hooks/use-responsive';
+import { bgGradient } from 'src/theme/css';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  title?: string;
   image?: string;
+  expanded?: boolean;
   children: React.ReactNode;
 };
 
-export default function AuthClassicLayout({ children, image, title }: Props) {
+export default function AuthClassicLayout({ children, expanded, image }: Props) {
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
 
   const renderLogo = (
     <Logo
       sx={{
         zIndex: 9,
-        position: 'absolute',
+        position: { md: 'absolute' },
         m: { xs: 2, md: 5 },
       }}
     />
@@ -35,11 +31,11 @@ export default function AuthClassicLayout({ children, image, title }: Props) {
     <Stack
       sx={{
         width: 1,
+        height: 'full',
+        justifyContent: 'center',
         mx: 'auto',
-        maxWidth: 480,
+        maxWidth: expanded ? 520 : 480,
         px: { xs: 2, md: 8 },
-        pt: { xs: 15, md: 20 },
-        pb: { xs: 15, md: 0 },
       }}
     >
       {children}
@@ -80,9 +76,10 @@ export default function AuthClassicLayout({ children, image, title }: Props) {
   return (
     <Stack
       component="main"
-      direction="row"
+      direction={{ md: 'row' }}
       sx={{
-        minHeight: '100vh',
+        paddingY: { xs: 1, md: 0 },
+        minHeight: { md: '100vh' },
       }}
     >
       {renderLogo}

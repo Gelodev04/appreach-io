@@ -122,7 +122,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
 
   const onCreate = handleSubmit(async (data) => {
     try {
-      const res = await fetch('/api/host/create', {
+      const res = await fetch(endpoints.host.create, {
         method: 'POST',
         body: JSON.stringify(data),
       });

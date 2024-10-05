@@ -3,8 +3,6 @@
 import { GuestGuard } from 'src/auth/guard';
 import AuthClassicLayout from 'src/layouts/auth/classic';
 
-// ----------------------------------------------------------------------
-
 type Props = {
   children: React.ReactNode;
 };
@@ -12,7 +10,7 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <GuestGuard>
-      <AuthClassicLayout image="/assets/illustrations/auth/register.png">
+      <AuthClassicLayout image="/assets/illustrations/auth/register.png" expanded>
         {children}
       </AuthClassicLayout>
     </GuestGuard>
