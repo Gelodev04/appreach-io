@@ -1,7 +1,7 @@
 import { HostListView } from 'src/sections/host/view';
 
 export const metadata = {
-  title: 'Settings | Outreach Magic',
+  title: 'Settings | Inbox Daddy',
 };
 
 export default function Page() {

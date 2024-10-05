@@ -18,10 +18,9 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
+import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 import SeedAccountsGenerator from './seed-accounts-generator';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   currentItem?: ISeedForm;
@@ -102,14 +101,11 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const res = await fetch('/api/seed/create', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      const body = JSON.stringify(data);
+      const res = await fetch(endpoints.seed.create, { method: 'POST', body });
 
-      if (!res.ok) {
-        throw new Error('Failed to create seed batch');
-      }
+      if (!res.ok) throw new Error('Failed to create seed batch');
+
       enqueueSnackbar('Create success!');
       router.push(paths.seed.root);
     } catch (error) {

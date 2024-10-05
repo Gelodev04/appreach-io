@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     } = data;
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     if (!email || !password || !firstName || !lastName || !companyName) {
       throw new Error('Missing required fields');

@@ -3,7 +3,7 @@ import { RegisterView } from 'src/sections/auth/view';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Register | Outreach Magic',
+  title: 'Register | Inbox Daddy',
 };
 
 export default function RegisterPage() {

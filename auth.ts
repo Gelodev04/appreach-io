@@ -6,7 +6,7 @@ import { authConfig } from './auth.config';
 async function getUser(email: string) {
   try {
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
     if (!user) {

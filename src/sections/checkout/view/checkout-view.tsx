@@ -2,8 +2,8 @@
 
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { paths } from 'src/routes/paths';
@@ -15,28 +15,20 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 export default function CheckoutView() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
 
   const handleCheckout = async (priceId: string) => {
-    setLoading(true);
-
     const stripe: Stripe | null = await stripePromise;
-
-    if (!stripe) {
-      setError('Stripe.js failed to load.');
-      setLoading(false);
-      return;
-    }
+    if (!stripe) return;
 
     try {
-      const sessionId = await createCheckoutSession(priceId, 'customer@example.com');
+      const email = session?.user.email;
+      if (!email) throw new Error('Email is required for checkout.');
+      const sessionId = await createCheckoutSession(priceId, email);
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
-    } finally {
-      setLoading(false);
     }
   };
 

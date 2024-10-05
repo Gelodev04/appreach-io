@@ -18,10 +18,6 @@
 
 > The connection string for the MongoDB database. This URI includes the username, password, cluster address, and default database.
 
-`MONGODB_DATABASE=""`
-
-> Specifies the name of the MongoDB database to use within the application. (e.g., sandbox or v4)
-
 `SEED_EMAIL_GENERATOR=""`
 
 > The URL endpoint for the Seed Emails Generator Cloud Function. This function is used to generate seed emails.

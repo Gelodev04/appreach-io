@@ -9,8 +9,6 @@ import { ISeedAccount } from 'src/types/seed';
 import SeedAccountsAssigned from './seed-accounts-assigned';
 import SeedAccountsBatch from './seed-accounts-batch';
 
-// ----------------------------------------------------------------------
-
 export default function SeedAccountsGenerator({
   assignedCount,
   seedAccounts,
