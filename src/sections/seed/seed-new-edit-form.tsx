@@ -59,7 +59,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: currentItem?.name || format(new Date(), 'MMM co yyyy'),
+      name: currentItem?.name || format(new Date(), 'MMM do yyyy'),
       hostId: {
         label: '',
         value: '',
