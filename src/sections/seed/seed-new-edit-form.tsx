@@ -18,7 +18,7 @@ import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { ISeedForm } from 'src/types/seed';
+import { ISeedAccount, ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 import SeedAccountsGenerator from './seed-accounts-generator';
@@ -85,6 +85,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     formState: { isSubmitting },
     watch,
     setValue,
+    getValues,
   } = methods;
 
   const seedAccountsGenerator = watch('seedAccountsGenerator');
@@ -118,24 +119,55 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   useEffect(() => {
-    const distributeAccounts = (total: number) => {
-      const types: SeedAccountType[] = [
-        'googleBusiness',
-        'googlePersonal',
-        'microsoftBusiness',
-        'microsoftPersonal',
-        'yahooPersonal',
-      ];
-      const count = Math.floor(total / types.length);
-      const remainder = total % types.length;
+    const distributeAccounts = (total: number, seeds: ISeedAccount[]) => {
+      if (!seeds || seeds.length === 0) return;
 
-      types.forEach((type, index) => {
-        setValue(type, count + (index < remainder ? 1 : 0));
+      const allocations: { [key: string]: number } = {};
+      let remaining = total;
+
+      // Initialize allocations
+      seeds.forEach((seed) => {
+        allocations[seed.name] = 0;
+      });
+
+      // Sort seeds by available capacity (amount - current allocation) descending
+      const sortedSeeds = [...seeds].sort(
+        (a, b) => b.amount - allocations[b.name] - (a.amount - allocations[a.name])
+      );
+
+      const allocateSeeds = (allocated: boolean) => {
+        sortedSeeds.some((seed) => {
+          const currentAllocation = allocations[seed.name];
+          if (currentAllocation < seed.amount) {
+            allocations[seed.name] += 1;
+            remaining -= 1;
+            allocated = true;
+            return remaining === 0; // Stop iterating if no more remaining
+          }
+          return false; // Continue to next seed
+        });
+        return allocated;
+      };
+
+      while (remaining > 0) {
+        let allocated = false;
+        allocated = allocateSeeds(allocated);
+        if (!allocated) break;
+      }
+
+      // Set the values in the form
+      seeds.forEach((seed) => {
+        const type = seed.name as SeedAccountType;
+        const desiredValue = allocations[seed.name];
+
+        if (getValues(type) !== desiredValue) {
+          setValue(type, desiredValue);
+        }
       });
     };
 
-    distributeAccounts(seedAccountsGenerator as number);
-  }, [seedAccountsGenerator, setValue]);
+    distributeAccounts(seedAccountsGenerator as number, seedAccounts);
+  }, [seedAccountsGenerator, seedAccounts, setValue, getValues]);
 
   useEffect(() => {
     const total =
