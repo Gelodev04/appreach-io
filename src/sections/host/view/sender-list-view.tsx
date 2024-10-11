@@ -33,15 +33,11 @@ import { endpoints } from 'src/utils/swr';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 
-// ----------------------------------------------------------------------
-
 const HIDE_COLUMNS = {
   category: false,
 };
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
-
-// ----------------------------------------------------------------------
 
 export default function HostListView() {
   const { enqueueSnackbar } = useSnackbar();
@@ -186,8 +182,8 @@ export default function HostListView() {
         }}
       >
         <CustomBreadcrumbs
-          heading="Settings"
-          links={[{ name: 'Settings' }]}
+          heading="Sender Profiles"
+          links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost />
@@ -199,7 +195,7 @@ export default function HostListView() {
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Add new infrastructure
+                Add new sender profile
               </Button>
             </Stack>
           }

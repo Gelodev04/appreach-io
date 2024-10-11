@@ -1,3 +1,3 @@
-export { default as HostListView } from './host-list-view';
-export { default as HostEditView } from './host-edit-view';
-export { default as HostCreateView } from './host-create-view';
+export { default as SenderCreateView } from './sender-create-view';
+export { default as SenderEditView } from './sender-edit-view';
+export { default as SenderListView } from './sender-list-view';

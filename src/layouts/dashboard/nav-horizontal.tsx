@@ -8,20 +8,16 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 
 import { bgBlur } from 'src/theme/css';
 
-import Scrollbar from 'src/components/scrollbar';
 import { NavSectionHorizontal } from 'src/components/nav-section';
+import Scrollbar from 'src/components/scrollbar';
 
+import HeaderShadow from '../common/header-shadow';
 import { HEADER } from '../config-layout';
 import { useNavData } from './config-navigation';
-import HeaderShadow from '../common/header-shadow';
-
-// ----------------------------------------------------------------------
 
 function NavHorizontal() {
   const theme = useTheme();
-
   const { user } = useMockedUser();
-
   const navData = useNavData();
 
   return (
