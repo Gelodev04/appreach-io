@@ -1,14 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridActionsCellItem,
   GridColDef,
   GridColumnVisibilityModel,
   GridRowSelectionModel,
@@ -17,6 +14,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
+import { useCallback, useEffect, useState } from 'react';
 
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
@@ -41,10 +39,7 @@ import {
   RenderCellImportName,
   RenderCellPublish,
   RenderCellResultsTotal,
-  RenderCellToken,
 } from '../seed-table-row';
-
-// ----------------------------------------------------------------------
 
 const HIDE_COLUMNS = {
   category: false,
@@ -52,21 +47,13 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-// ----------------------------------------------------------------------
-
 export default function SeedView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const confirmRows = useBoolean();
-
   const settings = useSettingsContext();
-
   const { seeds, seedsLoading } = useGetSeeds();
-
   const [tableData, setTableData] = useState<ISeed[]>([]);
-
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
@@ -80,30 +67,30 @@ export default function SeedView() {
     inputData: tableData,
   });
 
-  const handleDeleteRow = useCallback(
-    async (id: string) => {
-      try {
-        const res = await fetch(endpoints.seed.delete, {
-          method: 'POST',
-          body: JSON.stringify({ ids: [id] }),
-        });
+  // const handleDeleteRow = useCallback(
+  //   async (id: string) => {
+  //     try {
+  //       const res = await fetch(endpoints.seed.delete, {
+  //         method: 'POST',
+  //         body: JSON.stringify({ ids: [id] }),
+  //       });
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error);
-        }
+  //       if (!res.ok) {
+  //         const data = await res.json();
+  //         throw new Error(data.error);
+  //       }
 
-        enqueueSnackbar('Item deleted', { variant: 'warning' });
+  //       enqueueSnackbar('Item deleted', { variant: 'warning' });
 
-        const newTableData = tableData.filter((row) => row._id.toString() !== id);
+  //       const newTableData = tableData.filter((row) => row._id.toString() !== id);
 
-        setTableData(newTableData);
-      } catch (error) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-      }
-    },
-    [enqueueSnackbar, tableData]
-  );
+  //       setTableData(newTableData);
+  //     } catch (error) {
+  //       enqueueSnackbar(error.message, { variant: 'error' });
+  //     }
+  //   },
+  //   [enqueueSnackbar, tableData]
+  // );
 
   const handleDeleteRows = useCallback(async () => {
     try {
@@ -170,45 +157,35 @@ export default function SeedView() {
       renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
     {
-      field: 'token',
-      headerName: 'Token',
+      field: 'download',
+      headerName: 'Download CSV',
       width: 120,
-      renderCell: (params) => <RenderCellToken params={params} />,
+      type: 'singleSelect',
+      renderCell: (params) => (
+        <Stack direction="row" spacing={1}>
+          <Button
+            size="small"
+            onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
+            startIcon={<Iconify icon="mdi:file" width={18} />}
+            sx={{ px: 1 }}
+          >
+            Download
+          </Button>
+        </Stack>
+      ),
     },
+    // {
+    //   field: 'token',
+    //   headerName: 'Token',
+    //   width: 120,
+    //   renderCell: (params) => <RenderCellToken params={params} />,
+    // },
     {
       field: 'status',
       headerName: 'Status',
       width: 80,
       type: 'singleSelect',
       renderCell: (params) => <RenderCellPublish params={params} />,
-    },
-    {
-      type: 'actions',
-      field: 'actions',
-      headerName: ' ',
-      align: 'right',
-      headerAlign: 'right',
-      width: 80,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:eye-bold" />}
-          label="Download CSV"
-          onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:trash-bin-trash-bold" />}
-          label="Delete"
-          onClick={() => {
-            handleDeleteRow(params.row._id);
-          }}
-          sx={{ color: 'error.main' }}
-        />,
-      ],
     },
   ];
 

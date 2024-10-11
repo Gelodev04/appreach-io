@@ -1,11 +1,7 @@
-import { GridCellParams } from '@mui/x-data-grid';
 import Typography from '@mui/material/Typography';
-
-import { fDate } from 'src/utils/format-time';
-
+import { GridCellParams } from '@mui/x-data-grid';
 import Label from 'src/components/label';
-
-// ----------------------------------------------------------------------
+import { fDate } from 'src/utils/format-time';
 
 type ParamsProps = {
   params: GridCellParams;
