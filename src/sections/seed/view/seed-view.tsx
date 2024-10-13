@@ -156,6 +156,8 @@ export default function SeedView() {
       headerName: 'Download CSV',
       width: 120,
       type: 'singleSelect',
+      sortable: false,
+      filterable: false,
       renderCell: (params) => (
         <Stack direction="row">
           <Tooltip title="Download CSV" placement="top">
