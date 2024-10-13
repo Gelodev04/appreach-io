@@ -15,7 +15,7 @@ export default function HostCreateView() {
         heading="Register a new sender profile"
         links={[
           {
-            name: 'Settings',
+            name: 'Sender Profiles',
             href: paths.settings.root,
           },
           { name: 'New sender profile' },

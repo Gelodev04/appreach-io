@@ -43,7 +43,7 @@ export default function HostEditView() {
         heading="Edit sender profile"
         links={[
           {
-            name: 'Settings',
+            name: 'Sender Profiles',
             href: paths.settings.root,
           },
           { name: 'Edit sender profile' },
