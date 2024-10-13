@@ -1,5 +1,6 @@
 'use client';
 
+import { IconButton, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -15,24 +16,18 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import { useCallback, useEffect, useState } from 'react';
-
-import { RouterLink } from 'src/routes/components';
-import { paths } from 'src/routes/paths';
-
-import { useGetSeeds } from 'src/hooks/api/seed';
-import { useBoolean } from 'src/hooks/use-boolean';
-
-import { endpoints } from 'src/utils/swr';
-
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
-
+import { useGetSeeds } from 'src/hooks/api/seed';
+import { useBoolean } from 'src/hooks/use-boolean';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import { ISeed } from 'src/types/seed';
-
+import { endpoints } from 'src/utils/swr';
 import {
   RenderCellDateAdded,
   RenderCellGenerateTotal,
@@ -162,15 +157,15 @@ export default function SeedView() {
       width: 120,
       type: 'singleSelect',
       renderCell: (params) => (
-        <Stack direction="row" spacing={1}>
-          <Button
-            size="small"
-            onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
-            startIcon={<Iconify icon="mdi:file" width={18} />}
-            sx={{ px: 1 }}
-          >
-            Download
-          </Button>
+        <Stack direction="row">
+          <Tooltip title="Download CSV" placement="top">
+            <IconButton
+              onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
+              sx={{ zIndex: 20 }}
+            >
+              <Iconify icon="eos-icons:csv-file" width={18} />
+            </IconButton>
+          </Tooltip>
         </Stack>
       ),
     },
