@@ -13,6 +13,7 @@ import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
+import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
@@ -29,6 +30,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
   const timezones = moment.tz.names();
+  const { hosts } = useGetSeedSettings();
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
@@ -36,9 +38,6 @@ export default function HostNewEditForm({ currentItem }: Props) {
     timezone: Yup.string().required('Timezone is required'),
     notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    // slack: Yup.object().shape({
-    //   notificationChannelId: Yup.string(),
-    // }),
     smartLead: Yup.object().shape({
       // apiKey: Yup.string(),
       webhook: Yup.string(),
@@ -134,6 +133,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
     }
   });
 
+  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
 mark@outreachmagic.io ⏎
 abdulrehman@outreachmagic.io ⏎`;
@@ -154,11 +154,11 @@ abdulrehman@outreachmagic.io ⏎`;
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField
+              <RHFAutocomplete
                 name="host"
-                label="Host name"
+                label="Choose a host"
                 placeholder="outreachmagic"
-                disabled={!!currentItem}
+                options={hostOptions}
               />
 
               <RHFAutocomplete
