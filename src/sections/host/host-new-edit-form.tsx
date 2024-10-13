@@ -169,13 +169,13 @@ abdulrehman@outreachmagic.io ⏎`;
                 getOptionLabel={(option) => option}
               />
             </Box>
-            <RHFTextField
+            {/* <RHFTextField
               name="notificationAddresses"
               label="Notification addresses (separated by newlines)"
               minRows={3}
               multiline
               placeholder={externalSenderAddressesPlaceholder}
-            />
+            /> */}
             <RHFTextField
               name="externalSenderAddresses"
               label="Sender addresses (separated by newlines)"
