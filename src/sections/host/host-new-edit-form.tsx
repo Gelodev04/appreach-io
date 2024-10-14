@@ -153,7 +153,7 @@ abdulrehman@outreachmagic.io ⏎`;
             >
               <RHFTextField
                 name="host"
-                label="Host name"
+                label="Sender profile name"
                 placeholder="outreachmagic"
                 disabled={!!currentItem}
               />
