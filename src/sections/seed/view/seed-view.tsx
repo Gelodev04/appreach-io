@@ -1,10 +1,10 @@
 'use client';
 
-import { IconButton, Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import {
   DataGrid,
   GridColDef,
@@ -30,7 +30,6 @@ import { ISeed } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import {
   RenderCellDateAdded,
-  RenderCellGenerateTotal,
   RenderCellImportName,
   RenderCellPublish,
   RenderCellResultsTotal,
@@ -123,37 +122,16 @@ export default function SeedView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'dateAdded',
-      headerName: 'Date added',
-      flex: 1,
-      minWidth: 160,
-      hideable: false,
-      renderCell: (params) => <RenderCellDateAdded params={params} />,
-    },
-    {
       field: 'name',
-      headerName: 'Import name',
+      headerName: 'List name',
       flex: 1,
       minWidth: 200,
       hideable: false,
       renderCell: (params) => <RenderCellImportName params={params} />,
     },
     {
-      field: 'generate.total',
-      headerName: 'Generate total',
-      width: 160,
-      renderCell: (params) => <RenderCellGenerateTotal params={params} />,
-    },
-    {
-      field: 'results.total',
-      headerName: 'Results total',
-      width: 160,
-      type: 'singleSelect',
-      renderCell: (params) => <RenderCellResultsTotal params={params} />,
-    },
-    {
       field: 'download',
-      headerName: 'Download CSV',
+      headerName: 'CSV',
       width: 120,
       type: 'singleSelect',
       sortable: false,
@@ -161,15 +139,30 @@ export default function SeedView() {
       renderCell: (params) => (
         <Stack direction="row">
           <Tooltip title="Download CSV" placement="top">
-            <IconButton
+            <Button
+              startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
               onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
-              sx={{ zIndex: 20 }}
+              size="small"
+              sx={{ zIndex: 20, px: 1 }}
             >
-              <Iconify icon="eos-icons:csv-file" width={18} />
-            </IconButton>
+              Download
+            </Button>
           </Tooltip>
         </Stack>
       ),
+    },
+    // {
+    //   field: 'generate.total',
+    //   headerName: 'Generate total',
+    //   width: 160,
+    //   renderCell: (params) => <RenderCellGenerateTotal params={params} />,
+    // },
+    {
+      field: 'results.total',
+      headerName: 'List size',
+      width: 160,
+      type: 'singleSelect',
+      renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
     // {
     //   field: 'token',
@@ -183,6 +176,14 @@ export default function SeedView() {
       width: 80,
       type: 'singleSelect',
       renderCell: (params) => <RenderCellPublish params={params} />,
+    },
+    {
+      field: 'dateAdded',
+      headerName: 'Created on',
+      flex: 1,
+      minWidth: 160,
+      hideable: false,
+      renderCell: (params) => <RenderCellDateAdded params={params} />,
     },
   ];
 
