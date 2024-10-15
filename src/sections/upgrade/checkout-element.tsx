@@ -6,6 +6,7 @@ type Props = {
   subtitle?: string;
   price?: string | number;
   features?: string[];
+  comment?: string;
   isCurrentPlan?: boolean;
   SubmitProps?: React.ComponentProps<typeof Button>;
 };
@@ -16,6 +17,7 @@ export function CheckoutElement({
   subtitle,
   price,
   features,
+  comment,
   isCurrentPlan,
   SubmitProps,
 }: Props) {
@@ -61,6 +63,12 @@ export function CheckoutElement({
           </ListItem>
         ))}
       </List>
+
+      {comment && (
+        <Typography fontSize={12} textAlign="start" mb={2}>
+          {comment}
+        </Typography>
+      )}
 
       {isCurrentPlan && (
         <Typography fontSize={14} fontWeight={600}>

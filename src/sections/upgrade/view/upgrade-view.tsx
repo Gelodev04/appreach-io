@@ -3,12 +3,10 @@
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
-import { paths } from 'src/routes/paths';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
@@ -16,7 +14,6 @@ import { CheckoutElement } from '../checkout-element';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function UpgradeView() {
-  const router = useRouter();
   const [currentPlan, setCurrentPlan] = useState('starter');
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
@@ -49,7 +46,7 @@ export default function UpgradeView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onClick={() => router.push(paths.checkout.trial1)}
+        onClick={() => handleCheckout(STRIPE.prices.starter)}
         price="$150"
         features={[
           'Send up to 100 emails daily to our seed list',
@@ -75,6 +72,7 @@ export default function UpgradeView() {
           'Includes 5 sender profile',
           'Email and live chat support included',
         ]}
+        comment="*Additional senders and seed accounts available. Contact us about your specific use case."
         isCurrentPlan={currentPlan === 'established'}
         SubmitProps={{
           children: 'Upgrade',
