@@ -26,7 +26,10 @@ export function useGetSeeds() {
 
 export function useGetSeedSettings() {
   const URL = endpoints.seed.settings;
-  const { data, error, isValidating } = useSWR(URL, fetcher);
+  const { data, error, isValidating } = useSWR(URL, fetcher, {
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
 
   const memoizedValue = useMemo(
     () => ({
