@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     // Check if a host with the same name already exists
     const existingHost = await db.collection('hosts').findOne({ host });
-    if (existingHost) throw new Error('Infrastructure already exists, try another name');
+    if (existingHost) throw new Error('Profile already created, use different name');
 
     const hostCrypt = generateHostCrypt(host);
     const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
