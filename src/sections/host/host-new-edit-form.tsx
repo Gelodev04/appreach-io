@@ -26,13 +26,9 @@ type Props = {
 
 export default function HostNewEditForm({ currentItem }: Props) {
   const router = useRouter();
-
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
-
   const timezones = moment.tz.names();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
@@ -40,9 +36,6 @@ export default function HostNewEditForm({ currentItem }: Props) {
     timezone: Yup.string().required('Timezone is required'),
     notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    // slack: Yup.object().shape({
-    //   notificationChannelId: Yup.string(),
-    // }),
     smartLead: Yup.object().shape({
       // apiKey: Yup.string(),
       webhook: Yup.string(),
@@ -160,7 +153,7 @@ abdulrehman@outreachmagic.io ⏎`;
             >
               <RHFTextField
                 name="host"
-                label="Host name"
+                label="Sender profile name"
                 placeholder="outreachmagic"
                 disabled={!!currentItem}
               />
@@ -173,13 +166,13 @@ abdulrehman@outreachmagic.io ⏎`;
                 getOptionLabel={(option) => option}
               />
             </Box>
-            <RHFTextField
+            {/* <RHFTextField
               name="notificationAddresses"
               label="Notification addresses (separated by newlines)"
               minRows={3}
               multiline
               placeholder={externalSenderAddressesPlaceholder}
-            />
+            /> */}
             <RHFTextField
               name="externalSenderAddresses"
               label="Sender addresses (separated by newlines)"
@@ -235,7 +228,7 @@ abdulrehman@outreachmagic.io ⏎`;
             priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Register new Infrastructure
+            Register new sender profile
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
             Add your sender accounts and engagement settings.
@@ -247,7 +240,7 @@ abdulrehman@outreachmagic.io ⏎`;
             loading={isSubmitting}
             sx={{ boxShadow: theme.customShadows.primary }}
           >
-            {currentItem ? 'Save Changes' : 'Add infrastructure'}
+            {currentItem ? 'Save Changes' : 'Add sender profile'}
           </LoadingButton>
         </Stack>
       </Grid>

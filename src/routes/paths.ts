@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
-  SETTINGS: '/settings',
+  SETTINGS: '/senders',
   SEEDS: '/seeds',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',

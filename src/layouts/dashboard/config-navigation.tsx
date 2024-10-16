@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import { paths } from 'src/routes/paths';
 
-// ----------------------------------------------------------------------
-
 export function useNavData() {
   const data = useMemo(
     () => [
@@ -16,7 +14,7 @@ export function useNavData() {
             icon: <Iconify icon="codicon:graph" />,
           },
           {
-            title: 'Settings',
+            title: 'Sender Profiles',
             path: paths.settings.root,
             icon: <Iconify icon="bx:server" />,
           },

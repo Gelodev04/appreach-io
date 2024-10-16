@@ -6,21 +6,19 @@ import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import HostsNewEditForm from '../host-new-edit-form';
 
-// ----------------------------------------------------------------------
-
 export default function HostCreateView() {
   const settings = useSettingsContext();
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Register a new infrastructure"
+        heading="Register a new sender profile"
         links={[
           {
-            name: 'Settings',
+            name: 'Sender Profiles',
             href: paths.settings.root,
           },
-          { name: 'New infrastructure' },
+          { name: 'New sender profile' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
