@@ -6,8 +6,6 @@ import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import SeedNewEditForm from '../seed-new-edit-form';
 
-// ----------------------------------------------------------------------
-
 export default function SeedCreateView() {
   const settings = useSettingsContext();
 

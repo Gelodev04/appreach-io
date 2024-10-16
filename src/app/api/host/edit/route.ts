@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 
 export async function POST(request: Request) {

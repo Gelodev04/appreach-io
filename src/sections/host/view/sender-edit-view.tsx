@@ -40,13 +40,13 @@ export default function HostEditView() {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
-        heading="Edit infrastructure"
+        heading="Edit sender profile"
         links={[
           {
-            name: 'Settings',
+            name: 'Sender Profiles',
             href: paths.settings.root,
           },
-          { name: 'Edit infrastructure' },
+          { name: 'Edit sender profile' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

@@ -1,11 +1,7 @@
 import { Button, TextField } from '@mui/material';
-
-import Iconify from 'src/components/iconify/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
-
+import Iconify from 'src/components/iconify/iconify';
 import { useAddExistingHost } from './hooks';
-
-// ------------------------------------------------------------
 
 export default function HostAddExistingHost() {
   const { addExistingHost, submitting, hostName, setHostName, open } = useAddExistingHost();
@@ -17,10 +13,10 @@ export default function HostAddExistingHost() {
         startIcon={<Iconify icon="mingcute:add-line" />}
         onClick={open.onTrue}
       >
-        Add an existing infrastructure
+        Add an existing sender profile
       </Button>
       <ConfirmDialog
-        title="Add an existing infrastructure"
+        title="Add an existing sender profile"
         open={open.value}
         onClose={() => {
           open.onFalse();

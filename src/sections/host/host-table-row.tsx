@@ -22,9 +22,7 @@ export function RenderHostName({ params }: ParamsProps) {
 
   return (
     <Link component={RouterLink} href={href} color="inherit">
-      <Typography variant="subtitle1" sx={{ my: 2 }}>
-        {params.row.host}
-      </Typography>
+      <Typography sx={{ my: 2 }}>{params.row.host}</Typography>
     </Link>
   );
 }
