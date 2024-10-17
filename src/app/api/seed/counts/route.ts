@@ -1,4 +1,7 @@
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 
 const types = [
   'googleBusiness',
@@ -25,8 +28,19 @@ export async function GET() {
       })
     );
 
-    return Response.json({ seedAccounts });
+    return NextResponse.json(
+      { seedAccounts },
+      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    );
   } catch (error) {
-    return Response.json({ error: error.message }, { status: error.statusCode || 500 });
+    console.error('API Route Error:', error);
+
+    return NextResponse.json(
+      { error: error.message },
+      {
+        status: error.statusCode || 500,
+        headers: { 'Cache-Control': 'no-store, max-age=0' },
+      }
+    );
   }
 }
