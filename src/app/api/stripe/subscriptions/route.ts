@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       ['active', 'trialing'].includes(status)
     );
 
-    return NextResponse.json({ subscription: activeSubscription });
+    return NextResponse.json(activeSubscription);
   } catch (error) {
     console.error('Error fetching subscription:', error);
     return NextResponse.json({ error: 'Failed to fetch subscription' }, { status: 500 });
