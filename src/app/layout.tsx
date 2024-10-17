@@ -40,7 +40,7 @@ export default function RootLayout({ children }: Props) {
     <html lang="en" className={primaryFont.className}>
       <body>
         <Script strategy="afterInteractive">
-        {`
+          {`
           window.salesmateSettings = {
             workspace_id: "7ae0e152-56ea-4ad1-8a71-2a01a2142c2e",
             app_key: "e5fb65d0-8756-11ef-9245-856ae81ff140",
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: Props) {
         `}
         </Script>
         <Script strategy="afterInteractive" id="salesmate-widget-loader">
-        {`
+          {`
           !function(e, t, a, i, d, n, o) {
             e.Widget = i;
             e[i] = e[i] || function() {
