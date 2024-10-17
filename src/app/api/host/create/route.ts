@@ -33,6 +33,8 @@ export async function POST(request: Request) {
       userHosts.map(async (hostId: ObjectId) => {
         const hostDoc = await db.collection('hosts').findOne({ _id: hostId });
         const hostDocExternalSenderAddresses = hostDoc?.userSettings?.externalSenderAddresses;
+        if (!hostDocExternalSenderAddresses) return null;
+
         const hasDuplicateEmail = externalSenderAddressesArray.some((email) => {
           return hostDocExternalSenderAddresses.includes(email.toLowerCase());
         });
