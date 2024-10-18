@@ -46,7 +46,7 @@ export default function UpgradeView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onClick={() => handleCheckout(STRIPE.prices.starter)}
+        onClick={() => handleCheckout(STRIPE.subscriptions.starter.price)}
         price="$150"
         features={[
           'Send up to 100 emails daily to our seed list',
@@ -64,7 +64,7 @@ export default function UpgradeView() {
       <CheckoutElement
         title="Established"
         subtitle="500 Seed Accounts*"
-        onClick={() => handleCheckout(STRIPE.prices.established)}
+        onClick={() => handleCheckout(STRIPE.subscriptions.established.price)}
         price="$650"
         features={[
           'Send up to 500 emails daily to our seed list',

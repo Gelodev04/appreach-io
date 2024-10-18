@@ -14,8 +14,16 @@ export const PATH_AFTER_LOGIN = paths.dashboard.root;
 
 // STRIPE
 export const STRIPE = {
-  prices: {
-    starter: 'price_1Q0OMZIPvbQKS9UKZ3h12FoK',
-    established: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
+  subscriptions: {
+    starter: {
+      name: 'Starter',
+      product: 'prod_Qs8dSFvQyCKZuL',
+      price: 'price_1Q0OMZIPvbQKS9UKZ3h12FoK',
+    },
+    established: {
+      name: 'Established',
+      product: 'prod_R0TQY0ijWzmt5N',
+      price: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
+    },
   },
 };
