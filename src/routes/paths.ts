@@ -65,8 +65,8 @@ export const paths = {
   },
 
   checkout: {
-    root: '/upgrade',
-    success: '/upgrade/success',
+    root: '/subscription',
+    success: '/subscription/success',
     trial1: '/trial/1',
     trial2: '/trial/2',
   },
