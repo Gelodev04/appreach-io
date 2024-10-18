@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 
 export default function NavUpgrade() {
@@ -25,14 +24,6 @@ export default function NavUpgrade() {
             priority
           />
         </Box>
-
-        <Stack spacing={0.5} sx={{ mb: 2, mt: 1.5, width: 1 }}>
-          <Typography variant="subtitle1">Have questions?</Typography>
-
-          <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-            Take a look at our training library on how to get the most out of Inbox Daddy
-          </Typography>
-        </Stack>
 
         <Button variant="contained" href={url} target="_blank" rel="noopener">
           Access training
