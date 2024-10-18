@@ -104,7 +104,8 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update host');
+        const body = await res.json();
+        throw new Error(body.error ?? 'Failed to update host');
       }
       enqueueSnackbar('Update success!');
       router.push(paths.settings.root);
