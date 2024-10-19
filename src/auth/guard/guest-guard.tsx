@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
-import { useRouter, useSearchParams } from 'src/routes/hooks';
+import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -11,30 +11,39 @@ type Props = {
 };
 
 export default function GuestGuard({ children }: Props) {
-  const { loading } = useAuthContext();
-
-  return <>{loading ? <SplashScreen /> : <Container>{children}</Container>}</>;
-}
-
-// ----------------------------------------------------------------------
-
-function Container({ children }: Props) {
+  const { loading: authLoading } = useAuthContext();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // const returnTo = searchParams.get('returnTo') || paths.dashboard.root;
-  const returnTo = searchParams.get('returnTo');
+  const pathname = usePathname();
   const { status } = useSession();
-  const authenticated = status === 'authenticated' || status === 'loading';
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
 
-  const check = useCallback(() => {
-    if (authenticated && returnTo) {
-      router.replace(returnTo);
-    }
-  }, [authenticated, returnTo, router]);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const isAuthenticated = status === 'authenticated';
+  const isLoading = authLoading || status === 'loading';
 
   useEffect(() => {
-    check();
-  }, [check]);
+    if (isLoading) {
+      return;
+    }
+
+    if (isAuthenticated) {
+      setIsRedirecting(true);
+      if (returnTo) {
+        router.replace(returnTo);
+      } else if (pathname.startsWith('/auth/')) {
+        router.replace('/');
+      } else {
+        // If the user is authenticated and not on an auth page, no need to redirect
+        setIsRedirecting(false);
+      }
+    }
+  }, [isLoading, isAuthenticated, router, returnTo, pathname]);
+
+  if (isLoading || isRedirecting) {
+    return <SplashScreen />;
+  }
 
   return <>{children}</>;
 }
