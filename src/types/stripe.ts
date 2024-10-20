@@ -1,3 +1,9 @@
+export interface SubscriptionData {
+  name: string;
+  product: string;
+  price: string;
+}
+
 export interface StripeSubscription {
   id: string;
   object: string;
@@ -75,7 +81,6 @@ export interface StripeSubscription {
   };
   trial_start: number;
 }
-
 export interface StripeSubscriptionPlan {
   id: string;
   object: string;
