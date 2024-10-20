@@ -16,8 +16,8 @@ export function useCurrentSubscription() {
     () => ({
       subscription: (data as StripeSubscription) || {},
       currentPlan: getSubscriptionData(data?.plan.product),
-      isLoading: isLoading || isValidating,
-      isError: error,
+      subscriptionLoading: isLoading || isValidating,
+      subscriptionError: error,
     }),
     [data, error, isLoading, isValidating]
   );

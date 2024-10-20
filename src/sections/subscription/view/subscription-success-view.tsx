@@ -4,41 +4,19 @@ import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import { type StripeSubscription } from 'src/types/stripe';
-import { fetchUserSubscription, getSubscriptionData } from 'src/utils/stripe';
 
-export default function CheckoutSuccessView() {
+export default function SubscriptionSuccessView() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const { currentPlan, subscriptionLoading, subscriptionError } = useCurrentSubscription();
   const sessionId = searchParams.get('session_id') as string;
-  const [isLoading, setIsLoading] = useState(false);
-  const [subscription, setSubscription] = useState<StripeSubscription | undefined>();
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSubscription = async () => {
-      try {
-        if (!session?.user.email) throw new Error('User email not found.');
-        if (!sessionId) throw new Error('No session found.');
-        setIsLoading(true);
-        const response = await fetchUserSubscription(session.user.email);
-        setSubscription(response);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSubscription();
-  }, [session?.user.email, sessionId]);
-
-  if (isLoading) return <LoadingScreen />;
+  if (subscriptionLoading) return <LoadingScreen />;
 
   const renderSuccess = (
     <>
@@ -54,11 +32,10 @@ export default function CheckoutSuccessView() {
         Payment succeeded!
       </Typography>
 
-      {subscription && (
+      {currentPlan && (
         <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
           <AlertTitle>Thank you for your purchase</AlertTitle>
-          Your current plan is the{' '}
-          <strong>{getSubscriptionData(subscription.plan.product)?.name}</strong> plan.
+          Your current plan is the <strong>{currentPlan.name}</strong> plan.
         </Alert>
       )}
       <Button
@@ -84,7 +61,7 @@ export default function CheckoutSuccessView() {
         quality={100}
       />
       <Typography variant="h3">Error</Typography>
-      <Typography>{error}</Typography>
+      <Typography>{subscriptionError}</Typography>
     </>
   );
 
@@ -96,7 +73,7 @@ export default function CheckoutSuccessView() {
       height="100%"
       sx={{ padding: 4, maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}
     >
-      {error ? renderError : renderSuccess}
+      {subscriptionError ? renderError : renderSuccess}
     </Stack>
   );
 }

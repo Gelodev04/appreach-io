@@ -57,8 +57,8 @@ export function CheckoutElement({
       )}
 
       <List>
-        {features?.map((text) => (
-          <ListItem sx={{ textAlign: 'center', alignItems: 'center' }}>
+        {features?.map((text, index) => (
+          <ListItem key={index} sx={{ textAlign: 'center', alignItems: 'center' }}>
             <ListItemText secondary={text} />
           </ListItem>
         ))}
@@ -77,11 +77,12 @@ export function CheckoutElement({
       )}
 
       <Button
-        variant="contained"
-        color="primary"
+        variant={isCurrentPlan ? 'outlined' : 'contained'}
+        color={isCurrentPlan ? 'error' : 'primary'}
         size="large"
         onClick={onClick}
         fullWidth
+        children={isCurrentPlan ? 'Cancel plan' : 'Upgrade'}
         {...SubmitProps}
       />
     </Stack>
