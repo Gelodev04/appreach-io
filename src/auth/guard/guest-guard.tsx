@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
+import Script from 'next/script';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -14,7 +15,9 @@ export default function GuestGuard({ children }: Props) {
   const { loading: authLoading } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
-  const { status } = useSession();
+  const { status, data } = useSession();
+  const user = data?.user;
+
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
 
@@ -45,5 +48,47 @@ export default function GuestGuard({ children }: Props) {
     return <SplashScreen />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {user ? (
+        <>
+          <Script strategy="afterInteractive">
+            {`
+              window.salesmateSettings = {
+                workspace_id: "${process.env.NEXT_PUBLIC_SALESMATE_WORKSPACE_ID}",
+                app_key: "${process.env.NEXT_PUBLIC_SALESMATE_APP_KEY}",
+                tenant_id: "${process.env.NEXT_PUBLIC_SALESMATE_TENANT_ID}",
+              };
+              if (window.SALESMATE) {
+                window.SALESMATE.login({
+                  user_id: "${user?.id}",
+                  email: "${user?.email}",
+                  first_name: "${user?.firstName}",
+                  last_name: "${user?.lastName}",
+                });
+               }
+            `}
+          </Script>
+          <Script strategy="afterInteractive" id="salesmate-widget-loader">
+            {`
+              !function(e, t, a, i, d, n, o) {
+                e.Widget = i;
+                e[i] = e[i] || function() {
+                  (e[i].q = e[i].q || []).push(arguments)
+                },
+                n = t.createElement(a), o = t.getElementsByTagName(a)[0],
+                n.id = i, n.src = d,
+                window._salesmate_widget_script_url = d,
+                n.async = 1,
+                o.parentNode.insertBefore(n, o)
+              }(window, document, "script", "loadwidget", "https://inboxdaddy.salesmate.io/messenger-platform/messenger-platform-main.js");
+              loadwidget("init", {});
+              loadwidget("load_widget", "Widget Loading...!");
+            `}
+          </Script>
+        </>
+      ) : null}
+      {children}
+    </>
+  );
 }

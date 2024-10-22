@@ -72,6 +72,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    async session({ session }) {
+      const client = await clientPromise;
+      const db = client.db();
+      const user: any = await db
+        .collection('userSettings')
+        .findOne({ 'appLogin.username': session.user.email });
+
+      session.user.id = user._id;
+      session.user.firstName = user.appLogin.firstName;
+      session.user.lastName = user.appLogin.lastName;
+      return session;
+    },
+
     // Redirect after successful sign in
     async redirect({ baseUrl }) {
       return `${baseUrl}${PATH_AFTER_LOGIN}`;
@@ -89,6 +102,8 @@ declare module 'next-auth' {
     user: {
       id: string;
       email: string;
+      firstName?: string;
+      lastName?: string;
     };
     accessToken?: string;
   }
