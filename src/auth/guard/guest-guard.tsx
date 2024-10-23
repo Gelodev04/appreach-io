@@ -65,6 +65,7 @@ export default function GuestGuard({ children }: Props) {
                   email: "${user?.email}",
                   first_name: "${user?.firstName}",
                   last_name: "${user?.lastName}",
+                  phone: "${user?.phone}",
                 });
                }
             `}
