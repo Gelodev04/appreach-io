@@ -82,6 +82,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.id = user._id;
       session.user.firstName = user.appLogin.firstName;
       session.user.lastName = user.appLogin.lastName;
+      session.user.phone = user.appLogin.phone;
+
       return session;
     },
 
@@ -104,6 +106,7 @@ declare module 'next-auth' {
       email: string;
       firstName?: string;
       lastName?: string;
+      phone: string;
     };
     accessToken?: string;
   }
