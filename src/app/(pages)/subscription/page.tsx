@@ -1,9 +1,9 @@
-import UpgradeView from 'src/sections/upgrade/view/upgrade-view';
+import SubscriptionView from 'src/sections/subscription/view/subscription-view';
 
 export const metadata = {
   title: 'Upgrade Plan | Inbox Daddy',
 };
 
 export default function Page() {
-  return <UpgradeView />;
+  return <SubscriptionView />;
 }

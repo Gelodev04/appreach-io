@@ -1,20 +1,20 @@
 'use client';
 
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
+import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
-export default function UpgradeView() {
-  const [currentPlan, setCurrentPlan] = useState('starter');
+export default function SubscriptionView() {
+  const { currentPlan, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -30,6 +30,14 @@ export default function UpgradeView() {
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
     }
+  };
+
+  const getStarterLabel = () => {
+    if (!currentPlan) return 'Upgrade';
+    if (currentPlan.product === STRIPE.subscriptions.starter.product) return 'Cancel plan';
+    if (currentPlan.product === STRIPE.subscriptions.established.product) return 'Downgrade';
+
+    return 'Upgrade';
   };
 
   const renderHead = (
@@ -54,11 +62,9 @@ export default function UpgradeView() {
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
-        isCurrentPlan={currentPlan === 'starter'}
+        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.starter.product}
         SubmitProps={{
-          variant: 'outlined',
-          children: 'Cancel plan',
-          color: 'error',
+          children: getStarterLabel(),
         }}
       />
       <CheckoutElement
@@ -73,10 +79,7 @@ export default function UpgradeView() {
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
-        isCurrentPlan={currentPlan === 'established'}
-        SubmitProps={{
-          children: 'Upgrade',
-        }}
+        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.established.product}
       />
       <CheckoutElement
         title="Managed Service"
@@ -97,6 +100,14 @@ export default function UpgradeView() {
     </Box>
   );
 
+  const renderSkeleton = (
+    <Box display="flex" gap={4}>
+      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
+      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
+      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
+    </Box>
+  );
+
   return (
     <Container maxWidth="lg" sx={{ height: '100vh' }}>
       <Stack
@@ -109,7 +120,7 @@ export default function UpgradeView() {
         sx={{ padding: 4, margin: '0 auto' }}
       >
         {renderHead}
-        {renderOptions}
+        {subscriptionLoading ? renderSkeleton : renderOptions}
       </Stack>
     </Container>
   );

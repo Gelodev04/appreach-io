@@ -1,6 +1,6 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { STRIPE } from 'src/config-global';
-import { type StripeSubscription } from 'src/types/stripe';
+import { SubscriptionData, type StripeSubscription } from 'src/types/stripe';
 import { endpoints } from './swr';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -35,22 +35,19 @@ export async function redirectToCheckout(sessionId: string): Promise<void> {
   }
 }
 
-export async function fetchUserSubscription(
-  email: string
-): Promise<StripeSubscription | undefined> {
+export async function fetchUserSubscription(): Promise<StripeSubscription | undefined> {
   const url = endpoints.stripe.subscriptions;
-  const body = JSON.stringify({ email });
-  const response = await fetch(url, { method: 'POST', body });
+  const response = await fetch(url, { method: 'POST' });
   const responseData = await response.json();
 
   if (!response.ok) {
     throw new Error(responseData?.error || 'Failed to fetch subscription details.');
   }
 
-  return responseData || {};
+  return responseData as StripeSubscription;
 }
 
-export function getSubscriptionData(productId: string) {
+export function getSubscriptionData(productId: string): SubscriptionData | undefined {
   const subscriptionList = Object.entries(STRIPE.subscriptions);
   const subscription = subscriptionList.find(([_, item]) => item.product === productId);
 
