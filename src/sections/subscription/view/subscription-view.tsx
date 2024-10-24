@@ -7,7 +7,9 @@ import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
+import { paths } from 'src/routes/paths';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
+import { endpoints } from 'src/utils/swr';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object
@@ -29,6 +31,25 @@ export default function SubscriptionView() {
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      const url = endpoints.stripe.cancelSubscription;
+      const response = await fetch(url, { method: 'DELETE' });
+      const responseData = await response.json();
+
+      if (!response.ok) throw new Error(responseData.message || 'Failed to cancel subscription');
+
+      enqueueSnackbar(responseData?.message || 'Subscription cancelled successfully', {
+        variant: 'success',
+      });
+
+      // Reload the page to refresh subscription data
+      window.location.href = paths.checkout.root;
+    } catch (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   };
 
@@ -54,7 +75,8 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onClick={() => handleCheckout(STRIPE.subscriptions.starter.price)}
+        onCancel={handleCancel}
+        onPurchase={() => handleCheckout(STRIPE.subscriptions.starter.price)}
         price="$150"
         features={[
           'Send up to 100 emails daily to our seed list',
@@ -70,7 +92,8 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Established"
         subtitle="500 Seed Accounts*"
-        onClick={() => handleCheckout(STRIPE.subscriptions.established.price)}
+        onCancel={handleCancel}
+        onPurchase={() => handleCheckout(STRIPE.subscriptions.established.price)}
         price="$650"
         features={[
           'Send up to 500 emails daily to our seed list',
@@ -84,7 +107,6 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Managed Service"
         subtitle="Contact Us"
-        onClick={() => {}}
         features={[
           'Send 500+ emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
