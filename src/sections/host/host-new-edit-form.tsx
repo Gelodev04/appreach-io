@@ -110,7 +110,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
       enqueueSnackbar('Update success!');
       router.push(paths.settings.root);
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 
@@ -128,7 +128,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
       enqueueSnackbar('Create success!');
       router.push(paths.settings.root);
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 

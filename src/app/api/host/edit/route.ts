@@ -50,9 +50,7 @@ export async function POST(request: Request) {
       );
 
       const duplicateEmail = existingEmailHosts.find((h) => h !== null);
-      if (duplicateEmail) {
-        throw new Error(`Sender address is already used in host ${duplicateEmail.host}`);
-      }
+      if (duplicateEmail) throw new Error('Cannot save, sender address already in use.');
     }
 
     // Update the host with the new data
