@@ -32,6 +32,10 @@ export async function GET() {
       ['active', 'trialing'].includes(status)
     );
 
+    if (!activeSubscription) {
+      return NextResponse.json({ error: 'No active subscription found' }, { status: 404 });
+    }
+
     return NextResponse.json(activeSubscription);
   } catch (error) {
     console.error('Error fetching subscription:', error);
