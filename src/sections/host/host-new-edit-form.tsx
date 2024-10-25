@@ -29,7 +29,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
   const timezones = moment.tz.names();
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
@@ -107,6 +107,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         const body = await res.json();
         throw new Error(body.error ?? 'Failed to update host');
       }
+      closeSnackbar();
       enqueueSnackbar('Update success!');
       router.push(paths.settings.root);
     } catch (error) {
@@ -125,6 +126,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         const body = await res.json();
         throw new Error(body.error ?? 'Failed to create host');
       }
+      closeSnackbar();
       enqueueSnackbar('Create success!');
       router.push(paths.settings.root);
     } catch (error) {
