@@ -18,8 +18,9 @@ export function useGetLookerStudioUrl() {
       url: data?.embedUrl || '',
       urlLoading: isLoading || isValidating,
       urlError: error,
+      warningMessage: data?.warningMessage || '',
     }),
-    [data?.embedUrl, error, isLoading, isValidating]
+    [data?.embedUrl, data?.warningMessage, error, isLoading, isValidating]
   );
 
   return memoizedValue;

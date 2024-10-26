@@ -7,10 +7,11 @@ import { useGetHosts } from 'src/hooks/api/host';
 import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
+import { Alert } from '@mui/material';
 import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 
 export default function LookerStudioView() {
-  const { url, urlLoading, urlError } = useGetLookerStudioUrl();
+  const { url, urlLoading, urlError, warningMessage } = useGetLookerStudioUrl();
   const { hosts } = useGetHosts();
   const [mappedHosts, setMappedHosts] = useState<string[]>([]);
   const lgUp = useResponsive('up', 'lg');
@@ -34,6 +35,12 @@ export default function LookerStudioView() {
     />
   );
 
+  const renderWarning = (
+    <Alert variant="standard" severity="warning" sx={{ mt: 1, mb: 2 }}>
+      {warningMessage}
+    </Alert>
+  );
+
   const renderLookerStudioIframe = (
     <iframe
       src={generateLookerStudioUrl(mappedHosts)}
@@ -45,6 +52,7 @@ export default function LookerStudioView() {
 
   return (
     <Box sx={{ height: '100%' }}>
+      {warningMessage && renderWarning}
       {urlLoading && renderSkeleton}
       {urlError && renderError}
       {url && renderLookerStudioIframe}
