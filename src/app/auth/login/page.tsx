@@ -3,7 +3,7 @@ import { LoginView } from 'src/sections/auth/view';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Login | Oureach Magic',
+  title: 'Login | Inbox Daddy',
 };
 
 export default function LoginPage() {
