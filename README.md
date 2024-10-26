@@ -26,7 +26,7 @@
 
 > A secret key used by NextAuth.js to encrypt session data and generate tokens.
 
-`NEXT_PUBLIC_LOOKER_URL=""`
+`NEXT_PUBLIC_LIVE_LOOKER_URL=""`
 
 > The public URL used to embed Looker Studio reports within the application.
 
