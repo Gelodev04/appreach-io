@@ -5,13 +5,11 @@ export async function GET() {
     const userSettings = await getUser();
 
     if (!userSettings.lookerStudio) {
-      return Response.json(
-        {
-          error:
-            'No lookerStudio settings found for the user. Please ensure the user has the necessary settings configured.',
-        },
-        { status: 500 }
-      );
+      return Response.json({
+        embedUrl: `${process.env.SAMPLE_LOOKER_URL}`,
+        warningMessage:
+          'Important: Your dashboard is currently displaying sample data. This will be replaced with real data once you begin sending emails.',
+      });
     }
 
     return Response.json({ embedUrl: userSettings.lookerStudio.embedUrl });
