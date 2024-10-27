@@ -8,8 +8,8 @@ import Scrollbar from 'src/components/scrollbar';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
+import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
-import NavUpgrade from '../common/nav-upgrade';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
 
@@ -53,7 +53,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <NavUpgrade />
+      <NavBottom />
     </Scrollbar>
   );
 

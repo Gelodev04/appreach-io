@@ -28,11 +28,11 @@ export function useNavData() {
           //   path: paths.dashboard.emails.root,
           //   icon: <Iconify icon="entypo:email" />,
           // },
-          // {
-          //   title: 'Upload attributes',
-          //   path: paths.dashboard.csvUpload.root,
-          //   icon: <Iconify icon="mage:file-upload-fill" />,
-          // },
+          {
+            title: 'Subscription',
+            path: paths.checkout.root,
+            icon: <Iconify icon="flowbite:file-invoice-outline" />,
+          },
           {
             title: 'Logout',
             path: paths.auth.logout,

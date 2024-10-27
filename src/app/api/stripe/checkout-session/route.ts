@@ -27,9 +27,9 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      subscription_data: {
-        trial_period_days: 7, // Free trial for 7 days
-      },
+      // subscription_data: {
+      //   trial_period_days: 7, // Free trial for 7 days
+      // },
       success_url: `${baseUrl}${paths.checkout.success}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}${paths.checkout.root}`,
     });

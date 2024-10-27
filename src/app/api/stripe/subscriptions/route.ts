@@ -1,3 +1,4 @@
+import { auth } from 'auth';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -5,9 +6,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2024-06-20',
 });
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    const { email } = await request.json();
+    const session = await auth();
+    const email = session?.user.email;
     if (!email) return NextResponse.json({ error: 'Email is required' }, { status: 400 });
 
     const customer = await stripe.customers.list({ email, limit: 1 });
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
       ['active', 'trialing'].includes(status)
     );
 
-    return NextResponse.json({ subscription: activeSubscription });
+    return NextResponse.json(activeSubscription);
   } catch (error) {
     console.error('Error fetching subscription:', error);
     return NextResponse.json({ error: 'Failed to fetch subscription' }, { status: 500 });
