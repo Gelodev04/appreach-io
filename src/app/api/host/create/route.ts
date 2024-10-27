@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     // Check if a host with the same name already exists
     const existingHost = await db.collection('hosts').findOne({ host });
-    if (existingHost) throw new Error('Profile already created, use different name');
+    if (existingHost) throw new Error('Cannot save, profile name already in use');
 
     // Check for duplicate external sender addresses across user hosts
     const userHosts = user.hosts as ObjectId[];
