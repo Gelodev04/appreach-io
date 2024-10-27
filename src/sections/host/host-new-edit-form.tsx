@@ -29,7 +29,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
   const timezones = moment.tz.names();
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
@@ -45,7 +45,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
       removeSpam: Yup.boolean(),
       replyMessage: Yup.boolean(),
       clickLink: Yup.boolean(),
-      downloadMessage: Yup.boolean(),
+      // downloadMessage: Yup.boolean(),
       movePrimary: Yup.boolean(),
       scrollMessage: Yup.boolean(),
     }),
@@ -68,7 +68,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
         replyMessage: currentItem?.inboxEngagement?.replyMessage || false,
         clickLink: currentItem?.inboxEngagement?.clickLink || false,
-        downloadMessage: currentItem?.inboxEngagement?.downloadMessage || false,
+        // downloadMessage: currentItem?.inboxEngagement?.downloadMessage || false,
         movePrimary: currentItem?.inboxEngagement?.movePrimary || false,
         scrollMessage: currentItem?.inboxEngagement?.scrollMessage || false,
       },
@@ -104,12 +104,14 @@ export default function HostNewEditForm({ currentItem }: Props) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update host');
+        const body = await res.json();
+        throw new Error(body.error ?? 'Failed to update host');
       }
+      closeSnackbar();
       enqueueSnackbar('Update success!');
       router.push(paths.settings.root);
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 
@@ -124,10 +126,11 @@ export default function HostNewEditForm({ currentItem }: Props) {
         const body = await res.json();
         throw new Error(body.error ?? 'Failed to create host');
       }
+      closeSnackbar();
       enqueueSnackbar('Create success!');
       router.push(paths.settings.root);
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 
@@ -204,9 +207,8 @@ abdulrehman@outreachmagic.io ⏎`;
               >
                 <RHFCheckbox name="inboxEngagement.markImportant" label="Mark as important" />
                 <RHFCheckbox name="inboxEngagement.removeSpam" label="Remove from spam" />
-                <RHFCheckbox name="inboxEngagement.replyMessage" label="Reply message" />
+                <RHFCheckbox name="inboxEngagement.replyMessage" label="Reply using AI" />
                 <RHFCheckbox name="inboxEngagement.clickLink" label="Click link" />
-                <RHFCheckbox name="inboxEngagement.downloadMessage" label="Download message" />
                 <RHFCheckbox name="inboxEngagement.movePrimary" label="Move to primary" />
                 <RHFCheckbox name="inboxEngagement.scrollMessage" label="Scroll message" />
               </Box>
