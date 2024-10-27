@@ -1,12 +1,14 @@
 'use client';
 
-import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
+import { useBoolean } from 'src/hooks/use-boolean';
 import { paths } from 'src/routes/paths';
 import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
@@ -16,9 +18,10 @@ import { CheckoutElement } from '../checkout-element';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function SubscriptionView() {
+  const { enqueueSnackbar } = useSnackbar();
   const { currentPlan, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
-  const { enqueueSnackbar } = useSnackbar();
+  const confirmCancel = useBoolean();
 
   const handleCheckout = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -50,6 +53,8 @@ export default function SubscriptionView() {
       window.location.href = paths.checkout.root;
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
+    } finally {
+      confirmCancel.onFalse();
     }
   };
 
@@ -75,7 +80,7 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onCancel={handleCancel}
+        onCancel={confirmCancel.onTrue}
         onPurchase={() => handleCheckout(STRIPE.subscriptions.starter.price)}
         price="$150"
         features={[
@@ -92,7 +97,7 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Established"
         subtitle="500 Seed Accounts*"
-        onCancel={handleCancel}
+        onCancel={confirmCancel.onTrue}
         onPurchase={() => handleCheckout(STRIPE.subscriptions.established.price)}
         price="$650"
         features={[
@@ -131,19 +136,39 @@ export default function SubscriptionView() {
   );
 
   return (
-    <Container maxWidth="lg" sx={{ height: '100vh' }}>
-      <Stack
-        alignItems="center"
-        justifyContent="center"
-        textAlign="center"
-        height="100%"
-        width="100%"
-        spacing={4}
-        sx={{ padding: 4, margin: '0 auto' }}
-      >
-        {renderHead}
-        {subscriptionLoading ? renderSkeleton : renderOptions}
-      </Stack>
-    </Container>
+    <>
+      <Container maxWidth="lg" sx={{ height: '100vh' }}>
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+          height="100%"
+          width="100%"
+          spacing={4}
+          sx={{ padding: 4, margin: '0 auto' }}
+        >
+          {renderHead}
+          {subscriptionLoading ? renderSkeleton : renderOptions}
+        </Stack>
+      </Container>
+
+      <ConfirmDialog
+        open={confirmCancel.value}
+        onClose={confirmCancel.onFalse}
+        title="Confirm cancel"
+        hideCancelButton
+        content="Are you sure you want to cancel? You will lose access at the end of your billing period"
+        action={
+          <>
+            <Button variant="contained" color="error" onClick={handleCancel}>
+              Cancel Plan
+            </Button>
+            <Button variant="outlined" onClick={confirmCancel.onFalse}>
+              Do Not Cancel
+            </Button>
+          </>
+        }
+      />
+    </>
   );
 }
