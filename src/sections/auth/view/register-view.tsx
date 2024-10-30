@@ -169,14 +169,24 @@ export default function RegisterView({ expanded }: Props) {
       </RHFSelect>
 
       <RHFTextField name="hearAboutUs" label="How did you hear about us?" />
+      {expanded && (
+        <Stack spacing={2}>
+          <Typography variant="body2" color="text.secondary">
+            {`You will be getting a trial plan which let's you send to 50 of our seed emails per day for 10 days.`}
+          </Typography>
+        </Stack>
+      )}
 
       <Stack spacing={1}>
-        <RHFCheckbox name="freePhoneSupport" label="Get free phone support" />
+        <RHFCheckbox
+          name="freePhoneSupport"
+          label="Check here if you would like a team member to contact you and provide additional features specific to your use case."
+        />
 
         {watch('freePhoneSupport') && (
           <Stack spacing={1}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Enter your phone number below to get free phone support (ex: +1 555-555-5555)
+              What is the best number to text you at? (ex: +1 555-555-5555)
             </Typography>
 
             <RHFTextField
@@ -207,7 +217,7 @@ export default function RegisterView({ expanded }: Props) {
           sx={{
             overflowX: 'hidden',
             overflowY: 'scroll',
-            maxHeight: { md: 280 },
+            maxHeight: { md: 440 },
           }}
         >
           <RegisterCommonForm />
@@ -233,19 +243,6 @@ export default function RegisterView({ expanded }: Props) {
         </Stack>
       ) : (
         <RegisterCommonForm />
-      )}
-
-      {expanded && (
-        <Stack spacing={2}>
-          <Typography variant="body2" color="text.secondary">
-            {`You will be getting a trial plan which let's you send to 50 of our seed emails per day for
-        10 days.`}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {`If you require additional features to evaluate our service, let us know about your
-            specific use case after completing this registration.`}
-          </Typography>
-        </Stack>
       )}
 
       <LoadingButton
