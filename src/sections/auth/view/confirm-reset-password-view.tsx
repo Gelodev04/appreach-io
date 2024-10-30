@@ -58,7 +58,6 @@ export default function ConfirmResetPasswordView({ id, token }: { id: string; to
 
       if (!response.ok) throw new Error(responseData.message || 'Failed to reset password');
 
-      console.log('Reset password response:', responseData);
       enqueueSnackbar(responseData?.message || 'Password reset successfully', {
         variant: 'success',
       });

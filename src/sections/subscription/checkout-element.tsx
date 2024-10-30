@@ -1,7 +1,8 @@
 import { Button, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 
 type Props = {
-  onClick: () => void | Promise<void> | undefined;
+  onCancel?: () => void | Promise<void> | undefined;
+  onPurchase?: () => void | Promise<void> | undefined;
   title: string | number;
   subtitle?: string;
   price?: string | number;
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export function CheckoutElement({
-  onClick,
+  onCancel,
+  onPurchase,
   title,
   subtitle,
   price,
@@ -80,7 +82,7 @@ export function CheckoutElement({
         variant={isCurrentPlan ? 'outlined' : 'contained'}
         color={isCurrentPlan ? 'error' : 'primary'}
         size="large"
-        onClick={onClick}
+        onClick={isCurrentPlan ? onCancel : onPurchase}
         fullWidth
         children={isCurrentPlan ? 'Cancel plan' : 'Upgrade'}
         {...SubmitProps}
