@@ -43,7 +43,7 @@ export default function LookerStudioView() {
 
   const renderLookerStudioIframe = (
     <iframe
-      src={generateLookerStudioUrl(mappedHosts)}
+      src={generateLookerStudioUrl(mappedHosts, url)}
       width="100%"
       title="Looker Studio Dashboard"
       style={{ borderRadius: '10px', border: 'none', height: lgUp ? '100%' : '100vh' }}
