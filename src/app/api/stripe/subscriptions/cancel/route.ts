@@ -1,5 +1,6 @@
 import { auth } from 'auth';
 import { NextResponse } from 'next/server';
+import { getActiveSubscription } from 'src/sections/subscription/utils/get-active-subscription';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -12,30 +13,14 @@ export async function DELETE() {
     const email = session?.user.email;
     if (!email) return NextResponse.json({ error: 'Email is required' }, { status: 400 });
 
-    const customer = await stripe.customers.list({ email, limit: 1 });
-    if (customer.data.length === 0) {
-      return NextResponse.json({ error: 'Customer not found' }, { status: 404 });
-    }
+    const { error, data } = await getActiveSubscription(email);
+    if (error) return NextResponse.json({ error }, { status: 404 });
+    const activeSubscription = data!;
 
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customer.data[0].id,
-      status: 'all',
-      expand: ['data.default_payment_method'],
-    });
-
-    if (subscriptions.data.length === 0) {
-      return NextResponse.json({ error: 'No subscriptions found' }, { status: 404 });
-    }
-
-    // Find the active subscription
-    const activeSubscription = subscriptions.data.find(({ status }) =>
-      ['active', 'trialing'].includes(status)
-    );
-
-    if (!activeSubscription) throw new Error('No active subscription found');
+    // Cancel the subscription
     await stripe.subscriptions.cancel(activeSubscription.id);
 
-    return NextResponse.json(activeSubscription);
+    return NextResponse.json({ message: 'Subscription cancelled successfully' });
   } catch (error) {
     console.error('Error cancelling subscription:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
