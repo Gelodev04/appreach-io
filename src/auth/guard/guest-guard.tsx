@@ -22,6 +22,7 @@ export default function GuestGuard({ children }: Props) {
 
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
+  const trialExpired = searchParams.get('trial_expired');
 
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -34,15 +35,6 @@ export default function GuestGuard({ children }: Props) {
     }
 
     // Handle redirection based on plan status
-    if (
-      plan?.status === 'trial_expired' &&
-      !pathname.startsWith('/auth/') &&
-      !pathname.includes('/subscription/?trial_expired=true')
-    ) {
-      router.push('/subscription/?trial_expired=true');
-      setIsRedirecting(false);
-      return;
-    }
 
     if (isAuthenticated) {
       setIsRedirecting(true);
@@ -55,7 +47,15 @@ export default function GuestGuard({ children }: Props) {
         setIsRedirecting(false);
       }
     }
-  }, [isLoading, isAuthenticated, returnTo, plan?.status, pathname, router]);
+
+    if (
+      plan?.status === 'trial_expired' &&
+      (!pathname.startsWith('/auth/') || (pathname.startsWith('/subscription') && !trialExpired))
+    ) {
+      router.push('/subscription/?trial_expired=true');
+      setIsRedirecting(false);
+    }
+  }, [isLoading, isAuthenticated, returnTo, plan?.status, pathname, router, trialExpired]);
 
   if (isLoading || isRedirecting) {
     return <SplashScreen />;
