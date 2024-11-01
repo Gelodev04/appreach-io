@@ -5,6 +5,7 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { sendEmail } from 'src/auth/lib/sendgrid';
 import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+import moment from 'moment-timezone';
 
 export async function POST(request: Request) {
   try {
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
       hearAboutUs,
       emailsSendsPerDay,
       callRequested,
+      isTrial,
     } = data;
 
     const client = await clientPromise;
@@ -74,7 +76,6 @@ export async function POST(request: Request) {
         token: null,
         tokenExpiration: null,
       },
-      seeds: {},
       verification: {
         lastSent: new Date().toISOString(),
         token: verificationToken,
@@ -83,6 +84,19 @@ export async function POST(request: Request) {
       },
       created: new Date().toISOString(),
       lastUpdated: new Date().toISOString(),
+      ...(isTrial
+        ? {
+            plan: {
+              status: 'trialing',
+              start_date: new Date(),
+              current_period_end: new Date(moment().add(10, 'days').toDate()),
+              trial_end: new Date(moment().add(10, 'days').toDate()),
+            },
+            seeds: {
+              assignedCount: 50,
+            },
+          }
+        : { seeds: {} }),
     });
 
     // Generate a unique host name

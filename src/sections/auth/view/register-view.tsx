@@ -17,7 +17,6 @@ import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
-import moment from 'moment-timezone';
 import RegisterCommonForm from '../register-common-form';
 
 type Props = {
@@ -98,20 +97,12 @@ export default function RegisterView({ expanded }: Props) {
         lastName: data.lastName,
         companyName: data.companyName,
         ...(expanded && {
+          isTrial: true,
           phoneNumber: data.phoneNumber ?? undefined,
           hearAboutUs: data.hearAboutUs ?? undefined,
           emailsSendsPerDay: data.emailsSendsPerDay ?? undefined,
           callRequested: data.freePhoneSupport ?? false,
         }),
-        plan: {
-          status: 'trialing',
-          start_date: new Date(),
-          current_period_end: new Date(moment().add(10, 'days').toDate()),
-          trial_end: new Date(moment().add(10, 'days').toDate()),
-        },
-        seeds: {
-          assignedCount: 50,
-        },
       });
 
       setSuccessful(true);

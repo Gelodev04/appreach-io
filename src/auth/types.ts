@@ -64,15 +64,7 @@ export type JWTContextType = CanRemove & {
     hearAboutUs?: string;
     emailsSendsPerDay?: string;
     callRequested?: boolean;
-    plan?: {
-      status: 'trialing' | 'active' | 'trial_expired';
-      start_date: Date;
-      current_period_end: Date;
-      trial_end: Date;
-    };
-    seeds?: {
-      assignedCount: number;
-    };
+    isTrial?: boolean;
   }) => Promise<void>;
   logout: () => Promise<void>;
 };
