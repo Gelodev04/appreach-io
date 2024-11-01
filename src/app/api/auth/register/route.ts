@@ -88,9 +88,9 @@ export async function POST(request: Request) {
         ? {
             plan: {
               status: 'trialing',
-              start_date: new Date(),
-              current_period_end: new Date(moment().add(10, 'days').toDate()),
-              trial_end: new Date(moment().add(10, 'days').toDate()),
+              start_date: new Date().toISOString(),
+              current_period_end: new Date(moment().add(10, 'days').toDate()).toISOString(),
+              trial_end: new Date(moment().add(10, 'days').toDate()).toISOString(),
             },
             seeds: {
               assignedCount: 50,
