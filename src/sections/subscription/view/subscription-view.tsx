@@ -3,6 +3,7 @@
 import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
@@ -10,9 +11,15 @@ import { STRIPE } from 'src/config-global';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { paths } from 'src/routes/paths';
-import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
+import { SubscriptionData } from 'src/types/stripe';
+import {
+  createCheckoutSession,
+  getSubscriptionDataByPriceId,
+  redirectToCheckout,
+} from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
 import { CheckoutElement } from '../checkout-element';
+import { UpgradeDowngradeConfirmDialog } from '../upgrade-downgrade-confirm-dialog';
 
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -22,6 +29,8 @@ export default function SubscriptionView() {
   const { currentPlan, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
   const confirmCancel = useBoolean();
+  const confirmSubscription = useBoolean();
+  const [nextPlan, setNextPlan] = useState<SubscriptionData | undefined>();
 
   const handleCheckout = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -34,6 +43,17 @@ export default function SubscriptionView() {
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+    }
+  };
+
+  // Check if there's an existing subscription
+  const handleSubscribe = (priceId: string) => {
+    if (currentPlan) {
+      const nextSubscriptionData = getSubscriptionDataByPriceId(priceId);
+      if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
+      confirmSubscription.onTrue();
+    } else {
+      handleCheckout(priceId);
     }
   };
 
@@ -56,6 +76,12 @@ export default function SubscriptionView() {
     } finally {
       confirmCancel.onFalse();
     }
+  };
+
+  const getNextActionType = () => {
+    if (!currentPlan) return 'upgrade';
+    if (currentPlan.product === STRIPE.subscriptions.starter.product) return 'upgrade';
+    return 'downgrade';
   };
 
   const getStarterLabel = () => {
@@ -81,8 +107,8 @@ export default function SubscriptionView() {
         title="Starter"
         subtitle="100 Seed Accounts"
         onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleCheckout(STRIPE.subscriptions.starter.price)}
-        price="$150"
+        onPurchase={() => handleSubscribe(STRIPE.subscriptions.starter.priceId)}
+        price={STRIPE.subscriptions.starter.price}
         features={[
           'Send up to 100 emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
@@ -98,8 +124,8 @@ export default function SubscriptionView() {
         title="Established"
         subtitle="500 Seed Accounts*"
         onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleCheckout(STRIPE.subscriptions.established.price)}
-        price="$650"
+        onPurchase={() => handleSubscribe(STRIPE.subscriptions.established.priceId)}
+        price={STRIPE.subscriptions.established.price}
         features={[
           'Send up to 500 emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
@@ -137,7 +163,7 @@ export default function SubscriptionView() {
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ height: '100vh' }}>
+      <Container maxWidth="lg" sx={{ height: '100%' }}>
         <Stack
           alignItems="center"
           justifyContent="center"
@@ -168,6 +194,15 @@ export default function SubscriptionView() {
             </Button>
           </>
         }
+      />
+
+      <UpgradeDowngradeConfirmDialog
+        open={confirmSubscription.value}
+        onClose={confirmSubscription.onFalse}
+        onConfirm={() => nextPlan && handleCheckout(nextPlan.priceId)}
+        currentPlan={currentPlan}
+        nextPlan={nextPlan}
+        type={getNextActionType()}
       />
     </>
   );
