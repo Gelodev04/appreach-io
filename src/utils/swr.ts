@@ -47,6 +47,7 @@ export const endpoints = {
   stripe: {
     checkoutSession: '/api/stripe/checkout-session/',
     subscriptions: '/api/stripe/subscriptions/',
+    cancelSubscription: '/api/stripe/subscriptions/cancel/',
   },
   plan: {
     checkPlan: '/api/plan/check-plan/',

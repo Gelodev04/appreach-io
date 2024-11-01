@@ -1,4 +1,5 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { fromUnixTime } from 'date-fns';
 import { STRIPE } from 'src/config-global';
 import { SubscriptionData, type StripeSubscription } from 'src/types/stripe';
 import { endpoints } from './swr';
@@ -52,4 +53,18 @@ export function getSubscriptionData(productId: string): SubscriptionData | undef
   const subscription = subscriptionList.find(([_, item]) => item.product === productId);
 
   return subscription ? subscription[1] : undefined;
+}
+
+export function mapStripePlanToMongoDB(subscription: StripeSubscription): any {
+  const subscriptionData = getSubscriptionData(subscription.plan.product);
+  return {
+    price_id: subscription.plan.id,
+    subscription_id: subscription.id,
+    amount: subscription.plan.amount,
+    amount_decimal: subscription.plan.amount_decimal,
+    lookup_key: subscriptionData?.name?.toLowerCase() ?? '',
+    start_date: fromUnixTime(subscription.start_date),
+    current_period_end: fromUnixTime(subscription.current_period_end),
+    status: subscription.status,
+  };
 }

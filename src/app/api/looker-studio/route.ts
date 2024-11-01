@@ -1,19 +1,44 @@
 import { getUser } from 'src/auth/lib/mongodb/get-user';
+import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { ObjectId } from 'mongodb';
+import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
     const userSettings = await getUser();
 
-    if (!userSettings.lookerStudio) {
-      return Response.json({
-        embedUrl: `${process.env.SAMPLE_LOOKER_URL}`,
-        warningMessage:
-          'Important: Your dashboard is currently displaying sample data. This will be replaced with real data once you begin sending emails.',
-      });
+    const userHosts = userSettings?.hosts || [];
+
+    const client = await clientPromise;
+    const db = client.db();
+
+    const hostIds = userHosts.map((hostId: string) => new ObjectId(hostId));
+
+    const totalAmount = await db.collection('webMail').countDocuments({
+      'host.hostId': { $in: hostIds },
+    });
+
+    if (totalAmount === 0) {
+      return NextResponse.json(
+        {
+          embedUrl: `${process.env.NEXT_PUBLIC_SAMPLE_LOOKER_URL}`,
+          warningMessage:
+            'Important: Your dashboard is currently displaying sample data. This will be replaced with real data once you begin sending emails.',
+        },
+        { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+      );
     }
 
-    return Response.json({ embedUrl: userSettings.lookerStudio.embedUrl });
+    return NextResponse.json(
+      { embedUrl: process.env.NEXT_PUBLIC_LIVE_LOOKER_URL },
+      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    );
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message },
+      { status: error.statusCode || 500, headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    );
   }
 }

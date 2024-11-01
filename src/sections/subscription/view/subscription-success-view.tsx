@@ -1,9 +1,7 @@
 'use client';
 
 import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 import Iconify from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
@@ -11,10 +9,9 @@ import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 
 export default function SubscriptionSuccessView() {
-  const { data: session } = useSession();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
+  // const sessionId = searchParams.get('session_id') as string;
   const { currentPlan, subscriptionLoading, subscriptionError } = useCurrentSubscription();
-  const sessionId = searchParams.get('session_id') as string;
 
   if (subscriptionLoading) return <LoadingScreen />;
 
