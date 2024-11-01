@@ -36,7 +36,8 @@ export default function GuestGuard({ children }: Props) {
     // Handle redirection based on plan status
     if (
       plan?.status === 'trial_expired' &&
-      !['/subscription/?trial_expired=true', '/auth/logout'].includes(pathname)
+      !pathname.startsWith('/auth/') &&
+      !pathname.includes('/subscription/?trial_expired=true')
     ) {
       router.push('/subscription/?trial_expired=true');
       setIsRedirecting(false);
