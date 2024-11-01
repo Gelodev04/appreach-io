@@ -17,6 +17,7 @@ import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
+import moment from 'moment-timezone';
 import RegisterCommonForm from '../register-common-form';
 
 type Props = {
@@ -102,6 +103,15 @@ export default function RegisterView({ expanded }: Props) {
           emailsSendsPerDay: data.emailsSendsPerDay ?? undefined,
           callRequested: data.freePhoneSupport ?? false,
         }),
+        plan: {
+          status: 'trialing',
+          start_date: new Date(),
+          current_period_end: new Date(moment().add(10, 'days').toDate()),
+          trial_end: new Date(moment().add(10, 'days').toDate()),
+        },
+        seeds: {
+          assignedCount: 50,
+        },
       });
 
       setSuccessful(true);
@@ -180,7 +190,7 @@ export default function RegisterView({ expanded }: Props) {
       <Stack spacing={1}>
         <RHFCheckbox
           name="freePhoneSupport"
-          label="Check here if you would like a team member to contact you and provide additional features specific to your use case."
+          label="Check here to have a team member contact you with features tailored to your use case."
         />
 
         {watch('freePhoneSupport') && (
