@@ -9,6 +9,7 @@ const ROOTS = {
   SEEDS: '/seeds',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
+  INBOX_DADDY: 'https://inboxdaddy.com',
 };
 
 // ----------------------------------------------------------------------
@@ -19,8 +20,8 @@ export const paths = {
   },
   website: {
     root: ROOTS.MAIN_WEBSITE,
-    terms: `${ROOTS.MAIN_WEBSITE}/terms-of-uses/`,
-    privacy: `${ROOTS.MAIN_WEBSITE}/privacy/`,
+    terms: `${ROOTS.INBOX_DADDY}/terms-of-use/`,
+    privacy: `${ROOTS.INBOX_DADDY}/privacy-policy/`,
   },
   // AUTH
   auth: {

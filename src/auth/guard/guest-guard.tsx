@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
 import Script from 'next/script';
+import { useCheckUserPlan } from 'src/hooks/api/plan';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -16,6 +17,7 @@ export default function GuestGuard({ children }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const { status, data } = useSession();
+  const { plan, planLoading } = useCheckUserPlan();
   const user = data?.user;
 
   const searchParams = useSearchParams();
@@ -24,10 +26,20 @@ export default function GuestGuard({ children }: Props) {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const isAuthenticated = status === 'authenticated';
-  const isLoading = authLoading || status === 'loading';
+  const isLoading = authLoading || planLoading || status === 'loading';
 
   useEffect(() => {
     if (isLoading) {
+      return;
+    }
+
+    // Handle redirection based on plan status
+    if (
+      plan?.status === 'trial_expired' &&
+      !['/subscription/?trial_expired=true', '/auth/logout'].includes(pathname)
+    ) {
+      router.push('/subscription/?trial_expired=true');
+      setIsRedirecting(false);
       return;
     }
 
@@ -42,7 +54,7 @@ export default function GuestGuard({ children }: Props) {
         setIsRedirecting(false);
       }
     }
-  }, [isLoading, isAuthenticated, router, returnTo, pathname]);
+  }, [isLoading, isAuthenticated, returnTo, plan?.status, pathname, router]);
 
   if (isLoading || isRedirecting) {
     return <SplashScreen />;

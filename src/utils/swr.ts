@@ -49,4 +49,7 @@ export const endpoints = {
     subscriptions: '/api/stripe/subscriptions/',
     cancelSubscription: '/api/stripe/subscriptions/cancel/',
   },
+  plan: {
+    checkPlan: '/api/plan/check-plan/',
+  },
 };
