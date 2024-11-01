@@ -41,9 +41,7 @@ export async function fetchUserSubscription(): Promise<StripeSubscription | unde
   const response = await fetch(url, { method: 'POST' });
   const responseData = await response.json();
 
-  if (!response.ok) {
-    throw new Error(responseData?.error || 'Failed to fetch subscription details.');
-  }
+  if (!response.ok) throw new Error(responseData?.error || 'Failed to fetch subscription details.');
 
   return responseData as StripeSubscription;
 }
@@ -51,6 +49,13 @@ export async function fetchUserSubscription(): Promise<StripeSubscription | unde
 export function getSubscriptionData(productId: string): SubscriptionData | undefined {
   const subscriptionList = Object.entries(STRIPE.subscriptions);
   const subscription = subscriptionList.find(([_, item]) => item.product === productId);
+
+  return subscription ? subscription[1] : undefined;
+}
+
+export function getSubscriptionDataByPriceId(priceId: string): SubscriptionData | undefined {
+  const subscriptionList = Object.entries(STRIPE.subscriptions);
+  const subscription = subscriptionList.find(([_, item]) => item.priceId === priceId);
 
   return subscription ? subscription[1] : undefined;
 }

@@ -1,6 +1,7 @@
 export interface SubscriptionData {
   name: string;
   product: string;
+  priceId: string;
   price: string;
 }
 
