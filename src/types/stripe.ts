@@ -1,4 +1,5 @@
 export interface SubscriptionData {
+  key: string;
   name: string;
   product: string;
   priceId: string;
@@ -103,6 +104,24 @@ export interface StripeSubscriptionPlan {
   transform_usage: any;
   trial_period_days: any;
   usage_type: string;
+}
+
+export interface UserSubscriptionPlan {
+  price_id: string;
+  subscription_id: string;
+  amount: number;
+  amount_decimal: string;
+  lookup_key: string;
+  start_date: string;
+  current_period_end: string;
+  status:
+    | 'incomplete_expired'
+    | 'trialing'
+    | 'active'
+    | 'past_due'
+    | 'canceled'
+    | 'unpaid'
+    | 'paused';
 }
 
 interface Address {

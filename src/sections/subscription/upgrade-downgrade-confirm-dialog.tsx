@@ -1,33 +1,30 @@
 import { Button } from '@mui/material';
-import { format, fromUnixTime } from 'date-fns';
+import { format } from 'date-fns';
 import { useMemo } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
+import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
 
 type Props = {
   open: boolean;
   onClose: VoidFunction;
   onConfirm: VoidFunction;
   type: 'upgrade' | 'downgrade';
-  currentPlan?: SubscriptionData;
   nextPlan?: SubscriptionData;
 };
 
-export function UpgradeDowngradeConfirmDialog({
-  open,
-  onClose,
-  onConfirm,
-  type,
-  currentPlan,
-  nextPlan,
-}: Props) {
+export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, nextPlan }: Props) {
   const { subscription } = useCurrentSubscription();
 
+  const currentPlan = useMemo(() => {
+    if (!subscription) return null;
+    return getSubscriptionDataByPriceId(subscription.price_id);
+  }, [subscription]);
+
   const endSubscriptionDate = useMemo(() => {
-    if (!subscription.current_period_end) return '';
-    const dateObject = fromUnixTime(subscription.current_period_end);
-    return format(dateObject, 'MMMMMM do yyyy');
+    if (!subscription?.current_period_end) return '';
+    return format(new Date(subscription.current_period_end), 'MMMMMM do yyyy');
   }, [subscription]);
 
   const renderContent = (

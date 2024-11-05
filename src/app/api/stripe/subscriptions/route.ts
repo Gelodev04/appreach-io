@@ -1,8 +1,7 @@
 import { auth } from 'auth';
 import { NextResponse } from 'next/server';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { getActiveSubscription } from 'src/sections/subscription/utils/get-active-subscription';
-import { mapStripePlanToMongoDB } from 'src/utils/stripe';
+import { UserSubscriptionPlan } from 'src/types/stripe';
 
 export async function GET() {
   try {
@@ -12,18 +11,8 @@ export async function GET() {
 
     const client = await clientPromise;
     const db = client.db();
-
-    const { error, data } = await getActiveSubscription(email);
-    if (error) return NextResponse.json({ error }, { status: 404 });
-    const activeSubscription = data!;
-
-    // Update active subscription into MongoDB
-    await db
-      .collection('userSettings')
-      .updateOne(
-        { 'appLogin.username': session?.user.email },
-        { $set: { plan: mapStripePlanToMongoDB(activeSubscription) } }
-      );
+    const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
+    const data = user?.plan as UserSubscriptionPlan;
 
     return NextResponse.json(data);
   } catch (error) {

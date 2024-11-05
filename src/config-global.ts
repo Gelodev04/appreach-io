@@ -16,12 +16,14 @@ export const PATH_AFTER_LOGIN = paths.dashboard.root;
 export const STRIPE = {
   subscriptions: {
     starter: {
+      key: 'starter',
       name: 'Starter',
       product: 'prod_Qs8dSFvQyCKZuL',
       priceId: 'price_1Q0OMZIPvbQKS9UKZ3h12FoK',
       price: '$150',
     },
     established: {
+      key: 'established',
       name: 'Established',
       product: 'prod_R0TQY0ijWzmt5N',
       priceId: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',

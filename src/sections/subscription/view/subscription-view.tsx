@@ -26,7 +26,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 export default function SubscriptionView() {
   const { enqueueSnackbar } = useSnackbar();
-  const { currentPlan, subscriptionLoading } = useCurrentSubscription();
+  const { subscription, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
   const confirmCancel = useBoolean();
   const confirmSubscription = useBoolean();
@@ -46,9 +46,9 @@ export default function SubscriptionView() {
     }
   };
 
-  // Check if there's an existing subscription
+  // Check if there's an active subscription
   const handleSubscribe = (priceId: string) => {
-    if (currentPlan) {
+    if (subscription?.status === 'active') {
       const nextSubscriptionData = getSubscriptionDataByPriceId(priceId);
       if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
       confirmSubscription.onTrue();
@@ -79,15 +79,15 @@ export default function SubscriptionView() {
   };
 
   const getNextActionType = () => {
-    if (!currentPlan) return 'upgrade';
-    if (currentPlan.product === STRIPE.subscriptions.starter.product) return 'upgrade';
+    if (!subscription) return 'upgrade';
+    if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
     return 'downgrade';
   };
 
   const getStarterLabel = () => {
-    if (!currentPlan) return 'Upgrade';
-    if (currentPlan.product === STRIPE.subscriptions.starter.product) return 'Cancel plan';
-    if (currentPlan.product === STRIPE.subscriptions.established.product) return 'Downgrade';
+    if (!subscription) return 'Upgrade';
+    if (subscription?.lookup_key === STRIPE.subscriptions.starter.key) return 'Cancel plan';
+    if (subscription?.lookup_key === STRIPE.subscriptions.established.key) return 'Downgrade';
 
     return 'Upgrade';
   };
@@ -115,7 +115,7 @@ export default function SubscriptionView() {
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
-        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.starter.product}
+        isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.starter.key}
         SubmitProps={{
           children: getStarterLabel(),
         }}
@@ -133,7 +133,7 @@ export default function SubscriptionView() {
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
-        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.established.product}
+        isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.established.key}
       />
       <CheckoutElement
         title="Managed Service"
@@ -200,7 +200,6 @@ export default function SubscriptionView() {
         open={confirmSubscription.value}
         onClose={confirmSubscription.onFalse}
         onConfirm={() => nextPlan && handleCheckout(nextPlan.priceId)}
-        currentPlan={currentPlan}
         nextPlan={nextPlan}
         type={getNextActionType()}
       />

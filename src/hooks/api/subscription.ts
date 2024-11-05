@@ -1,21 +1,19 @@
 import { useMemo } from 'react';
-import { StripeSubscription } from 'src/types/stripe';
-import { getSubscriptionData } from 'src/utils/stripe';
+import { UserSubscriptionPlan } from 'src/types/stripe';
 import { endpoints, fetcher } from 'src/utils/swr';
 import useSWR from 'swr';
 
 export function useCurrentSubscription() {
   const URL = endpoints.stripe.subscriptions;
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
+  const { data, isLoading, error, isValidating } = useSWR<UserSubscriptionPlan>(URL, fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
 
   const memoizedValue = useMemo(
     () => ({
-      subscription: (data as StripeSubscription) || {},
-      currentPlan: getSubscriptionData(data?.plan.product),
+      subscription: data,
       subscriptionLoading: isLoading || isValidating,
       subscriptionError: error,
     }),
