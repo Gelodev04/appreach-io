@@ -17,7 +17,7 @@ export default function GuestGuard({ children }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const { status, data } = useSession();
-  const { plan, planLoading } = useCheckUserPlan();
+  const { plan } = useCheckUserPlan();
   const user = data?.user;
 
   const searchParams = useSearchParams();
@@ -27,7 +27,7 @@ export default function GuestGuard({ children }: Props) {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const isAuthenticated = status === 'authenticated';
-  const isLoading = authLoading || planLoading || status === 'loading';
+  const isLoading = authLoading || status === 'loading';
 
   useEffect(() => {
     if (isLoading) {
