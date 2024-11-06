@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
@@ -10,6 +10,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { SubscriptionData } from 'src/types/stripe';
 import {
@@ -37,6 +38,9 @@ export default function SubscriptionView() {
     if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
     return 'downgrade';
   }, [subscription]);
+
+  const searchParams = useSearchParams();
+  const trialExpired = searchParams.get('trial_expired');
 
   const handleCheckout = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -127,6 +131,12 @@ export default function SubscriptionView() {
     </Stack>
   );
 
+  const renderWarning = (
+    <Alert variant="standard" severity="warning" sx={{ mt: 1 }}>
+      Your free trial has expired. Select a plan to continue.
+    </Alert>
+  );
+
   const renderOptions = (
     <Box display="flex" gap={4}>
       <CheckoutElement
@@ -190,6 +200,7 @@ export default function SubscriptionView() {
   return (
     <>
       <Container maxWidth="lg" sx={{ height: '100%' }}>
+        {trialExpired && renderWarning}
         <Stack
           alignItems="center"
           justifyContent="center"

@@ -50,4 +50,7 @@ export const endpoints = {
     cancelSubscription: '/api/stripe/subscriptions/cancel/',
     downgradeSubscription: '/api/stripe/subscriptions/downgrade/',
   },
+  plan: {
+    checkPlan: '/api/plan/check-plan/',
+  },
 };
