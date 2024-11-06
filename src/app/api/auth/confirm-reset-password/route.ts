@@ -31,7 +31,7 @@ export async function POST(request: Request) {
           // Clear the reset token and token expiration
           'resetPassword.token': null,
           'resetPassword.tokenExpiration': null,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: new Date(),
         },
       }
     );
