@@ -48,5 +48,6 @@ export const endpoints = {
     checkoutSession: '/api/stripe/checkout-session/',
     subscriptions: '/api/stripe/subscriptions/',
     cancelSubscription: '/api/stripe/subscriptions/cancel/',
+    downgradeSubscription: '/api/stripe/subscriptions/downgrade/',
   },
 };

@@ -3,7 +3,7 @@
 import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
@@ -32,9 +32,16 @@ export default function SubscriptionView() {
   const confirmSubscription = useBoolean();
   const [nextPlan, setNextPlan] = useState<SubscriptionData | undefined>();
 
+  const nextActionType = useMemo(() => {
+    if (!subscription) return 'upgrade';
+    if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
+    return 'downgrade';
+  }, [subscription]);
+
   const handleCheckout = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
+    if (nextActionType === 'downgrade') return handleDowngrade();
 
     try {
       const email = session?.user.email;
@@ -43,6 +50,31 @@ export default function SubscriptionView() {
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+    }
+  };
+
+  const handleDowngrade = async () => {
+    try {
+      const url = endpoints.stripe.downgradeSubscription;
+      const body = JSON.stringify({
+        subscriptionId: subscription?.subscription_id,
+        newPriceId: STRIPE.subscriptions.starter.priceId,
+      });
+
+      const response = await fetch(url, { method: 'POST', body });
+      const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData.message || 'Failed to cancel subscription');
+
+      enqueueSnackbar(responseData?.message || 'Subscription downgraded successfully', {
+        variant: 'success',
+      });
+
+      // Reload the page to refresh subscription data
+      window.location.href = paths.checkout.root;
+    } catch (err) {
+      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+    } finally {
+      confirmSubscription.onFalse();
     }
   };
 
@@ -76,12 +108,6 @@ export default function SubscriptionView() {
     } finally {
       confirmCancel.onFalse();
     }
-  };
-
-  const getNextActionType = () => {
-    if (!subscription) return 'upgrade';
-    if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
-    return 'downgrade';
   };
 
   const getStarterLabel = () => {
@@ -201,7 +227,7 @@ export default function SubscriptionView() {
         onClose={confirmSubscription.onFalse}
         onConfirm={() => nextPlan && handleCheckout(nextPlan.priceId)}
         nextPlan={nextPlan}
-        type={getNextActionType()}
+        type={nextActionType}
       />
     </>
   );
