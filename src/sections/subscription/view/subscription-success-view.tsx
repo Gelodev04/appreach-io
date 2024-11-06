@@ -2,16 +2,20 @@
 
 import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
+import { useMemo } from 'react';
 import Iconify from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
 
 export default function SubscriptionSuccessView() {
-  // const searchParams = useSearchParams();
-  // const sessionId = searchParams.get('session_id') as string;
-  const { currentPlan, subscriptionLoading, subscriptionError } = useCurrentSubscription();
+  const { subscription, subscriptionLoading, subscriptionError } = useCurrentSubscription();
+  const currentPlan = useMemo(() => {
+    if (!subscription) return undefined;
+    return getSubscriptionDataByPriceId(subscription?.price_id);
+  }, [subscription]);
 
   if (subscriptionLoading) return <LoadingScreen />;
 
@@ -29,10 +33,10 @@ export default function SubscriptionSuccessView() {
         Payment succeeded!
       </Typography>
 
-      {currentPlan && (
+      {subscription && (
         <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
           <AlertTitle>Thank you for your purchase</AlertTitle>
-          Your current plan is the <strong>{currentPlan.name}</strong> plan.
+          Your current plan is the <strong>{currentPlan?.name}</strong> plan.
         </Alert>
       )}
       <Button
