@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         $set: {
           'resetPassword.token': resetPasswordToken,
           'resetPassword.tokenExpiration': tokenExpiration,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: new Date(),
         },
       }
     );

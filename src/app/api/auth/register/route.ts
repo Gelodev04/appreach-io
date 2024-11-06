@@ -82,8 +82,8 @@ export async function POST(request: Request) {
         tokenExpiration,
         verifiedOn: null,
       },
-      created: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
+      created: new Date(),
+      lastUpdated: new Date(),
       ...(isTrial
         ? {
             plan: {
