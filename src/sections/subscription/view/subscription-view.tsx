@@ -43,7 +43,7 @@ export default function SubscriptionView() {
   const searchParams = useSearchParams();
   const trialExpired = searchParams.get('trial_expired');
 
-  const handleCheckout = async (priceId: string) => {
+  const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
 
@@ -82,17 +82,6 @@ export default function SubscriptionView() {
     }
   };
 
-  // Check if there's an active subscription
-  const handleSubscribe = (priceId: string) => {
-    if (subscription?.status === 'active') {
-      const nextSubscriptionData = getSubscriptionDataByPriceId(priceId);
-      if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
-      confirmSubscription.onTrue();
-    } else {
-      handleCheckout(priceId);
-    }
-  };
-
   const handleCancel = async () => {
     try {
       const url = endpoints.stripe.cancelSubscription;
@@ -116,6 +105,8 @@ export default function SubscriptionView() {
 
   const handlePlanSelection = (plan: SubscriptionData) => {
     const isCurrent = subscription?.lookup_key === plan.key;
+    const nextSubscriptionData = getSubscriptionDataByPriceId(plan.priceId);
+    if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
 
     // Handle current plan actions
     if (isCurrent) {
@@ -128,7 +119,7 @@ export default function SubscriptionView() {
     // Handle plan switching
     if (plan.key === STRIPE.subscriptions.starter.key) {
       const isHigher = subscription?.lookup_key === STRIPE.subscriptions.established.key;
-      return isHigher ? handleDowngrade() : handleSubscribe(plan.priceId);
+      return isHigher ? confirmSubscription.onTrue() : handleSubscribe(plan.priceId);
     }
 
     // Default case - upgrade to higher plan
@@ -278,7 +269,11 @@ export default function SubscriptionView() {
       <UpgradeDowngradeConfirmDialog
         open={confirmSubscription.value}
         onClose={confirmSubscription.onFalse}
-        onConfirm={() => nextPlan && handleCheckout(nextPlan.priceId)}
+        onConfirm={() =>
+          nextActionType === 'upgrade'
+            ? nextPlan && handleSubscribe(nextPlan.priceId)
+            : handleDowngrade()
+        }
         nextPlan={nextPlan}
         type={nextActionType}
       />
