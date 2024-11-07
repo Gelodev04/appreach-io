@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(updatedSubscription);
   } catch (error) {
-    console.error('Error cancelling subscription:', error);
+    console.error('Error downgrading subscription:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

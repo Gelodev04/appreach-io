@@ -9,6 +9,8 @@ type Props = {
   features?: string[];
   comment?: string;
   isCurrentPlan?: boolean;
+  submitTitle?: string;
+  submitSubtitle?: string;
   SubmitProps?: React.ComponentProps<typeof Button>;
 };
 
@@ -21,6 +23,8 @@ export function CheckoutElement({
   features,
   comment,
   isCurrentPlan,
+  submitTitle,
+  submitSubtitle,
   SubmitProps,
 }: Props) {
   return (
@@ -72,21 +76,24 @@ export function CheckoutElement({
         </Typography>
       )}
 
-      {isCurrentPlan && (
-        <Typography fontSize={14} fontWeight={600}>
-          This is your current plan
-        </Typography>
-      )}
+      <Stack gap={1} width={1}>
+        {submitSubtitle && (
+          <Typography fontSize={14} fontWeight={600}>
+            {submitSubtitle}
+          </Typography>
+        )}
 
-      <Button
-        variant={isCurrentPlan ? 'outlined' : 'contained'}
-        color={isCurrentPlan ? 'error' : 'primary'}
-        size="large"
-        onClick={isCurrentPlan ? onCancel : onPurchase}
-        fullWidth
-        children={isCurrentPlan ? 'Cancel plan' : 'Upgrade'}
-        {...SubmitProps}
-      />
+        <Button
+          variant={isCurrentPlan ? 'outlined' : 'contained'}
+          color={isCurrentPlan ? 'error' : 'primary'}
+          size="large"
+          onClick={isCurrentPlan ? onCancel : onPurchase}
+          fullWidth
+          {...SubmitProps}
+        >
+          {submitTitle}
+        </Button>
+      </Stack>
     </Stack>
   );
 }

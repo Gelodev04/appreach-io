@@ -2,6 +2,7 @@
 
 import { Alert, Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -67,7 +68,7 @@ export default function SubscriptionView() {
 
       const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData.message || 'Failed to cancel subscription');
+      if (!response.ok) throw new Error(responseData.message || 'Failed to downgrade subscription');
 
       enqueueSnackbar(responseData?.message || 'Subscription downgraded successfully', {
         variant: 'success',
@@ -114,12 +115,27 @@ export default function SubscriptionView() {
     }
   };
 
-  const getStarterLabel = () => {
+  const getSubmitTitle = (planKey: string) => {
     if (!subscription) return 'Upgrade';
-    if (subscription?.lookup_key === STRIPE.subscriptions.starter.key) return 'Cancel plan';
-    if (subscription?.lookup_key === STRIPE.subscriptions.established.key) return 'Downgrade';
+    if (planKey === subscription.lookup_key) return 'Cancel plan';
+
+    const isCurrentEstablished = subscription.lookup_key === STRIPE.subscriptions.established.key;
+    if (isCurrentEstablished && planKey === STRIPE.subscriptions.starter.key) {
+      return 'Downgrade';
+    }
 
     return 'Upgrade';
+  };
+
+  const getSubmitSubtitle = (planKey: string) => {
+    const isCurrent = planKey === subscription?.lookup_key;
+    if (!isCurrent) return;
+    if (subscription?.status === 'canceled') {
+      const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
+      return `Plan will cancel on ${formattedEndDate}`;
+    }
+
+    return 'This is your current plan';
   };
 
   const renderHead = (
@@ -151,10 +167,9 @@ export default function SubscriptionView() {
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
+        submitTitle={getSubmitTitle(STRIPE.subscriptions.starter.key)}
+        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.starter.key)}
         isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.starter.key}
-        SubmitProps={{
-          children: getStarterLabel(),
-        }}
       />
       <CheckoutElement
         title="Established"
@@ -169,6 +184,8 @@ export default function SubscriptionView() {
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
+        submitTitle={getSubmitTitle(STRIPE.subscriptions.established.key)}
+        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.established.key)}
         isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.established.key}
       />
       <CheckoutElement
@@ -180,11 +197,8 @@ export default function SubscriptionView() {
           'Think of us as part of your team',
           '1-on-1 zoom calls',
         ]}
-        SubmitProps={{
-          children: 'Contact Us',
-          variant: 'outlined',
-          color: 'inherit',
-        }}
+        submitTitle="Contact Us"
+        SubmitProps={{ variant: 'outlined', color: 'inherit' }}
       />
     </Box>
   );
