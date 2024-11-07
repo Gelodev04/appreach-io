@@ -46,7 +46,6 @@ export default function SubscriptionView() {
   const handleCheckout = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
-    if (nextActionType === 'downgrade') return handleDowngrade();
 
     try {
       const email = session?.user.email;
@@ -115,12 +114,34 @@ export default function SubscriptionView() {
     }
   };
 
+  const handlePlanSelection = (plan: SubscriptionData) => {
+    const isCurrent = subscription?.lookup_key === plan.key;
+
+    // Handle current plan actions
+    if (isCurrent) {
+      if (subscription?.status === 'canceled') {
+        return handleSubscribe(plan.priceId);
+      }
+      return confirmCancel.onTrue();
+    }
+
+    // Handle plan switching
+    if (plan.key === STRIPE.subscriptions.starter.key) {
+      const isHigher = subscription?.lookup_key === STRIPE.subscriptions.established.key;
+      return isHigher ? handleDowngrade() : handleSubscribe(plan.priceId);
+    }
+
+    // Default case - upgrade to higher plan
+    return handleSubscribe(plan.priceId);
+  };
+
   const getSubmitTitle = (planKey: string) => {
     if (!subscription) return 'Upgrade';
-    if (planKey === subscription.lookup_key) return 'Cancel plan';
+    const isCanceled = subscription?.status === 'canceled';
+    if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
-    const isCurrentEstablished = subscription.lookup_key === STRIPE.subscriptions.established.key;
-    if (isCurrentEstablished && planKey === STRIPE.subscriptions.starter.key) {
+    const isEstablished = subscription.lookup_key === STRIPE.subscriptions.established.key;
+    if (isEstablished && planKey === STRIPE.subscriptions.starter.key) {
       return 'Downgrade';
     }
 
@@ -136,6 +157,15 @@ export default function SubscriptionView() {
     }
 
     return 'This is your current plan';
+  };
+
+  const getSubmitVariant = (planKey: string): 'purchase' | 'cancel' => {
+    const isCanceled = subscription?.status === 'canceled';
+    const isCurrent = subscription?.lookup_key === planKey;
+
+    if (!isCurrent) return 'purchase';
+    if (isCurrent && !isCanceled) return 'cancel';
+    return 'purchase';
   };
 
   const renderHead = (
@@ -158,8 +188,7 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleSubscribe(STRIPE.subscriptions.starter.priceId)}
+        onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
         price={STRIPE.subscriptions.starter.price}
         features={[
           'Send up to 100 emails daily to our seed list',
@@ -169,13 +198,12 @@ export default function SubscriptionView() {
         ]}
         submitTitle={getSubmitTitle(STRIPE.subscriptions.starter.key)}
         submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.starter.key)}
-        isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.starter.key}
+        variant={getSubmitVariant(STRIPE.subscriptions.starter.key)}
       />
       <CheckoutElement
         title="Established"
         subtitle="500 Seed Accounts*"
-        onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleSubscribe(STRIPE.subscriptions.established.priceId)}
+        onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
         features={[
           'Send up to 500 emails daily to our seed list',
@@ -186,7 +214,7 @@ export default function SubscriptionView() {
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
         submitTitle={getSubmitTitle(STRIPE.subscriptions.established.key)}
         submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.established.key)}
-        isCurrentPlan={subscription?.lookup_key === STRIPE.subscriptions.established.key}
+        variant={getSubmitVariant(STRIPE.subscriptions.established.key)}
       />
       <CheckoutElement
         title="Managed Service"
@@ -198,7 +226,7 @@ export default function SubscriptionView() {
           '1-on-1 zoom calls',
         ]}
         submitTitle="Contact Us"
-        SubmitProps={{ variant: 'outlined', color: 'inherit' }}
+        variant="neutral"
       />
     </Box>
   );

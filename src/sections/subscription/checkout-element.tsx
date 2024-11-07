@@ -1,32 +1,34 @@
 import { Button, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 
 type Props = {
-  onCancel?: () => void | Promise<void> | undefined;
-  onPurchase?: () => void | Promise<void> | undefined;
+  onSubmit?: () => void | Promise<void> | undefined;
   title: string | number;
   subtitle?: string;
   price?: string | number;
   features?: string[];
   comment?: string;
-  isCurrentPlan?: boolean;
   submitTitle?: string;
   submitSubtitle?: string;
-  SubmitProps?: React.ComponentProps<typeof Button>;
+  variant: 'purchase' | 'cancel' | 'neutral';
 };
 
 export function CheckoutElement({
-  onCancel,
-  onPurchase,
+  onSubmit,
   title,
   subtitle,
   price,
   features,
   comment,
-  isCurrentPlan,
   submitTitle,
   submitSubtitle,
-  SubmitProps,
+  variant,
 }: Props) {
+  const getButtonColor = (): 'inherit' | 'primary' | 'error' => {
+    if (variant === 'neutral') return 'inherit';
+    if (variant === 'cancel') return 'error';
+    return 'primary';
+  };
+
   return (
     <Stack
       gap={1}
@@ -84,12 +86,13 @@ export function CheckoutElement({
         )}
 
         <Button
-          variant={isCurrentPlan ? 'outlined' : 'contained'}
-          color={isCurrentPlan ? 'error' : 'primary'}
           size="large"
-          onClick={isCurrentPlan ? onCancel : onPurchase}
+          // onClick={isCurrentPlan ? onCancel : onPurchase}
+          // onClick={isCurrentPlan && variant !== 'purchase' ? onCancel : onPurchase}
+          onClick={onSubmit}
           fullWidth
-          {...SubmitProps}
+          variant={variant === 'purchase' ? 'contained' : 'outlined'}
+          color={getButtonColor()}
         >
           {submitTitle}
         </Button>
