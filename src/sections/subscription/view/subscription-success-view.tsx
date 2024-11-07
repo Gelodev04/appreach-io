@@ -2,20 +2,14 @@
 
 import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
-import { useMemo } from 'react';
 import Iconify from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
 
 export default function SubscriptionSuccessView() {
-  const { subscription, subscriptionLoading, subscriptionError } = useCurrentSubscription();
-  const currentPlan = useMemo(() => {
-    if (!subscription) return undefined;
-    return getSubscriptionDataByPriceId(subscription?.price_id);
-  }, [subscription]);
+  const { subscriptionLoading, subscriptionError } = useCurrentSubscription();
 
   if (subscriptionLoading) return <LoadingScreen />;
 
@@ -33,12 +27,12 @@ export default function SubscriptionSuccessView() {
         Payment succeeded!
       </Typography>
 
-      {subscription && (
-        <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
-          <AlertTitle>Thank you for your purchase</AlertTitle>
-          Your current plan is the <strong>{currentPlan?.name}</strong> plan.
-        </Alert>
-      )}
+      <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
+        <AlertTitle>Thank you for your purchase</AlertTitle>
+        If your new plan does not take affect in the next 2 minutes, please contact support via
+        chat.
+      </Alert>
+
       <Button
         component={RouterLink}
         href={paths.dashboard.root}
