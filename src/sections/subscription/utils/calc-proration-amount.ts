@@ -16,7 +16,7 @@ export const calcProrationAmount = async (
 
     // Preview the upcoming invoice with the proposed changes
     const upcomingInvoice = await stripe.invoices.retrieveUpcoming({
-      // customer: subscription.customer,
+      customer: subscription.customer as string,
       subscription: subscription.id,
       subscription_items: [
         {

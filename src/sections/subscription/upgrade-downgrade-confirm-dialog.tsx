@@ -1,22 +1,34 @@
 import { Button } from '@mui/material';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { format } from 'date-fns';
+import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useSnackbar } from 'src/components/snackbar';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
-import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
+import {
+  createCheckoutSession,
+  getSubscriptionDataByPriceId,
+  redirectToCheckout,
+} from 'src/utils/stripe';
 import { calcProrationAmount } from './utils/calc-proration-amount';
 
 type Props = {
   open: boolean;
   onClose: VoidFunction;
-  onConfirm: VoidFunction;
+  onConfirm?: VoidFunction;
   type: 'upgrade' | 'downgrade';
   nextPlan?: SubscriptionData;
 };
 
+// Stripe promise for loading the Stripe object
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+
 export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, nextPlan }: Props) {
+  const { enqueueSnackbar } = useSnackbar();
   const { subscription } = useCurrentSubscription();
+  const { data: session } = useSession();
   const [prorationValue, setProrationValue] = useState<number>(0);
 
   const currentPlan = useMemo(() => {
@@ -41,6 +53,26 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
     getProrationAmount();
   }, [subscription, nextPlan, type]);
 
+  const handleSubscribeWithProration = async () => {
+    const stripe: Stripe | null = await stripePromise;
+    if (!stripe) return;
+
+    try {
+      const email = session?.user.email;
+      if (!email) throw new Error('Email is required for checkout.');
+      const sessionId = await createCheckoutSession(email, undefined, {
+        currency: 'usd',
+        unit_amount: prorationValue,
+        product_data: {
+          name: 'name of the product',
+        },
+      });
+      await redirectToCheckout(sessionId);
+    } catch (err) {
+      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+    }
+  };
+
   const renderContent = (
     <p>
       {type === 'upgrade'
@@ -61,7 +93,11 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
           <Button variant="outlined" onClick={onClose}>
             No
           </Button>
-          <Button variant="contained" color="primary" onClick={onConfirm}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onConfirm || handleSubscribeWithProration}
+          >
             Yes
           </Button>
         </>

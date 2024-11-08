@@ -50,7 +50,7 @@ export default function SubscriptionView() {
     try {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
-      const sessionId = await createCheckoutSession(priceId, email);
+      const sessionId = await createCheckoutSession(email, priceId);
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
@@ -105,6 +105,8 @@ export default function SubscriptionView() {
 
   const handlePlanSelection = (plan: SubscriptionData) => {
     const isCurrent = subscription?.lookup_key === plan.key;
+
+    // Set next plan data for upgrade/downgrade confirmation dialog
     const nextSubscriptionData = getSubscriptionDataByPriceId(plan.priceId);
     if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
 
@@ -121,6 +123,9 @@ export default function SubscriptionView() {
       const isHigher = subscription?.lookup_key === STRIPE.subscriptions.established.key;
       return isHigher ? confirmSubscription.onTrue() : handleSubscribe(plan.priceId);
     }
+
+    // Show confirmation dialog when upgrading to higher plan
+    if (subscription) return confirmSubscription.onTrue();
 
     // Default case - upgrade to higher plan
     return handleSubscribe(plan.priceId);
@@ -269,11 +274,7 @@ export default function SubscriptionView() {
       <UpgradeDowngradeConfirmDialog
         open={confirmSubscription.value}
         onClose={confirmSubscription.onFalse}
-        onConfirm={() =>
-          nextActionType === 'upgrade'
-            ? nextPlan && handleSubscribe(nextPlan.priceId)
-            : handleDowngrade()
-        }
+        onConfirm={nextActionType === 'downgrade' ? handleDowngrade : undefined}
         nextPlan={nextPlan}
         type={nextActionType}
       />
