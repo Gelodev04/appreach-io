@@ -63,9 +63,7 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
       const sessionId = await createCheckoutSession(email, undefined, {
         currency: 'usd',
         unit_amount: prorationValue,
-        product_data: {
-          name: 'name of the product',
-        },
+        product_data: { name: `Upgrade to ${nextPlan?.name} Plan` },
       });
       await redirectToCheckout(sessionId);
     } catch (err) {
