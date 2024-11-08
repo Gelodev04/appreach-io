@@ -8,25 +8,24 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 export async function POST(request: Request) {
   try {
-    const { priceId, customerEmail } = await request.json();
+    const { priceId, priceData, customerEmail } = await request.json();
 
-    if (!priceId || !customerEmail) {
+    if (!customerEmail) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
     const baseUrl = request.headers.get('origin');
+    const lineItems = [] as Stripe.Checkout.SessionCreateParams.LineItem[];
+
+    if (priceId) lineItems.push({ price: priceId, quantity: 1 });
+    if (priceData) lineItems.push({ price_data: priceData, quantity: 1 });
 
     // Create a checkout session
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
       customer_email: customerEmail,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       // subscription_data: {
       //   trial_period_days: 7, // Free trial for 7 days
       // },
