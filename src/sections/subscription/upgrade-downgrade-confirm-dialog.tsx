@@ -7,6 +7,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSnackbar } from 'src/components/snackbar';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
+import { fCurrency } from 'src/utils/format-number';
 import {
   createCheckoutSession,
   getSubscriptionDataByPriceId,
@@ -74,7 +75,7 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
   const renderContent = (
     <p>
       {type === 'upgrade'
-        ? `You are changing from the '${currentPlan?.name} Plan' to the '${nextPlan?.name} Plan'. You will be charged $${prorationValue} now and then ${nextPlan?.price} starting on ${endSubscriptionDate}. You can cancel at anytime.`
+        ? `You are changing from the '${currentPlan?.name} Plan' to the '${nextPlan?.name} Plan'. You will be charged ${fCurrency(prorationValue)} now and then ${fCurrency(nextPlan?.price!)} starting on ${endSubscriptionDate}. You can cancel at anytime.`
         : `You are changing from the '${currentPlan?.name} Plan' to the '${nextPlan?.name} Plan'. Downgrade will take place at the end of the current billing cycle starting on ${endSubscriptionDate}. You can cancel at anytime.`}
     </p>
   );

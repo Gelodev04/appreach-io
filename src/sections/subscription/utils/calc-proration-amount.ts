@@ -1,5 +1,6 @@
 'use server';
 
+import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -36,10 +37,15 @@ export const calcProrationAmount = async (
       }
     });
 
+    const newSubscription = getSubscriptionDataByPriceId(newPriceId);
+    if (!newSubscription) return 0;
+
+    const newPrice = newSubscription.price;
+
     // Convert from cents to dollars
     prorationAmount /= 100;
 
-    return prorationAmount;
+    return Math.round(newPrice - Math.abs(prorationAmount));
   } catch (error) {
     console.error('Error retrieving upcoming invoice:', error);
     return 0; // Return a default value in case of error

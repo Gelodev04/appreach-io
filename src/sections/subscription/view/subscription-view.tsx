@@ -13,7 +13,7 @@ import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { SubscriptionData } from 'src/types/stripe';
+import type { SubscriptionData } from 'src/types/stripe';
 import {
   createCheckoutSession,
   getSubscriptionDataByPriceId,
@@ -133,12 +133,15 @@ export default function SubscriptionView() {
 
   const getSubmitTitle = (planKey: string) => {
     if (!subscription) return 'Upgrade';
+
     const isCanceled = subscription?.status === 'canceled';
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
-    const isEstablished = subscription.lookup_key === STRIPE.subscriptions.established.key;
-    if (isEstablished && planKey === STRIPE.subscriptions.starter.key) {
-      return 'Downgrade';
+    const currentPlanData = getSubscriptionDataByPriceId(subscription.price_id);
+    const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
+
+    if (currentPlanData && nextPlanData) {
+      return nextPlanData.order < currentPlanData.order ? 'Downgrade' : 'Upgrade';
     }
 
     return 'Upgrade';
@@ -147,6 +150,7 @@ export default function SubscriptionView() {
   const getSubmitSubtitle = (planKey: string) => {
     const isCurrent = planKey === subscription?.lookup_key;
     if (!isCurrent) return;
+
     if (subscription?.status === 'canceled') {
       const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
       return `Plan will cancel on ${formattedEndDate}`;

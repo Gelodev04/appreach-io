@@ -1,10 +1,11 @@
 import { Button, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
+import { fCurrency } from 'src/utils/format-number';
 
 type Props = {
   onSubmit?: () => void | Promise<void> | undefined;
   title: string | number;
   subtitle?: string;
-  price?: string | number;
+  price?: number;
   features?: string[];
   comment?: string;
   submitTitle?: string;
@@ -56,7 +57,7 @@ export function CheckoutElement({
       {price && (
         <Stack direction="row" alignItems="baseline">
           <Typography fontSize={36} fontWeight={700}>
-            {price}
+            {fCurrency(price)}
           </Typography>
           <Typography fontSize={16} fontWeight={700} color="text.secondary">
             /mo
