@@ -3,7 +3,8 @@ export interface SubscriptionData {
   name: string;
   product: string;
   priceId: string;
-  price: string;
+  price: number;
+  order: number;
 }
 
 export interface StripeSubscription {

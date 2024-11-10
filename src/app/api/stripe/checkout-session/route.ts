@@ -26,11 +26,11 @@ export async function POST(request: Request) {
       payment_method_types: ['card'],
       customer_email: customerEmail,
       line_items: lineItems,
+      success_url: `${baseUrl}${paths.checkout.success}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}${paths.checkout.root}`,
       // subscription_data: {
       //   trial_period_days: 7, // Free trial for 7 days
       // },
-      success_url: `${baseUrl}${paths.checkout.success}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}${paths.checkout.root}`,
     });
 
     return NextResponse.json({ sessionId: session.id });

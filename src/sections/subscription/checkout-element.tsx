@@ -87,8 +87,6 @@ export function CheckoutElement({
 
         <Button
           size="large"
-          // onClick={isCurrentPlan ? onCancel : onPurchase}
-          // onClick={isCurrentPlan && variant !== 'purchase' ? onCancel : onPurchase}
           onClick={onSubmit}
           fullWidth
           variant={variant === 'purchase' ? 'contained' : 'outlined'}
