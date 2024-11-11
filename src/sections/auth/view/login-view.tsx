@@ -76,7 +76,7 @@ export default function LoginView() {
         <Typography variant="body2">New user?</Typography>
 
         <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
-          Create an account
+          Signup for a free trial
         </Link>
       </Stack>
     </Stack>

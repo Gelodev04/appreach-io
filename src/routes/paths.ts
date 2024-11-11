@@ -22,6 +22,7 @@ export const paths = {
     root: ROOTS.MAIN_WEBSITE,
     terms: `${ROOTS.INBOX_DADDY}/terms-of-use/`,
     privacy: `${ROOTS.INBOX_DADDY}/privacy-policy/`,
+    contactUs: `${ROOTS.INBOX_DADDY}/contact-us`,
   },
   // AUTH
   auth: {
