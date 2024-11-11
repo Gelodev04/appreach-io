@@ -44,12 +44,17 @@ export function useGetSeedSettings() {
 export function useGetSeedAccounts() {
   const URL = endpoints.seed.counts;
   const { data, error, isValidating } = useSWR(URL, fetcher);
-  const totalSeedAccounts = data?.seedAccounts
-    ? data.seedAccounts.reduce((sum: number, account: ISeedAccount) => sum + account.amount, 0)
+  const removeYahooPersonalSeedAcct = data?.seedAccounts.filter(
+    (seedAcct: ISeedAccount) => seedAcct.name !== 'yahooPersonal'
+  );
+  const totalSeedAccounts = removeYahooPersonalSeedAcct?.length
+    ? removeYahooPersonalSeedAcct.reduce(
+        (sum: number, account: ISeedAccount) => sum + account.amount,
+        0
+      )
     : 0;
-
   return {
-    seedAccounts: (data?.seedAccounts as ISeedAccount[]) || [],
+    seedAccounts: (removeYahooPersonalSeedAcct as ISeedAccount[]) || [],
     seedAccountsLoading: !error && !data,
     seedAccountsError: error,
     seedAccountsValidating: isValidating,
