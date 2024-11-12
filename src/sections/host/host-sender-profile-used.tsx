@@ -4,10 +4,16 @@ import Iconify from 'src/components/iconify';
 import { useGetSenders } from 'src/hooks/api/senders';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { ISenders } from 'src/types/senders';
 import { SenderProfileSkeleton } from './sender-profile-skeleton';
 
-const SenderProfileUsed = () => {
-  const { senders, sendersError, sendersLoading } = useGetSenders();
+type TSenderProfileUsed = {
+  senders: ISenders;
+  sendersError?: any;
+  sendersLoading?: boolean;
+};
+
+const SenderProfileUsed = ({ senders, sendersError, sendersLoading }: TSenderProfileUsed) => {
   if (sendersError)
     return (
       <EmptyContent
@@ -27,10 +33,11 @@ const SenderProfileUsed = () => {
     );
 
   if (sendersLoading) return <SenderProfileSkeleton />;
+
   return (
     <Box sx={{ paddingY: 1 }}>
       <Typography sx={{ fontWeight: 600, textAlign: 'end' }}>
-        Profile used:{' '}
+        Profiles used:{' '}
         <Typography component="span" sx={{ fontWeight: 800 }}>
           {senders?.usedCount}{' '}
         </Typography>

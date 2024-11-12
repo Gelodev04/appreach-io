@@ -30,6 +30,7 @@ import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
+import { useGetSenders } from 'src/hooks/api/senders';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import SenderProfileUsed from '../host-sender-profile-used';
@@ -46,6 +47,8 @@ export default function HostListView() {
   const router = useRouter();
   const settings = useSettingsContext();
   const { hosts, hostsLoading } = useGetHosts();
+  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
+    useGetSenders();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -187,7 +190,7 @@ export default function HostListView() {
           links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostAddExistingHost />
+              <HostAddExistingHost isAllSenderProfilesUsed/>
 
               <Button
                 component={RouterLink}
@@ -201,7 +204,11 @@ export default function HostListView() {
             </Stack>
           }
         />
-        <SenderProfileUsed />
+        <SenderProfileUsed
+          senders={senders}
+          sendersError={sendersError}
+          sendersLoading={sendersLoading}
+        />
         <Card
           sx={{
             height: { xs: 800, md: 2 },
