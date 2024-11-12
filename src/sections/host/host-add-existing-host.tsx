@@ -14,21 +14,24 @@ export default function HostAddExistingHost({
 
   const handleClickAddExistingSenderProfil = () => {
     // TODO:Check if isAllSenderProfilesUsed is true then open snackbar
-    enqueueSnackbar({
-      message: (
-        <div>You have used all your sender profiles, upgrade your subscription or contact us.</div>
-      ),
-      variant: 'warning',
-      persist: true,
-      anchorOrigin:{
-        horizontal: 'center',
-        vertical: 'top',
-      },
-    });
+    if (isAllSenderProfilesUsed) {
+      enqueueSnackbar({
+        message: (
+          <div>
+            You have used all your sender profiles, upgrade your subscription or contact us.
+          </div>
+        ),
+        variant: 'warning',
+        persist: true,
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top',
+        },
+      });
+      return null;
+    }
 
-    return null;
-
-    // open.onTrue();
+    open.onTrue();
   };
 
   return (
