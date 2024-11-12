@@ -180,7 +180,6 @@ export default function HostListView() {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap:2,
         }}
       >
         <CustomBreadcrumbs

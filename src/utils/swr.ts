@@ -52,4 +52,7 @@ export const endpoints = {
   plan: {
     checkPlan: '/api/plan/check-plan/',
   },
+  senders: {
+    list: '/api/senders/list/',
+  },
 };
