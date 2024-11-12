@@ -32,6 +32,7 @@ import { IHost } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
+import SenderProfileUsed from '../host-sender-profile-used';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -179,6 +180,7 @@ export default function HostListView() {
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
+          gap:2,
         }}
       >
         <CustomBreadcrumbs
@@ -199,14 +201,8 @@ export default function HostListView() {
               </Button>
             </Stack>
           }
-          sx={{
-            mb: {
-              xs: 3,
-              md: 5,
-            },
-          }}
         />
-
+        <SenderProfileUsed />
         <Card
           sx={{
             height: { xs: 800, md: 2 },
