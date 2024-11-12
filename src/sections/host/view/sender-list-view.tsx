@@ -47,8 +47,7 @@ export default function HostListView() {
   const router = useRouter();
   const settings = useSettingsContext();
   const { hosts, hostsLoading } = useGetHosts();
-  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
-    useGetSenders();
+  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading } = useGetSenders();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -175,6 +174,21 @@ export default function HostListView() {
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
       .map((column) => column.field);
 
+  const handleClickAddNewSenderProfile = () => {
+    enqueueSnackbar({
+      message: (
+        <div>You have used all your sender profiles, upgrade your subscription or contact us.</div>
+      ),
+      variant: 'warning',
+      persist: true,
+      anchorOrigin: {
+        horizontal: 'center',
+        vertical: 'top',
+      },
+    });
+    // TODO: add this again ---> router.push(paths.settings.new);
+  };
+
   return (
     <>
       <Container
@@ -190,11 +204,10 @@ export default function HostListView() {
           links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostAddExistingHost isAllSenderProfilesUsed/>
+              <HostAddExistingHost isAllSenderProfilesUsed={isAllSenderProfilesUsed} />
 
               <Button
-                component={RouterLink}
-                href={paths.settings.new}
+                onClick={handleClickAddNewSenderProfile}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
