@@ -19,6 +19,11 @@ export function useNavData() {
             icon: <Iconify icon="bx:server" />,
           },
           {
+            title: 'Sender Addresses',
+            path: paths.senders.root,
+            icon: <Iconify icon="hugeicons:address-book" />,
+          },
+          {
             title: 'Seeds',
             path: paths.seed.root,
             icon: <Iconify icon="pepicons-pop:seedling" />,
