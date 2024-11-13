@@ -5,22 +5,16 @@ import useSWR from 'swr';
 
 export function useGetSenders() {
   const URL = endpoints.senders.list;
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-
-  const senders = useMemo(
-    () => (data?.senders as ISenders) || { usedCount: 0, assignedCount: 0 },
-    [data?.senders]
-  );
-  const isAllSenderProfilesUsed = senders.usedCount >= senders.assignedCount;
+  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {ref});
   const memoizedValue = useMemo(
     () => ({
-      senders,
+      senders: data?.senders as ISenders,
       sendersLoading: isLoading,
       sendersError: error,
       sendersValidating: isValidating,
-      isAllSenderProfilesUsed,
+      isAllSenderProfilesUsed: data?.senders?.usedCount >= data?.senders?.assignedCount,
     }),
-    [error, isAllSenderProfilesUsed, isLoading, isValidating, senders]
+    [data?.senders, error, isLoading, isValidating]
   );
 
   return memoizedValue;

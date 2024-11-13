@@ -28,11 +28,12 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
-import { endpoints } from 'src/utils/swr';
+import { endpoints, revalidateData } from 'src/utils/swr';
 import { useGetSenders } from 'src/hooks/api/senders';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import SenderProfileUsed from '../host-sender-profile-used';
+import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -46,7 +47,8 @@ export default function HostListView() {
   const router = useRouter();
   const settings = useSettingsContext();
   const { hosts, hostsLoading } = useGetHosts();
-  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading } = useGetSenders();
+  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
+    useGetSenders();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -72,7 +74,7 @@ export default function HostListView() {
           const data = await res.json();
           throw new Error(data.error);
         }
-
+        await revalidateData(endpoints.senders.list);
         enqueueSnackbar('Item deleted', { variant: 'warning' });
 
         const newTableData = tableData.filter((row) => row._id.toString() !== id);
@@ -175,9 +177,7 @@ export default function HostListView() {
 
   const handleClickAddNewSenderProfile = () => {
     enqueueSnackbar({
-      message: (
-        <div>You have used all your sender profiles, upgrade your subscription or contact us.</div>
-      ),
+      message: <PopupWarningForAllUsedProfiles />,
       variant: 'warning',
       persist: true,
       anchorOrigin: {
@@ -220,6 +220,7 @@ export default function HostListView() {
           senders={senders}
           sendersError={sendersError}
           sendersLoading={sendersLoading}
+          sendersValidating={sendersValidating}
         />
         <Card
           sx={{

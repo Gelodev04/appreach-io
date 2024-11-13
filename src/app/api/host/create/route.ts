@@ -4,6 +4,7 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 import { generateArrayAddresses } from 'src/sections/host/utils/generate-array-adresses';
+import { getUserSettings, updateUserSettings } from 'src/services/db/userSettings';
 
 export async function POST(request: Request) {
   try {
@@ -66,7 +67,16 @@ export async function POST(request: Request) {
       smartlead: smartLead,
       inboxEngagement,
     });
-
+    // Update the senders useCount when added new one
+    if (result.insertedId) {
+      const { senders } = await getUserSettings({ senders: true });
+      await updateUserSettings({
+        senders: {
+          usedCount: senders?.usedCount ?? 0 + 1,
+          assignedCount: senders?.assignedCount ?? 0,
+        },
+      });
+    }
     const newHostId = result.insertedId;
 
     // Add the new _id to the hosts array in the userSettings document
@@ -74,7 +84,6 @@ export async function POST(request: Request) {
     await db
       .collection('userSettings')
       .updateOne({ 'appLogin.username': session?.user.email }, { $set: { hosts: user.hosts } });
-
     return Response.json({ message: 'Host created and added to user settings successfully' });
   } catch (error) {
     console.error('Error:', error);

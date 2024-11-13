@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
-import { useGetSenders } from 'src/hooks/api/senders';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { ISenders } from 'src/types/senders';
@@ -11,9 +10,15 @@ type TSenderProfileUsed = {
   senders: ISenders;
   sendersError?: any;
   sendersLoading?: boolean;
+  sendersValidating?: boolean;
 };
 
-const SenderProfileUsed = ({ senders, sendersError, sendersLoading }: TSenderProfileUsed) => {
+const SenderProfileUsed = ({
+  senders,
+  sendersError,
+  sendersLoading,
+  sendersValidating,
+}: TSenderProfileUsed) => {
   if (sendersError)
     return (
       <EmptyContent
@@ -32,7 +37,7 @@ const SenderProfileUsed = ({ senders, sendersError, sendersLoading }: TSenderPro
       />
     );
 
-  if (sendersLoading) return <SenderProfileSkeleton />;
+  if (sendersLoading || sendersValidating) return <SenderProfileSkeleton />;
 
   return (
     <Box sx={{ paddingY: 1 }}>
