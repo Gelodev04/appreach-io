@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
 import AddressesHeader from './_components/addresses-header';
 import VerificationTable from './_components/verification-table';
+import SenderUsed from './_components/sender-used';
 
 export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
@@ -8,10 +9,11 @@ export const metadata = {
 
 const SendersAddressesPage = () => {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {/* TODO: AddressesHeader Component 
          TODO: Verification Component */}
       <AddressesHeader />
+      <SenderUsed />
       <VerificationTable />
     </Container>
   );

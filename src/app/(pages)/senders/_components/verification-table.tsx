@@ -1,7 +1,8 @@
 import React from 'react';
+import FullWidthTabs from './tabs/tabs-panel';
 
 const VerificationTable = () => {
-  return <div>VerificationTable</div>;
+  return <FullWidthTabs />;
 };
 
 export default VerificationTable;
