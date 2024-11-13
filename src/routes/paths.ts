@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
-  SETTINGS: '/senders',
+  SETTINGS: '/profiles',
   SEEDS: '/seeds',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
@@ -22,6 +22,7 @@ export const paths = {
     root: ROOTS.MAIN_WEBSITE,
     terms: `${ROOTS.INBOX_DADDY}/terms-of-use/`,
     privacy: `${ROOTS.INBOX_DADDY}/privacy-policy/`,
+    contactUs: `${ROOTS.INBOX_DADDY}/contact-us`,
   },
   // AUTH
   auth: {
@@ -70,5 +71,9 @@ export const paths = {
     success: '/subscription/success',
     trial1: '/trial/1',
     trial2: '/trial/2',
+  },
+
+  senders: {
+    root: '/senders',
   },
 };

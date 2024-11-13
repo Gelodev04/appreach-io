@@ -1,9 +1,5 @@
-import { SenderListView } from 'src/sections/host/view';
-
-export const metadata = {
-  title: 'Sender Profiles | Inbox Daddy',
+const SendersPage = () => {
+  return <div>Senders Addresses</div>;
 };
 
-export default function Page() {
-  return <SenderListView />;
-}
+export default SendersPage;

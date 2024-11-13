@@ -18,13 +18,11 @@ export async function GET() {
         { status: 400 }
       );
     }
-
     let hosts = await Promise.all(
       userSettings.hosts.map(async (hostId: ObjectId) =>
         db.collection('hosts').findOne({ _id: new ObjectId(hostId) })
       )
     );
-
     // Filter out null values
     hosts = hosts.filter((host) => host !== null);
 

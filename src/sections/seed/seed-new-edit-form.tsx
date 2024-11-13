@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useTheme } from '@mui/material';
+import { Link, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -21,6 +21,7 @@ import { paths } from 'src/routes/paths';
 import { ISeedAccount, ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
@@ -31,8 +32,8 @@ type SeedAccountType =
   | 'googleBusiness'
   | 'googlePersonal'
   | 'microsoftBusiness'
-  | 'microsoftPersonal'
-  | 'yahooPersonal';
+  | 'microsoftPersonal';
+// | 'yahooPersonal'; remove yahooPersonal type
 
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
@@ -41,6 +42,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const { hosts, assignedCount } = useGetSeedSettings();
   const { seedAccounts, totalSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
+  const { prefillMessage } = useSalesmateChat();
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -52,7 +54,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
-    yahooPersonal: Yup.number(),
+    // yahooPersonal: Yup.number(), not needed anymore
     totalSeedAccounts: Yup.number(),
     seedAccountsGenerator: Yup.number(),
   });
@@ -93,7 +95,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const googlePersonal = watch('googlePersonal');
   const microsoftBusiness = watch('microsoftBusiness');
   const microsoftPersonal = watch('microsoftPersonal');
-  const yahooPersonal = watch('yahooPersonal');
+  // const yahooPersonal = watch('yahooPersonal'); not needed anymore
 
   useEffect(() => {
     if (currentItem) {
@@ -117,6 +119,10 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   });
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
+
+  const handleSalesmateOpen = () => {
+    prefillMessage('I am interested in more seeds account.');
+  };
 
   useEffect(() => {
     const distributeAccounts = (total: number, seeds: ISeedAccount[]) => {
@@ -174,17 +180,9 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       (googleBusiness ?? 0) +
       (googlePersonal ?? 0) +
       (microsoftBusiness ?? 0) +
-      (microsoftPersonal ?? 0) +
-      (yahooPersonal ?? 0);
+      (microsoftPersonal ?? 0);
     setValue('totalSeedAccounts', total);
-  }, [
-    googleBusiness,
-    googlePersonal,
-    microsoftBusiness,
-    microsoftPersonal,
-    yahooPersonal,
-    setValue,
-  ]);
+  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal, setValue]);
 
   const renderProperties = (
     <>
@@ -211,7 +209,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
               <RHFAutocomplete
                 name="hostId"
-                label="Choose a host"
+                label="Choose sender profile"
                 placeholder="outreachmagic"
                 options={hostOptions}
               />
@@ -241,8 +239,15 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You can send to {assignedCount} email accounts each day. Contact us if you have
-            questions or you need more accounts.
+            You can send to {assignedCount} email accounts each day.{' '}
+            <Link href={paths.checkout.root} variant="subtitle2">
+              Upgrade your subscription
+            </Link>
+            . Or{' '}
+            <Link variant="subtitle2" sx={{ cursor: 'pointer' }} onClick={handleSalesmateOpen}>
+              contact us
+            </Link>{' '}
+            if you have questions.
           </Typography>
           <LoadingButton
             type="submit"

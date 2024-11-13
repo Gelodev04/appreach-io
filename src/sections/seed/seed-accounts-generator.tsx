@@ -22,7 +22,7 @@ export default function SeedAccountsGenerator({
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
         <Stack gap={1} alignItems="flex-start" sx={{ width: '100%' }}>
-          <Typography variant="subtitle2">How many accounts you want to generate?</Typography>
+          <Typography variant="subtitle2">How many accounts do you want to generate?</Typography>
 
           <RHFTextField
             name="seedAccountsGenerator"

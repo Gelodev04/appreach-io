@@ -1,7 +1,7 @@
 import { mutate } from 'swr';
 
 export const revalidateData = async (url: string) => {
-  await mutate(url);
+  await mutate(url, undefined, { revalidate: true });
 };
 
 export const fetcher = (url: string) =>
@@ -51,5 +51,8 @@ export const endpoints = {
   },
   plan: {
     checkPlan: '/api/plan/check-plan/',
+  },
+  senders: {
+    list: '/api/senders/list/',
   },
 };

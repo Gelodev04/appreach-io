@@ -25,13 +25,15 @@ import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { RouterLink } from 'src/routes/components';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
-import { endpoints } from 'src/utils/swr';
+import { endpoints, revalidateData } from 'src/utils/swr';
+import { useGetSenders } from 'src/hooks/api/senders';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
+import SenderProfileUsed from '../host-sender-profile-used';
+import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -45,6 +47,8 @@ export default function HostListView() {
   const router = useRouter();
   const settings = useSettingsContext();
   const { hosts, hostsLoading } = useGetHosts();
+  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
+    useGetSenders();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -70,12 +74,11 @@ export default function HostListView() {
           const data = await res.json();
           throw new Error(data.error);
         }
-
         enqueueSnackbar('Item deleted', { variant: 'warning' });
-
         const newTableData = tableData.filter((row) => row._id.toString() !== id);
 
         setTableData(newTableData);
+        await revalidateData(endpoints.senders.list);
       } catch (error) {
         enqueueSnackbar('Error deleting item', { variant: 'error' });
       }
@@ -94,12 +97,12 @@ export default function HostListView() {
         const data = await res.json();
         throw new Error(data.error);
       }
-
       enqueueSnackbar('Items deleted', { variant: 'warning' });
 
       const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
 
       setTableData(deleteRows);
+      await revalidateData(endpoints.senders.list);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
@@ -171,6 +174,23 @@ export default function HostListView() {
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
       .map((column) => column.field);
 
+  const handleClickAddNewSenderProfile = () => {
+    if (isAllSenderProfilesUsed) {
+      enqueueSnackbar({
+        message: <PopupWarningForAllUsedProfiles />,
+        variant: 'warning',
+        persist: true,
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top',
+        },
+      });
+
+      return null;
+    }
+    router.push(paths.settings.new);
+  };
+
   return (
     <>
       <Container
@@ -186,11 +206,10 @@ export default function HostListView() {
           links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostAddExistingHost />
+              <HostAddExistingHost isAllSenderProfilesUsed={isAllSenderProfilesUsed} />
 
               <Button
-                component={RouterLink}
-                href={paths.settings.new}
+                onClick={handleClickAddNewSenderProfile}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
@@ -199,14 +218,13 @@ export default function HostListView() {
               </Button>
             </Stack>
           }
-          sx={{
-            mb: {
-              xs: 3,
-              md: 5,
-            },
-          }}
         />
-
+        <SenderProfileUsed
+          senders={senders}
+          sendersError={sendersError}
+          sendersLoading={sendersLoading}
+          sendersValidating={sendersValidating}
+        />
         <Card
           sx={{
             height: { xs: 800, md: 2 },
