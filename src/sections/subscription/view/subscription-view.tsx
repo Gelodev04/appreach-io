@@ -15,7 +15,8 @@ import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import type { SubscriptionData } from 'src/types/stripe';
 import {
-  createCheckoutSession,
+  createSubscriptionSession,
+  getSubscriptionData,
   getSubscriptionDataByPriceId,
   redirectToCheckout,
 } from 'src/utils/stripe';
@@ -30,18 +31,17 @@ export default function SubscriptionView() {
   const { enqueueSnackbar } = useSnackbar();
   const { subscription, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const trialExpired = searchParams.get('trial_expired');
   const confirmCancel = useBoolean();
   const confirmSubscription = useBoolean();
   const [nextPlan, setNextPlan] = useState<SubscriptionData | undefined>();
 
   const nextActionType = useMemo(() => {
-    if (!subscription) return 'upgrade';
+    if (!subscription || subscription.status === 'canceled') return 'upgrade';
     if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
     return 'downgrade';
   }, [subscription]);
-
-  const searchParams = useSearchParams();
-  const trialExpired = searchParams.get('trial_expired');
 
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -50,7 +50,7 @@ export default function SubscriptionView() {
     try {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
-      const sessionId = await createCheckoutSession(email, priceId);
+      const sessionId = await createSubscriptionSession(email, priceId);
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
@@ -110,22 +110,21 @@ export default function SubscriptionView() {
     const nextSubscriptionData = getSubscriptionDataByPriceId(plan.priceId);
     if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
 
+    // Handle upgrade if user has a canceled subscription
+    if (subscription?.status === 'canceled') return handleSubscribe(plan.priceId);
+
     // Handle current plan actions
-    if (isCurrent) {
-      if (subscription?.status === 'canceled') {
-        return handleSubscribe(plan.priceId);
-      }
-      return confirmCancel.onTrue();
-    }
+    if (isCurrent) return confirmCancel.onTrue();
 
     // Handle plan switching
-    if (plan.key === STRIPE.subscriptions.starter.key) {
-      const isHigher = subscription?.lookup_key === STRIPE.subscriptions.established.key;
+    if (subscription) {
+      const currentSubData = getSubscriptionData(subscription.lookup_key);
+      const isHigher = currentSubData?.order ? plan.order > currentSubData.order : false;
       return isHigher ? confirmSubscription.onTrue() : handleSubscribe(plan.priceId);
     }
 
-    // Show confirmation dialog when upgrading to higher plan
-    if (subscription) return confirmSubscription.onTrue();
+    // // Show confirmation dialog when upgrading to higher plan
+    // if (subscription) return confirmSubscription.onTrue();
 
     // Default case - upgrade to higher plan
     return handleSubscribe(plan.priceId);

@@ -123,6 +123,7 @@ export interface UserSubscriptionPlan {
     | 'canceled'
     | 'unpaid'
     | 'paused';
+  checkout_session_id: string;
 }
 
 interface Address {

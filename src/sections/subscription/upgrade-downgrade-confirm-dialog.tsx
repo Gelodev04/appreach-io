@@ -61,11 +61,7 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
     try {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
-      const sessionId = await createCheckoutSession(email, undefined, {
-        currency: 'usd',
-        unit_amount: prorationValue,
-        product_data: { name: `Upgrade to ${nextPlan?.name} Plan` },
-      });
+      const sessionId = await createCheckoutSession(email, nextPlan?.priceId!, prorationValue);
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
@@ -94,6 +90,7 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
           </Button>
           <Button
             variant="contained"
+            disabled={type === 'upgrade' && !prorationValue}
             color="primary"
             onClick={onConfirm || handleSubscribeWithProration}
           >

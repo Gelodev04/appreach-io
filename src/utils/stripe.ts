@@ -8,14 +8,34 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 export async function createCheckoutSession(
   customerEmail: string,
   priceId?: string,
-  priceData?: any
+  customAmount?: number
 ): Promise<string> {
   const stripe: Stripe | null = await stripePromise;
   if (!stripe) throw new Error('Stripe.js failed to load.');
 
   const res = await fetch(endpoints.stripe.checkoutSession, {
     method: 'POST',
-    body: JSON.stringify({ priceId, priceData, customerEmail }),
+    body: JSON.stringify({ priceId, customerEmail, customAmount }),
+  });
+
+  const data = await res.json();
+  if (!res.ok || !data.sessionId) {
+    throw new Error('Failed to create Stripe session.');
+  }
+
+  return data.sessionId;
+}
+
+export async function createSubscriptionSession(
+  customerEmail: string,
+  priceId?: string
+): Promise<string> {
+  const stripe: Stripe | null = await stripePromise;
+  if (!stripe) throw new Error('Stripe.js failed to load.');
+
+  const res = await fetch(endpoints.stripe.createSubscription, {
+    method: 'POST',
+    body: JSON.stringify({ priceId, customerEmail }),
   });
 
   const data = await res.json();
@@ -34,6 +54,13 @@ export async function redirectToCheckout(sessionId: string): Promise<void> {
   if (result.error) {
     throw new Error(result.error.message || 'An error occurred');
   }
+}
+
+export function getSubscriptionData(lookupKey: string): SubscriptionData | undefined {
+  const subscriptionList = Object.entries(STRIPE.subscriptions);
+  const subscription = subscriptionList.find(([_, item]) => item.key === lookupKey);
+
+  return subscription ? subscription[1] : undefined;
 }
 
 export function getSubscriptionDataByPriceId(priceId: string): SubscriptionData | undefined {

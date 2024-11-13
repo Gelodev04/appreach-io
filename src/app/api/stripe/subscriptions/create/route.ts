@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 export async function POST(request: Request) {
   try {
-    const { priceId, customerEmail, customAmount } = await request.json();
+    const { priceId, customerEmail } = await request.json();
 
     if (!customerEmail || !priceId) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -16,26 +16,18 @@ export async function POST(request: Request) {
 
     const baseUrl = request.headers.get('origin');
 
-    // Create a single checkout session
-    const session = await stripe.checkout.sessions.create({
+    // Prepare the session parameters, ensuring proration is not applied and the subscription starts one month from now
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+      mode: 'subscription',
       payment_method_types: ['card'],
-      mode: 'payment',
       customer_email: customerEmail,
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'One-time Upgrade fee',
-            },
-            unit_amount: customAmount * 100, // Stripe expects amounts in cents
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: `${baseUrl}${paths.checkout.success}?session_type=one_time&session_id={CHECKOUT_SESSION_ID}`,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${baseUrl}${paths.checkout.success}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}${paths.checkout.root}`,
-    });
+    };
+
+    // Create a single checkout session
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     return NextResponse.json({ sessionId: session.id });
   } catch (err: any) {
