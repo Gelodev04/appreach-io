@@ -175,16 +175,20 @@ export default function HostListView() {
       .map((column) => column.field);
 
   const handleClickAddNewSenderProfile = () => {
-    enqueueSnackbar({
-      message: <PopupWarningForAllUsedProfiles />,
-      variant: 'warning',
-      persist: true,
-      anchorOrigin: {
-        horizontal: 'center',
-        vertical: 'top',
-      },
-    });
-    // TODO: add this again ---> router.push(paths.settings.new);
+    if (isAllSenderProfilesUsed) {
+      enqueueSnackbar({
+        message: <PopupWarningForAllUsedProfiles />,
+        variant: 'warning',
+        persist: true,
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top',
+        },
+      });
+
+      return null;
+    }
+    router.push(paths.settings.new);
   };
 
   return (

@@ -16,7 +16,7 @@ export async function GET() {
       );
       return Response.json({ senders: newSenders });
     }
-    console.log({ senders });
+
     return Response.json({ senders });
   } catch (error) {
     return Response.json({ error: error.message }, { status: error.statusCode || 500 });

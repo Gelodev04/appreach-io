@@ -5,7 +5,6 @@ import useSWR from 'swr';
 export function useGetSenders() {
   const URL = endpoints.senders.list;
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
-  console.log({ data: data?.senders?.usedCount, isLoading, error, isValidating });
   return {
     senders: data?.senders as ISenders,
     sendersLoading: isLoading,

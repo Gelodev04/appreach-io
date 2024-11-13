@@ -3,6 +3,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import Iconify from 'src/components/iconify/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useAddExistingHost } from './hooks';
+import PopupWarningForAllUsedProfiles from './warning-sender-used-all-profiles';
 
 export default function HostAddExistingHost({
   isAllSenderProfilesUsed,
@@ -12,15 +13,10 @@ export default function HostAddExistingHost({
   const { addExistingHost, submitting, hostName, setHostName, open } = useAddExistingHost();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClickAddExistingSenderProfil = () => {
-    // TODO:Check if isAllSenderProfilesUsed is true then open snackbar
+  const handleClickAddExistingSenderProfile = () => {
     if (isAllSenderProfilesUsed) {
       enqueueSnackbar({
-        message: (
-          <div>
-            You have used all your sender profiles, upgrade your subscription or contact us.
-          </div>
-        ),
+        message: <PopupWarningForAllUsedProfiles />,
         variant: 'warning',
         persist: true,
         anchorOrigin: {
@@ -39,7 +35,7 @@ export default function HostAddExistingHost({
       <Button
         variant="contained"
         startIcon={<Iconify icon="mingcute:add-line" />}
-        onClick={handleClickAddExistingSenderProfil}
+        onClick={handleClickAddExistingSenderProfile}
       >
         Add an existing sender profile
       </Button>
