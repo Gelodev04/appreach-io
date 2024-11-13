@@ -5,7 +5,7 @@ export async function GET() {
     const { hosts, senders } = await getUserSettings({ hosts: true, senders: true });
     if (hosts.length !== senders?.usedCount) {
       // update the senders.useCount
-      const updatedSendersUsedCount = await updateUserSettings(
+      const { senders: newSenders } = await updateUserSettings(
         {
           senders: {
             usedCount: hosts?.length,
@@ -14,9 +14,9 @@ export async function GET() {
         },
         { senders: true }
       );
-
-      return Response.json({ updatedSendersUsedCount });
+      return Response.json({ senders: newSenders });
     }
+    console.log({ senders });
     return Response.json({ senders });
   } catch (error) {
     return Response.json({ error: error.message }, { status: error.statusCode || 500 });

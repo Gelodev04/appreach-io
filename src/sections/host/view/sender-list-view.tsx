@@ -74,12 +74,11 @@ export default function HostListView() {
           const data = await res.json();
           throw new Error(data.error);
         }
-        await revalidateData(endpoints.senders.list);
         enqueueSnackbar('Item deleted', { variant: 'warning' });
-
         const newTableData = tableData.filter((row) => row._id.toString() !== id);
 
         setTableData(newTableData);
+        await revalidateData(endpoints.senders.list);
       } catch (error) {
         enqueueSnackbar('Error deleting item', { variant: 'error' });
       }
@@ -98,12 +97,12 @@ export default function HostListView() {
         const data = await res.json();
         throw new Error(data.error);
       }
-
       enqueueSnackbar('Items deleted', { variant: 'warning' });
 
       const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
 
       setTableData(deleteRows);
+      await revalidateData(endpoints.senders.list);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
