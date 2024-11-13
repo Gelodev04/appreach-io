@@ -5,7 +5,7 @@ import useSWR from 'swr';
 
 export function useGetSenders() {
   const URL = endpoints.senders.list;
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {ref});
+  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
       senders: data?.senders as ISenders,
