@@ -195,7 +195,7 @@ export default function SeedView() {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'xl'}
+        maxWidth={settings.themeStretch ? false : 'lg'}
         sx={{
           flexGrow: 1,
           display: 'flex',
