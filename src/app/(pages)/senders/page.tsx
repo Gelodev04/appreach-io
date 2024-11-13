@@ -1,5 +1,5 @@
 const SendersPage = () => {
-  return <div>SendersPage</div>;
+  return <div>Senders Addresses</div>;
 };
 
 export default SendersPage;
