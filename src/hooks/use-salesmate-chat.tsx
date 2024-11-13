@@ -13,7 +13,7 @@ declare global {
 const useSalesmateChat = () => {
   const prefillMessage = (message: string) => {
     if (!window.SALESMATE) {
-      console.log('Salesmate is not initials');
+      console.log('Salesmate is not initialize.');
     }
 
     window.SALESMATE?.showNewMessage(message);
