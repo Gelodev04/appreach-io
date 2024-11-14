@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 import { Card } from '@mui/material';
+import { UnverifiedTable, VerifiedTable } from '../tables';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -67,13 +68,13 @@ export default function FullWidthTabs() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0} dir={theme.direction}>
-        Item One
+        <VerifiedTable />
       </TabPanel>
       <TabPanel value={value} index={1} dir={theme.direction}>
-        Item Two
+        <UnverifiedTable type="email" />
       </TabPanel>
       <TabPanel value={value} index={2} dir={theme.direction}>
-        Item Three
+        <UnverifiedTable type="domain" />
       </TabPanel>
     </Card>
   );
