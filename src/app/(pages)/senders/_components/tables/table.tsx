@@ -1,5 +1,14 @@
-import { MenuItem, Select } from '@mui/material';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { Button, MenuItem, Select, Stack } from '@mui/material';
+import {
+  DataGrid,
+  GridColDef,
+  GridRowsProp,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
+} from '@mui/x-data-grid';
+import EmptyContent from 'src/components/empty-content';
 import EditDeleteAction from './edit-delete';
 
 const Table = ({
@@ -55,6 +64,26 @@ const Table = ({
       getRowHeight={() => 'auto'}
       rows={rows}
       autoHeight
+      slots={{
+        toolbar: () => (
+          <GridToolbarContainer>
+            <GridToolbarQuickFilter />
+
+            <Stack
+              spacing={1}
+              flexGrow={1}
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+            >
+              <GridToolbarColumnsButton />
+              <GridToolbarFilterButton />
+            </Stack>
+          </GridToolbarContainer>
+        ),
+        noRowsOverlay: () => <EmptyContent title="No Data" />,
+        noResultsOverlay: () => <EmptyContent title="No results found" />,
+      }}
     />
   );
 };
