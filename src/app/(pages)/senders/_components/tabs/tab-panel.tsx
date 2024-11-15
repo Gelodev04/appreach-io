@@ -53,7 +53,7 @@ export default function FullWidthTabs() {
   };
 
   return (
-    <Card sx={{ bgcolor: 'background.paper' }}>
+    <Card sx={{ bgcolor: 'background.paper', minHeight: 700 }}>
       <AppBar position="static">
         <Tabs
           value={value}
