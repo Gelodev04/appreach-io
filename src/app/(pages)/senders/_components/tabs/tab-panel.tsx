@@ -6,8 +6,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
-import { Card } from '@mui/material';
+import { Suspense, useState } from 'react';
+import { Card, Skeleton } from '@mui/material';
 import { UnverifiedTable, VerifiedTable } from '../tables';
 
 interface TabPanelProps {
@@ -68,13 +68,19 @@ export default function FullWidthTabs() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <VerifiedTable />
+        <Suspense fallback={<Skeleton height={600} />}>
+          <VerifiedTable />
+        </Suspense>
       </TabPanel>
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <UnverifiedTable type="email" />
+        <Suspense fallback={<Skeleton height={600} />}>
+          <UnverifiedTable type="email" />
+        </Suspense>
       </TabPanel>
       <TabPanel value={value} index={2} dir={theme.direction}>
-        <UnverifiedTable type="domain" />
+        <Suspense fallback={<Skeleton height={600} />}>
+          <UnverifiedTable type="domain" />
+        </Suspense>
       </TabPanel>
     </Card>
   );

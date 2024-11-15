@@ -1,7 +1,10 @@
-import { Button, MenuItem, Select, Stack } from '@mui/material';
+'use client';
+
+import { Button, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
+  GridRowSelectionModel,
   GridRowsProp,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -9,6 +12,8 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import EmptyContent from 'src/components/empty-content';
+import { useState } from 'react';
+import Iconify from 'src/components/iconify';
 import EditDeleteAction from './edit-delete';
 
 const Table = ({
@@ -18,6 +23,7 @@ const Table = ({
   rows: GridRowsProp;
   action?: 'delete' | 'edit' | 'both';
 }) => {
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const columns: GridColDef[] = [
     {
       field: 'name',
@@ -30,10 +36,20 @@ const Table = ({
       flex: 1,
       sortable: false,
       renderCell: (params) => {
+        // TODO: Need to fix  this
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [state, setstate] = useState(params.value);
+        const handleChange = (e: SelectChangeEvent<any>) => {
+          setstate(e.target.value);
+        };
         return (
-          <Select value={params.value} style={{ width: '70%', marginTop: 10, marginBottom: 10 }}>
-            <MenuItem value="Active">Active</MenuItem>
-            <MenuItem value="Inactive">Inactive</MenuItem>
+          <Select
+            value={state}
+            onChange={handleChange}
+            style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
+          >
+            <MenuItem value="Active">profile_123</MenuItem>
+            <MenuItem value="Inactive">profile_143</MenuItem>
             <MenuItem value={params.value}>{params.value}</MenuItem>
           </Select>
         );
@@ -51,6 +67,19 @@ const Table = ({
 
   return (
     <DataGrid
+      autoHeight
+      rows={rows}
+      columns={columns}
+      checkboxSelection
+      getRowHeight={() => 'auto'}
+      initialState={{
+        pagination: {
+          paginationModel: { pageSize: 10 },
+        },
+      }}
+      onRowSelectionModelChange={(newSelectionModel) => {
+        setSelectedRowIds(newSelectionModel);
+      }}
       sx={{
         '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
           outline: 'none !important',
@@ -59,11 +88,6 @@ const Table = ({
           outline: 'none !important',
         },
       }}
-      checkboxSelection
-      columns={columns}
-      getRowHeight={() => 'auto'}
-      rows={rows}
-      autoHeight
       slots={{
         toolbar: () => (
           <GridToolbarContainer>
@@ -76,6 +100,15 @@ const Table = ({
               alignItems="center"
               justifyContent="flex-end"
             >
+              {!!selectedRowIds.length && (
+                <Button
+                  size="small"
+                  color="error"
+                  startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                >
+                  Delete ({selectedRowIds.length})
+                </Button>
+              )}
               <GridToolbarColumnsButton />
               <GridToolbarFilterButton />
             </Stack>

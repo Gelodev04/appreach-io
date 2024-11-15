@@ -1,4 +1,4 @@
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import Iconify from 'src/components/iconify';
 
@@ -7,18 +7,18 @@ const EditDeleteAction = ({ action = 'both' }: { action?: 'delete' | 'edit' | 'b
     <Stack direction="row">
       {action !== 'delete' && (
         <Tooltip title="Edit" placement="top">
-          <IconButton onClick={() => {}} sx={{ zIndex: 20 }}>
+          <Button onClick={() => {}} sx={{ zIndex: 20 }}>
             <Iconify icon="flowbite:edit-outline" />
             <Typography>Edit</Typography>
-          </IconButton>
+          </Button>
         </Tooltip>
       )}
 
       <Tooltip title="Delete" placement="top">
-        <IconButton onClick={() => {}} sx={{ zIndex: 20, color: 'error.main' }}>
+        <Button onClick={() => {}} sx={{ zIndex: 20, color: 'error.main' }}>
           <Iconify icon="ph:trash-bold" />
           <Typography>Delete</Typography>
-        </IconButton>
+        </Button>
       </Tooltip>
     </Stack>
   );

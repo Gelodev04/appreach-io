@@ -1,16 +1,26 @@
 import React from 'react';
 import { Card } from '@mui/material';
+import { GridValidRowModel } from '@mui/x-data-grid';
 import Table from './table';
 
-const rows = [
-  { id: 1, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
-  { id: 2, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
-  { id: 3, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
-  { id: 4, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
-  { id: 5, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
-  { id: 6, name: 'dennis@gmail.com', assignedProfile: 'profile_xyz' },
+const mockRows = [
+  { id: 1, name: 'dennis1@gmail.com', assignedProfile: 'profile_xyz1' },
+  { id: 2, name: 'dennis2@gmail.com', assignedProfile: 'profile_xyz2' },
+  { id: 3, name: 'dennis3@gmail.com', assignedProfile: 'profile_xyz3' },
+  { id: 4, name: 'dennis4@gmail.com', assignedProfile: 'profile_xyz4' },
+  { id: 5, name: 'dennis5@gmail.com', assignedProfile: 'profile_xyz5' },
+  { id: 6, name: 'dennis6@gmail.com', assignedProfile: 'profile_xyz6' },
 ];
-const VerifiedTable = () => {
+
+export const getSendersAddresses = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockRows), 1000);
+  });
+};
+
+const VerifiedTable = async () => {
+  const rows = (await getSendersAddresses()) as GridValidRowModel[];
+
   return (
     <Card>
       <Table rows={rows} action="delete" />
