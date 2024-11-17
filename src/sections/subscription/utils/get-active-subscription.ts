@@ -7,6 +7,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2024-06-20',
 });
 
+const ACTIVE_STATUSES: Stripe.Subscription.Status[] = ['active', 'trialing'];
+
 export const getActiveSubscription = async (
   email: string
 ): Promise<{ error?: string; data?: StripeSubscription }> => {
@@ -22,9 +24,9 @@ export const getActiveSubscription = async (
   if (subscriptions.data.length === 0) return { error: 'No subscriptions found' };
 
   // Find the active subscription
-  const activeSubscription = subscriptions.data.find(({ status }) =>
-    ['active', 'trialing'].includes(status)
-  ) as StripeSubscription | undefined;
+  const activeSubscription = subscriptions.data.find(({ status }) => {
+    return ACTIVE_STATUSES.includes(status);
+  }) as StripeSubscription | undefined;
 
   if (!activeSubscription) return { error: 'No active subscription found' };
   return { data: activeSubscription };
