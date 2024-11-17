@@ -49,7 +49,8 @@ export const endpoints = {
     subscriptions: '/api/stripe/subscriptions/',
     createSubscription: '/api/stripe/subscriptions/create/',
     cancelSubscription: '/api/stripe/subscriptions/cancel/',
-    downgradeSubscription: '/api/stripe/subscriptions/downgrade/',
+    // TODO: Delete
+    // downgradeSubscription: '/api/stripe/subscriptions/downgrade/',
   },
   plan: {
     checkPlan: '/api/plan/check-plan/',

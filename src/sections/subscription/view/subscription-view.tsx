@@ -46,6 +46,7 @@ export default function SubscriptionView() {
     }
   };
 
+  // TODO: Delete
   // const handleDowngrade = async () => {
   //   try {
   //     const url = endpoints.stripe.downgradeSubscription;
