@@ -1,6 +1,6 @@
 'use server';
 
-import { getSubscriptionDataByPriceId } from 'src/utils/stripe';
+import { getSubscriptionData } from 'src/utils/stripe';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -37,7 +37,7 @@ export const calcProrationAmount = async (
       }
     });
 
-    const newSubscription = getSubscriptionDataByPriceId(newPriceId);
+    const newSubscription = getSubscriptionData(newPriceId);
     if (!newSubscription) return 0;
 
     const newPrice = newSubscription.price;

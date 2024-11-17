@@ -8,11 +8,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
 import { fCurrency } from 'src/utils/format-number';
-import {
-  createCheckoutSession,
-  getSubscriptionDataByPriceId,
-  redirectToCheckout,
-} from 'src/utils/stripe';
+import { createCheckoutSession, getSubscriptionData, redirectToCheckout } from 'src/utils/stripe';
 import { calcProrationAmount } from './utils/calc-proration-amount';
 
 type Props = {
@@ -34,7 +30,7 @@ export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, 
 
   const currentPlan = useMemo(() => {
     if (!subscription) return null;
-    return getSubscriptionDataByPriceId(subscription.price_id);
+    return getSubscriptionData(subscription.price_id);
   }, [subscription]);
 
   const endSubscriptionDate = useMemo(() => {

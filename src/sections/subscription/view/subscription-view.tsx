@@ -4,7 +4,6 @@ import { Alert, Box, Button, Container, Skeleton, Stack, Typography } from '@mui
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
-import { useMemo, useState } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
@@ -17,12 +16,10 @@ import type { SubscriptionData } from 'src/types/stripe';
 import {
   createSubscriptionSession,
   getSubscriptionData,
-  getSubscriptionDataByPriceId,
   redirectToCheckout,
 } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
 import { CheckoutElement } from '../checkout-element';
-import { UpgradeDowngradeConfirmDialog } from '../upgrade-downgrade-confirm-dialog';
 
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -34,14 +31,6 @@ export default function SubscriptionView() {
   const searchParams = useSearchParams();
   const trialExpired = searchParams.get('trial_expired');
   const confirmCancel = useBoolean();
-  const confirmSubscription = useBoolean();
-  const [nextPlan, setNextPlan] = useState<SubscriptionData | undefined>();
-
-  const nextActionType = useMemo(() => {
-    if (!subscription || subscription.status === 'canceled') return 'upgrade';
-    if (subscription.lookup_key === STRIPE.subscriptions.starter.key) return 'upgrade';
-    return 'downgrade';
-  }, [subscription]);
 
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -57,30 +46,30 @@ export default function SubscriptionView() {
     }
   };
 
-  const handleDowngrade = async () => {
-    try {
-      const url = endpoints.stripe.downgradeSubscription;
-      const body = JSON.stringify({
-        subscriptionId: subscription?.subscription_id,
-        newPriceId: STRIPE.subscriptions.starter.priceId,
-      });
+  // const handleDowngrade = async () => {
+  //   try {
+  //     const url = endpoints.stripe.downgradeSubscription;
+  //     const body = JSON.stringify({
+  //       subscriptionId: subscription?.subscription_id,
+  //       newPriceId: STRIPE.subscriptions.starter.priceId,
+  //     });
 
-      const response = await fetch(url, { method: 'POST', body });
-      const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData.message || 'Failed to downgrade subscription');
+  //     const response = await fetch(url, { method: 'POST', body });
+  //     const responseData = await response.json();
+  //     if (!response.ok) throw new Error(responseData.message || 'Failed to downgrade subscription');
 
-      enqueueSnackbar(responseData?.message || 'Subscription downgraded successfully', {
-        variant: 'success',
-      });
+  //     enqueueSnackbar(responseData?.message || 'Subscription downgraded successfully', {
+  //       variant: 'success',
+  //     });
 
-      // Reload the page to refresh subscription data
-      window.location.href = paths.checkout.root;
-    } catch (err) {
-      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
-    } finally {
-      confirmSubscription.onFalse();
-    }
-  };
+  //     // Reload the page to refresh subscription data
+  //     window.location.href = paths.checkout.root;
+  //   } catch (err) {
+  //     enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+  //   } finally {
+  //     confirmSubscription.onFalse();
+  //   }
+  // };
 
   const handleCancel = async () => {
     try {
@@ -107,8 +96,8 @@ export default function SubscriptionView() {
     const isCurrent = subscription?.lookup_key === plan.key;
 
     // Set next plan data for upgrade/downgrade confirmation dialog
-    const nextSubscriptionData = getSubscriptionDataByPriceId(plan.priceId);
-    if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
+    // const nextSubscriptionData = getSubscriptionData(plan.priceId);
+    // if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
 
     // Handle upgrade if user has a canceled subscription
     if (subscription?.status === 'canceled') return handleSubscribe(plan.priceId);
@@ -117,14 +106,7 @@ export default function SubscriptionView() {
     if (isCurrent) return confirmCancel.onTrue();
 
     // Handle plan switching
-    if (subscription) {
-      const currentSubData = getSubscriptionData(subscription.lookup_key);
-      const isHigher = currentSubData?.order ? plan.order > currentSubData.order : false;
-      return isHigher ? confirmSubscription.onTrue() : handleSubscribe(plan.priceId);
-    }
-
-    // // Show confirmation dialog when upgrading to higher plan
-    // if (subscription) return confirmSubscription.onTrue();
+    if (subscription) return handleSubscribe(plan.priceId);
 
     // Default case - upgrade to higher plan
     return handleSubscribe(plan.priceId);
@@ -136,7 +118,7 @@ export default function SubscriptionView() {
     const isCanceled = subscription?.status === 'canceled';
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
-    const currentPlanData = getSubscriptionDataByPriceId(subscription.price_id);
+    const currentPlanData = getSubscriptionData(subscription.price_id);
     const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
 
     if (currentPlanData && nextPlanData) {
@@ -274,13 +256,13 @@ export default function SubscriptionView() {
         }
       />
 
-      <UpgradeDowngradeConfirmDialog
+      {/* <UpgradeDowngradeConfirmDialog
         open={confirmSubscription.value}
         onClose={confirmSubscription.onFalse}
         onConfirm={nextActionType === 'downgrade' ? handleDowngrade : undefined}
         nextPlan={nextPlan}
         type={nextActionType}
-      />
+      /> */}
     </>
   );
 }

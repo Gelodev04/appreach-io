@@ -56,14 +56,7 @@ export async function redirectToCheckout(sessionId: string): Promise<void> {
   }
 }
 
-export function getSubscriptionData(lookupKey: string): SubscriptionData | undefined {
-  const subscriptionList = Object.entries(STRIPE.subscriptions);
-  const subscription = subscriptionList.find(([_, item]) => item.key === lookupKey);
-
-  return subscription ? subscription[1] : undefined;
-}
-
-export function getSubscriptionDataByPriceId(priceId: string): SubscriptionData | undefined {
+export function getSubscriptionData(priceId: string): SubscriptionData | undefined {
   const subscriptionList = Object.entries(STRIPE.subscriptions);
   const subscription = subscriptionList.find(([_, item]) => item.priceId === priceId);
 
