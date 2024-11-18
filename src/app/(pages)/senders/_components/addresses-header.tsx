@@ -1,6 +1,5 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
-import Iconify from 'src/components/iconify';
 import AddDomainNameButton from './add-domain-name-btn';
 import AddEmailAddressBtn from './add-email-address-btn';
 

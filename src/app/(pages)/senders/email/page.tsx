@@ -1,5 +1,7 @@
+import SendersEmailPage from './_components/senders-email';
+
 const EmailPage = () => {
-  return <div>EmailPage</div>;
+  return <SendersEmailPage />;
 };
 
 export default EmailPage;
