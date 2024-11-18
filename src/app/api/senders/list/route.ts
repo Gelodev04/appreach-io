@@ -1,4 +1,4 @@
-import { getUserSettings, updateUserSettings } from 'src/services/db/userSettings';
+import { getUserSettings, updateUserSettings } from 'src/services/db/user-settings';
 
 export async function GET() {
   try {

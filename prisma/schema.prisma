@@ -96,6 +96,12 @@ type EmailAccountsWebMailError {
   value      String?
 }
 
+type EmailValidatorUpload {
+  csvUpload    String
+  dateUploaded DateTime @db.Date
+  listName     String
+}
+
 type HostsAutoCc {
   active           Boolean
   hasCustomMessage Boolean?
@@ -263,7 +269,9 @@ type UserSettingsSeeds {
 }
 
 type UserSettingsSenders {
+  /// Multiple data types found: Int: 96.5%, BigInt: 3.5% out of 57 sampled entries
   assignedCount Int
+  /// Multiple data types found: Int: 96.5%, BigInt: 3.5% out of 57 sampled entries
   usedCount     Int
 }
 
@@ -367,6 +375,16 @@ model emailAccounts {
   webMail             EmailAccountsWebMail
 }
 
+model emailValidator {
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  error       String
+  hostId      String               @db.ObjectId
+  lastUpdated DateTime             @db.Date
+  status      String
+  traceback   String
+  upload      EmailValidatorUpload
+}
+
 model hosts {
   id              String                @id @default(auto()) @map("_id") @db.ObjectId
   autoCc          HostsAutoCc?
@@ -393,6 +411,10 @@ model seedBatches {
   token     String
 }
 
+model unverifiedSenders {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
 model userSettings {
   id                String                         @id @default(auto()) @map("_id") @db.ObjectId
   appLogin          UserSettingsAppLogin
@@ -411,6 +433,23 @@ model userSettings {
   stripe            UserSettingsStripe?
   trackingMarketing UserSettingsTrackingMarketing?
   verification      UserSettingsVerification
+}
+
+model verifiedSenderDomains {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime @db.Date
+  dateVerified DateTime @db.Date
+  domain       String
+  hostId       String   @db.ObjectId
+}
+
+model verifiedSenderEmails {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime @db.Date
+  dateVerified DateTime @db.Date
+  email        String
+  hostId       String   @db.ObjectId
+  verifiedVia  String
 }
 
 model webMail {

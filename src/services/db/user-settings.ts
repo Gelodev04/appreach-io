@@ -51,3 +51,24 @@ export const updateUserSettings = async (
     throw new Error('Error updating user settings.');
   }
 };
+export const getSenderProfiles = async () => {
+  try {
+    const { hosts: hostsIds } = await getUserSettings({ hosts: true });
+    if (!hostsIds?.length) return [];
+
+    const hosts = await prisma.hosts.findMany({
+      where: {
+        id: {
+          in: hostsIds,
+        },
+      },
+    });
+
+    return hosts.map((host) => ({
+      profile: host.hostCrypt,
+      id: host.id,
+    }));
+  } catch (error) {
+    console.log('Error unable to get the sender profiles');
+  }
+};

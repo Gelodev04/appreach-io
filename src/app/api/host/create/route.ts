@@ -4,7 +4,7 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 import { generateArrayAddresses } from 'src/sections/host/utils/generate-array-adresses';
-import { getUserSettings, updateUserSettings } from 'src/services/db/userSettings';
+import { getUserSettings, updateUserSettings } from 'src/services/db/user-settings';
 
 export async function POST(request: Request) {
   try {

@@ -1,12 +1,17 @@
-import { Container, Stack } from '@mui/material';
+import { Container } from '@mui/material';
+import { getSenderProfiles } from 'src/services/db/user-settings';
 import Header from './header';
-import EditSendersEmailForm from './form/edit-email-form';
+import CreateSendersEmailForm from './form/new-email-form';
 
-export default function SendersEmailPage() {
+export default async function SendersEmailPage() {
+  const senderProfiles = await getSenderProfiles();
+
+  if (!senderProfiles) throw new Error('Undefined sender profiles');
+
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <Header />
-      <EditSendersEmailForm />
+      <CreateSendersEmailForm senderProfiles={senderProfiles} />
     </Container>
   );
 }
