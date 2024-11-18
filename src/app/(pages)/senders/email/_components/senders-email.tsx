@@ -3,7 +3,7 @@ import { getSenderProfiles } from 'src/services/db/user-settings';
 import Header from './header';
 import CreateSendersEmailForm from './form/new-email-form';
 
-export default async function SendersEmailPage() {
+export default async function AddSenderEmailPage() {
   const senderProfiles = await getSenderProfiles();
 
   if (!senderProfiles) throw new Error('Undefined sender profiles');

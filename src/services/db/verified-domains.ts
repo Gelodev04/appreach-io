@@ -1,6 +1,7 @@
 'use server';
 
 import { Prisma } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 
@@ -27,5 +28,32 @@ export const getVerifiedDomain = async (
   } catch (error) {
     console.error('Error on getting verified domains:', error); // Log the actual error
     throw new Error('Error on getting verified domains'); // Throw a user-friendly error
+  }
+};
+
+export const createUnverifiedEmails = async (email: string, hostId: string) => {
+  try {
+    const token = randomUUID();
+    const upsertUnverifiedEmails = await prisma.unverifiedSenders.upsert({
+      where: {
+        value: email,
+      },
+      update: {},
+      create: {
+        token,
+        type: 'email',
+        hostId,
+        value: email,
+      },
+      select: {
+        id: true,
+        token: true,
+        value: true,
+      },
+    });
+    return upsertUnverifiedEmails;
+  } catch (error) {
+    console.log('Error on creating unverified emails');
+    throw new Error('Error on create unverified emails', error);
   }
 };

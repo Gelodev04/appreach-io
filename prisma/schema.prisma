@@ -342,6 +342,11 @@ type WebMailSummary {
   type         String
 }
 
+enum UnverifiedSenderType {
+  email
+  domain
+}
+
 model emailAccounts {
   id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
   accessToken         String?
@@ -412,7 +417,12 @@ model seedBatches {
 }
 
 model unverifiedSenders {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  token     String
+  hostId    String               @unique @db.ObjectId
+  value     String               @unique
+  dateAdded DateTime             @default(now())
+  type      UnverifiedSenderType
 }
 
 model userSettings {

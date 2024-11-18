@@ -1,10 +1,21 @@
 'use client';
 
-import { LoadingButton } from '@mui/lab';
-import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Card, CircularProgress, MenuItem, Stack, Typography } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import Grid from '@mui/material/Unstable_Grid2';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
+import * as Yup from 'yup';
+import { useTransition } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { createUnverifiedEmails, getVerifiedDomain } from 'src/services/db/verified-domains';
+import { getEmailDomain } from 'src/utils';
+import { enqueueSnackbar } from 'notistack';
+import { GridSaveAltIcon } from '@mui/x-data-grid';
+import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import PopupWarningForAllUsedProfiles from 'src/sections/host/warning-sender-used-all-profiles';
+import { useRouter } from 'next/navigation';
+import { paths } from 'src/routes/paths';
 
 type SenderProfilesType = {
   profile: string;
@@ -15,16 +26,68 @@ type CreateSendersEmailFormType = {
   senderProfiles: SenderProfilesType[];
 };
 
+type FormData = Yup.InferType<typeof validationSchema>;
+
+// Define the validation schema
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email format').required('Email is required'),
+  hostId: Yup.string().required('Profile is required'),
+});
+
 export default function CreateSendersEmailForm({ senderProfiles }: CreateSendersEmailFormType) {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const methods = useForm({
-    defaultValues: {},
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: '',
+      hostId: '',
+    },
   });
 
-  console.log({ senderProfiles });
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    startTransition(async () => {
+      try {
+        const inputEmailDomain = getEmailDomain(data.email);
+        const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
+        if (!inputEmailDomain) {
+          enqueueSnackbar('Domain not found.', { variant: 'error' });
+        }
+        const domain = await getVerifiedDomain({
+          domain: inputEmailDomain,
+          hostId: { in: userHostIds },
+        });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    console.log({ data });
+        if (!domain) {
+          const unverifiedEmail = await createUnverifiedEmails(data.email, data.hostId);
+          const result = await requestForEmailVerification(unverifiedEmail);
+          if (result) {
+            enqueueSnackbar({
+              message: (
+                <Typography variant="body2">
+                  A verification email has been sent to {unverifiedEmail.value}, click the
+                  confirmation link to verify it
+                </Typography>
+              ),
+              variant: 'success',
+              persist: true,
+              onClose: (e) => {
+                e?.preventDefault();
+                router.push(paths.senders.root);
+              },
+            });
+          }
+        }
+
+        // TODO: IF domain exist upsert the following document in verifiedSenders
+
+        console.log({ domain });
+      } catch (error) {
+        console.log(error);
+      }
+    });
   };
+
   return (
     <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
       <Grid container alignItems="center" md={12}>
@@ -39,9 +102,9 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               }}
             >
               <RHFTextField name="email" label="Email Address" placeholder="Email Address" />
-              <RHFSelect name="profile" label="Sender Profile" placeholder="Sender Profile">
+              <RHFSelect name="hostId" label="Sender Profile" placeholder="Sender Profile">
                 {senderProfiles?.map((senderProfile) => (
-                  <MenuItem id={senderProfile.id} value={senderProfile.profile}>
+                  <MenuItem key={senderProfile.id} value={senderProfile.id}>
                     {senderProfile.profile}
                   </MenuItem>
                 ))}
@@ -59,12 +122,13 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             </Typography>
             <LoadingButton
               type="submit"
-              variant="contained"
               color="primary"
-              loading={false}
+              variant="contained"
               sx={{ width: 200 }}
+              loading={isPending}
+              loadingPosition="start"
             >
-              Add sender address
+              {isPending ? ' Email Verification...' : ' Add sender address'}
             </LoadingButton>
           </Stack>
         </Grid>
