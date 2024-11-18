@@ -16,6 +16,7 @@ import { requestForEmailVerification } from 'src/services/webhook/email-verifica
 import PopupWarningForAllUsedProfiles from 'src/sections/host/warning-sender-used-all-profiles';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
+import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
   profile: string;
@@ -63,16 +64,12 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
           const result = await requestForEmailVerification(unverifiedEmail);
           if (result) {
             enqueueSnackbar({
-              message: (
-                <Typography variant="body2">
-                  A verification email has been sent to {unverifiedEmail.value}, click the
-                  confirmation link to verify it
-                </Typography>
-              ),
+              message: <VerificationEmailMessage name={unverifiedEmail.value} />,
               variant: 'success',
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
+                methods.reset();
                 router.push(paths.senders.root);
               },
             });
@@ -80,8 +77,6 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         }
 
         // TODO: IF domain exist upsert the following document in verifiedSenders
-
-        console.log({ domain });
       } catch (error) {
         console.log(error);
       }

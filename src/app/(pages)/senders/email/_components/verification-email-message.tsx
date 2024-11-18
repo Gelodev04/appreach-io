@@ -1,0 +1,14 @@
+import { Typography } from '@mui/material';
+import React from 'react';
+
+export default function VerificationEmailMessage({ name }: { name: string }) {
+  return (
+    <Typography
+      variant="body2"
+      maxWidth={500}
+      sx={{ textWrap: 'balance', fontWeight: 600, padding: 2 }}
+    >
+      A verification email has been sent to {name}, click the confirmation link to verify it
+    </Typography>
+  );
+}
