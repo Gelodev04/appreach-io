@@ -1,3 +1,5 @@
+'use server';
+
 import { Prisma } from '@prisma/client';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';

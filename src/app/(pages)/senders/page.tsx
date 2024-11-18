@@ -10,8 +10,6 @@ export const metadata = {
 const SendersAddressesPage = () => {
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      {/* TODO: AddressesHeader Component 
-         TODO: Verification Component */}
       <AddressesHeader />
       <SenderUsed />
       <VerificationTable />
