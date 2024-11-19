@@ -71,6 +71,7 @@ export const getSenderProfiles = async () => {
       id: host.id,
     }));
   } catch (error) {
-    console.log('Error unable to get the sender profiles');
+    console.log('Error unable to get the sender profiles', error);
+    return [];
   }
 };
