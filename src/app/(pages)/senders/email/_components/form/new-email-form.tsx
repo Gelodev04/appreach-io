@@ -1,7 +1,7 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Card, CircularProgress, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Grid from '@mui/material/Unstable_Grid2';
 import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
@@ -11,9 +11,7 @@ import { LoadingButton } from '@mui/lab';
 import { createUnverifiedEmails, getVerifiedDomain } from 'src/services/db/verified-domains';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
-import { GridSaveAltIcon } from '@mui/x-data-grid';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
-import PopupWarningForAllUsedProfiles from 'src/sections/host/warning-sender-used-all-profiles';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import VerificationEmailMessage from '../verification-email-message';
