@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { getUserSettings } from './user-settings';
 
 export const getVerifiedDomain = async (
   whereInput: Prisma.verifiedSenderDomainsWhereInput,
@@ -82,5 +83,27 @@ export const createVerifiedEmails = async (email: string, hostId: string) => {
   } catch (error) {
     console.log('Error on creating unverified emails');
     throw new Error('Error on create unverified emails', error);
+  }
+};
+
+export const getVerifiedEmails = async () => {
+  try {
+    const { hosts } = await getUserSettings({ hosts: true });
+    const listOfVerifiedEmails = await prisma.verifiedSenderEmails.findMany({
+      where: {
+        hostId: {
+          in: hosts,
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        hostId: true,
+      },
+    });
+    return listOfVerifiedEmails;
+  } catch (error) {
+    console.log('Unable to get verified emails.', error);
+    return [];
   }
 };

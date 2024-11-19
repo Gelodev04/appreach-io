@@ -15,6 +15,7 @@ import EmptyContent from 'src/components/empty-content';
 import { useState } from 'react';
 import Iconify from 'src/components/iconify';
 import EditDeleteAction from './edit-delete';
+import AssignedProfileDropdown from './assigned-profile-dd';
 
 const Table = ({
   rows,
@@ -26,34 +27,16 @@ const Table = ({
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const columns: GridColDef[] = [
     {
-      field: 'name',
+      field: 'email',
       headerName: 'Name',
       flex: 1,
     },
     {
-      field: 'assignedProfile',
+      field: 'hostId',
       headerName: 'Assigned Profile',
       flex: 1,
       sortable: false,
-      renderCell: (params) => {
-        // TODO: Need to fix  this
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const [state, setstate] = useState(params.value);
-        const handleChange = (e: SelectChangeEvent<any>) => {
-          setstate(e.target.value);
-        };
-        return (
-          <Select
-            value={state}
-            onChange={handleChange}
-            style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
-          >
-            <MenuItem value="Active">profile_123</MenuItem>
-            <MenuItem value="Inactive">profile_143</MenuItem>
-            <MenuItem value={params.value}>{params.value}</MenuItem>
-          </Select>
-        );
-      },
+      renderCell: (params) => <AssignedProfileDropdown params={params} />,
     },
     {
       field: 'status',
