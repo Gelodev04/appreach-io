@@ -8,7 +8,11 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { createUnverifiedEmails, getVerifiedDomain } from 'src/services/db/verified-domains';
+import {
+  createUnverifiedEmails,
+  createVerifiedEmails,
+  getVerifiedDomain,
+} from 'src/services/db/verified-domains';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
@@ -45,8 +49,8 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    startTransition(async () => {
-      try {
+    try {
+      startTransition(async () => {
         const inputEmailDomain = getEmailDomain(data.email);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         if (!inputEmailDomain) {
@@ -72,13 +76,21 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               },
             });
           }
+        } else {
+          const newVerifiedEmail = await createVerifiedEmails(data.email, data.hostId);
+          if (newVerifiedEmail.id) {
+            enqueueSnackbar('Your email has successfully verified via the domain verification', {
+              variant: 'success',
+              onClose: () => {
+                router.push(paths.senders.root);
+              },
+            });
+          }
         }
-
-        // TODO: IF domain exist upsert the following document in verifiedSenders
-      } catch (error) {
-        console.log(error);
-      }
-    });
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

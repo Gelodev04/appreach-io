@@ -457,8 +457,8 @@ model verifiedSenderEmails {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime @db.Date
   dateVerified DateTime @db.Date
-  email        String
-  hostId       String   @db.ObjectId
+  email        String   @unique
+  hostId       String   @unique @db.ObjectId
   verifiedVia  String
 }
 
