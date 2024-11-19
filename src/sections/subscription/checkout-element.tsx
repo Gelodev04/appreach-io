@@ -1,28 +1,35 @@
 import { Button, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
+import { fCurrency } from 'src/utils/format-number';
 
 type Props = {
-  onCancel?: () => void | Promise<void> | undefined;
-  onPurchase?: () => void | Promise<void> | undefined;
+  onSubmit?: () => void | Promise<void> | undefined;
   title: string | number;
   subtitle?: string;
-  price?: string | number;
+  price?: number;
   features?: string[];
   comment?: string;
-  isCurrentPlan?: boolean;
-  SubmitProps?: React.ComponentProps<typeof Button>;
+  submitTitle?: string;
+  submitSubtitle?: string;
+  variant: 'purchase' | 'cancel' | 'neutral';
 };
 
 export function CheckoutElement({
-  onCancel,
-  onPurchase,
+  onSubmit,
   title,
   subtitle,
   price,
   features,
   comment,
-  isCurrentPlan,
-  SubmitProps,
+  submitTitle,
+  submitSubtitle,
+  variant,
 }: Props) {
+  const getButtonColor = (): 'inherit' | 'primary' | 'error' => {
+    if (variant === 'neutral') return 'inherit';
+    if (variant === 'cancel') return 'error';
+    return 'primary';
+  };
+
   return (
     <Stack
       gap={1}
@@ -50,7 +57,7 @@ export function CheckoutElement({
       {price && (
         <Stack direction="row" alignItems="baseline">
           <Typography fontSize={36} fontWeight={700}>
-            {price}
+            {fCurrency(price)}
           </Typography>
           <Typography fontSize={16} fontWeight={700} color="text.secondary">
             /mo
@@ -72,21 +79,23 @@ export function CheckoutElement({
         </Typography>
       )}
 
-      {isCurrentPlan && (
-        <Typography fontSize={14} fontWeight={600}>
-          This is your current plan
-        </Typography>
-      )}
+      <Stack gap={1} width={1}>
+        {submitSubtitle && (
+          <Typography fontSize={14} fontWeight={600}>
+            {submitSubtitle}
+          </Typography>
+        )}
 
-      <Button
-        variant={isCurrentPlan ? 'outlined' : 'contained'}
-        color={isCurrentPlan ? 'error' : 'primary'}
-        size="large"
-        onClick={isCurrentPlan ? onCancel : onPurchase}
-        fullWidth
-        children={isCurrentPlan ? 'Cancel plan' : 'Upgrade'}
-        {...SubmitProps}
-      />
+        <Button
+          size="large"
+          onClick={onSubmit}
+          fullWidth
+          variant={variant === 'purchase' ? 'contained' : 'outlined'}
+          color={getButtonColor()}
+        >
+          {submitTitle}
+        </Button>
+      </Stack>
     </Stack>
   );
 }
