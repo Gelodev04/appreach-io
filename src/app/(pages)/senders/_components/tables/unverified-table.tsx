@@ -1,6 +1,6 @@
-import { Card } from '@mui/material';
-import React from 'react';
-import { GridValidRowModel } from '@mui/x-data-grid';
+import { Card, Skeleton } from '@mui/material';
+import React, { Suspense } from 'react';
+import { getUnverifiedSenders } from 'src/services/db/verified-domains';
 import Table from './table';
 
 type UnverifiedType = 'email' | 'domain';
@@ -15,12 +15,23 @@ export const getSendersAddresses = () => {
   });
 };
 
-const UnverifiedTable = async ({ type }: { type: UnverifiedType }) => {
-  const rows = (await getSendersAddresses()) as GridValidRowModel[];
+type UnverifiedTableType = {
+  type: UnverifiedType;
+  options: {
+    profile: string;
+    id: string;
+  }[];
+};
+
+const UnverifiedTable = async ({ type, options }: UnverifiedTableType) => {
+  const rows = await getUnverifiedSenders(type);
+  if (!rows) throw new Error('Unable to get rows');
   return (
-    <Card>
-      <Table rows={rows} />
-    </Card>
+    <Suspense fallback={<Skeleton height={600} />}>
+      <Card>
+        <Table rows={rows} options={options} />
+      </Card>
+    </Suspense>
   );
 };
 

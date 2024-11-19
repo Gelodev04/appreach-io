@@ -16,12 +16,18 @@ import { useState } from 'react';
 import Iconify from 'src/components/iconify';
 import EditDeleteAction from './edit-delete';
 import AssignedProfileDropdown from './assigned-profile-dd';
+import { TableOptions } from './verified-table';
 
 const Table = ({
   rows,
+  options,
   action = 'both',
 }: {
   rows: GridRowsProp;
+  options: {
+    profile: string;
+    id: string;
+  }[];
   action?: 'delete' | 'edit' | 'both';
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
@@ -36,7 +42,7 @@ const Table = ({
       headerName: 'Assigned Profile',
       flex: 1,
       sortable: false,
-      renderCell: (params) => <AssignedProfileDropdown params={params} />,
+      renderCell: (params) => <AssignedProfileDropdown params={params} options={options} />,
     },
     {
       field: 'status',

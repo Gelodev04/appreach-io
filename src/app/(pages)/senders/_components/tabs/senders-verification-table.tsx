@@ -6,7 +6,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Suspense, useState } from 'react';
+import { ReactNode, Suspense, useState } from 'react';
 import { Card, Skeleton } from '@mui/material';
 import { UnverifiedTable, VerifiedTable } from '../tables';
 
@@ -44,7 +44,15 @@ function a11yProps(index: number) {
   };
 }
 
-export default function FullWidthTabs() {
+export default function SendersVerificationTable({
+  verifiedTable,
+  unverifiedEmailTable,
+  verifiedDomainTable,
+}: {
+  verifiedTable: ReactNode;
+  unverifiedEmailTable: ReactNode;
+  verifiedDomainTable: ReactNode;
+}) {
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
@@ -64,23 +72,17 @@ export default function FullWidthTabs() {
         >
           <Tab label="Verified" {...a11yProps(0)} sx={{ fontSize: 16 }} />
           <Tab label="Unverified Emails" {...a11yProps(1)} sx={{ fontSize: 16 }} />
-          <Tab label="Unverified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
+          <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <Suspense fallback={<Skeleton height={600} />}>
-          <VerifiedTable />
-        </Suspense>
+        {verifiedTable}
       </TabPanel>
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <Suspense fallback={<Skeleton height={600} />}>
-          <UnverifiedTable type="email" />
-        </Suspense>
+        {unverifiedEmailTable}
       </TabPanel>
       <TabPanel value={value} index={2} dir={theme.direction}>
-        <Suspense fallback={<Skeleton height={600} />}>
-          <UnverifiedTable type="domain" />
-        </Suspense>
+        {verifiedDomainTable}
       </TabPanel>
     </Card>
   );
