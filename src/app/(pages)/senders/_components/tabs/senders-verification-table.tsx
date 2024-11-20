@@ -6,9 +6,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { ReactNode, Suspense, useState } from 'react';
-import { Card, Skeleton } from '@mui/material';
-import { UnverifiedTable, VerifiedTable } from '../tables';
+import { ReactNode, useState } from 'react';
+import { Card } from '@mui/material';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,7 +28,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -61,7 +60,13 @@ export default function SendersVerificationTable({
   };
 
   return (
-    <Card sx={{ bgcolor: 'background.paper', minHeight: 700 }}>
+    <Card
+      sx={{
+        bgcolor: 'background.paper',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <AppBar position="static">
         <Tabs
           value={value}
@@ -75,6 +80,7 @@ export default function SendersVerificationTable({
           <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
         </Tabs>
       </AppBar>
+
       <TabPanel value={value} index={0} dir={theme.direction}>
         {verifiedTable}
       </TabPanel>

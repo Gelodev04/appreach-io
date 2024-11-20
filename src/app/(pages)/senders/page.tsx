@@ -1,14 +1,22 @@
-import { Container } from '@mui/material';
+import dynamic from 'next/dynamic';
+import { Container, Skeleton } from '@mui/material';
 
 import { getSenderProfiles } from 'src/services/db/user-settings';
 import AddressesHeader from './_components/addresses-header';
 import SenderUsed from './_components/sender-used';
 import SendersVerificationTable from './_components/tabs/senders-verification-table';
-import { UnverifiedTable, VerifiedTable } from './_components/tables';
 
 export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
 };
+
+const VerifiedTable = dynamic(() => import('./_components/tables/verified-table'), {
+  loading: () => <Skeleton height={600} />,
+});
+
+const UnverifiedTable = dynamic(() => import('./_components/tables/unverified-table'), {
+  loading: () => <Skeleton height={600} />,
+});
 
 const SendersAddressesPage = async () => {
   const senderProfiles = await getSenderProfiles();

@@ -17,13 +17,7 @@ const VerifiedTable = async ({ options }: TableOptions) => {
 
   if (!rows) throw new Error('Unable to get rows');
 
-  return (
-    <Suspense fallback={<Skeleton height={600} />}>
-      <Card>
-        <Table rows={rows} action="delete" options={options} />
-      </Card>
-    </Suspense>
-  );
+  return <Table rows={rows} action="delete" options={options} />;
 };
 
 export default VerifiedTable;

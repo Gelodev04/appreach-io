@@ -26,13 +26,7 @@ type UnverifiedTableType = {
 const UnverifiedTable = async ({ type, options }: UnverifiedTableType) => {
   const rows = await getUnverifiedSenders(type);
   if (!rows) throw new Error('Unable to get rows');
-  return (
-    <Suspense fallback={<Skeleton height={600} />}>
-      <Card>
-        <Table rows={rows} options={options} />
-      </Card>
-    </Suspense>
-  );
+  return <Table rows={rows} options={options} />;
 };
 
 export default UnverifiedTable;

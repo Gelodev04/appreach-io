@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
+import { Box, Button, Card, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
@@ -16,7 +16,6 @@ import { useState } from 'react';
 import Iconify from 'src/components/iconify';
 import EditDeleteAction from './edit-delete';
 import AssignedProfileDropdown from './assigned-profile-dd';
-import { TableOptions } from './verified-table';
 
 const Table = ({
   rows,
@@ -55,58 +54,67 @@ const Table = ({
   ];
 
   return (
-    <DataGrid
-      autoHeight
-      rows={rows}
-      columns={columns}
-      checkboxSelection
-      getRowHeight={() => 'auto'}
-      initialState={{
-        pagination: {
-          paginationModel: { pageSize: 10 },
-        },
-      }}
-      onRowSelectionModelChange={(newSelectionModel) => {
-        setSelectedRowIds(newSelectionModel);
-      }}
+    <Card
       sx={{
-        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
-          outline: 'none !important',
-        },
-        '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
-          outline: 'none !important',
-        },
+        height: { xs: 800, md: 2 },
+        flexGrow: { md: 1 },
+        display: { md: 'flex' },
+        flexDirection: { md: 'column' },
+        minHeight: '70vh',
       }}
-      slots={{
-        toolbar: () => (
-          <GridToolbarContainer>
-            <GridToolbarQuickFilter />
-
-            <Stack
-              spacing={1}
-              flexGrow={1}
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              {!!selectedRowIds.length && (
-                <Button
-                  size="small"
-                  color="error"
-                  startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-                >
-                  Delete ({selectedRowIds.length})
-                </Button>
-              )}
-              <GridToolbarColumnsButton />
-              <GridToolbarFilterButton />
-            </Stack>
-          </GridToolbarContainer>
-        ),
-        noRowsOverlay: () => <EmptyContent title="No Data" />,
-        noResultsOverlay: () => <EmptyContent title="No results found" />,
-      }}
-    />
+    >
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        getRowHeight={() => 'auto'}
+        disableRowSelectionOnClick
+        checkboxSelection
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 10 },
+          },
+        }}
+        onRowSelectionModelChange={(newSelectionModel) => {
+          setSelectedRowIds(newSelectionModel);
+        }}
+        sx={{
+          '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+        }}
+        slots={{
+          toolbar: () => (
+            <GridToolbarContainer>
+              <GridToolbarQuickFilter />
+              <Stack
+                spacing={1}
+                flexGrow={1}
+                direction="row"
+                alignItems="center"
+                justifyContent="flex-end"
+              >
+                {!!selectedRowIds.length && (
+                  <Button
+                    size="small"
+                    color="error"
+                    startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                  >
+                    Delete ({selectedRowIds.length})
+                  </Button>
+                )}
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+              </Stack>
+            </GridToolbarContainer>
+          ),
+          noRowsOverlay: () => <EmptyContent title="No Data" />,
+          noResultsOverlay: () => <EmptyContent title="No results found" />,
+        }}
+      />
+    </Card>
   );
 };
 

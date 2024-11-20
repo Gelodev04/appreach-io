@@ -87,6 +87,7 @@ export const createVerifiedEmails = async (email: string, hostId: string) => {
 };
 
 export const getVerifiedEmails = async () => {
+  console.log('has been called getVerifiedEmails');
   try {
     const { hosts } = await getUserSettings({ hosts: true });
     const listOfVerifiedEmails = await prisma.verifiedSenderEmails.findMany({
@@ -109,6 +110,7 @@ export const getVerifiedEmails = async () => {
 };
 
 export const getUnverifiedSenders = async (type: 'email' | 'domain') => {
+  console.log({ type }, 'has been called');
   try {
     const { hosts } = await getUserSettings({ hosts: true });
     if (type === 'email') {
