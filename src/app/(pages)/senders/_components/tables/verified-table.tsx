@@ -1,6 +1,3 @@
-import React, { Suspense } from 'react';
-import { Card, Skeleton } from '@mui/material';
-
 import { getVerifiedEmails } from 'src/services/db/verified-domains';
 
 import Table from './table';
