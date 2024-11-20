@@ -10,16 +10,22 @@ const EditDeleteAction = ({
   action?: 'delete' | 'edit' | 'both';
   id: string;
 }) => {
+  const handleVerify = () => {
+    // TODO:
+    /*
+          1. //make status to ready
+          2  //
+      */
+  };
+
   return (
     <Stack direction="row">
       {action !== 'delete' && (
         <Tooltip title="Edit" placement="top">
-          <Link href={`${paths.senders.email}/${id}`} color="GrayText">
-            <Button onClick={() => {}} sx={{ zIndex: 20 }}>
-              <Iconify icon="flowbite:edit-outline" />
-              <Typography>Verify</Typography>
-            </Button>
-          </Link>
+          <Button onClick={handleVerify} sx={{ zIndex: 20 }}>
+            <Iconify icon="flowbite:edit-outline" />
+            <Typography>Verify</Typography>
+          </Button>
         </Tooltip>
       )}
 

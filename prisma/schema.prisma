@@ -422,6 +422,7 @@ model unverifiedSenders {
   hostId    String               @unique @db.ObjectId
   value     String               @unique
   dateAdded DateTime             @default(now())
+  status    String
   type      UnverifiedSenderType
 }
 

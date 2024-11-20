@@ -46,6 +46,7 @@ export const createUnverifiedEmails = async (email: string, hostId: string) => {
         type: 'email',
         hostId,
         value: email,
+        status: 'ready',
       },
       select: {
         id: true,

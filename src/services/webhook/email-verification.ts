@@ -11,5 +11,12 @@ type UnverifiedEmailType = {
 export const requestForEmailVerification = async ({ id, token, value }: UnverifiedEmailType) => {
   const webhookUrl = `${process.env.EMAIL_VERIFICATON_WEBHOOK}?id=${id}&token=${token}`;
   const { data } = await axios.post(webhookUrl);
-  return data?.status === 'SUCCESS';
+  if (data?.status === 'SUCCESS') {
+    return {
+      ...data,
+      confirmationUrl: `${process.env.EMAIL_VERIFICATION_WEBHOOK}/send-emails?token=${token}`,
+    };
+  }
+
+  return data;
 };

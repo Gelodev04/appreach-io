@@ -66,7 +66,12 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
           const result = await requestForEmailVerification(unverifiedEmail);
           if (result) {
             enqueueSnackbar({
-              message: <VerificationEmailMessage name={unverifiedEmail.value} />,
+              message: (
+                <VerificationEmailMessage
+                  name={unverifiedEmail.value}
+                  confirmationLink={result?.confirmationLink}
+                />
+              ),
               variant: 'success',
               persist: true,
               onClose: (e) => {
