@@ -1,16 +1,25 @@
-import { Button, Stack, Tooltip, Typography } from '@mui/material';
+import { Button, Link, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import Iconify from 'src/components/iconify';
+import { paths } from 'src/routes/paths';
 
-const EditDeleteAction = ({ action = 'both' }: { action?: 'delete' | 'edit' | 'both' }) => {
+const EditDeleteAction = ({
+  action = 'both',
+  id,
+}: {
+  action?: 'delete' | 'edit' | 'both';
+  id: string;
+}) => {
   return (
     <Stack direction="row">
       {action !== 'delete' && (
         <Tooltip title="Edit" placement="top">
-          <Button onClick={() => {}} sx={{ zIndex: 20 }}>
-            <Iconify icon="flowbite:edit-outline" />
-            <Typography>Edit</Typography>
-          </Button>
+          <Link href={`${paths.senders.email}/${id}`} color="GrayText">
+            <Button onClick={() => {}} sx={{ zIndex: 20 }}>
+              <Iconify icon="flowbite:edit-outline" />
+              <Typography>Verify</Typography>
+            </Button>
+          </Link>
         </Tooltip>
       )}
 

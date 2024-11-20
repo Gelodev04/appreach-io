@@ -49,7 +49,7 @@ const Table = ({
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: () => <EditDeleteAction action={action} />,
+      renderCell: ({ id }) => <EditDeleteAction action={action} id={id as string} />,
     },
   ];
 
@@ -66,9 +66,9 @@ const Table = ({
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowHeight={() => 'auto'}
-        disableRowSelectionOnClick
         checkboxSelection
+        disableRowSelectionOnClick
+        getRowHeight={() => 'auto'}
         initialState={{
           pagination: {
             paginationModel: { pageSize: 10 },

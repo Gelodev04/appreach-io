@@ -67,7 +67,7 @@ export const getSenderProfiles = async () => {
     });
 
     return hosts.map((host) => ({
-      profile: host.hostCrypt,
+      profile: host.host,
       id: host.id,
     }));
   } catch (error) {

@@ -153,3 +153,21 @@ export const getUnverifiedSenders = async (type: 'email' | 'domain') => {
     return [];
   }
 };
+
+export const getUnverifiedSenderById = async (id: string) => {
+  try {
+    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        value: true,
+        hostId: true,
+      },
+    });
+    return unverifiedSender;
+  } catch (error) {
+    console.log('Unable to get verified emails.', error);
+    return null;
+  }
+};

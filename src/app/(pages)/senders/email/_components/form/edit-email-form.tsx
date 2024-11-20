@@ -1,19 +1,68 @@
 'use client';
 
-import { LoadingButton } from '@mui/lab';
-import { Box, Card, Stack, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import Grid from '@mui/material/Unstable_Grid2';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
+import * as Yup from 'yup';
+import { useTransition } from 'react';
+import { LoadingButton } from '@mui/lab';
+import {
+  createUnverifiedEmails,
+  createVerifiedEmails,
+  getVerifiedDomain,
+} from 'src/services/db/verified-domains';
+import { getEmailDomain } from 'src/utils';
+import { enqueueSnackbar } from 'notistack';
+import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import { useRouter } from 'next/navigation';
+import { paths } from 'src/routes/paths';
+import VerificationEmailMessage from '../verification-email-message';
 
-export default function EditSendersEmailForm() {
+type SenderProfilesType = {
+  profile: string;
+  id: string;
+};
+
+type CreateSendersEmailFormType = {
+  senderProfiles: SenderProfilesType[];
+  unverifiedSender: {
+    value: string;
+    hostId: string;
+  };
+};
+
+type FormData = Yup.InferType<typeof validationSchema>;
+
+// Define the validation schema
+export const validationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email format').required('Email is required'),
+  hostId: Yup.string().required('Profile is required'),
+});
+
+export default function EditSendersEmailForm({
+  senderProfiles,
+  unverifiedSender,
+}: CreateSendersEmailFormType) {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const methods = useForm({
-    defaultValues: {},
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: unverifiedSender.value,
+      hostId: unverifiedSender.hostId,
+    },
   });
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    console.log({ data });
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    try {
+      console.log({ data });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <FormProvider methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
       <Grid container alignItems="center" md={12}>
@@ -28,13 +77,13 @@ export default function EditSendersEmailForm() {
               }}
             >
               <RHFTextField name="email" label="Email Address" placeholder="Email Address" />
-
-              <RHFAutocomplete
-                name="profile"
-                label="Sender Profile"
-                placeholder="Sender Profile"
-                options={[]}
-              />
+              <RHFSelect name="hostId" label="Sender Profile" placeholder="Sender Profile">
+                {senderProfiles?.map((senderProfile) => (
+                  <MenuItem key={senderProfile.id} value={senderProfile.id}>
+                    {senderProfile.profile}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
             </Box>
           </Card>
         </Grid>
@@ -48,12 +97,13 @@ export default function EditSendersEmailForm() {
             </Typography>
             <LoadingButton
               type="submit"
-              variant="contained"
               color="primary"
-              loading={false}
+              variant="contained"
               sx={{ width: 200 }}
+              loading={isPending}
+              loadingPosition="start"
             >
-              Add sender address
+              {isPending ? ' Email Verification...' : ' Verify sender'}
             </LoadingButton>
           </Stack>
         </Grid>

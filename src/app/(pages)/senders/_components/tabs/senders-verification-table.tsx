@@ -86,7 +86,7 @@ export default function SendersVerificationTable({
         >
           <Tab label="Verified" {...a11yProps(0)} sx={{ fontSize: 16 }} />
           <Tab label="Unverified Emails" {...a11yProps(1)} sx={{ fontSize: 16 }} />
-          <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
+          <Tab label="Unverified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
         </Tabs>
       </AppBar>
 

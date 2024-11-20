@@ -32,7 +32,7 @@ type CreateSendersEmailFormType = {
 type FormData = Yup.InferType<typeof validationSchema>;
 
 // Define the validation schema
-const validationSchema = Yup.object().shape({
+export const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email format').required('Email is required'),
   hostId: Yup.string().required('Profile is required'),
 });
