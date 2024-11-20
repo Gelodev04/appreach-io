@@ -1,8 +1,5 @@
-import dynamic from 'next/dynamic';
-import { Container, Skeleton } from '@mui/material';
-
+import { Container } from '@mui/material';
 import { getSenderProfiles } from 'src/services/db/user-settings';
-import { Suspense } from 'react';
 import AddressesHeader from './_components/addresses-header';
 import SenderUsed from './_components/sender-used';
 import SendersVerificationTable from './_components/tabs/senders-verification-table';
