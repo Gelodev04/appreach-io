@@ -1,7 +1,11 @@
-import { Button, Link, Stack, Tooltip, Typography } from '@mui/material';
-import React from 'react';
+import { LoadingButton } from '@mui/lab';
+import { Button, Stack, Tooltip, Typography } from '@mui/material';
+import React, { useTransition } from 'react';
 import Iconify from 'src/components/iconify';
-import { paths } from 'src/routes/paths';
+import { updateUnverifiedEmails } from 'src/services/db/verified-domains';
+import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import { enqueueSnackbar } from 'notistack';
+import VerificationEmailMessage from '../../email/_components/verification-email-message';
 
 const EditDeleteAction = ({
   action = 'both',
@@ -10,22 +14,39 @@ const EditDeleteAction = ({
   action?: 'delete' | 'edit' | 'both';
   id: string;
 }) => {
+  const [isPending, startTransition] = useTransition();
   const handleVerify = () => {
-    // TODO:
-    /*
-          1. //make status to ready
-          2  //
-      */
+    startTransition(async () => {
+      const unverifiedEmail = await updateUnverifiedEmails(id);
+      const result = await requestForEmailVerification(unverifiedEmail);
+      if (result) {
+        enqueueSnackbar({
+          message: (
+            <VerificationEmailMessage
+              name={unverifiedEmail.value}
+              confirmationLink={result.confirmationUrl}
+            />
+          ),
+          variant: 'success',
+          persist: true,
+        });
+      }
+    });
   };
 
   return (
     <Stack direction="row">
       {action !== 'delete' && (
         <Tooltip title="Edit" placement="top">
-          <Button onClick={handleVerify} sx={{ zIndex: 20 }}>
+          <LoadingButton
+            variant="outlined"
+            sx={{ zIndex: 20 }}
+            loading={isPending}
+            onClick={handleVerify}
+          >
             <Iconify icon="flowbite:edit-outline" />
             <Typography>Verify</Typography>
-          </Button>
+          </LoadingButton>
         </Tooltip>
       )}
 

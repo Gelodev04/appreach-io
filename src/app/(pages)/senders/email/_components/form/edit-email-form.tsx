@@ -8,17 +8,7 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createUnverifiedEmails,
-  createVerifiedEmails,
-  getVerifiedDomain,
-} from 'src/services/db/verified-domains';
-import { getEmailDomain } from 'src/utils';
-import { enqueueSnackbar } from 'notistack';
-import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
-import { paths } from 'src/routes/paths';
-import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
   profile: string;

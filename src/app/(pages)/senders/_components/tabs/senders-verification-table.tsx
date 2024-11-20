@@ -4,38 +4,10 @@ import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { ReactNode, Suspense, useState } from 'react';
+import { useState } from 'react';
 import { Card, Skeleton } from '@mui/material';
 import dynamic from 'next/dynamic';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  dir?: string;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+import TabPanel from './tab-panel';
 
 function a11yProps(index: number) {
   return {
@@ -46,11 +18,12 @@ function a11yProps(index: number) {
 
 const UnverifiedTable = dynamic(() => import('../tables/unverified-table'), {
   loading: () => <Skeleton height={600} />,
+  ssr: true,
 });
 
 const VerifiedTable = dynamic(() => import('../tables/verified-table'), {
   loading: () => <Skeleton height={600} />,
-  ssr: false,
+  ssr: true,
 });
 
 export default function SendersVerificationTable({

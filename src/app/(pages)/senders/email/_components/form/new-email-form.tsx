@@ -69,7 +69,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               message: (
                 <VerificationEmailMessage
                   name={unverifiedEmail.value}
-                  confirmationLink={result?.confirmationLink}
+                  confirmationLink={result?.confirmationUrl}
                 />
               ),
               variant: 'success',

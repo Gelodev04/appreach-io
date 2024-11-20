@@ -172,3 +172,25 @@ export const getUnverifiedSenderById = async (id: string) => {
     return null;
   }
 };
+
+export const updateUnverifiedEmails = async (id: string) => {
+  try {
+    const upsertUnverifiedEmails = await prisma.unverifiedSenders.update({
+      where: {
+        id,
+      },
+      data: {
+        status: 'ready',
+      },
+      select: {
+        id: true,
+        token: true,
+        value: true,
+      },
+    });
+    return upsertUnverifiedEmails;
+  } catch (error) {
+    console.log('Error on creating unverified emails');
+    throw new Error('Error on create unverified emails', error);
+  }
+};
