@@ -2,6 +2,7 @@
 
 import { Alert, Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
@@ -9,9 +10,14 @@ import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { paths } from 'src/routes/paths';
-import { createCheckoutSession, redirectToCheckout } from 'src/utils/stripe';
 import { useSearchParams } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
+import type { SubscriptionData } from 'src/types/stripe';
+import {
+  createSubscriptionSession,
+  getSubscriptionData,
+  redirectToCheckout,
+} from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
 import { CheckoutElement } from '../checkout-element';
 
@@ -20,26 +26,51 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 export default function SubscriptionView() {
   const { enqueueSnackbar } = useSnackbar();
-  const { currentPlan, subscriptionLoading } = useCurrentSubscription();
+  const { subscription, subscriptionLoading } = useCurrentSubscription();
   const { data: session } = useSession();
-  const confirmCancel = useBoolean();
-
   const searchParams = useSearchParams();
   const trialExpired = searchParams.get('trial_expired');
+  const confirmCancel = useBoolean();
 
-  const handleCheckout = async (priceId: string) => {
+  const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
 
     try {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
-      const sessionId = await createCheckoutSession(priceId, email);
+      const sessionId = await createSubscriptionSession(email, priceId);
       await redirectToCheckout(sessionId);
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
     }
   };
+
+  // TODO: Delete
+  // const handleDowngrade = async () => {
+  //   try {
+  //     const url = endpoints.stripe.downgradeSubscription;
+  //     const body = JSON.stringify({
+  //       subscriptionId: subscription?.subscription_id,
+  //       newPriceId: STRIPE.subscriptions.starter.priceId,
+  //     });
+
+  //     const response = await fetch(url, { method: 'POST', body });
+  //     const responseData = await response.json();
+  //     if (!response.ok) throw new Error(responseData.message || 'Failed to downgrade subscription');
+
+  //     enqueueSnackbar(responseData?.message || 'Subscription downgraded successfully', {
+  //       variant: 'success',
+  //     });
+
+  //     // Reload the page to refresh subscription data
+  //     window.location.href = paths.checkout.root;
+  //   } catch (err) {
+  //     enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+  //   } finally {
+  //     confirmSubscription.onFalse();
+  //   }
+  // };
 
   const handleCancel = async () => {
     try {
@@ -62,12 +93,61 @@ export default function SubscriptionView() {
     }
   };
 
-  const getStarterLabel = () => {
-    if (!currentPlan) return 'Upgrade';
-    if (currentPlan.product === STRIPE.subscriptions.starter.product) return 'Cancel plan';
-    if (currentPlan.product === STRIPE.subscriptions.established.product) return 'Downgrade';
+  const handlePlanSelection = (plan: SubscriptionData) => {
+    const isCurrent = subscription?.lookup_key === plan.key;
+
+    // Set next plan data for upgrade/downgrade confirmation dialog
+    // const nextSubscriptionData = getSubscriptionData(plan.priceId);
+    // if (nextSubscriptionData) setNextPlan(nextSubscriptionData);
+
+    // Handle upgrade if user has a canceled subscription
+    if (subscription?.status === 'canceled') return handleSubscribe(plan.priceId);
+
+    // Handle current plan actions
+    if (isCurrent) return confirmCancel.onTrue();
+
+    // Handle plan switching
+    if (subscription) return handleSubscribe(plan.priceId);
+
+    // Default case - upgrade to higher plan
+    return handleSubscribe(plan.priceId);
+  };
+
+  const getSubmitTitle = (planKey: string) => {
+    if (!subscription) return 'Upgrade';
+
+    const isCanceled = subscription?.status === 'canceled';
+    if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
+
+    const currentPlanData = getSubscriptionData(subscription.price_id);
+    const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
+
+    if (currentPlanData && nextPlanData) {
+      return nextPlanData.order < currentPlanData.order ? 'Downgrade' : 'Upgrade';
+    }
 
     return 'Upgrade';
+  };
+
+  const getSubmitSubtitle = (planKey: string) => {
+    const isCurrent = planKey === subscription?.lookup_key;
+    if (!isCurrent) return;
+
+    if (subscription?.status === 'canceled') {
+      const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
+      return `Plan will cancel on ${formattedEndDate}`;
+    }
+
+    return 'This is your current plan';
+  };
+
+  const getSubmitVariant = (planKey: string): 'purchase' | 'cancel' => {
+    const isCanceled = subscription?.status === 'canceled';
+    const isCurrent = subscription?.lookup_key === planKey;
+
+    if (!isCurrent) return 'purchase';
+    if (isCurrent && !isCanceled) return 'cancel';
+    return 'purchase';
   };
 
   const renderHead = (
@@ -90,26 +170,23 @@ export default function SubscriptionView() {
       <CheckoutElement
         title="Starter"
         subtitle="100 Seed Accounts"
-        onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleCheckout(STRIPE.subscriptions.starter.price)}
-        price="$150"
+        onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
+        price={STRIPE.subscriptions.starter.price}
         features={[
           'Send up to 100 emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
-        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.starter.product}
-        SubmitProps={{
-          children: getStarterLabel(),
-        }}
+        submitTitle={getSubmitTitle(STRIPE.subscriptions.starter.key)}
+        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.starter.key)}
+        variant={getSubmitVariant(STRIPE.subscriptions.starter.key)}
       />
       <CheckoutElement
         title="Established"
         subtitle="500 Seed Accounts*"
-        onCancel={confirmCancel.onTrue}
-        onPurchase={() => handleCheckout(STRIPE.subscriptions.established.price)}
-        price="$650"
+        onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
+        price={STRIPE.subscriptions.established.price}
         features={[
           'Send up to 500 emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
@@ -117,7 +194,9 @@ export default function SubscriptionView() {
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
-        isCurrentPlan={currentPlan?.product === STRIPE.subscriptions.established.product}
+        submitTitle={getSubmitTitle(STRIPE.subscriptions.established.key)}
+        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.established.key)}
+        variant={getSubmitVariant(STRIPE.subscriptions.established.key)}
       />
       <CheckoutElement
         title="Managed Service"
@@ -128,11 +207,8 @@ export default function SubscriptionView() {
           'Think of us as part of your team',
           '1-on-1 zoom calls',
         ]}
-        SubmitProps={{
-          children: 'Contact Us',
-          variant: 'outlined',
-          color: 'inherit',
-        }}
+        submitTitle="Contact Us"
+        variant="neutral"
       />
     </Box>
   );
@@ -147,7 +223,7 @@ export default function SubscriptionView() {
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ height: '100vh' }}>
+      <Container maxWidth="lg" sx={{ height: '100%' }}>
         {trialExpired && renderWarning}
         <Stack
           alignItems="center"
@@ -180,6 +256,14 @@ export default function SubscriptionView() {
           </>
         }
       />
+
+      {/* <UpgradeDowngradeConfirmDialog
+        open={confirmSubscription.value}
+        onClose={confirmSubscription.onFalse}
+        onConfirm={nextActionType === 'downgrade' ? handleDowngrade : undefined}
+        nextPlan={nextPlan}
+        type={nextActionType}
+      /> */}
     </>
   );
 }

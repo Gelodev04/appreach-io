@@ -9,9 +9,7 @@ import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 
 export default function SubscriptionSuccessView() {
-  // const searchParams = useSearchParams();
-  // const sessionId = searchParams.get('session_id') as string;
-  const { currentPlan, subscriptionLoading, subscriptionError } = useCurrentSubscription();
+  const { subscriptionLoading, subscriptionError } = useCurrentSubscription();
 
   if (subscriptionLoading) return <LoadingScreen />;
 
@@ -29,12 +27,12 @@ export default function SubscriptionSuccessView() {
         Payment succeeded!
       </Typography>
 
-      {currentPlan && (
-        <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
-          <AlertTitle>Thank you for your purchase</AlertTitle>
-          Your current plan is the <strong>{currentPlan.name}</strong> plan.
-        </Alert>
-      )}
+      <Alert severity="success" sx={{ textAlign: 'start', width: '100%' }}>
+        <AlertTitle>Thank you for your purchase</AlertTitle>
+        If your new plan does not take affect in the next 2 minutes, please contact support via
+        chat.
+      </Alert>
+
       <Button
         component={RouterLink}
         href={paths.dashboard.root}
