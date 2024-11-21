@@ -4,10 +4,9 @@ import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { ReactNode, Suspense, useState } from 'react';
-import { Card, Skeleton } from '@mui/material';
+import { ReactNode, useState } from 'react';
+import { Card } from '@mui/material';
 import TabPanel from './tab-panel';
-import { UnverifiedTable, VerifiedTable } from '../tables';
 
 function a11yProps(index: number) {
   return {

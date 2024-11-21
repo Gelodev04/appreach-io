@@ -10,9 +10,13 @@ export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
 };
 
+const wait = () => {
+  return new Promise((resolve) => setTimeout(resolve, 3000));
+};
+
 const SendersAddressesPage = async () => {
   const senderProfiles = await getSenderProfiles();
-
+  await wait();
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       <AddressesHeader />
