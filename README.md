@@ -41,3 +41,10 @@
 `STRIPE_SECRET_KEY=""`
 
 > The secret key for Stripe, used on the server side to process payments securely.
+
+
+`EMAIL_VERIFICATON_WEBHOOK=`
+> Api endpoint for requesting email verification
+
+`INVOKER_TOKEN=""`
+> Token for the confirmation link after email verification
