@@ -16,7 +16,7 @@ export default function VerificationEmailMessage({
       sx={{ textWrap: 'balance', fontWeight: 600, padding: 2 }}
     >
       A verification email has been sent to {name}, click the confirmation link to verify it.{' '}
-      <Link href={confirmationLink} sx={{ cursor: 'pointer' }}>
+      <Link href={confirmationLink} sx={{ cursor: 'pointer' }} rel="noopener" target="_blank">
         Verify your email.
       </Link>
     </Typography>

@@ -4,10 +4,10 @@ import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { useState } from 'react';
+import { ReactNode, Suspense, useState } from 'react';
 import { Card, Skeleton } from '@mui/material';
-import dynamic from 'next/dynamic';
 import TabPanel from './tab-panel';
+import { UnverifiedTable, VerifiedTable } from '../tables';
 
 function a11yProps(index: number) {
   return {
@@ -16,23 +16,14 @@ function a11yProps(index: number) {
   };
 }
 
-const UnverifiedTable = dynamic(() => import('../tables/unverified-table'), {
-  loading: () => <Skeleton height={600} />,
-  ssr: true,
-});
-
-const VerifiedTable = dynamic(() => import('../tables/verified-table'), {
-  loading: () => <Skeleton height={600} />,
-  ssr: true,
-});
-
 export default function SendersVerificationTable({
-  options,
+  verified,
+  unverifiedEmails,
+  unverifiedDomains,
 }: {
-  options: {
-    profile: string;
-    id: string;
-  }[];
+  verified: ReactNode;
+  unverifiedEmails: ReactNode;
+  unverifiedDomains: ReactNode;
 }) {
   const theme = useTheme();
   const [value, setValue] = useState(0);
@@ -64,15 +55,15 @@ export default function SendersVerificationTable({
       </AppBar>
 
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <VerifiedTable options={options} />
+        {verified}
       </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <UnverifiedTable type="email" options={options} />
+        {unverifiedEmails}
       </TabPanel>
 
       <TabPanel value={value} index={2} dir={theme.direction}>
-        <UnverifiedTable type="domain" options={options} />
+        {unverifiedDomains}
       </TabPanel>
     </Card>
   );
