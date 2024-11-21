@@ -1,7 +1,6 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridRenderCellParams, GridTreeNodeWithRender } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
-import { getSenderProfiles } from 'src/services/db/user-settings';
+import React, { useState } from 'react';
 
 type AssignedProfileDropdownTypes = {
   params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>;
