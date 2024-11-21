@@ -32,20 +32,24 @@ export const getVerifiedDomain = async (
   }
 };
 
-export const createUnverifiedEmails = async (email: string, hostId: string) => {
+export const createUnverifiedSenders = async (
+  value: string,
+  hostId: string,
+  type: 'email' | 'domain'
+) => {
   try {
     const token = randomUUID();
-    const upsertUnverifiedEmails = await prisma.unverifiedSenders.upsert({
+    const upsertUnverifiedSenders = await prisma.unverifiedSenders.upsert({
       where: {
-        value: email,
+        value,
         hostId,
       },
       update: {},
       create: {
         token,
-        type: 'email',
+        type,
         hostId,
-        value: email,
+        value,
         status: 'ready',
       },
       select: {
@@ -54,10 +58,10 @@ export const createUnverifiedEmails = async (email: string, hostId: string) => {
         value: true,
       },
     });
-    return upsertUnverifiedEmails;
+    return upsertUnverifiedSenders;
   } catch (error) {
-    console.log('Error on creating unverified emails');
-    throw new Error('Error on create unverified emails', error);
+    console.log('Error on creating unverified senders');
+    throw new Error('Error on create unverified senders', error);
   }
 };
 

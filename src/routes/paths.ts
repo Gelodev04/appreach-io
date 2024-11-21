@@ -76,5 +76,7 @@ export const paths = {
   senders: {
     root: '/senders',
     email: '/senders/email',
+    domain: '/senders/domain',
+    verified: '/senders?table=verified',
   },
 };
