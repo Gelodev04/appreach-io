@@ -6,6 +6,7 @@ import { sendEmail } from 'src/auth/lib/sendgrid';
 import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 import moment from 'moment-timezone';
+import { headers } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
@@ -144,11 +145,11 @@ export async function POST(request: Request) {
     await db.collection('userSettings').updateOne({ _id: userId }, { $set: { hosts: [hostId] } });
 
     // Get the current host from the request headers
-    const host = request.headers.get('host');
+    const host = headers().get('host');
     if (!host) throw new Error('Unable to determine the host domain');
 
     // Construct the reset password link using the current host
-    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const protocol = headers().get('x-forwarded-proto') || 'http';
     const url = paths.auth.verifyAccount(userId, verificationToken);
     const resetPasswordLink = `${protocol}://${host}${url}`;
 

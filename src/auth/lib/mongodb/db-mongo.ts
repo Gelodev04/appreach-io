@@ -8,7 +8,6 @@ if (!MONGODB_URI) {
 
 const uri = MONGODB_URI;
 const options = {
-  useUnifiedTopology: false,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,

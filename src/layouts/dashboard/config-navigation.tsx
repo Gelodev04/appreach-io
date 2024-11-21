@@ -14,14 +14,14 @@ export function useNavData() {
             icon: <Iconify icon="codicon:graph" />,
           },
           {
-            title: 'Sender Profiles',
-            path: paths.settings.root,
-            icon: <Iconify icon="bx:server" />,
-          },
-          {
             title: 'Sender Addresses',
             path: paths.senders.root,
             icon: <Iconify icon="hugeicons:address-book" />,
+          },
+          {
+            title: 'Sender Profiles',
+            path: paths.settings.root,
+            icon: <Iconify icon="bx:server" />,
           },
           {
             title: 'Seeds',

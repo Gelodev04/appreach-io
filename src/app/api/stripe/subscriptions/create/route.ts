@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { paths } from 'src/routes/paths';
 import Stripe from 'stripe';
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    const baseUrl = request.headers.get('origin');
+    const baseUrl = headers().get('origin');
 
     // Prepare the session parameters, ensuring proration is not applied and the subscription starts one month from now
     const sessionParams: Stripe.Checkout.SessionCreateParams = {

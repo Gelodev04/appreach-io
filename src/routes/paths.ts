@@ -75,5 +75,6 @@ export const paths = {
 
   senders: {
     root: '/senders',
+    email: '/senders/email',
   },
 };

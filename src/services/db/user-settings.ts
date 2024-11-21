@@ -1,3 +1,5 @@
+'use server';
+
 import { Prisma } from '@prisma/client';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
@@ -49,5 +51,27 @@ export const updateUserSettings = async (
   } catch (error) {
     console.error('Error updating user settings:', error);
     throw new Error('Error updating user settings.');
+  }
+};
+export const getSenderProfiles = async () => {
+  try {
+    const { hosts: hostsIds } = await getUserSettings({ hosts: true });
+    if (!hostsIds?.length) return [];
+
+    const hosts = await prisma.hosts.findMany({
+      where: {
+        id: {
+          in: hostsIds,
+        },
+      },
+    });
+
+    return hosts.map((host) => ({
+      profile: host.host,
+      id: host.id,
+    }));
+  } catch (error) {
+    console.log('Error unable to get the sender profiles', error);
+    return [];
   }
 };

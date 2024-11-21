@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
+import { headers } from 'next/headers';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { sendEmail } from 'src/auth/lib/sendgrid';
 import { paths } from 'src/routes/paths';
@@ -34,11 +35,11 @@ export async function POST(request: Request) {
     );
 
     // Get the current host from the request headers
-    const host = request.headers.get('host');
+    const host = headers().get('host');
     if (!host) throw new Error('Unable to determine the host domain');
 
     // Construct the reset password link using the current host
-    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const protocol = headers().get('x-forwarded-proto') || 'http';
     const url = paths.auth.resetPassword(user._id, resetPasswordToken);
     const resetPasswordLink = `${protocol}://${host}${url}`;
 
