@@ -18,7 +18,7 @@ import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
-import VerificationEmailMessage from '../verification-email-message';
+import VerificationEmailMessage from '../../../email/_components/verification-email-message';
 
 type SenderProfilesType = {
   profile: string;
@@ -33,17 +33,22 @@ type FormData = Yup.InferType<typeof validationSchema>;
 
 // Define the validation schema
 export const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email format').required('Email is required'),
+  domain: Yup.string()
+    .required('Domain is required')
+    .matches(
+      /^(?!.*\.\.)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+      'Domain must be a valid format with a dot'
+    ),
   hostId: Yup.string().required('Profile is required'),
 });
 
-export default function CreateSendersEmailForm({ senderProfiles }: CreateSendersEmailFormType) {
+export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailFormType) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: '',
+      domain: '',
       hostId: '',
     },
   });
@@ -51,7 +56,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        const inputEmailDomain = getEmailDomain(data.email);
+        const inputEmailDomain = getEmailDomain(data.domain);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         if (!inputEmailDomain) {
           enqueueSnackbar('Domain not found.', { variant: 'error' });
@@ -62,7 +67,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         });
 
         if (!domain) {
-          const unverifiedEmail = await createUnverifiedSenders(data.email, data.hostId, 'email');
+          const unverifiedEmail = await createUnverifiedSenders(data.domain, data.hostId, 'domain');
           const result = await requestForEmailVerification(unverifiedEmail);
           if (result) {
             enqueueSnackbar({
@@ -82,7 +87,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             });
           }
         } else {
-          const newVerifiedEmail = await createVerifiedEmails(data.email, data.hostId);
+          const newVerifiedEmail = await createVerifiedEmails(data.domain, data.hostId);
           if (newVerifiedEmail.id) {
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
@@ -111,7 +116,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
                 md: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="email" label="Email Address" placeholder="Email Address" />
+              <RHFTextField name="domain" label="Domain Name" placeholder="Domain Name" />
               <RHFSelect name="hostId" label="Sender Profile" placeholder="Sender Profile">
                 {senderProfiles?.map((senderProfile) => (
                   <MenuItem key={senderProfile.id} value={senderProfile.id}>
@@ -125,10 +130,10 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         <Grid xs={12} md={4}>
           <Stack padding={3}>
             <Typography variant="h6" sx={{ mb: 0.5 }}>
-              Verify a new sender email
+              Verify a new domain name
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              Enter the address you will be sending emails from.
+              Enter the domain name you will be sending emails from.
             </Typography>
             <LoadingButton
               type="submit"
@@ -138,7 +143,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               loading={isPending}
               loadingPosition="start"
             >
-              {isPending ? ' Email Verification...' : ' Add sender address'}
+              {isPending ? ' Email Verification...' : ' Add sender domain'}
             </LoadingButton>
           </Stack>
         </Grid>
