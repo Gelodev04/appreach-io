@@ -17,19 +17,19 @@ const SendersAddressesPage = async () => {
       <AddressesHeader />
       <SenderUsed />
       <SendersVerificationTable
-        verified={
-          <Suspense fallback={<Skeleton height={500} />}>
-            <VerifiedTable options={senderProfiles} />
+        verifiedEmails={
+          <Suspense fallback={<Skeleton height={650} />}>
+            <VerifiedTable type="email" options={senderProfiles} />
           </Suspense>
         }
-        unverifiedEmails={
-          <Suspense fallback={<Skeleton height={500} />}>
-            <UnverifiedTable type="email" options={senderProfiles} />
+        unverifiedSenders={
+          <Suspense fallback={<Skeleton height={650} />}>
+            <UnverifiedTable options={senderProfiles} />
           </Suspense>
         }
-        unverifiedDomains={
-          <Suspense fallback={<Skeleton height={500} />}>
-            <UnverifiedTable type="domain" options={senderProfiles} />
+        verifiedDomains={
+          <Suspense fallback={<Skeleton height={650} />}>
+            <VerifiedTable type="domain" options={senderProfiles} />
           </Suspense>
         }
       />

@@ -7,10 +7,11 @@ export type TableOptions = {
     profile: string;
     id: string;
   }[];
+  type: 'email' | 'domain';
 };
 
-const VerifiedTable = async ({ options }: TableOptions) => {
-  const rows = await getVerifiedEmails();
+const VerifiedTable = async ({ type, options }: TableOptions) => {
+  const rows = await getVerifiedEmails(type);
 
   if (!rows) throw new Error('Unable to get rows');
 

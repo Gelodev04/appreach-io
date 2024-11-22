@@ -1,7 +1,6 @@
 import { getUnverifiedSenders } from 'src/services/db/verified-domains';
 import Table from './table';
 
-type UnverifiedType = 'email' | 'domain';
 const mockRows = [
   { id: 1, name: 'oms.dennisa@gmail.com', assignedProfile: 'profile_ghi' },
   { id: 2, name: 'oms.dennisb@gmail.com', assignedProfile: 'profile_abc' },
@@ -14,16 +13,17 @@ export const getSendersAddresses = () => {
 };
 
 type UnverifiedTableType = {
-  type: UnverifiedType;
   options: {
     profile: string;
     id: string;
   }[];
 };
 
-const UnverifiedTable = async ({ type, options }: UnverifiedTableType) => {
-  const rows = await getUnverifiedSenders(type);
+const UnverifiedTable = async ({ options }: UnverifiedTableType) => {
+  const rows = await getUnverifiedSenders();
+
   if (!rows) throw new Error('Unable to get rows');
+
   return <Table rows={rows} options={options} />;
 };
 

@@ -66,18 +66,13 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
           const result = await requestForEmailVerification(unverifiedEmail);
           if (result) {
             enqueueSnackbar({
-              message: (
-                <VerificationEmailMessage
-                  name={unverifiedEmail.value}
-                  confirmationLink={result?.confirmationUrl}
-                />
-              ),
+              message: <VerificationEmailMessage name={unverifiedEmail.value} />,
               variant: 'success',
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(paths.senders.root);
+                router.push(`${paths.senders.root}?tableIndex=0`);
               },
             });
           }
