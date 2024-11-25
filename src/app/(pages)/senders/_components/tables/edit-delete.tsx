@@ -17,7 +17,7 @@ const EditDeleteAction = ({
   const [isPending, startTransition] = useTransition();
   const handleVerify = () => {
     startTransition(async () => {
-      const unverifiedEmail = await updateUnverifiedEmails(id);
+      const unverifiedEmail = await updateUnverifiedEmails(id); // update unverified email status to "ready"
       const result = await requestForEmailVerification(unverifiedEmail);
       if (result) {
         enqueueSnackbar({

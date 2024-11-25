@@ -8,14 +8,15 @@ export type TableOptions = {
     id: string;
   }[];
   type: 'email' | 'domain';
+  action?: 'delete' | 'edit' | 'both';
 };
 
-const VerifiedTable = async ({ type, options }: TableOptions) => {
+const VerifiedTable = async ({ type, options, action }: TableOptions) => {
   const rows = await getVerifiedEmails(type);
 
   if (!rows) throw new Error('Unable to get rows');
 
-  return <Table rows={rows} action="delete" options={options} />;
+  return <Table rows={rows} action={action} options={options} />;
 };
 
 export default VerifiedTable;

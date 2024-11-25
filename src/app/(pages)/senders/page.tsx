@@ -19,7 +19,7 @@ const SendersAddressesPage = async () => {
       <SendersVerificationTable
         verifiedEmails={
           <Suspense fallback={<Skeleton height={650} />}>
-            <VerifiedTable type="email" options={senderProfiles} />
+            <VerifiedTable type="email" action="delete" options={senderProfiles} />
           </Suspense>
         }
         unverifiedSenders={
