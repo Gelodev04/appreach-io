@@ -192,6 +192,8 @@ export const updateUnverifiedEmails = async (id: string) => {
         id: true,
         token: true,
         value: true,
+        textRecord: true,
+        type: true,
       },
     });
     return upsertUnverifiedEmails;
