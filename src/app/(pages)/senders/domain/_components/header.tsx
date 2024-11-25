@@ -12,7 +12,7 @@ function DomainHeader() {
           name: 'Domain Name',
           href: paths.senders.root,
         },
-        { name: 'verify new domain' },
+        { name: 'Verify new domain' },
       ]}
       sx={{
         mb: { xs: 3, md: 5 },

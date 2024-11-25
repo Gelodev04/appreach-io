@@ -8,17 +8,12 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createUnverifiedSenders,
-  createVerifiedEmails,
-  getVerifiedDomain,
-} from 'src/services/db/verified-domains';
-import { getEmailDomain } from 'src/utils';
+import { createUnverifiedSenders, getVerifiedDomain } from 'src/services/db/verified-domains';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
-import VerificationEmailMessage from '../../../email/_components/verification-email-message';
+import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
   profile: string;
@@ -56,33 +51,39 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        const inputEmailDomain = getEmailDomain(data.domain);
+        // const inputEmailDomain = getEmailDomain(data.domain);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
-        if (!inputEmailDomain) {
+        /*  if (!inputEmailDomain) {
           enqueueSnackbar('Domain not found.', { variant: 'error' });
-        }
+        } */
         const domain = await getVerifiedDomain({
-          domain: inputEmailDomain,
+          domain: data.domain,
           hostId: { in: userHostIds },
         });
 
         if (!domain) {
-          const unverifiedEmail = await createUnverifiedSenders(data.domain, data.hostId, 'domain');
-          const result = await requestForEmailVerification(unverifiedEmail);
+          const unverifiedDomain = await createUnverifiedSenders(
+            data.domain,
+            data.hostId,
+            'domain'
+          );
+          const result = await requestForEmailVerification(unverifiedDomain);
           if (result) {
             enqueueSnackbar({
-              message: <VerificationEmailMessage name={unverifiedEmail.value} />,
+              message: <VerificationEmailMessage />,
               variant: 'success',
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(paths.senders.root);
+                router.push(`${paths.senders.root}?tableIndex=1`);
               },
             });
           }
-        } else {
-          const newVerifiedEmail = await createVerifiedEmails(data.domain, data.hostId);
+        }
+        // TODO: Confirm to Spencer if domain found do we need to directly create in verifiedDomain?
+        /*  else {
+          const newVerifiedEmail = await createVerifiedDomains(data.domain, data.hostId);
           if (newVerifiedEmail.id) {
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
@@ -91,7 +92,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               },
             });
           }
-        }
+        } */
       });
     } catch (error) {
       console.log(error);

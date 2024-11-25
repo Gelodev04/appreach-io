@@ -82,7 +82,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
               onClose: () => {
-                router.push(paths.senders.root);
+                router.push(`${paths.senders.root}?tableIndex=1`);
               },
             });
           }

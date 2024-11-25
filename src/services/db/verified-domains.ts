@@ -46,7 +46,8 @@ export const createUnverifiedSenders = async (
       },
       update: {},
       create: {
-        token,
+        token: type === 'email' ? token : '',
+        textRecord: type === 'domain' ? token : '',
         type,
         hostId,
         value,
@@ -56,6 +57,8 @@ export const createUnverifiedSenders = async (
         id: true,
         token: true,
         value: true,
+        textRecord: true,
+        type: true,
       },
     });
     return upsertUnverifiedSenders;
