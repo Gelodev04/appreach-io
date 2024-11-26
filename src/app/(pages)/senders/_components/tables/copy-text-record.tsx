@@ -22,7 +22,7 @@ export function CopyTextRecord({ textRecord }: { textRecord: string }) {
           {textRecord}
         </Typography>
       </Tooltip>
-      <Tooltip title="Copy token" placement="top">
+      <Tooltip title="Copy Text Record" placement="top">
         <IconButton onClick={handleCopy} sx={{ zIndex: 20 }}>
           <Iconify icon="uil:copy" />
         </IconButton>
