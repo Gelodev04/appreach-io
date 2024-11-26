@@ -8,7 +8,6 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    console.log({ env });
     const userSettings = await getUser();
 
     const userHosts = userSettings?.hosts || [];
