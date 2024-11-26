@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     const client = await clientPromise;
-    const db = client.db(env.MONGODB_URI);
+    const db = client.db(env.MONGODB_URI as string);
 
     const { email } = data;
     if (!email) throw new Error('Email is required');

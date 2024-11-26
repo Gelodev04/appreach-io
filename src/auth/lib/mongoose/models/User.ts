@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { env } from 'src/data/env/server';
 
-mongoose.connect(env.MONGODB_URI);
+mongoose.connect(env.MONGODB_URI as string);
 mongoose.Promise = global.Promise;
 
 const appLoginSchema = new mongoose.Schema({

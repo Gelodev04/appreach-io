@@ -11,7 +11,7 @@ export function generateRandomChars(): string {
 }
 
 export function generateHostCrypt(host: string): string {
-  const secretKey = env.HOST_CRYPT_SECRET;
+  const secretKey = env.HOST_CRYPT_SECRET as string;
   const hash = crypto.createHash('sha1');
   hash.update(secretKey + host);
   const longHash = hash.digest();

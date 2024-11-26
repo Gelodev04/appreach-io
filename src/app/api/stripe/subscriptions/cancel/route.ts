@@ -4,7 +4,7 @@ import { env } from 'src/data/env/server';
 import { getActiveSubscription } from 'src/sections/subscription/utils/get-active-subscription';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+const stripe = new Stripe(env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2024-06-20',
 });
 
