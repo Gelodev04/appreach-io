@@ -34,21 +34,21 @@ const EditDeleteAction = ({
       {action !== 'delete' && (
         <Tooltip title="Verify" placement="top">
           <LoadingButton
-            variant="outlined"
-            sx={{ zIndex: 20 }}
+            variant="soft"
+            sx={{ zIndex: 20, padding: 1 }}
             loading={isPending}
             onClick={handleVerify}
           >
-            <Iconify icon="flowbite:edit-outline" />
-            <Typography>Verify</Typography>
+            <Iconify icon="flowbite:edit-outline" width={16} />
+            <Typography fontSize={14}>Verify</Typography>
           </LoadingButton>
         </Tooltip>
       )}
 
       <Tooltip title="Delete" placement="top">
         <Button onClick={() => {}} sx={{ zIndex: 20, color: 'error.main' }}>
-          <Iconify icon="ph:trash-bold" />
-          <Typography>Delete</Typography>
+          <Iconify icon="ph:trash-bold" width={16} />
+          <Typography fontSize={14}>Delete</Typography>
         </Button>
       </Tooltip>
     </Stack>
