@@ -32,7 +32,7 @@ const EditDeleteAction = ({
   return (
     <Stack direction="row">
       {action !== 'delete' && (
-        <Tooltip title="Edit" placement="top">
+        <Tooltip title="Verify" placement="top">
           <LoadingButton
             variant="outlined"
             sx={{ zIndex: 20 }}
