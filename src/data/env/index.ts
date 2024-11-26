@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 const envSchema = Yup.object().shape({
   // Server-only variables
   MONGODB_URI: Yup.string().url().required(),
-  NODE_ENV: Yup.mixed().oneOf(['development', 'production', 'test']).required(),
   NEXTAUTH_SECRET: Yup.string().required(),
   EMAIL_VERIFICATON_WEBHOOK: Yup.string().required(),
   INVOKER_TOKEN: Yup.string().required(),
@@ -13,13 +12,13 @@ const envSchema = Yup.object().shape({
   HOST_CRYPT_SECRET: Yup.string().required(),
 
   // Client-exposed variables (must start with NEXT_PUBLIC_)
-  NEXT_PUBLIC_LIVE_LOOKER_URL: Yup.string().url().required(),
-  NEXT_PUBLIC_SAMPLE_LOOKER_URL: Yup.string().url().required(),
+  NEXT_PUBLIC_LIVE_LOOKER_URL: Yup.string().required(),
+  NEXT_PUBLIC_SAMPLE_LOOKER_URL: Yup.string().required(),
   NEXT_PUBLIC_SALESMATE_WORKSPACE_ID: Yup.string().required(),
   NEXT_PUBLIC_SALESMATE_APP_KEY: Yup.string().required(),
   NEXT_PUBLIC_SALESMATE_TENANT_ID: Yup.string().required(),
   NEXT_PUBLIC_ASSETS_API: Yup.string().required(),
-  NEXT_PUBLIC_HOST_API: Yup.string().required(),
+  NEXT_PUBLIC_HOST_API: Yup.string().required(), // TODO: This is not currently used.
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: Yup.string().required(),
 });
 
