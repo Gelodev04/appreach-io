@@ -9,7 +9,7 @@ const envSchema = Yup.object().shape({
   NEXT_PUBLIC_SALESMATE_TENANT_ID: Yup.string().required(),
   NEXT_PUBLIC_ASSETS_API: Yup.string(), // TODO: Is still being used?. Not found in vercel
   NEXT_PUBLIC_HOST_API: Yup.string(), // TODO: This is not currently used. Not found in vercel
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: Yup.string(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: Yup.string().required(),
 });
 
 const parsedEnv = envSchema.validateSync(

@@ -9,7 +9,7 @@ import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
 import { fCurrency } from 'src/utils/format-number';
 import { createCheckoutSession, getSubscriptionData, redirectToCheckout } from 'src/utils/stripe';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/client';
 import { calcProrationAmount } from './utils/calc-proration-amount';
 
 type Props = {

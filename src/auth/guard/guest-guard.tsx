@@ -4,7 +4,7 @@ import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
 import Script from 'next/script';
 import { useCheckUserPlan } from 'src/hooks/api/plan';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/client';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------

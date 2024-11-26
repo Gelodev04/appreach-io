@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
