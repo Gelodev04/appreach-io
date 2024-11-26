@@ -1,6 +1,7 @@
 import { GridColDef } from '@mui/x-data-grid';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 import EditDeleteAction from '../tables/edit-delete';
+import { CopyTextRecord } from '../tables/copy-text-record';
 
 type TableColumnsType = {
   type: 'unverified' | 'verified';
@@ -41,6 +42,7 @@ export const useTableColumns = ({ action, options, type }: TableColumnsType) => 
       headerName: 'TXT Record',
       headerAlign: 'center',
       align: 'center',
+      renderCell: ({ value }) => (value ? <CopyTextRecord textRecord={value} /> : ''),
     });
   }
 
