@@ -51,11 +51,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        // const inputEmailDomain = getEmailDomain(data.domain);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
-        /*  if (!inputEmailDomain) {
-          enqueueSnackbar('Domain not found.', { variant: 'error' });
-        } */
         const domain = await getVerifiedDomain({
           domain: data.domain,
           hostId: { in: userHostIds },
