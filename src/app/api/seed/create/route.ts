@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       token: generateRandomChars(),
     });
 
-    await axios.post(env.SEED_EMAIL_GENERATOR);
+    await axios.post(env.SEED_EMAIL_GENERATOR as string);
 
     return Response.json({ message: 'Seed batch created successfully' });
   } catch (error) {
