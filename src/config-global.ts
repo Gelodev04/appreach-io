@@ -1,15 +1,13 @@
 import { paths } from 'src/routes/paths';
-import { env } from './data/env';
-
+import { env as envClient } from './data/env/client';
+import { env as envServer } from './data/env/server';
 // API
 // --------------------------------------------------------------------
 
-export const {
-  MONGODB_URI,
-  NEXT_PUBLIC_HOST_API: HOST_API,
-  NEXT_PUBLIC_ASSETS_API: ASSETS_API,
-} = env;
-console.log({ MONGODB_URI });
+export const { NEXT_PUBLIC_HOST_API: HOST_API, NEXT_PUBLIC_ASSETS_API: ASSETS_API } = envClient;
+
+export const { MONGODB_URI } = envServer;
+
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
 
