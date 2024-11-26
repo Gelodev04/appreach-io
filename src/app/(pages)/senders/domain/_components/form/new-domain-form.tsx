@@ -135,7 +135,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               loading={isPending}
               loadingPosition="start"
             >
-              {isPending ? ' Email Verification...' : ' Add sender domain'}
+              {isPending ? ' Domain verification...' : ' Add sender domain'}
             </LoadingButton>
           </Stack>
         </Grid>
