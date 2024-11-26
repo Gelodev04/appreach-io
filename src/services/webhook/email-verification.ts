@@ -2,6 +2,7 @@
 
 import { UnverifiedSenderType } from '@prisma/client';
 import axios from 'axios';
+import { env } from 'src/data/env';
 
 type UnverifiedEmailType = {
   id: string;
@@ -18,13 +19,13 @@ export const requestForEmailVerification = async ({
   textRecord,
 }: UnverifiedEmailType) => {
   const routeToken = type === 'email' ? token : textRecord;
-  const webhookUrl = `${process.env.EMAIL_VERIFICATON_WEBHOOK}?id=${id}&token=${routeToken}`;
+  const webhookUrl = `${env.EMAIL_VERIFICATON_WEBHOOK}?id=${id}&token=${routeToken}`;
   const { data } = await axios.post(webhookUrl);
   const route = type === 'email' ? '/sender-emails' : 'verify-domains';
   if (data?.status === 'SUCCESS') {
     return {
       ...data,
-      confirmationUrl: `${process.env.EMAIL_VERIFICATON_WEBHOOK}/${route}?token=${process.env.INVOKER_TOKEN}`,
+      confirmationUrl: `${env.EMAIL_VERIFICATON_WEBHOOK}/${route}?token=${env.INVOKER_TOKEN}`,
     };
   }
 

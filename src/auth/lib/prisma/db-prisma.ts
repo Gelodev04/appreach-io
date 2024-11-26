@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { env } from 'src/data/env';
 
 const prismaClientSingleton = () => new PrismaClient();
 
@@ -12,4 +13,4 @@ const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
 export default prisma;
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+if (env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;

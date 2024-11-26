@@ -1,9 +1,10 @@
 import sgMail from '@sendgrid/mail';
+import { env } from 'process';
 
 type EmailData = Omit<sgMail.MailDataRequired, 'from'>;
 
 export const sendEmail = async (data: EmailData, templateId: string) => {
-  const apiKey = process.env.SENDGRID_API_TOKEN;
+  const apiKey = env.SENDGRID_API_TOKEN;
   if (!apiKey) throw new Error('Sendgrid API token is not defined');
 
   sgMail.setApiKey(apiKey);

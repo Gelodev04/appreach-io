@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import { MONGODB_URI } from 'src/config-global';
+import { env } from 'src/data/env';
 
 if (!MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
@@ -18,7 +19,7 @@ const options = {
 let client;
 let clientPromise: Promise<MongoClient>;
 
-if (process.env.NODE_ENV === 'development') {
+if (env.NODE_ENV === 'development') {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
   let globalWithMongo = global as typeof globalThis & {

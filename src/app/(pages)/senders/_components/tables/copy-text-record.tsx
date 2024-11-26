@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';

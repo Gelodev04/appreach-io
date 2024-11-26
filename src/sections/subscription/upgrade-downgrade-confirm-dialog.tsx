@@ -9,6 +9,7 @@ import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
 import { fCurrency } from 'src/utils/format-number';
 import { createCheckoutSession, getSubscriptionData, redirectToCheckout } from 'src/utils/stripe';
+import { env } from 'src/data/env';
 import { calcProrationAmount } from './utils/calc-proration-amount';
 
 type Props = {
@@ -20,7 +21,7 @@ type Props = {
 };
 
 // Stripe promise for loading the Stripe object
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export function UpgradeDowngradeConfirmDialog({ open, onClose, onConfirm, type, nextPlan }: Props) {
   const { enqueueSnackbar } = useSnackbar();
