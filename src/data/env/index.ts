@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 const envSchema = Yup.object().shape({
   // Server-only variables
-  MONGODB_URI: Yup.string().url().required(),
+  MONGODB_URI: Yup.string().required(),
   NEXTAUTH_SECRET: Yup.string().required(),
   EMAIL_VERIFICATON_WEBHOOK: Yup.string().required(),
   INVOKER_TOKEN: Yup.string().required(),
