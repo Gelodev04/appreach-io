@@ -1,7 +1,7 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { STRIPE } from 'src/config-global';
 import { SubscriptionData } from 'src/types/stripe';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/client';
 import { endpoints } from './swr';
 
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
 export async function POST(request: Request) {

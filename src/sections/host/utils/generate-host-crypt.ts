@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 
 export function generateRandomChars(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -2,7 +2,7 @@
 
 import { UnverifiedSenderType } from '@prisma/client';
 import axios from 'axios';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 
 type UnverifiedEmailType = {
   id: string;

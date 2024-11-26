@@ -3,7 +3,7 @@ import { Adapter } from 'next-auth/adapters';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import Credentials from 'next-auth/providers/credentials';
 
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import prisma from './db-prisma';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({

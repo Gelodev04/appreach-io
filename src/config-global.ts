@@ -9,7 +9,7 @@ export const {
   NEXT_PUBLIC_HOST_API: HOST_API,
   NEXT_PUBLIC_ASSETS_API: ASSETS_API,
 } = env;
-
+console.log({ MONGODB_URI });
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
 

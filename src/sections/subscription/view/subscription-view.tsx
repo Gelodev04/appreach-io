@@ -19,7 +19,7 @@ import {
   redirectToCheckout,
 } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/client';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object

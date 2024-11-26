@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import { paths } from 'src/routes/paths';
 import Stripe from 'stripe';
 

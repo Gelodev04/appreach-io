@@ -1,6 +1,6 @@
 'use server';
 
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import { StripeSubscription } from 'src/types/stripe';
 import Stripe from 'stripe';
 

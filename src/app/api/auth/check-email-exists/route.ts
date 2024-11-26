@@ -1,5 +1,5 @@
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 
 export async function POST(request: Request) {
   try {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { env } from 'src/data/env/';
+import { env } from 'src/data/env/server';
 
 mongoose.connect(env.MONGODB_URI);
 mongoose.Promise = global.Promise;

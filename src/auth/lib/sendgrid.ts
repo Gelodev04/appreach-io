@@ -1,5 +1,5 @@
 import sgMail from '@sendgrid/mail';
-import { env } from 'process';
+import { env } from 'src/data/env/server';
 
 type EmailData = Omit<sgMail.MailDataRequired, 'from'>;
 

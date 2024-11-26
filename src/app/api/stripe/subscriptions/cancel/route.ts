@@ -1,6 +1,6 @@
 import { auth } from 'auth';
 import { NextResponse } from 'next/server';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/server';
 import { getActiveSubscription } from 'src/sections/subscription/utils/get-active-subscription';
 import Stripe from 'stripe';
 

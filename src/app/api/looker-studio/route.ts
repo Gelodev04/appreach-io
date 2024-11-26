@@ -2,12 +2,13 @@ import { getUser } from 'src/auth/lib/mongodb/get-user';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
-import { env } from 'src/data/env';
+import { env } from 'src/data/env/client';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    console.log({ env });
     const userSettings = await getUser();
 
     const userHosts = userSettings?.hosts || [];
