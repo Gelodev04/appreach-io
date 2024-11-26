@@ -14,6 +14,11 @@
 
 ## Environment Variables
 
+`IF THERE IS A NEW VARIABLE DO THE FOLLOWING:`
+
+- add the NEXT_PUBLIC variables in src/data/client.ts
+- add the private variables in src/data/server.ts
+
 `MONGODB_URI=""`
 
 > The connection string for the MongoDB database. This URI includes the username, password, cluster address, and default database.
@@ -42,9 +47,10 @@
 
 > The secret key for Stripe, used on the server side to process payments securely.
 
-
 `EMAIL_VERIFICATON_WEBHOOK=`
+
 > Api endpoint for requesting email verification
 
 `INVOKER_TOKEN=""`
+
 > Token for the confirmation link after email verification
