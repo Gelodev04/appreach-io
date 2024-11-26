@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import * as Yup from 'yup';
 
 const envSchema = Yup.object().shape({
