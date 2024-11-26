@@ -48,6 +48,7 @@ const Table = ({
         checkboxSelection
         disableRowSelectionOnClick
         getRowHeight={() => 'auto'}
+        pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
             paginationModel: { pageSize: 10 },
