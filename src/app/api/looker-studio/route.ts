@@ -2,6 +2,7 @@ import { getUser } from 'src/auth/lib/mongodb/get-user';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
+import { env } from 'src/data/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +24,7 @@ export async function GET() {
     if (totalAmount === 0) {
       return NextResponse.json(
         {
-          embedUrl: `${process.env.NEXT_PUBLIC_SAMPLE_LOOKER_URL}`,
+          embedUrl: `${env.NEXT_PUBLIC_SAMPLE_LOOKER_URL}`,
           warningMessage:
             'Important: Your dashboard is currently displaying sample data. This will be replaced with real data once you begin sending emails.',
         },
@@ -32,7 +33,7 @@ export async function GET() {
     }
 
     return NextResponse.json(
-      { embedUrl: process.env.NEXT_PUBLIC_LIVE_LOOKER_URL },
+      { embedUrl: env.NEXT_PUBLIC_LIVE_LOOKER_URL },
       { headers: { 'Cache-Control': 'no-store, max-age=0' } }
     );
   } catch (error) {

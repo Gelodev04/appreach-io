@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { env } from 'src/data/env';
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -15,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       name: 'Credentials',

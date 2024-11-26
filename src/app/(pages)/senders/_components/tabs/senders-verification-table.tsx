@@ -4,9 +4,10 @@ import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { Card } from '@mui/material';
 import TabPanel from './tab-panel';
+import useTabsIndex from '../hooks/useTabsIndex';
 
 function a11yProps(index: number) {
   return {
@@ -16,20 +17,16 @@ function a11yProps(index: number) {
 }
 
 export default function SendersVerificationTable({
-  verified,
-  unverifiedEmails,
-  unverifiedDomains,
+  verifiedEmails,
+  unverifiedSenders,
+  verifiedDomains,
 }: {
-  verified: ReactNode;
-  unverifiedEmails: ReactNode;
-  unverifiedDomains: ReactNode;
+  verifiedEmails: ReactNode;
+  unverifiedSenders: ReactNode;
+  verifiedDomains: ReactNode;
 }) {
   const theme = useTheme();
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const { handleChange, value } = useTabsIndex();
 
   return (
     <Card
@@ -47,22 +44,22 @@ export default function SendersVerificationTable({
           textColor="primary"
           TabIndicatorProps={{ sx: { backgroundColor: '#003087' } }}
         >
-          <Tab label="Verified" {...a11yProps(0)} sx={{ fontSize: 16 }} />
-          <Tab label="Unverified Emails" {...a11yProps(1)} sx={{ fontSize: 16 }} />
-          <Tab label="Unverified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
+          <Tab label="Verified Emails" {...a11yProps(0)} sx={{ fontSize: 16 }} />
+          <Tab label="Unverified" {...a11yProps(1)} sx={{ fontSize: 16 }} />
+          <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
         </Tabs>
       </AppBar>
 
       <TabPanel value={value} index={0} dir={theme.direction}>
-        {verified}
+        {verifiedEmails}
       </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
-        {unverifiedEmails}
+        {unverifiedSenders}
       </TabPanel>
 
       <TabPanel value={value} index={2} dir={theme.direction}>
-        {unverifiedDomains}
+        {verifiedDomains}
       </TabPanel>
     </Card>
   );

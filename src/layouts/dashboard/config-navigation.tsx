@@ -15,7 +15,7 @@ export function useNavData() {
           },
           {
             title: 'Sender Addresses',
-            path: paths.senders.verified,
+            path: paths.senders.root,
             icon: <Iconify icon="hugeicons:address-book" />,
           },
           {

@@ -1,10 +1,11 @@
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { env } from 'src/data/env';
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db(env.MONGODB_URI);
 
     const { email } = data;
     if (!email) throw new Error('Email is required');

@@ -17,16 +17,11 @@ const EditDeleteAction = ({
   const [isPending, startTransition] = useTransition();
   const handleVerify = () => {
     startTransition(async () => {
-      const unverifiedEmail = await updateUnverifiedEmails(id);
+      const unverifiedEmail = await updateUnverifiedEmails(id); // update unverified email status to "ready"
       const result = await requestForEmailVerification(unverifiedEmail);
       if (result) {
         enqueueSnackbar({
-          message: (
-            <VerificationEmailMessage
-              name={unverifiedEmail.value}
-              confirmationLink={result.confirmationUrl}
-            />
-          ),
+          message: <VerificationEmailMessage name={unverifiedEmail.value} />,
           variant: 'success',
           persist: true,
         });

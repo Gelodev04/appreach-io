@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { env } from 'src/data/env';
 
 export function generateRandomChars(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -10,7 +11,7 @@ export function generateRandomChars(): string {
 }
 
 export function generateHostCrypt(host: string): string {
-  const secretKey = process.env.HOST_CRYPT_SECRET;
+  const secretKey = env.HOST_CRYPT_SECRET;
   const hash = crypto.createHash('sha1');
   hash.update(secretKey + host);
   const longHash = hash.digest();

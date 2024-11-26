@@ -46,7 +46,8 @@ export const createUnverifiedSenders = async (
       },
       update: {},
       create: {
-        token,
+        token: type === 'email' ? token : '',
+        textRecord: type === 'domain' ? token : '',
         type,
         hostId,
         value,
@@ -56,6 +57,8 @@ export const createUnverifiedSenders = async (
         id: true,
         token: true,
         value: true,
+        textRecord: true,
+        type: true,
       },
     });
     return upsertUnverifiedSenders;
@@ -91,33 +94,11 @@ export const createVerifiedEmails = async (email: string, hostId: string) => {
   }
 };
 
-export const getVerifiedEmails = async () => {
-  try {
-    const { hosts } = await getUserSettings({ hosts: true });
-    const listOfVerifiedEmails = await prisma.verifiedSenderEmails.findMany({
-      where: {
-        hostId: {
-          in: hosts,
-        },
-      },
-      select: {
-        id: true,
-        email: true,
-        hostId: true,
-      },
-    });
-    return listOfVerifiedEmails;
-  } catch (error) {
-    console.log('Unable to get verified emails.', error);
-    return [];
-  }
-};
-
-export const getUnverifiedSenders = async (type: 'email' | 'domain') => {
+export const getVerifiedEmails = async (type: 'email' | 'domain') => {
   try {
     const { hosts } = await getUserSettings({ hosts: true });
     if (type === 'email') {
-      const listOfUnverifiedEmails = await prisma.unverifiedSenders.findMany({
+      const listOfVerifiedEmails = await prisma.verifiedSenderEmails.findMany({
         where: {
           hostId: {
             in: hosts,
@@ -125,15 +106,15 @@ export const getUnverifiedSenders = async (type: 'email' | 'domain') => {
         },
         select: {
           id: true,
-          value: true,
+          email: true,
           hostId: true,
         },
       });
-      return listOfUnverifiedEmails.map(({ id, value, hostId }) => ({ id, email: value, hostId }));
+      return listOfVerifiedEmails;
     }
 
     if (type === 'domain') {
-      const listOfUnverifiedEmails = await prisma.verifiedSenderDomains.findMany({
+      const listOfVerifiedDomains = await prisma.verifiedSenderDomains.findMany({
         where: {
           hostId: {
             in: hosts,
@@ -145,12 +126,41 @@ export const getUnverifiedSenders = async (type: 'email' | 'domain') => {
           hostId: true,
         },
       });
-      return listOfUnverifiedEmails.map(({ id, domain, hostId }) => ({
+      return listOfVerifiedDomains.map(({ id, domain, hostId }) => ({
         id,
         email: domain,
         hostId,
       }));
     }
+  } catch (error) {
+    console.log('Unable to get verified emails.', error);
+    return [];
+  }
+};
+
+export const getUnverifiedSenders = async () => {
+  try {
+    const { hosts } = await getUserSettings({ hosts: true });
+
+    const listOfUnverifiedEmails = await prisma.unverifiedSenders.findMany({
+      where: {
+        hostId: {
+          in: hosts,
+        },
+      },
+      select: {
+        id: true,
+        value: true,
+        hostId: true,
+        textRecord: true,
+      },
+    });
+    return listOfUnverifiedEmails.map(({ id, value, hostId, textRecord }) => ({
+      id,
+      email: value,
+      hostId,
+      textRecord,
+    }));
   } catch (error) {
     console.log('Unable to get verified emails.', error);
     return [];
@@ -188,6 +198,8 @@ export const updateUnverifiedEmails = async (id: string) => {
         id: true,
         token: true,
         value: true,
+        textRecord: true,
+        type: true,
       },
     });
     return upsertUnverifiedEmails;

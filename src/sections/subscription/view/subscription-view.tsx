@@ -19,10 +19,11 @@ import {
   redirectToCheckout,
 } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
+import { env } from 'src/data/env';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export default function SubscriptionView() {
   const { enqueueSnackbar } = useSnackbar();

@@ -417,13 +417,14 @@ model seedBatches {
 }
 
 model unverifiedSenders {
-  id        String               @id @default(auto()) @map("_id") @db.ObjectId
-  token     String
-  hostId    String               @unique @db.ObjectId
-  value     String               @unique
-  dateAdded DateTime             @default(now())
-  status    String
-  type      UnverifiedSenderType
+  id         String               @id @default(auto()) @map("_id") @db.ObjectId
+  type       UnverifiedSenderType
+  value      String               @unique
+  token      String?
+  status     String
+  hostId     String               @unique @db.ObjectId
+  dateAdded  DateTime             @default(now())
+  textRecord String?
 }
 
 model userSettings {

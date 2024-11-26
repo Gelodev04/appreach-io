@@ -1,9 +1,10 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { STRIPE } from 'src/config-global';
 import { SubscriptionData } from 'src/types/stripe';
+import { env } from 'src/data/env';
 import { endpoints } from './swr';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export async function createCheckoutSession(
   customerEmail: string,

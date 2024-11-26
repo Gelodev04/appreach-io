@@ -4,6 +4,7 @@ import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
 import Script from 'next/script';
 import { useCheckUserPlan } from 'src/hooks/api/plan';
+import { env } from 'src/data/env';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -68,9 +69,9 @@ export default function GuestGuard({ children }: Props) {
           <Script strategy="afterInteractive">
             {`
               window.salesmateSettings = {
-                workspace_id: "${process.env.NEXT_PUBLIC_SALESMATE_WORKSPACE_ID}",
-                app_key: "${process.env.NEXT_PUBLIC_SALESMATE_APP_KEY}",
-                tenant_id: "${process.env.NEXT_PUBLIC_SALESMATE_TENANT_ID}",
+                workspace_id: "${env.NEXT_PUBLIC_SALESMATE_WORKSPACE_ID}",
+                app_key: "${env.NEXT_PUBLIC_SALESMATE_APP_KEY}",
+                tenant_id: "${env.NEXT_PUBLIC_SALESMATE_TENANT_ID}",
               };
               if (window.SALESMATE) {
                 window.SALESMATE.login({

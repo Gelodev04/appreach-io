@@ -1,13 +1,14 @@
 import { paths } from 'src/routes/paths';
+import { env } from './data/env';
 
 // API
 // --------------------------------------------------------------------
 
-export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
-export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
-
-export const { DATABASE_URL } = process.env;
-export const { MONGODB_URI } = process.env;
+export const {
+  MONGODB_URI,
+  NEXT_PUBLIC_HOST_API: HOST_API,
+  NEXT_PUBLIC_ASSETS_API: ASSETS_API,
+} = env;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
