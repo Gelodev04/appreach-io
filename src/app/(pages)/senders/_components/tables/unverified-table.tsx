@@ -24,7 +24,7 @@ const UnverifiedTable = async ({ options }: UnverifiedTableType) => {
 
   if (!rows) throw new Error('Unable to get rows');
 
-  return <Table rows={rows} options={options} />;
+  return <Table rows={rows} options={options} type="unverified" />;
 };
 
 export default UnverifiedTable;

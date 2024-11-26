@@ -3,7 +3,6 @@
 import { Button, Card, Stack } from '@mui/material';
 import {
   DataGrid,
-  GridColDef,
   GridRowSelectionModel,
   GridRowsProp,
   GridToolbarColumnsButton,
@@ -14,13 +13,13 @@ import {
 import EmptyContent from 'src/components/empty-content';
 import { useState } from 'react';
 import Iconify from 'src/components/iconify';
-import EditDeleteAction from './edit-delete';
-import AssignedProfileDropdown from './assigned-profile-dd';
+import { useTableColumns } from '../hooks/userTableColumns';
 
 const Table = ({
   rows,
   options,
   action = 'both',
+  type,
 }: {
   rows: GridRowsProp;
   options: {
@@ -28,30 +27,10 @@ const Table = ({
     id: string;
   }[];
   action?: 'delete' | 'edit' | 'both';
+  type: 'unverified' | 'verified';
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const columns: GridColDef[] = [
-    {
-      field: 'email',
-      headerName: 'Name',
-      flex: 1,
-    },
-    {
-      field: 'hostId',
-      headerName: 'Assigned Profile',
-      flex: 1,
-      sortable: false,
-      renderCell: (params) => <AssignedProfileDropdown params={params} options={options} />,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: ({ id }) => <EditDeleteAction action={action} id={id as string} />,
-    },
-  ];
+  const { columns } = useTableColumns({ action, options, type });
 
   return (
     <Card

@@ -152,9 +152,15 @@ export const getUnverifiedSenders = async () => {
         id: true,
         value: true,
         hostId: true,
+        textRecord: true,
       },
     });
-    return listOfUnverifiedEmails.map(({ id, value, hostId }) => ({ id, email: value, hostId }));
+    return listOfUnverifiedEmails.map(({ id, value, hostId, textRecord }) => ({
+      id,
+      email: value,
+      hostId,
+      textRecord,
+    }));
   } catch (error) {
     console.log('Unable to get verified emails.', error);
     return [];
