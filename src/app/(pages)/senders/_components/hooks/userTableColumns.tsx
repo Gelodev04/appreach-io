@@ -1,7 +1,7 @@
 import { GridColDef } from '@mui/x-data-grid';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
-import EditDeleteAction from '../tables/edit-delete';
 import { CopyTextRecord } from '../tables/copy-text-record';
+import VerifyAndDeleteAction from '../tables/verify-delete';
 
 type TableColumnsType = {
   type: 'unverified' | 'verified';
@@ -32,17 +32,17 @@ export const useTableColumns = ({ action, options, type }: TableColumnsType) => 
       flex: 1,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ id }) => <EditDeleteAction action={action} id={id as string} />,
+      renderCell: ({ id }) => <VerifyAndDeleteAction action={action} id={id as string} />,
     },
   ];
 
   if (type === 'unverified') {
     columns.splice(2, 0, {
-      field: 'textRecord',
+      field: 'txtRecord',
       headerName: 'TXT Record',
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ value }) => (value ? <CopyTextRecord textRecord={value} /> : ''),
+      renderCell: ({ value }) => (value ? <CopyTextRecord txtRecord={value} /> : ''),
     });
   }
 

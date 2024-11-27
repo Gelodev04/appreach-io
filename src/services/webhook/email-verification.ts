@@ -9,16 +9,16 @@ type UnverifiedEmailType = {
   value: string;
   token: string | null;
   type: UnverifiedSenderType;
-  textRecord: string | null;
+  txtRecord: string | null;
 };
 
 export const requestForEmailVerification = async ({
   id,
   token,
   type,
-  textRecord,
+  txtRecord,
 }: UnverifiedEmailType) => {
-  const routeToken = type === 'email' ? token : textRecord;
+  const routeToken = type === 'email' ? token : txtRecord;
   const webhookUrl = `${env.EMAIL_VERIFICATON_WEBHOOK}?id=${id}&token=${routeToken}`;
   const { data } = await axios.post(webhookUrl);
   const route = type === 'email' ? '/sender-emails' : 'verify-domains';

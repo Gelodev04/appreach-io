@@ -1,6 +1,6 @@
 'use server';
 
-import { Prisma } from '@prisma/client';
+import { Prisma, unverifiedSenders } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
@@ -47,7 +47,7 @@ export const createUnverifiedSenders = async (
       update: {},
       create: {
         token: type === 'email' ? token : '',
-        textRecord: type === 'domain' ? token : '',
+        txtRecord: type === 'domain' ? token : '',
         type,
         hostId,
         value,
@@ -57,7 +57,7 @@ export const createUnverifiedSenders = async (
         id: true,
         token: true,
         value: true,
-        textRecord: true,
+        txtRecord: true,
         type: true,
       },
     });
@@ -152,14 +152,14 @@ export const getUnverifiedSenders = async () => {
         id: true,
         value: true,
         hostId: true,
-        textRecord: true,
+        txtRecord: true,
       },
     });
-    return listOfUnverifiedEmails.map(({ id, value, hostId, textRecord }) => ({
+    return listOfUnverifiedEmails.map(({ id, value, hostId, txtRecord }) => ({
       id,
       email: value,
       hostId,
-      textRecord,
+      txtRecord,
     }));
   } catch (error) {
     console.log('Unable to get verified emails.', error);
@@ -172,6 +172,25 @@ export const getUnverifiedSenderById = async (id: string) => {
     const unverifiedSender = await prisma.unverifiedSenders.findUnique({
       where: {
         id,
+      },
+      select: {
+        value: true,
+        hostId: true,
+      },
+    });
+    return unverifiedSender;
+  } catch (error) {
+    console.log('Unable to get verified emails.', error);
+    return null;
+  }
+};
+
+export const getUnverifiedSenderByDomain = async (value: string) => {
+  try {
+    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
+      where: {
+        value,
+        type: 'domain',
       },
       select: {
         value: true,
@@ -198,7 +217,7 @@ export const updateUnverifiedEmails = async (id: string) => {
         id: true,
         token: true,
         value: true,
-        textRecord: true,
+        txtRecord: true,
         type: true,
       },
     });

@@ -8,7 +8,11 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { createUnverifiedSenders, getVerifiedDomain } from 'src/services/db/verified-domains';
+import {
+  createUnverifiedSenders,
+  getUnverifiedSenderByDomain,
+  getVerifiedDomain,
+} from 'src/services/db/verified-domains';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
@@ -56,6 +60,14 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
           domain: data.domain,
           hostId: { in: userHostIds },
         });
+        const domainValue = await getUnverifiedSenderByDomain(data.domain);
+        if (domain || domainValue) {
+          enqueueSnackbar(
+            'Sender domain already in use with another sender profile. Please contact support.',
+            { variant: 'warning' }
+          );
+          return undefined;
+        }
 
         if (!domain) {
           const unverifiedDomain = await createUnverifiedSenders(
@@ -131,7 +143,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               type="submit"
               color="primary"
               variant="contained"
-              sx={{ width: 200 }}
+              sx={{ width: 220 }}
               loading={isPending}
               loadingPosition="start"
             >

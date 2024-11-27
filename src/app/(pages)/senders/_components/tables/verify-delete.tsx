@@ -7,7 +7,7 @@ import { requestForEmailVerification } from 'src/services/webhook/email-verifica
 import { enqueueSnackbar } from 'notistack';
 import VerificationEmailMessage from '../../email/_components/verification-email-message';
 
-const EditDeleteAction = ({
+const VerifyAndDeleteAction = ({
   action = 'both',
   id,
 }: {
@@ -55,4 +55,4 @@ const EditDeleteAction = ({
   );
 };
 
-export default EditDeleteAction;
+export default VerifyAndDeleteAction;
