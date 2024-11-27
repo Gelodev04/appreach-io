@@ -34,6 +34,7 @@ export default function SendersVerificationTable({
         bgcolor: 'background.paper',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'auto',
       }}
     >
       <AppBar position="static">

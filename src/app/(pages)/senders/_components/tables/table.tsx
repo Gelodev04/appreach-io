@@ -40,6 +40,7 @@ const Table = ({
         display: { md: 'flex' },
         flexDirection: { md: 'column' },
         minHeight: '70vh',
+        minWidth: 730,
       }}
     >
       <DataGrid

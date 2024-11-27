@@ -15,6 +15,7 @@ const VerifyAndDeleteAction = ({
   id: string;
 }) => {
   const [isPending, startTransition] = useTransition();
+  const [isPendingDelete, startTransitionDelete] = useTransition();
   const handleVerify = () => {
     startTransition(async () => {
       const unverifiedSender = await updateUnverifiedEmails(id); // update unverified email status to "ready"
@@ -33,6 +34,15 @@ const VerifyAndDeleteAction = ({
       }
     });
   };
+  const wait = () => {
+    return new Promise((resolve) => setTimeout(resolve, 3000));
+  };
+  const handleDelete = () => {
+    startTransitionDelete(async () => {
+      await wait();
+      console.log({ id });
+    });
+  };
 
   return (
     <Stack direction="row">
@@ -42,6 +52,12 @@ const VerifyAndDeleteAction = ({
             variant="soft"
             sx={{ zIndex: 20, padding: 1 }}
             loading={isPending}
+            disabled={isPendingDelete}
+            loadingIndicator={
+              <Typography fontSize={10} variant="caption">
+                Verifying...
+              </Typography>
+            }
             onClick={handleVerify}
           >
             <Iconify icon="flowbite:edit-outline" width={16} />
@@ -51,10 +67,20 @@ const VerifyAndDeleteAction = ({
       )}
 
       <Tooltip title="Delete" placement="top">
-        <Button onClick={() => {}} sx={{ zIndex: 20, color: 'error.main' }}>
+        <LoadingButton
+          onClick={handleDelete}
+          disabled={isPending}
+          loading={isPendingDelete}
+          loadingIndicator={
+            <Typography fontSize={10} variant="caption">
+              Deleting...
+            </Typography>
+          }
+          sx={{ zIndex: 20, color: 'error.main' }}
+        >
           <Iconify icon="ph:trash-bold" width={16} />
           <Typography fontSize={14}>Delete</Typography>
-        </Button>
+        </LoadingButton>
       </Tooltip>
     </Stack>
   );
