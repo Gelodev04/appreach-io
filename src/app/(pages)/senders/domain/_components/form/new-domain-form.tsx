@@ -8,7 +8,11 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { createUnverifiedSenders, getVerifiedDomain } from 'src/services/db/verified-domains';
+import {
+  createUnverifiedSenders,
+  getUnverifiedSenderByDomain,
+  getVerifiedDomain,
+} from 'src/services/db/sender-addresses';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
@@ -51,15 +55,19 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        // const inputEmailDomain = getEmailDomain(data.domain);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
-        /*  if (!inputEmailDomain) {
-          enqueueSnackbar('Domain not found.', { variant: 'error' });
-        } */
         const domain = await getVerifiedDomain({
           domain: data.domain,
           hostId: { in: userHostIds },
         });
+        const domainValue = await getUnverifiedSenderByDomain(data.domain);
+        if (domain || domainValue) {
+          enqueueSnackbar(
+            'Sender domain already in use with another sender profile. Please contact support.',
+            { variant: 'warning' }
+          );
+          return undefined;
+        }
 
         if (!domain) {
           const unverifiedDomain = await createUnverifiedSenders(
@@ -135,11 +143,11 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               type="submit"
               color="primary"
               variant="contained"
-              sx={{ width: 200 }}
+              sx={{ width: 220 }}
               loading={isPending}
               loadingPosition="start"
             >
-              {isPending ? ' Email Verification...' : ' Add sender domain'}
+              {isPending ? ' Domain verification...' : ' Add sender domain'}
             </LoadingButton>
           </Stack>
         </Grid>

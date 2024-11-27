@@ -4,6 +4,8 @@ import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { revalidatePath } from 'next/cache';
+import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
 export const getVerifiedDomain = async (
@@ -47,7 +49,7 @@ export const createUnverifiedSenders = async (
       update: {},
       create: {
         token: type === 'email' ? token : '',
-        textRecord: type === 'domain' ? token : '',
+        txtRecord: type === 'domain' ? token : '',
         type,
         hostId,
         value,
@@ -57,7 +59,7 @@ export const createUnverifiedSenders = async (
         id: true,
         token: true,
         value: true,
-        textRecord: true,
+        txtRecord: true,
         type: true,
       },
     });
@@ -152,14 +154,14 @@ export const getUnverifiedSenders = async () => {
         id: true,
         value: true,
         hostId: true,
-        textRecord: true,
+        txtRecord: true,
       },
     });
-    return listOfUnverifiedEmails.map(({ id, value, hostId, textRecord }) => ({
+    return listOfUnverifiedEmails.map(({ id, value, hostId, txtRecord }) => ({
       id,
       email: value,
       hostId,
-      textRecord,
+      txtRecord,
     }));
   } catch (error) {
     console.log('Unable to get verified emails.', error);
@@ -172,6 +174,25 @@ export const getUnverifiedSenderById = async (id: string) => {
     const unverifiedSender = await prisma.unverifiedSenders.findUnique({
       where: {
         id,
+      },
+      select: {
+        value: true,
+        hostId: true,
+      },
+    });
+    return unverifiedSender;
+  } catch (error) {
+    console.log('Unable to get verified emails.', error);
+    return null;
+  }
+};
+
+export const getUnverifiedSenderByDomain = async (value: string) => {
+  try {
+    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
+      where: {
+        value,
+        type: 'domain',
       },
       select: {
         value: true,
@@ -198,7 +219,7 @@ export const updateUnverifiedEmails = async (id: string) => {
         id: true,
         token: true,
         value: true,
-        textRecord: true,
+        txtRecord: true,
         type: true,
       },
     });
@@ -206,5 +227,88 @@ export const updateUnverifiedEmails = async (id: string) => {
   } catch (error) {
     console.log('Error on creating unverified emails');
     throw new Error('Error on create unverified emails', error);
+  }
+};
+
+export const deleteSenderAddressById = async (
+  ids: string[],
+  tableIndex: string
+): Promise<any | null> => {
+  try {
+    const deleteActions: Record<string, () => Promise<any>> = {
+      '0': async () => {
+        const deleted = await prisma.verifiedSenderEmails.deleteMany({
+          where: { id: { in: ids } },
+        });
+        revalidatePath(`${paths.senders.root}?tableIndex=0`);
+        return deleted;
+      },
+      '1': async () => {
+        const deleted = await prisma.unverifiedSenders.deleteMany({ where: { id: { in: ids } } });
+        revalidatePath(`${paths.senders.root}?tableIndex=1`);
+        return deleted;
+      },
+      '2': async () => {
+        const deleted = await prisma.verifiedSenderDomains.deleteMany({
+          where: { id: { in: ids } },
+        });
+        revalidatePath(`${paths.senders.root}?tableIndex=2`);
+        return deleted;
+      },
+    };
+
+    const deleteAction = deleteActions[tableIndex];
+    if (deleteAction) {
+      return await deleteAction();
+    }
+
+    return null; // Return null if no valid tableIndex is found
+  } catch (error) {
+    console.log('Unable to delete', error);
+    return null;
+  }
+};
+
+export const updateSenderProfiles = async (
+  id: string,
+  hostId: string,
+  tableIndex: string
+): Promise<any | null> => {
+  try {
+    const data = {
+      where: {
+        id,
+      },
+      data: {
+        hostId,
+      },
+    };
+    const updateActions: Record<string, () => Promise<any>> = {
+      '0': async () => {
+        const updated = await prisma.verifiedSenderEmails.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=0`);
+        return updated;
+      },
+      '1': async () => {
+        const updated = await prisma.unverifiedSenders.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=1`);
+        return updated;
+      },
+      '2': async () => {
+        const updated = await prisma.verifiedSenderDomains.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=2`);
+        return updated;
+      },
+    };
+
+    const updateAction = updateActions[tableIndex];
+    if (updateAction) {
+      return await updateAction();
+    }
+
+    return null; // Return null if no valid tableIndex is found
+  } catch (error) {
+    console.log('Unable to delete', error);
+    return null;
   }
 };

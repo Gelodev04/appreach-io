@@ -12,7 +12,7 @@ import {
   createUnverifiedSenders,
   createVerifiedEmails,
   getVerifiedDomain,
-} from 'src/services/db/verified-domains';
+} from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
@@ -66,13 +66,17 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
           const result = await requestForEmailVerification(unverifiedEmail);
           if (result) {
             enqueueSnackbar({
-              message: <VerificationEmailMessage name={unverifiedEmail.value} />,
+              message: (
+                <VerificationEmailMessage
+                  message={`A verification email has been sent to ${unverifiedEmail.value}, click the confirmation link to verify it.`}
+                />
+              ),
               variant: 'success',
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(`${paths.senders.root}?tableIndex=0`);
+                router.push(`${paths.senders.root}?tableIndex=1`);
               },
             });
           }
@@ -82,7 +86,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
               onClose: () => {
-                router.push(`${paths.senders.root}?tableIndex=1`);
+                router.push(`${paths.senders.root}?tableIndex=0`);
               },
             });
           }

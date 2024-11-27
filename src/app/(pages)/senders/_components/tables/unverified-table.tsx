@@ -1,4 +1,4 @@
-import { getUnverifiedSenders } from 'src/services/db/verified-domains';
+import { getUnverifiedSenders } from 'src/services/db/sender-addresses';
 import Table from './table';
 
 const mockRows = [
