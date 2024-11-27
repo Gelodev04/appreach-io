@@ -12,7 +12,7 @@ import {
   createUnverifiedSenders,
   createVerifiedEmails,
   getVerifiedDomain,
-} from 'src/services/db/verified-domains';
+} from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';

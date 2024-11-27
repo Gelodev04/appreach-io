@@ -1,9 +1,11 @@
 'use server';
 
-import { Prisma, unverifiedSenders } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { revalidatePath } from 'next/cache';
+import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
 export const getVerifiedDomain = async (
@@ -225,5 +227,44 @@ export const updateUnverifiedEmails = async (id: string) => {
   } catch (error) {
     console.log('Error on creating unverified emails');
     throw new Error('Error on create unverified emails', error);
+  }
+};
+
+export const deleteSenderAddressById = async (
+  ids: string[],
+  tableIndex: string
+): Promise<any | null> => {
+  try {
+    const deleteActions: Record<string, () => Promise<any>> = {
+      '0': async () => {
+        const deleted = await prisma.verifiedSenderEmails.deleteMany({
+          where: { id: { in: ids } },
+        });
+        revalidatePath(`${paths.senders.root}?tableIndex=0`);
+        return deleted;
+      },
+      '1': async () => {
+        const deleted = await prisma.unverifiedSenders.deleteMany({ where: { id: { in: ids } } });
+        revalidatePath(`${paths.senders.root}?tableIndex=1`);
+        return deleted;
+      },
+      '2': async () => {
+        const deleted = await prisma.verifiedSenderDomains.deleteMany({
+          where: { id: { in: ids } },
+        });
+        revalidatePath(`${paths.senders.root}?tableIndex=2`);
+        return deleted;
+      },
+    };
+
+    const deleteAction = deleteActions[tableIndex];
+    if (deleteAction) {
+      return await deleteAction();
+    }
+
+    return null; // Return null if no valid tableIndex is found
+  } catch (error) {
+    console.log('Unable to delete', error);
+    return null;
   }
 };

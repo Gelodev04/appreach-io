@@ -1,4 +1,4 @@
-import { getVerifiedEmails } from 'src/services/db/verified-domains';
+import { getVerifiedEmails } from 'src/services/db/sender-addresses';
 
 import Table from './table';
 

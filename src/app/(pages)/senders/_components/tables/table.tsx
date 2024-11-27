@@ -31,7 +31,6 @@ const Table = ({
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const { columns } = useTableColumns({ action, options, type });
-
   return (
     <Card
       sx={{

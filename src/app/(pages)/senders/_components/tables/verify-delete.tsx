@@ -1,10 +1,11 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Stack, Tooltip, Typography } from '@mui/material';
+import { Stack, Tooltip, Typography } from '@mui/material';
 import React, { useTransition } from 'react';
 import Iconify from 'src/components/iconify';
-import { updateUnverifiedEmails } from 'src/services/db/verified-domains';
+import { deleteSenderAddressById, updateUnverifiedEmails } from 'src/services/db/sender-addresses';
 import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { enqueueSnackbar } from 'notistack';
+import { useSearchParams } from 'next/navigation';
 import VerificationEmailMessage from '../../email/_components/verification-email-message';
 
 const VerifyAndDeleteAction = ({
@@ -16,6 +17,9 @@ const VerifyAndDeleteAction = ({
 }) => {
   const [isPending, startTransition] = useTransition();
   const [isPendingDelete, startTransitionDelete] = useTransition();
+  const params = useSearchParams();
+  const tableIndex = params.get('tableIndex');
+
   const handleVerify = () => {
     startTransition(async () => {
       const unverifiedSender = await updateUnverifiedEmails(id); // update unverified email status to "ready"
@@ -34,13 +38,19 @@ const VerifyAndDeleteAction = ({
       }
     });
   };
-  const wait = () => {
-    return new Promise((resolve) => setTimeout(resolve, 3000));
-  };
   const handleDelete = () => {
     startTransitionDelete(async () => {
-      await wait();
-      console.log({ id });
+      if (!tableIndex) return undefined;
+      const deleted = await deleteSenderAddressById([id], tableIndex);
+      if (!deleted) {
+        enqueueSnackbar('Unable to delete. Please contact support.', {
+          variant: 'error',
+          style: { maxWidth: 400 },
+        });
+        return undefined;
+      }
+
+      enqueueSnackbar('Deleted', { variant: 'success' });
     });
   };
 
