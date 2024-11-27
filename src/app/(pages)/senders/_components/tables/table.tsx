@@ -11,8 +11,11 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import EmptyContent from 'src/components/empty-content';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Iconify from 'src/components/iconify';
+import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
+import { useSearchParams } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { useTableColumns } from '../hooks/userTableColumns';
 
 const Table = ({
@@ -30,7 +33,19 @@ const Table = ({
   type: 'unverified' | 'verified';
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const [isPending, startTransition] = useTransition();
+  const params = useSearchParams();
+  const tableIndex = params.get('tableIndex');
   const { columns } = useTableColumns({ action, options, type });
+  const handleDeleteRows = () => {
+    startTransition(async () => {
+      if (!tableIndex) return undefined;
+      const deletedRows = await deleteSenderAddressById(selectedRowIds as string[], tableIndex);
+      if (deletedRows) {
+        enqueueSnackbar('Successfully Deleted', { variant: 'success' });
+      }
+    });
+  };
   return (
     <Card
       sx={{
@@ -80,9 +95,11 @@ const Table = ({
                   <Button
                     size="small"
                     color="error"
+                    disabled={isPending}
+                    onClick={handleDeleteRows}
                     startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
                   >
-                    Delete ({selectedRowIds.length})
+                    {isPending ? `Deleting...` : `Delete (${selectedRowIds.length})`}
                   </Button>
                 )}
                 <GridToolbarColumnsButton />
