@@ -76,7 +76,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(`${paths.senders.root}?tableIndex=0`);
+                router.push(`${paths.senders.root}?tableIndex=1`);
               },
             });
           }
@@ -86,7 +86,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
               onClose: () => {
-                router.push(`${paths.senders.root}?tableIndex=1`);
+                router.push(`${paths.senders.root}?tableIndex=0`);
               },
             });
           }

@@ -268,3 +268,47 @@ export const deleteSenderAddressById = async (
     return null;
   }
 };
+
+export const updateSenderProfiles = async (
+  id: string,
+  hostId: string,
+  tableIndex: string
+): Promise<any | null> => {
+  try {
+    const data = {
+      where: {
+        id,
+      },
+      data: {
+        hostId,
+      },
+    };
+    const updateActions: Record<string, () => Promise<any>> = {
+      '0': async () => {
+        const updated = await prisma.verifiedSenderEmails.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=0`);
+        return updated;
+      },
+      '1': async () => {
+        const updated = await prisma.unverifiedSenders.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=1`);
+        return updated;
+      },
+      '2': async () => {
+        const updated = await prisma.verifiedSenderDomains.update(data);
+        revalidatePath(`${paths.senders.root}?tableIndex=2`);
+        return updated;
+      },
+    };
+
+    const updateAction = updateActions[tableIndex];
+    if (updateAction) {
+      return await updateAction();
+    }
+
+    return null; // Return null if no valid tableIndex is found
+  } catch (error) {
+    console.log('Unable to delete', error);
+    return null;
+  }
+};
