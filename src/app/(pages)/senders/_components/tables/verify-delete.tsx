@@ -17,13 +17,18 @@ const VerifyAndDeleteAction = ({
   const [isPending, startTransition] = useTransition();
   const handleVerify = () => {
     startTransition(async () => {
-      const unverifiedEmail = await updateUnverifiedEmails(id); // update unverified email status to "ready"
-      const result = await requestForEmailVerification(unverifiedEmail);
+      const unverifiedSender = await updateUnverifiedEmails(id); // update unverified email status to "ready"
+      const result = await requestForEmailVerification(unverifiedSender);
       if (result) {
+        const message =
+          unverifiedSender.type === 'email'
+            ? `A verification email has been sent to ${unverifiedSender.value}, click the confirmation link to verify it.`
+            : `We are checking ${unverifiedSender.value} for txt record. Check 'Verified Tab' in the next 2 minutes.`;
+
         enqueueSnackbar({
-          message: <VerificationEmailMessage name={unverifiedEmail.value} />,
+          message: <VerificationEmailMessage message={message} />,
           variant: 'success',
-          persist: true,
+          style: { maxWidth: 400 },
         });
       }
     });
