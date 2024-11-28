@@ -2,36 +2,27 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
+import { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
-import { RHFTextField } from 'src/components/hook-form';
-
-import SeedAccountsBatch from './seed-accounts-batch';
+import { ISeedAccount } from 'src/types/seed';
 import SeedAccountsAssigned from './seed-accounts-assigned';
-
-// ----------------------------------------------------------------------
-
-const SEED_ACCOUNTS = [
-  { name: 'googleBusiness', amount: 21 },
-  { name: 'googlePersonal', amount: 195 },
-  { name: 'microsoftBusiness', amount: 21 },
-  { name: 'microsoftPersonal', amount: 673 },
-  { name: 'yahooPersonal', amount: 236 },
-];
+import SeedAccountsBatch from './seed-accounts-batch';
 
 export default function SeedAccountsGenerator({
   assignedCount,
+  seedAccounts,
   totalSeedAccounts,
 }: {
   assignedCount: number;
+  seedAccounts: ISeedAccount[];
   totalSeedAccounts?: number;
 }) {
   return (
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
         <Stack gap={1} alignItems="flex-start" sx={{ width: '100%' }}>
-          <Typography variant="subtitle2">How many accounts you want to generate?</Typography>
+          <Typography variant="subtitle2">How many accounts do you want to generate?</Typography>
 
           <RHFTextField
             name="seedAccountsGenerator"
@@ -48,7 +39,7 @@ export default function SeedAccountsGenerator({
       </Stack>
 
       <Grid container spacing={2}>
-        {SEED_ACCOUNTS.map((account) => (
+        {seedAccounts.map((account) => (
           <Grid item key={account.name}>
             <SeedAccountsBatch seed={account} />
           </Grid>

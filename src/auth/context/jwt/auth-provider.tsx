@@ -1,14 +1,12 @@
 'use client';
 
-import { useMemo, useEffect, useReducer, useCallback } from 'react';
-
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { paths } from 'src/routes/paths';
-
-import axios, { endpoints } from 'src/utils/axios';
-
+import axios from 'src/utils/axios';
+import { endpoints } from 'src/utils/swr';
+import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 import { AuthContext } from './auth-context';
-import { setSession, isValidToken } from './utils';
-import { AuthUserType, ActionMapType, AuthStateType } from '../../types';
+import { isValidToken, setSession } from './utils';
 
 // ----------------------------------------------------------------------
 /**
@@ -75,8 +73,6 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
   return state;
 };
 
-// ----------------------------------------------------------------------
-
 const STORAGE_KEY = 'accessToken';
 
 type Props = {
@@ -94,7 +90,6 @@ export function AuthProvider({ children }: Props) {
         setSession(accessToken);
 
         const res = await axios.get(endpoints.auth.me);
-
         const { user } = res.data;
 
         dispatch({
@@ -137,7 +132,6 @@ export function AuthProvider({ children }: Props) {
     };
 
     const res = await axios.post(endpoints.auth.login, data);
-
     const { accessToken, user } = res.data;
 
     setSession(accessToken);
@@ -155,16 +149,14 @@ export function AuthProvider({ children }: Props) {
 
   // REGISTER
   const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
-      const data = {
-        email,
-        password,
-        firstName,
-        lastName,
-      };
-
+    async (data: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      companyName: string;
+    }) => {
       const res = await axios.post(endpoints.auth.register, data);
-
       const { accessToken, user } = res.data;
 
       sessionStorage.setItem(STORAGE_KEY, accessToken);

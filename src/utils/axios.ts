@@ -25,15 +25,11 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 
 // ----------------------------------------------------------------------
 
+// TODO: Migrate to ./swr
 export const endpoints = {
   chat: '/api/chat',
   kanban: '/api/kanban',
   calendar: '/api/calendar',
-  auth: {
-    me: '/api/auth/me',
-    login: '/api/auth/login',
-    register: '/api/auth/register',
-  },
   mail: {
     list: '/api/mail/list',
     details: '/api/mail/details',

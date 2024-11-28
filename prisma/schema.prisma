@@ -1,0 +1,475 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+type EmailAccountsAdsPower {
+  groupId   String?
+  groupName String?
+  ip        String?
+  ipCountry String?
+  profileId String
+  proxyId   Int?
+  status    String
+}
+
+type EmailAccountsEmailReporting {
+  inboxReset          Boolean
+  lastCollectionSaved String
+  lastSavedEmail      String   @db.ObjectId
+  lastSuccess         DateTime @db.Date
+}
+
+type EmailAccountsEngagementAccount {
+  active      Boolean
+  receiverLog EmailAccountsEngagementAccountReceiverLog[]
+  via         String
+}
+
+type EmailAccountsEngagementAccountReceiverLog {
+  hostId      String?  @db.ObjectId
+  lastSuccess DateTime @db.Date
+  sentFrom    String
+}
+
+type EmailAccountsInboxEngagement {
+  active Boolean
+}
+
+type EmailAccountsInboxPlacement {
+  active Boolean
+}
+
+type EmailAccountsPlacementAccount {
+  active      Boolean
+  receiverLog EmailAccountsPlacementAccountReceiverLog[]
+}
+
+type EmailAccountsPlacementAccountReceiverLog {
+  lastSuccess DateTime @db.Date
+  sentFrom    String
+}
+
+type EmailAccountsRelayAccount {
+  active Boolean
+}
+
+type EmailAccountsTestResults {
+  imap        Boolean
+  lastUpdated DateTime @db.Date
+  smtp        Boolean
+}
+
+type EmailAccountsVpsDetails {
+  machineId   String
+  machineName String
+}
+
+type EmailAccountsWebMail {
+  faSecret       String                     @map("2faSecret")
+  appPassword    String?
+  error          EmailAccountsWebMailError?
+  errorValue     String?
+  lastOpened     DateTime?                  @db.Date
+  lastSuccess    DateTime?                  @db.Date
+  password       String
+  qualityControl String?
+  recoveryEmail  String
+  recoveryEmail2 String
+  remarks        String?
+  routine        String
+  status         String
+}
+
+type EmailAccountsWebMailError {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  comment    Json?
+  count      Int?
+  message    String
+  screenshot String?
+  timestamp  DateTime @db.Date
+  traceback  String
+  value      String?
+}
+
+type EmailValidatorUpload {
+  csvUpload    String
+  dateUploaded DateTime @db.Date
+  listName     String
+}
+
+type HostsAutoCc {
+  active           Boolean
+  hasCustomMessage Boolean?
+}
+
+type HostsCounts {
+  lastUpdated   DateTime? @db.Date
+  totalReceived Int?
+  totalSent     Int?
+}
+
+type HostsCrmIntegration {
+  activateUrl String
+  enabled     Boolean
+  hub_id      String?
+  type        String
+}
+
+type HostsInboxEngagement {
+  clickLink       Boolean?
+  downloadMessage Boolean?
+  markImportant   Boolean
+  movePrimary     Boolean?
+  removeSpam      Boolean
+  replyMessage    Boolean
+  scrollMessage   Boolean?
+}
+
+type HostsInstantly {
+  apiKey      String?
+  workspaceId String?
+}
+
+type HostsLookerStudio {
+  embedUrl        String
+  hasToRegenerate Boolean?
+}
+
+type HostsSlack {
+  notificationChannelId String?
+}
+
+type HostsSmartlead {
+  apiKey         String?
+  hubspotEnabled Boolean?
+  webhook        String
+}
+
+type HostsUserSettings {
+  autoExcludeAddresses      String[]
+  autoExcludeDomains        String[]
+  autoExcludeUsernames      String[]
+  ccAddressArray            String[]
+  ccAddressString           String?
+  ccMessage                 String?
+  ccName                    String?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  doNotContactAddresses     Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  doNotContactDomains       Json?
+  doNotContactGoogleSheet   String?
+  externalSenderAddresses   String[]
+  hasCustomMessage          Boolean?
+  leadCategories            HostsUserSettingsLeadCategories[]
+  notificationAddressArray  String[]
+  notificationAddressString String?
+  pronoun1                  String?
+  pronoun2                  String?
+  timezone                  String
+  warmupTags                String[]
+}
+
+type HostsUserSettingsLeadCategories {
+  name             String
+  sendNotification String
+}
+
+type SeedBatchesGenerate {
+  clickLink       Boolean?
+  downloadMessage Boolean?
+  esps            SeedBatchesGenerateEsps?
+  markImportant   Boolean?
+  movePrimary     Boolean?
+  prioritizeToken Boolean?
+  removeSpam      Boolean?
+  replyMessage    Boolean?
+  scrollMessage   Boolean?
+  total           Int
+  type            String
+}
+
+type SeedBatchesGenerateEsps {
+  googleBusiness    Int
+  googlePersonal    Int
+  microsoftBusiness Int
+  microsoftPersonal Int
+  yahooPersonal     Int
+}
+
+type SeedBatchesResults {
+  csvUrl       String
+  errorDetails String?
+  esps         SeedBatchesResultsEsps?
+  total        Int
+}
+
+type SeedBatchesResultsEsps {
+  googleBusiness    Int?
+  googlePersonal    Int?
+  microsoftBusiness Int?
+  microsoftPersonal Int?
+  yahooPersonal     Int?
+}
+
+type UserSettingsAppLogin {
+  adminView    Boolean?
+  approved     Boolean?
+  companyName  String?
+  /// Multiple data types found: String: 22.5%, DateTime (Date): 77.5% out of 60 sampled entries
+  currentLogin Json?
+  firstName    String?
+  /// Multiple data types found: String: 26.5%, DateTime (Date): 73.5% out of 60 sampled entries
+  lastLogin    Json?
+  lastName     String?
+  password     String?
+  phone        String?
+  username     String
+  verified     Boolean?
+  view         String?
+}
+
+type UserSettingsApproval {
+  lastSent        DateTime? @db.Date
+  token           String?
+  tokenExpiration DateTime? @db.Date
+  verifiedOn      DateTime? @db.Date
+}
+
+type UserSettingsLookerStudio {
+  embedUrl        String
+  hasToRegenerate Boolean?
+}
+
+type UserSettingsPlan {
+  amount              Int
+  amount_decimal      String
+  checkout_session_id String?
+  current_period_end  DateTime @db.Date
+  lookup_key          String
+  price_id            String
+  start_date          DateTime @db.Date
+  status              String
+  subscription_id     String
+}
+
+type UserSettingsResetPassword {
+  /// Multiple data types found: String: 42.9%, DateTime (Date): 57.1% out of 60 sampled entries
+  lastReset       Json?
+  token           String?
+  tokenExpiration DateTime? @db.Date
+}
+
+type UserSettingsSeeds {
+  assignedCount Int?
+}
+
+type UserSettingsSenders {
+  /// Multiple data types found: Int: 96.5%, BigInt: 3.5% out of 57 sampled entries
+  assignedCount Int
+  /// Multiple data types found: Int: 96.5%, BigInt: 3.5% out of 57 sampled entries
+  usedCount     Int
+}
+
+type UserSettingsStripe {
+  amount         Int
+  amount_decimal String
+  id             String
+  start_date     String
+  status         String
+}
+
+type UserSettingsTrackingMarketing {
+  callRequested     Boolean?
+  emailsSendsPerDay String?
+  hearAboutUs       String?
+}
+
+type UserSettingsVerification {
+  /// Multiple data types found: String: 24.6%, DateTime (Date): 75.4% out of 60 sampled entries
+  lastSent        Json?
+  token           String?
+  tokenExpiration DateTime? @db.Date
+  /// Multiple data types found: String: 16.3%, DateTime (Date): 83.7% out of 60 sampled entries
+  verifiedOn      Json?
+}
+
+type WebMailBigquery {
+  status String
+}
+
+type WebMailEmail {
+  messageId  String?
+  rawMessage String
+}
+
+type WebMailHost {
+  hostCrypt String
+  hostId    String @db.ObjectId
+}
+
+type WebMailInboxEngagement {
+  clickLink       Boolean
+  downloadMessage Boolean?
+  lastUpdated     DateTime @db.Date
+  markImportant   Boolean?
+  movePrimary     Boolean?
+  removeSpam      Boolean?
+  scrollMessage   Boolean?
+}
+
+type WebMailSummary {
+  accountOwner String
+  downloadDate DateTime @db.Date
+  emailDate    DateTime @db.Date
+  espCamelCase String
+  folder       String
+  fromEmail    String
+  fromHeadline String?
+  fromName     String
+  fromString   String?
+  mailedBy     String?
+  security     String?
+  server       String
+  signedBy     String?
+  subject      String
+  toEmail      String
+  toString     String
+  type         String
+}
+
+enum UnverifiedSenderType {
+  email
+  domain
+}
+
+model emailAccounts {
+  id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
+  accessToken         String?
+  adsPower            EmailAccountsAdsPower
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  appPassword         Json?
+  connectionType      String?
+  emailGroupId        String?                         @db.ObjectId
+  emailReporting      EmailAccountsEmailReporting?
+  engagementAccount   EmailAccountsEngagementAccount?
+  esp                 String?
+  espCamelCase        String
+  hostId              String?                         @db.ObjectId
+  inboxEngagement     EmailAccountsInboxEngagement?
+  inboxPlacement      EmailAccountsInboxPlacement?
+  lastUpdated         DateTime?                       @db.Date
+  lastUpdated2fa      DateTime?                       @db.Date
+  lastUpdatedPassword DateTime?                       @db.Date
+  placementAccount    EmailAccountsPlacementAccount?
+  refreshToken        String?
+  relayAccount        EmailAccountsRelayAccount?
+  senderName          String?
+  server              String
+  status              String?
+  testResults         EmailAccountsTestResults?
+  timeAdded           DateTime?                       @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  timeCreated         Json?
+  username            String
+  vpsDetails          EmailAccountsVpsDetails?
+  webMail             EmailAccountsWebMail
+}
+
+model emailValidator {
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  error       String
+  hostId      String               @db.ObjectId
+  lastUpdated DateTime             @db.Date
+  status      String
+  traceback   String
+  upload      EmailValidatorUpload
+}
+
+model hosts {
+  id              String                @id @default(auto()) @map("_id") @db.ObjectId
+  autoCc          HostsAutoCc?
+  counts          HostsCounts?
+  crmIntegration  HostsCrmIntegration?
+  host            String
+  hostCrypt       String
+  inboxEngagement HostsInboxEngagement?
+  instantly       HostsInstantly?
+  lookerStudio    HostsLookerStudio?
+  slack           HostsSlack?
+  smartlead       HostsSmartlead?
+  userSettings    HostsUserSettings?
+}
+
+model seedBatches {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded DateTime            @db.Date
+  generate  SeedBatchesGenerate
+  hostId    String              @db.ObjectId
+  name      String
+  results   SeedBatchesResults?
+  status    String
+  token     String
+}
+
+model unverifiedSenders {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  type      UnverifiedSenderType
+  value     String               @unique
+  token     String?
+  status    String
+  hostId    String               @unique @db.ObjectId
+  dateAdded DateTime             @default(now())
+  txtRecord String?
+}
+
+model userSettings {
+  id                String                         @id @default(auto()) @map("_id") @db.ObjectId
+  appLogin          UserSettingsAppLogin
+  approval          UserSettingsApproval
+  /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
+  created           Json?
+  embedUrl          String?
+  hosts             String[]
+  /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
+  lastUpdated       Json?
+  lookerStudio      UserSettingsLookerStudio?
+  plan              UserSettingsPlan?
+  resetPassword     UserSettingsResetPassword
+  seeds             UserSettingsSeeds?
+  senders           UserSettingsSenders?
+  stripe            UserSettingsStripe?
+  trackingMarketing UserSettingsTrackingMarketing?
+  verification      UserSettingsVerification
+}
+
+model verifiedSenderDomains {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime @db.Date
+  dateVerified DateTime @db.Date
+  domain       String
+  hostId       String   @db.ObjectId
+}
+
+model verifiedSenderEmails {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime @db.Date
+  dateVerified DateTime @db.Date
+  email        String   @unique
+  hostId       String   @unique @db.ObjectId
+  verifiedVia  String
+}
+
+model webMail {
+  id              String                  @id @default(auto()) @map("_id") @db.ObjectId
+  bigquery        WebMailBigquery
+  email           WebMailEmail?
+  host            WebMailHost
+  hostName        String
+  inboxEngagement WebMailInboxEngagement?
+  summary         WebMailSummary
+}

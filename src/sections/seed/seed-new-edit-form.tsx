@@ -1,33 +1,28 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Link, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-
-import { useGetSeedSettings } from 'src/hooks/api/seed';
-import { useResponsive } from 'src/hooks/use-responsive';
-
+import Grid from '@mui/material/Unstable_Grid2';
+import { format } from 'date-fns';
+import Image from 'next/image';
+import { useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-
-import { ISeedForm } from 'src/types/seed';
-
+import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
+import { useResponsive } from 'src/hooks/use-responsive';
+import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
+import { ISeedAccount, ISeedForm } from 'src/types/seed';
+import { endpoints } from 'src/utils/swr';
+import * as Yup from 'yup';
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import SeedAccountsGenerator from './seed-accounts-generator';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   currentItem?: ISeedForm;
@@ -37,19 +32,17 @@ type SeedAccountType =
   | 'googleBusiness'
   | 'googlePersonal'
   | 'microsoftBusiness'
-  | 'microsoftPersonal'
-  | 'yahooPersonal';
+  | 'microsoftPersonal';
+// | 'yahooPersonal'; remove yahooPersonal type
 
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
-
   const theme = useTheme();
-
   const mdUp = useResponsive('up', 'md');
-
   const { hosts, assignedCount } = useGetSeedSettings();
-
+  const { seedAccounts, totalSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
+  const { prefillMessage } = useSalesmateChat();
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -61,14 +54,14 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
-    yahooPersonal: Yup.number(),
+    // yahooPersonal: Yup.number(), not needed anymore
     totalSeedAccounts: Yup.number(),
     seedAccountsGenerator: Yup.number(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: '',
+      name: currentItem?.name || format(new Date(), 'MMM do yyyy'),
       hostId: {
         label: '',
         value: '',
@@ -88,22 +81,21 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
-
   const {
     reset,
     handleSubmit,
     formState: { isSubmitting },
     watch,
     setValue,
+    getValues,
   } = methods;
 
-  const totalSeedAccounts = watch('totalSeedAccounts');
   const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
   const googlePersonal = watch('googlePersonal');
   const microsoftBusiness = watch('microsoftBusiness');
   const microsoftPersonal = watch('microsoftPersonal');
-  const yahooPersonal = watch('yahooPersonal');
+  // const yahooPersonal = watch('yahooPersonal'); not needed anymore
 
   useEffect(() => {
     if (currentItem) {
@@ -113,16 +105,13 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const res = await fetch('/api/seed/create', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      const body = JSON.stringify(data);
+      const res = await fetch(endpoints.seed.create, { method: 'POST', body });
 
-      if (!res.ok) {
-        throw new Error('Failed to create seed batch');
-      }
+      if (!res.ok) throw new Error('Failed to create seed batch');
+
       enqueueSnackbar('Create success!');
-      router.push(paths.dashboard.seed.root);
+      router.push(paths.seed.root);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -131,42 +120,69 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
-  useEffect(() => {
-    const distributeAccounts = (total: number) => {
-      const types: SeedAccountType[] = [
-        'googleBusiness',
-        'googlePersonal',
-        'microsoftBusiness',
-        'microsoftPersonal',
-        'yahooPersonal',
-      ];
-      const count = Math.floor(total / types.length);
-      const remainder = total % types.length;
+  const handleSalesmateOpen = () => {
+    prefillMessage('I am interested in more seeds account.');
+  };
 
-      types.forEach((type, index) => {
-        setValue(type, count + (index < remainder ? 1 : 0));
+  useEffect(() => {
+    const distributeAccounts = (total: number, seeds: ISeedAccount[]) => {
+      if (!seeds || seeds.length === 0) return;
+
+      const allocations: { [key: string]: number } = {};
+      let remaining = total;
+
+      // Initialize allocations
+      seeds.forEach((seed) => {
+        allocations[seed.name] = 0;
+      });
+
+      // Sort seeds by available capacity (amount - current allocation) descending
+      const sortedSeeds = [...seeds].sort(
+        (a, b) => b.amount - allocations[b.name] - (a.amount - allocations[a.name])
+      );
+
+      const allocateSeeds = (allocated: boolean) => {
+        sortedSeeds.some((seed) => {
+          const currentAllocation = allocations[seed.name];
+          if (currentAllocation < seed.amount) {
+            allocations[seed.name] += 1;
+            remaining -= 1;
+            allocated = true;
+            return remaining === 0; // Stop iterating if no more remaining
+          }
+          return false; // Continue to next seed
+        });
+        return allocated;
+      };
+
+      while (remaining > 0) {
+        let allocated = false;
+        allocated = allocateSeeds(allocated);
+        if (!allocated) break;
+      }
+
+      // Set the values in the form
+      seeds.forEach((seed) => {
+        const type = seed.name as SeedAccountType;
+        const desiredValue = allocations[seed.name];
+
+        if (getValues(type) !== desiredValue) {
+          setValue(type, desiredValue);
+        }
       });
     };
 
-    distributeAccounts(seedAccountsGenerator as number);
-  }, [seedAccountsGenerator, setValue]);
+    distributeAccounts(seedAccountsGenerator as number, seedAccounts);
+  }, [seedAccountsGenerator, seedAccounts, setValue, getValues]);
 
   useEffect(() => {
     const total =
       (googleBusiness ?? 0) +
       (googlePersonal ?? 0) +
       (microsoftBusiness ?? 0) +
-      (microsoftPersonal ?? 0) +
-      (yahooPersonal ?? 0);
+      (microsoftPersonal ?? 0);
     setValue('totalSeedAccounts', total);
-  }, [
-    googleBusiness,
-    googlePersonal,
-    microsoftBusiness,
-    microsoftPersonal,
-    yahooPersonal,
-    setValue,
-  ]);
+  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal, setValue]);
 
   const renderProperties = (
     <>
@@ -193,7 +209,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
               <RHFAutocomplete
                 name="hostId"
-                label="Choose a host"
+                label="Choose sender profile"
                 placeholder="outreachmagic"
                 options={hostOptions}
               />
@@ -203,6 +219,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
             <SeedAccountsGenerator
               assignedCount={assignedCount}
+              seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
             />
           </Stack>
@@ -219,11 +236,18 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             quality={100}
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Create new list
+            Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You can send to {assignedCount} email accounts each day. Contact us if you have
-            questions or you need more accounts.
+            You can send to {assignedCount} email accounts each day.{' '}
+            <Link href={paths.checkout.root} variant="subtitle2">
+              Upgrade your subscription
+            </Link>
+            . Or{' '}
+            <Link variant="subtitle2" sx={{ cursor: 'pointer' }} onClick={handleSalesmateOpen}>
+              contact us
+            </Link>{' '}
+            if you have questions.
           </Typography>
           <LoadingButton
             type="submit"

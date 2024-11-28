@@ -1,50 +1,39 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import {
   DataGrid,
   GridColDef,
-  GridActionsCellItem,
-  GridToolbarContainer,
-  GridRowSelectionModel,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridToolbarColumnsButton,
   GridColumnVisibilityModel,
+  GridRowSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
+import { useCallback, useEffect, useState } from 'react';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
 import { useGetSeeds } from 'src/hooks/api/seed';
 import { useBoolean } from 'src/hooks/use-boolean';
-
-import { endpoints } from 'src/utils/swr';
-
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
-import EmptyContent from 'src/components/empty-content';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import { ISeed } from 'src/types/seed';
-
+import { endpoints } from 'src/utils/swr';
 import {
-  RenderCellToken,
-  RenderCellPublish,
   RenderCellDateAdded,
   RenderCellImportName,
+  RenderCellPublish,
   RenderCellResultsTotal,
-  RenderCellGenerateTotal,
 } from '../seed-table-row';
-
-// ----------------------------------------------------------------------
 
 const HIDE_COLUMNS = {
   category: false,
@@ -52,21 +41,13 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-// ----------------------------------------------------------------------
-
 export default function SeedView() {
   const { enqueueSnackbar } = useSnackbar();
-
   const confirmRows = useBoolean();
-
   const settings = useSettingsContext();
-
   const { seeds, seedsLoading } = useGetSeeds();
-
   const [tableData, setTableData] = useState<ISeed[]>([]);
-
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
@@ -80,30 +61,30 @@ export default function SeedView() {
     inputData: tableData,
   });
 
-  const handleDeleteRow = useCallback(
-    async (id: string) => {
-      try {
-        const res = await fetch(endpoints.seed.delete, {
-          method: 'POST',
-          body: JSON.stringify({ ids: [id] }),
-        });
+  // const handleDeleteRow = useCallback(
+  //   async (id: string) => {
+  //     try {
+  //       const res = await fetch(endpoints.seed.delete, {
+  //         method: 'POST',
+  //         body: JSON.stringify({ ids: [id] }),
+  //       });
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error);
-        }
+  //       if (!res.ok) {
+  //         const data = await res.json();
+  //         throw new Error(data.error);
+  //       }
 
-        enqueueSnackbar('Item deleted', { variant: 'warning' });
+  //       enqueueSnackbar('Item deleted', { variant: 'warning' });
 
-        const newTableData = tableData.filter((row) => row._id.toString() !== id);
+  //       const newTableData = tableData.filter((row) => row._id.toString() !== id);
 
-        setTableData(newTableData);
-      } catch (error) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-      }
-    },
-    [enqueueSnackbar, tableData]
-  );
+  //       setTableData(newTableData);
+  //     } catch (error) {
+  //       enqueueSnackbar(error.message, { variant: 'error' });
+  //     }
+  //   },
+  //   [enqueueSnackbar, tableData]
+  // );
 
   const handleDeleteRows = useCallback(async () => {
     try {
@@ -141,40 +122,54 @@ export default function SeedView() {
 
   const columns: GridColDef[] = [
     {
-      field: 'dateAdded',
-      headerName: 'Date added',
-      flex: 1,
-      minWidth: 160,
-      hideable: false,
-      renderCell: (params) => <RenderCellDateAdded params={params} />,
-    },
-    {
       field: 'name',
-      headerName: 'Import name',
+      headerName: 'List name',
       flex: 1,
       minWidth: 200,
       hideable: false,
       renderCell: (params) => <RenderCellImportName params={params} />,
     },
     {
-      field: 'generate.total',
-      headerName: 'Generate total',
-      width: 160,
-      renderCell: (params) => <RenderCellGenerateTotal params={params} />,
+      field: 'download',
+      headerName: 'CSV',
+      width: 120,
+      type: 'singleSelect',
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <Stack direction="row">
+          <Tooltip title="Download CSV" placement="top">
+            <Button
+              startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
+              onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
+              size="small"
+              sx={{ zIndex: 20, px: 1 }}
+            >
+              Download
+            </Button>
+          </Tooltip>
+        </Stack>
+      ),
     },
+    // {
+    //   field: 'generate.total',
+    //   headerName: 'Generate total',
+    //   width: 160,
+    //   renderCell: (params) => <RenderCellGenerateTotal params={params} />,
+    // },
     {
       field: 'results.total',
-      headerName: 'Results total',
+      headerName: 'List size',
       width: 160,
       type: 'singleSelect',
       renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
-    {
-      field: 'token',
-      headerName: 'Token',
-      width: 120,
-      renderCell: (params) => <RenderCellToken params={params} />,
-    },
+    // {
+    //   field: 'token',
+    //   headerName: 'Token',
+    //   width: 120,
+    //   renderCell: (params) => <RenderCellToken params={params} />,
+    // },
     {
       field: 'status',
       headerName: 'Status',
@@ -183,32 +178,12 @@ export default function SeedView() {
       renderCell: (params) => <RenderCellPublish params={params} />,
     },
     {
-      type: 'actions',
-      field: 'actions',
-      headerName: ' ',
-      align: 'right',
-      headerAlign: 'right',
-      width: 80,
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:eye-bold" />}
-          label="Download CSV"
-          onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          icon={<Iconify icon="solar:trash-bin-trash-bold" />}
-          label="Delete"
-          onClick={() => {
-            handleDeleteRow(params.row._id);
-          }}
-          sx={{ color: 'error.main' }}
-        />,
-      ],
+      field: 'dateAdded',
+      headerName: 'Created on',
+      flex: 1,
+      minWidth: 160,
+      hideable: false,
+      renderCell: (params) => <RenderCellDateAdded params={params} />,
     },
   ];
 
@@ -220,7 +195,7 @@ export default function SeedView() {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'xl'}
+        maxWidth={settings.themeStretch ? false : 'lg'}
         sx={{
           flexGrow: 1,
           display: 'flex',
@@ -229,17 +204,12 @@ export default function SeedView() {
       >
         <CustomBreadcrumbs
           heading="Seeds"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            {
-              name: 'Seeds',
-            },
-          ]}
+          links={[{ name: 'Seeds' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
-                href={paths.dashboard.seed.new}
+                href={paths.seed.new}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
@@ -360,4 +330,3 @@ function applyFilter({ inputData }: { inputData: ISeed[] }) {
 
   return sortedData;
 }
-

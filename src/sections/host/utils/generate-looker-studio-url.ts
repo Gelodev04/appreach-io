@@ -1,3 +1,11 @@
-export function generateLookerStudioUrl(hostCrypt: string): string {
-  return `https://lookerstudio.google.com/embed/u/0/reporting/f5edec0e-e43b-444a-a04c-680c2bc37a2d/page/p_7qpzt55gad?params=%7B%22hc%22:%22${hostCrypt}%22%7D`;
+import { env } from 'src/data/env/client';
+
+const liveBaseUrl = env.NEXT_PUBLIC_LIVE_LOOKER_URL;
+
+export function generateLookerStudioUrl(hostCrypts: string[], baseUrl?: string): string {
+  const effectiveBaseUrl = baseUrl || liveBaseUrl;
+  if (!effectiveBaseUrl) throw new Error('Looker url is not defined');
+
+  const idsString = hostCrypts.join(',');
+  return effectiveBaseUrl.replace('{}', idsString);
 }

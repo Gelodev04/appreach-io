@@ -11,3 +11,46 @@
 
 - npm i OR npm i --legacy-peer-deps
 - npm run dev
+
+## Environment Variables
+
+`IF THERE IS A NEW VARIABLE DO THE FOLLOWING:`
+
+- add the NEXT_PUBLIC variables in src/data/client.ts
+- add the private variables in src/data/server.ts
+
+`MONGODB_URI=""`
+
+> The connection string for the MongoDB database. This URI includes the username, password, cluster address, and default database.
+
+`SEED_EMAIL_GENERATOR=""`
+
+> The URL endpoint for the Seed Emails Generator Cloud Function. This function is used to generate seed emails.
+
+`NEXTAUTH_SECRET=""`
+
+> A secret key used by NextAuth.js to encrypt session data and generate tokens.
+
+`NEXT_PUBLIC_LIVE_LOOKER_URL=""`
+
+> The public URL used to embed Looker Studio reports within the application.
+
+`SENDGRID_API_TOKEN=""`
+
+> The API token for SendGrid, used for sending emails from your application.
+
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=""`
+
+> The publishable (public) key for Stripe, used on the client side to process payments.
+
+`STRIPE_SECRET_KEY=""`
+
+> The secret key for Stripe, used on the server side to process payments securely.
+
+`EMAIL_VERIFICATON_WEBHOOK=`
+
+> Api endpoint for requesting email verification
+
+`INVOKER_TOKEN=""`
+
+> Token for the confirmation link after email verification

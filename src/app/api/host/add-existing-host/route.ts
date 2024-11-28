@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb';
-
-import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 
 export async function POST(request: Request) {
   try {
@@ -10,11 +9,10 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { hostName } = data;
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
-   
-    const user = await getUser()
+    const db = client.db();
 
-     const host = await db.collection('hosts').findOne({ hostCrypt: hostName });
+    const user = await getUser();
+    const host = await db.collection('hosts').findOne({ hostCrypt: hostName });
 
     if (!host) {
       return new Response(JSON.stringify({ error: 'This host does not exist' }), { status: 404 });
@@ -24,16 +22,15 @@ export async function POST(request: Request) {
     const userHostsIds = user.hosts.map((_id: ObjectId) => _id.toString());
 
     if (userHostsIds.includes(hostId)) {
-      return new Response(JSON.stringify({ error: 'The host has already been added.' }), { status: 400 });
+      return new Response(JSON.stringify({ error: 'The host has already been added.' }), {
+        status: 400,
+      });
     }
 
     user.hosts.push(host._id);
     await db
       .collection('userSettings')
-      .updateOne(
-        { 'appLogin.username': session?.user.email },
-        { $set: { hosts: user.hosts } }
-      );
+      .updateOne({ 'appLogin.username': session?.user.email }, { $set: { hosts: user.hosts } });
 
     return new Response(JSON.stringify({ message: 'Host added successfully' }), {
       status: 200,

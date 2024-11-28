@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { ObjectId } from 'mongodb';
-
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-
+import { env } from 'src/data/env/server';
 import { generateRandomChars } from 'src/sections/host/utils/generate-host-crypt';
 
 export async function POST(request: Request) {
@@ -17,11 +16,11 @@ export async function POST(request: Request) {
       microsoftBusiness,
       microsoftPersonal,
       yahooPersonal,
-      totalSeedAccounts
+      totalSeedAccounts,
     } = data;
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE || undefined);
+    const db = client.db();
 
     await db.collection('seedBatches').insertOne({
       name,
@@ -33,16 +32,16 @@ export async function POST(request: Request) {
           googlePersonal,
           microsoftBusiness,
           microsoftPersonal,
-          yahooPersonal
+          yahooPersonal,
         },
-        type: 'engagement'
+        type: 'engagement',
       },
       hostId: new ObjectId(hostId.value),
       status: 'ready',
-      token: generateRandomChars()
-    })
+      token: generateRandomChars(),
+    });
 
-    await axios.post(process.env.SEED_EMAIL_GENERATOR as string)
+    await axios.post(env.SEED_EMAIL_GENERATOR as string);
 
     return Response.json({ message: 'Seed batch created successfully' });
   } catch (error) {

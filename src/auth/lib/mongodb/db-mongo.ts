@@ -1,13 +1,13 @@
 /* eslint-disable */
 import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MONGODB_URI } from 'src/config-global';
 
-if (!process.env.MONGODB_URI) {
+if (!MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
 
-const uri = process.env.MONGODB_URI;
+const uri = MONGODB_URI;
 const options = {
-  useUnifiedTopology: false,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,

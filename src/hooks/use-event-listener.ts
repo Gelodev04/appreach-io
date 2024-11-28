@@ -1,4 +1,4 @@
-import { useRef, RefObject, useEffect, useLayoutEffect } from 'react';
+import { RefObject, useEffect, useLayoutEffect, useRef } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -61,7 +61,6 @@ export function useEventListener<
     targetElement.addEventListener(eventName, eventListener, options);
 
     // Remove event listener on cleanup
-    // eslint-disable-next-line consistent-return
     return () => {
       targetElement.removeEventListener(eventName, eventListener);
     };

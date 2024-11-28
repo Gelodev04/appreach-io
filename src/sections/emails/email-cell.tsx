@@ -52,15 +52,15 @@ const RenderEmailCell = ({ params, type }: RenderEmailCellProps) => {
     case 'smtp':
       if (params.row.smtp) {
         return <Iconify icon="mdi:check" color="success.main" />;
-      } 
-        return <Iconify icon="mdi:close" color="error.main" />;
-      
+      }
+      return <Iconify icon="mdi:close" color="error.main" />;
+
     case 'imap':
       if (params.row.imap) {
         return <Iconify icon="mdi:check" color="success.main" />;
-      } 
-        return <Iconify icon="mdi:close" color="error.main" />;
-      
+      }
+      return <Iconify icon="mdi:close" color="error.main" />;
+
     case 'status':
       return (
         <Label variant="soft" color={(params.row.status === 'Active' && 'success') || 'error'}>

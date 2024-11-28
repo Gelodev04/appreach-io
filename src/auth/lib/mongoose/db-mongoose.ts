@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-
 import { MONGODB_URI } from 'src/config-global';
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
 
 const dbMongoose = async () => {

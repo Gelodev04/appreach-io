@@ -1,17 +1,15 @@
+import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import { GridCellParams } from '@mui/x-data-grid';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
-import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
-
 import Iconify from 'src/components/iconify/iconify';
 import { useSnackbar } from 'src/components/snackbar';
+import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
+import { generateLookerStudioUrl } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -20,13 +18,11 @@ type ParamsProps = {
 };
 
 export function RenderHostName({ params }: ParamsProps) {
-  const href = paths.dashboard.host.edit(params.row._id.toString());
+  const href = paths.settings.edit(params.row._id.toString());
 
   return (
     <Link component={RouterLink} href={href} color="inherit">
-      <Typography variant="subtitle1" sx={{ my: 2 }}>
-        {params.row.host}
-      </Typography>
+      <Typography sx={{ my: 2 }}>{params.row.host}</Typography>
     </Link>
   );
 }
@@ -40,13 +36,19 @@ export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { enqueueSnackbar } = useSnackbar();
   const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
-    copy(params.row.lookerStudioUrl);
+    const { hostCrypt } = params.row;
+    const generatedUrl = generateLookerStudioUrl([hostCrypt as string]);
+    copy(generatedUrl);
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
+
   const handleGoToUrl = (event: React.MouseEvent) => {
     event.stopPropagation();
-    window.open(params.row.lookerStudio.embedUrl, '_blank');
+    const { hostCrypt } = params.row;
+    const generatedUrl = generateLookerStudioUrl([hostCrypt as string]);
+    window.open(generatedUrl, '_blank');
   };
+
   return (
     <Stack direction="row">
       <Tooltip title="Copy url" placement="top">

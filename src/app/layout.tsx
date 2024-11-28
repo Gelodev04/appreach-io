@@ -1,20 +1,13 @@
-/* eslint-disable perfectionist/sort-imports */
 import 'src/global.css';
 
-// ----------------------------------------------------------------------
-
+import { SessionProvider } from 'next-auth/react';
+import { AuthProvider } from 'src/auth/context/jwt';
+import { MotionLazy } from 'src/components/animate/motion-lazy';
+import ProgressBar from 'src/components/progress-bar';
+import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
+import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-
-import ProgressBar from 'src/components/progress-bar';
-import { MotionLazy } from 'src/components/animate/motion-lazy';
-import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
-import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
-
-import { AuthProvider } from 'src/auth/context/jwt';
-import { SessionProvider } from 'next-auth/react';
-
-// ----------------------------------------------------------------------
 
 export const viewport = {
   themeColor: '#000000',
@@ -24,7 +17,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Outreach Magic',
+  title: 'Inbox Daddy',
   description:
     'Leverage our powerful email deliverability tools to ensure your emails land directly in the primary inbox. ',
   keywords: 'react,material,kit,application,dashboard,admin,template',
@@ -53,7 +46,7 @@ export default function RootLayout({ children }: Props) {
                 themeDirection: 'ltr', //  'rtl' | 'ltr'
                 themeContrast: 'default', // 'default' | 'bold'
                 themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                themeColorPresets: 'orange', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
                 themeStretch: false,
               }}
             >

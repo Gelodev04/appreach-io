@@ -1,22 +1,15 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
-import { hideScroll } from 'src/theme/css';
-
 import { LogoSymbol } from 'src/components/logo';
 import { NavSectionMini } from 'src/components/nav-section';
-
+import { useMockedUser } from 'src/hooks/use-mocked-user';
+import { hideScroll } from 'src/theme/css';
+import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
-import NavToggleButton from '../common/nav-toggle-button';
-
-// ----------------------------------------------------------------------
 
 export default function NavMini() {
   const { user } = useMockedUser();
-
   const navData = useNavData();
 
   return (

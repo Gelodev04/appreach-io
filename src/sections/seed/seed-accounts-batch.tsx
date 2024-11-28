@@ -1,17 +1,19 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
-import Label from 'src/components/label/label';
+import { useFormContext } from 'react-hook-form';
 import { RHFTextField } from 'src/components/hook-form';
+import Label from 'src/components/label/label';
+import { ISeedAccount } from 'src/types/seed';
 
-// ----------------------------------------------------------------------
+export default function SeedAccountsBatch({ seed }: { seed: ISeedAccount }) {
+  const { setValue } = useFormContext();
 
-interface SeedAccountsBatchProps {
-  name: string;
-  amount: number;
-}
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    const newValue = Math.min(Math.max(0, value || 0), seed.amount);
+    if (value <= seed.amount) setValue(seed.name, newValue);
+  };
 
-export default function SeedAccountsBatch({ seed }: { seed: SeedAccountsBatchProps }) {
   return (
     <Stack direction="row" gap={1} alignItems="center">
       <Label color="primary">{seed.amount}</Label>
@@ -23,6 +25,7 @@ export default function SeedAccountsBatch({ seed }: { seed: SeedAccountsBatchPro
         sx={{ maxWidth: 60 }}
         placeholder="25"
         type="number"
+        onChange={handleInputChange}
       />
     </Stack>
   );
