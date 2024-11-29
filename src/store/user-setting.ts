@@ -22,6 +22,7 @@ export const useUsersPlanStore = create<IUserSettings>()(
         setUserPlan: (plan) => set(() => ({ ...plan })),
       }),
       { name: 'usersPlanStore' }
-    )
+    ),
+    { enabled: process.env.NODE_ENV === 'development' }
   )
 );
