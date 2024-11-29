@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { getUserSettings } from 'src/services/db/user-settings';
+import { useUsersPlanStore } from 'src/store/user-setting';
 
 // ----------------------------------------------------------------------
 
@@ -27,11 +29,12 @@ export default function AuthGuard({ children }: Props) {
 function Container({ children }: Props) {
   const router = useRouter();
   const { status } = useSession();
+  const setUserPlan = useUsersPlanStore((state) => state.setUserPlan);
   const authenticated = status === 'authenticated' || status === 'loading';
 
   const [checked, setChecked] = useState(false);
 
-  const check = useCallback(() => {
+  const check = useCallback(async () => {
     if (!authenticated) {
       const loginPath = loginPaths.nextAuth;
       const href = `${loginPath}`;
@@ -39,8 +42,14 @@ function Container({ children }: Props) {
       router.replace(href);
     } else {
       setChecked(true);
+      const { plan } = await getUserSettings({ plan: true });
+      if (!plan) {
+        console.log('No plan found.');
+        return undefined;
+      }
+      setUserPlan({ ...plan });
     }
-  }, [authenticated, router]);
+  }, [authenticated, router, setUserPlan]);
 
   useEffect(() => {
     check();
