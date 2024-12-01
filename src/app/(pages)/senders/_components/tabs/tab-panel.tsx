@@ -17,11 +17,7 @@ export default function TabPanel(props: TabPanelProps) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }
