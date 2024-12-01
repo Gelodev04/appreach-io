@@ -80,7 +80,6 @@ export const getUserSettingsByEmail = async (
   email: string,
   selectFields?: Prisma.userSettingsSelect
 ) => {
-  console.log({ email });
   const session = await auth();
   const id = session?.user.id;
   try {
@@ -97,10 +96,9 @@ export const getUserSettingsByEmail = async (
       },
       select: selectFields,
     });
-    console.log({ userSettings });
     return userSettings;
   } catch (error) {
-    console.error('Error on getting user settings:', error); // Log the actual error
-    throw new Error('Error on getting user settings.'); // Throw a user-friendly error
+    console.error('Error on getting user settings by email:', error); // Log the actual error
+    throw new Error('Error on getting user settings by email.'); // Throw a user-friendly error
   }
 };
