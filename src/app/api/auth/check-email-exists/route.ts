@@ -1,17 +1,18 @@
-import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { env } from 'src/data/env/server';
+import { getUserSettingsByEmail } from 'src/services/db/user-settings';
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const client = await clientPromise;
-    const db = client.db(env.MONGODB_URI as string);
 
     const { email } = data;
     if (!email) throw new Error('Email is required');
 
-    const user = await db.collection('userSettings').findOne({ 'appLogin.username': email });
+    const user = await getUserSettingsByEmail(data.email, {
+      appLogin: { select: { username: true } },
+    });
+
     if (user) {
+      console.log({ user });
       throw new Error('Email is already has an account. Please use a different email or sign in');
     }
 
