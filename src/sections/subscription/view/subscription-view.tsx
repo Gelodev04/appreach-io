@@ -20,6 +20,7 @@ import {
 } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
 import { env } from 'src/data/env/client';
+import { updateSubcription } from 'src/services/stripe/update-subscription';
 import { CheckoutElement } from '../checkout-element';
 
 // Stripe promise for loading the Stripe object
@@ -40,8 +41,12 @@ export default function SubscriptionView() {
     try {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
-      const sessionId = await createSubscriptionSession(email, priceId);
-      await redirectToCheckout(sessionId);
+      if (subscription?.status === 'active') {
+        const updatedSubscription = await updateSubcription(subscription.subscription_id, priceId);
+      } else {
+        const sessionId = await createSubscriptionSession(email, priceId);
+        await redirectToCheckout(sessionId);
+      }
     } catch (err) {
       enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
     }
