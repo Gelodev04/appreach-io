@@ -20,8 +20,10 @@ import {
 } from 'src/utils/stripe';
 import { endpoints } from 'src/utils/swr';
 import { env } from 'src/data/env/client';
-import { updateSubcription } from 'src/services/stripe/update-subscription';
+import { getSubscriptionsById, updateSubcription } from 'src/services/stripe/update-subscription';
+import { useState } from 'react';
 import { CheckoutElement } from '../checkout-element';
+import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -29,10 +31,13 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 export default function SubscriptionView() {
   const { enqueueSnackbar } = useSnackbar();
   const { subscription, subscriptionLoading } = useCurrentSubscription();
+  const [nextPlan, setNextPlan] = useState<SubscriptionData>();
+  const [type, setType] = useState<'downgrade' | 'upgrade'>('upgrade');
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const trialExpired = searchParams.get('trial_expired');
   const confirmCancel = useBoolean();
+  const confirmUpgradeDowngrade = useBoolean();
 
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
@@ -42,6 +47,9 @@ export default function SubscriptionView() {
       const email = session?.user.email;
       if (!email) throw new Error('Email is required for checkout.');
       if (subscription?.status === 'active') {
+        // TODO: open confirmation dialog
+        // if true updateSubcription
+        // if false close
         const updatedSubscription = await updateSubcription(subscription.subscription_id, priceId);
       } else {
         const sessionId = await createSubscriptionSession(email, priceId);
@@ -100,7 +108,22 @@ export default function SubscriptionView() {
   };
 
   const handlePlanSelection = (plan: SubscriptionData) => {
+    const currentSubcription = getSubmitTitle(plan.key);
+
     const isCurrent = subscription?.lookup_key === plan.key;
+    if (currentSubcription === 'Upgrade' && subscription && !isCurrent) {
+      confirmUpgradeDowngrade.setValue(true);
+      setType('upgrade');
+      setNextPlan(plan);
+      return undefined;
+    }
+
+    if (currentSubcription === 'Downgrade' && subscription && !isCurrent) {
+      confirmUpgradeDowngrade.setValue(true);
+      setType('downgrade');
+      setNextPlan(plan);
+      return undefined;
+    }
 
     // Set next plan data for upgrade/downgrade confirmation dialog
     // const nextSubscriptionData = getSubscriptionData(plan.priceId);
@@ -263,13 +286,13 @@ export default function SubscriptionView() {
         }
       />
 
-      {/* <UpgradeDowngradeConfirmDialog
-        open={confirmSubscription.value}
-        onClose={confirmSubscription.onFalse}
-        onConfirm={nextActionType === 'downgrade' ? handleDowngrade : undefined}
+      <UpgradeDowngradeConfirmDialogV2
+        open={confirmUpgradeDowngrade.value}
+        onClose={confirmUpgradeDowngrade.onFalse}
         nextPlan={nextPlan}
-        type={nextActionType}
-      /> */}
+        onConfirm={() => {}}
+        type={type}
+      />
     </>
   );
 }

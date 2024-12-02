@@ -19,13 +19,7 @@ export const getSubscriptionsById = async (subscriptionId: string) => {
 export const updateSubcription = async (subscriptionId: string, newPriceId: string) => {
   try {
     const currentSubscription = await getSubscriptionsById(subscriptionId);
-    console.log({ currentSubscription });
     const subscriptionItemId = currentSubscription.items.data[0].id; // Assuming you want to update the first item
-    /* TODO: FOR TESTING */
-    // update the current start date of subscription
-    const fiveDaysAgo = Math.floor(Date.now() / 1000) - 5 * 86400;
-    console.log(fiveDaysAgo);
-
     const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
       items: [
         {
@@ -35,7 +29,7 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
       ],
       proration_behavior: 'always_invoice', // Options: 'create_prorations', 'none', 'always_invoice'
     });
-    if (updatedSubscription) {
+    /* if (updatedSubscription) {
       const id = updatedSubscription?.latest_invoice as string;
       const invoice = await stripe.invoices.retrieve(id);
       if (invoice) {
@@ -44,8 +38,8 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
       } else {
         console.log('No invoice found for the updated subscription');
       }
-    }
-    return updatedSubscription;
+    } */
+    return !!updatedSubscription;
   } catch (error) {
     console.error('Error updating subscription:', error);
     throw error;
