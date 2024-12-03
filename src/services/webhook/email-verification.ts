@@ -19,13 +19,13 @@ export const requestForEmailVerification = async ({
   txtRecord,
 }: UnverifiedEmailType) => {
   const routeToken = type === 'email' ? token : txtRecord;
-  const webhookUrl = `${env.EMAIL_VERIFICATON_WEBHOOK}?id=${id}&token=${routeToken}`;
+  const webhookUrl = `${env.VERIFY_SENDERS_FUNCTION}?id=${id}&token=${routeToken}`;
   const { data } = await axios.post(webhookUrl);
   const route = type === 'email' ? '/sender-emails' : 'verify-domains';
   if (data?.status === 'SUCCESS') {
     return {
       ...data,
-      confirmationUrl: `${env.EMAIL_VERIFICATON_WEBHOOK}/${route}?token=${env.INVOKER_TOKEN}`,
+      confirmationUrl: `${env.VERIFY_SENDERS_FUNCTION}/${route}?token=${env.INVOKER_TOKEN}`,
     };
   }
 
