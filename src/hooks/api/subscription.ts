@@ -7,7 +7,6 @@ export function useCurrentSubscription() {
   const URL = endpoints.stripe.subscriptions;
 
   const { data, isLoading, error, isValidating } = useSWR<UserSubscriptionPlan>(URL, fetcher);
-  console.log({ data });
   const memoizedValue = useMemo(
     () => ({
       subscription: data,

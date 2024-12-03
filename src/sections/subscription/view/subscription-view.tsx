@@ -92,6 +92,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         if (updatedSubscription) {
           enqueueSnackbar(`Updated the plan successfully`, { variant: 'success' });
           confirmUpgradeDowngrade.setValue(false);
+          router.refresh();
         }
       } else {
         enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
