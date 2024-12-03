@@ -1,26 +1,16 @@
-import { Suspense } from 'react';
 import { getCurrentSubscription } from 'src/services/stripe/update-subscription';
-import dynamic from 'next/dynamic';
-import SkeletonSubscription from './_component/skeleton-subcription';
+import SubscriptionView from 'src/sections/subscription/view/subscription-view';
 
 export const metadata = {
   title: 'Upgrade Plan | Inbox Daddy',
 };
+export const dynamic = 'force-dynamic';
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 2500));
-
-const SubscriptionView = dynamic(() => import('src/sections/subscription/view/subscription-view'), {
-  loading: () => <SkeletonSubscription />,
-  ssr: true,
-});
 
 export default async function Page() {
   console.log('server waS CALL');
   await delay();
   const currentSubcriptions = await getCurrentSubscription();
-  return (
-    <Suspense fallback={<SkeletonSubscription />}>
-      <SubscriptionView subscription={currentSubcriptions} />
-    </Suspense>
-  );
+  return <SubscriptionView subscription={currentSubcriptions} />;
 }
