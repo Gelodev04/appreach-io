@@ -21,7 +21,7 @@ import {
 import { endpoints } from 'src/utils/swr';
 import { env } from 'src/data/env/client';
 import { updateSubcription } from 'src/services/stripe/update-subscription';
-import { Suspense, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserSettingsPlan } from '@prisma/client';
 import { CheckoutElement } from '../checkout-element';
@@ -92,7 +92,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         if (updatedSubscription) {
           enqueueSnackbar(`Updated the plan successfully`, { variant: 'success' });
           confirmUpgradeDowngrade.setValue(false);
-          router.refresh();
         }
       } else {
         enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
@@ -127,24 +126,21 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     return handleSubscribe(plan.priceId);
   };
 
-  const getSubmitTitle = useCallback(
-    (planKey: string) => {
-      if (!subscription) return 'Upgrade';
+  const getSubmitTitle = (planKey: string) => {
+    if (!subscription) return 'Upgrade';
 
-      const isCanceled = subscription?.status === 'canceled';
-      if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
+    const isCanceled = subscription?.status === 'canceled';
+    if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
-      const currentPlanData = getSubscriptionData(subscription.price_id);
-      const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
+    const currentPlanData = getSubscriptionData(subscription.price_id);
+    const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
 
-      if (currentPlanData && nextPlanData) {
-        return nextPlanData.order < currentPlanData.order ? 'Downgrade' : 'Upgrade';
-      }
+    if (currentPlanData && nextPlanData) {
+      return nextPlanData.order < currentPlanData.order ? 'Downgrade' : 'Upgrade';
+    }
 
-      return 'Upgrade';
-    },
-    [subscription]
-  );
+    return 'Upgrade';
+  };
 
   const getSubmitSubtitle = (planKey: string) => {
     const isCurrent = planKey === subscription?.lookup_key;

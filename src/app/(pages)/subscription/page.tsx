@@ -5,7 +5,7 @@ export const metadata = {
   title: 'Upgrade Plan | Inbox Daddy',
 };
 
-const delay = () => new Promise((resolve) => setTimeout(resolve, 2000));
+const delay = () => new Promise((resolve) => setTimeout(resolve, 2500));
 
 export default async function Page() {
   await delay();
