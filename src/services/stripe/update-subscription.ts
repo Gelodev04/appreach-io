@@ -1,9 +1,17 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { env } from 'src/data/env/server';
+import { paths } from 'src/routes/paths';
 import Stripe from 'stripe';
+import { getUserSettings } from '../db/user-settings';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || '');
+
+export const getCurrentSubscription = async () => {
+  const { plan } = await getUserSettings({ plan: true });
+  return plan;
+};
 
 export const getSubscriptionsById = async (subscriptionId: string) => {
   try {
@@ -39,6 +47,7 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
         console.log('No invoice found for the updated subscription');
       }
     } */
+    revalidatePath(paths.checkout.root);
     return !!updatedSubscription;
   } catch (error) {
     console.error('Error updating subscription:', error);

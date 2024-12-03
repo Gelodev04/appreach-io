@@ -1,14 +1,10 @@
-import { Button } from '@mui/material';
-import { format } from 'date-fns';
-import { useSession } from 'next-auth/react';
-import { useEffect, useMemo, useState } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { Button, Typography } from '@mui/material';
+import { useMemo, useTransition } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSnackbar } from 'src/components/snackbar';
 import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { SubscriptionData } from 'src/types/stripe';
-import { fCurrency } from 'src/utils/format-number';
-import { createCheckoutSession, getSubscriptionData, redirectToCheckout } from 'src/utils/stripe';
-import { calcProrationAmount } from './utils/calc-proration-amount';
+import { getSubscriptionData } from 'src/utils/stripe';
 
 type Props = {
   open: boolean;
@@ -25,27 +21,26 @@ export function UpgradeDowngradeConfirmDialogV2({
   type,
   nextPlan,
 }: Props) {
-  const { enqueueSnackbar } = useSnackbar();
   const { subscription } = useCurrentSubscription();
-  const { data: session } = useSession();
-  const [prorationValue, setProrationValue] = useState<number>(0);
+  const [isPending, startTransition] = useTransition();
+
+  const handleConfirm = () => {
+    startTransition(() => {
+      if (onConfirm) onConfirm();
+    });
+  };
 
   const currentPlan = useMemo(() => {
     if (!subscription) return null;
     return getSubscriptionData(subscription.price_id);
   }, [subscription]);
 
-  const endSubscriptionDate = useMemo(() => {
-    if (!subscription?.current_period_end) return '';
-    return format(new Date(subscription.current_period_end), 'MMMMMM do yyyy');
-  }, [subscription]);
-
   const renderContent = (
-    <p>
+    <Typography sx={{ textAlign: 'left' }}>
       {type === 'upgrade'
         ? `You are  upgrading from the '${currentPlan?.name} Plan' to the '${nextPlan?.name} Plan'.`
         : `You are downgrading from the '${currentPlan?.name} Plan' to the '${nextPlan?.name} Plan.`}
-    </p>
+    </Typography>
   );
 
   return (
@@ -57,17 +52,19 @@ export function UpgradeDowngradeConfirmDialogV2({
       content={renderContent}
       action={
         <>
-          <Button variant="outlined" onClick={onClose}>
+          <Button variant="outlined" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button
+          <LoadingButton
             variant="contained"
-            disabled={type === 'upgrade' && !prorationValue}
             color="primary"
-            onClick={onConfirm}
+            onClick={handleConfirm}
+            loadingIndicator={<Typography>Updating...</Typography>}
+            sx={{ paddingX: 3 }}
+            loading={isPending}
           >
             Confirm
-          </Button>
+          </LoadingButton>
         </>
       }
     />
