@@ -9,7 +9,6 @@ export const dynamic = 'force-dynamic';
 const delay = () => new Promise((resolve) => setTimeout(resolve, 2500));
 
 export default async function Page() {
-  console.log('server waS CALL');
   await delay();
   const currentSubcriptions = await getCurrentSubscription();
   return <SubscriptionView subscription={currentSubcriptions} />;

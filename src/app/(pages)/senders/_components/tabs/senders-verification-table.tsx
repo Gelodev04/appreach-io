@@ -17,13 +17,13 @@ function a11yProps(index: number) {
 }
 
 export default function SendersVerificationTable({
-  verifiedEmails,
+  verifiedTabs,
   unverifiedSenders,
-  verifiedDomains,
+  archivedTab,
 }: {
-  verifiedEmails: ReactNode;
+  verifiedTabs: ReactNode;
   unverifiedSenders: ReactNode;
-  verifiedDomains: ReactNode;
+  archivedTab: ReactNode;
 }) {
   const theme = useTheme();
   const { handleChange, value } = useTabsIndex();
@@ -45,14 +45,14 @@ export default function SendersVerificationTable({
           textColor="primary"
           TabIndicatorProps={{ sx: { backgroundColor: '#003087' } }}
         >
-          <Tab label="Verified Emails" {...a11yProps(0)} sx={{ fontSize: 16 }} />
+          <Tab label="Verified" {...a11yProps(0)} sx={{ fontSize: 16 }} />
           <Tab label="Unverified" {...a11yProps(1)} sx={{ fontSize: 16 }} />
-          <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
+          <Tab label="Archived" {...a11yProps(2)} sx={{ fontSize: 16 }} />
         </Tabs>
       </AppBar>
 
       <TabPanel value={value} index={0} dir={theme.direction}>
-        {verifiedEmails}
+        {verifiedTabs}
       </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
@@ -60,7 +60,7 @@ export default function SendersVerificationTable({
       </TabPanel>
 
       <TabPanel value={value} index={2} dir={theme.direction}>
-        {verifiedDomains}
+        {archivedTab}
       </TabPanel>
     </Card>
   );
