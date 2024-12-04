@@ -1,7 +1,7 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridRenderCellParams, GridTreeNodeWithRender } from '@mui/x-data-grid';
 import { useSearchParams } from 'next/navigation';
-import React, { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { updateSenderProfiles } from 'src/services/db/sender-addresses';
 
 type AssignedProfileDropdownTypes = {

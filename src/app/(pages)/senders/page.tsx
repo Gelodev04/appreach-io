@@ -5,6 +5,8 @@ import AddressesHeader from './_components/addresses-header';
 import SenderUsed from './_components/sender-used';
 import SendersVerificationTable from './_components/tabs/senders-verification-table';
 import { UnverifiedTable, VerifiedTable } from './_components/tables';
+import VerifiedTab from './_components/tabs/verified-tab';
+import ArchivedTable from './_components/tables/archived-table';
 
 export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
@@ -17,19 +19,28 @@ const SendersAddressesPage = async () => {
       <AddressesHeader />
       <SenderUsed />
       <SendersVerificationTable
-        verifiedEmails={
-          <Suspense fallback={<Skeleton height={650} />}>
-            <VerifiedTable type="email" options={senderProfiles} />
-          </Suspense>
+        verifiedTabs={
+          <VerifiedTab
+            verifiedDomain={
+              <Suspense fallback={<Skeleton height={650} />}>
+                <VerifiedTable type="domain" options={senderProfiles} />{' '}
+              </Suspense>
+            }
+            verifiedEmail={
+              <Suspense fallback={<Skeleton height={650} />}>
+                <VerifiedTable type="email" options={senderProfiles} />
+              </Suspense>
+            }
+          />
         }
         unverifiedSenders={
           <Suspense fallback={<Skeleton height={650} />}>
             <UnverifiedTable options={senderProfiles} />
           </Suspense>
         }
-        verifiedDomains={
+        archivedTab={
           <Suspense fallback={<Skeleton height={650} />}>
-            <VerifiedTable type="domain" options={senderProfiles} />
+            <ArchivedTable />
           </Suspense>
         }
       />

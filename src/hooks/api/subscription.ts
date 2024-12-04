@@ -6,11 +6,7 @@ import useSWR from 'swr';
 export function useCurrentSubscription() {
   const URL = endpoints.stripe.subscriptions;
 
-  const { data, isLoading, error, isValidating } = useSWR<UserSubscriptionPlan>(URL, fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
-
+  const { data, isLoading, error, isValidating } = useSWR<UserSubscriptionPlan>(URL, fetcher);
   const memoizedValue = useMemo(
     () => ({
       subscription: data,

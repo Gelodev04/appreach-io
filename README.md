@@ -47,7 +47,7 @@
 
 > The secret key for Stripe, used on the server side to process payments securely.
 
-`EMAIL_VERIFICATON_WEBHOOK=`
+`VERIFY_SENDERS_FUNCTION=`
 
 > Api endpoint for requesting email verification
 

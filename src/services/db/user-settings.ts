@@ -75,3 +75,30 @@ export const getSenderProfiles = async () => {
     return [];
   }
 };
+
+export const getUserSettingsByEmail = async (
+  email: string,
+  selectFields?: Prisma.userSettingsSelect
+) => {
+  const session = await auth();
+  const id = session?.user.id;
+  try {
+    if (!id) {
+      throw new Error('Access denied.');
+    }
+    const userSettings = await prisma.userSettings.findFirst({
+      where: {
+        appLogin: {
+          is: {
+            username: email,
+          },
+        },
+      },
+      select: selectFields,
+    });
+    return userSettings;
+  } catch (error) {
+    console.error('Error on getting user settings by email:', error); // Log the actual error
+    throw new Error('Error on getting user settings by email.'); // Throw a user-friendly error
+  }
+};

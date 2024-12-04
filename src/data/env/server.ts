@@ -4,7 +4,7 @@ const envSchema = Yup.object().shape({
   // Server-only variables
   MONGODB_URI: Yup.string(),
   NEXTAUTH_SECRET: Yup.string(),
-  EMAIL_VERIFICATON_WEBHOOK: Yup.string(),
+  VERIFY_SENDERS_FUNCTION: Yup.string(),
   INVOKER_TOKEN: Yup.string(),
   SENDGRID_API_TOKEN: Yup.string(),
   SEED_EMAIL_GENERATOR: Yup.string(),
