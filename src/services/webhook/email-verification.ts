@@ -21,11 +21,11 @@ export const requestForEmailVerification = async ({
   const routeToken = type === 'email' ? token : txtRecord;
   const webhookUrl = `${env.VERIFY_SENDERS_FUNCTION}?id=${id}&token=${routeToken}`;
   const { data } = await axios.post(webhookUrl);
-  const route = type === 'email' ? '/sender-emails' : 'verify-domains';
+  const route = type === 'email' ? 'sender-emails' : 'verify-domains';
   if (data?.status === 'SUCCESS') {
     return {
       ...data,
-      confirmationUrl: `${env.VERIFY_SENDERS_FUNCTION}/${route}?token=${env.INVOKER_TOKEN}`,
+      confirmationUrl: `${env.VERIFY_SENDERS_FUNCTION}${route}?token=${env.INVOKER_TOKEN}`,
     };
   }
 
