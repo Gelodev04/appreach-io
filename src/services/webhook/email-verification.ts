@@ -25,7 +25,7 @@ export const requestForEmailVerification = async ({
   if (data?.status === 'SUCCESS') {
     return {
       ...data,
-      confirmationUrl: `${env.VERIFY_SENDERS_FUNCTION}/${route}?token=${env.INVOKER_TOKEN}`,
+      confirmationUrl: `${env.VERIFY_SENDERS_FUNCTION}${route}?token=${env.INVOKER_TOKEN}`,
     };
   }
 
