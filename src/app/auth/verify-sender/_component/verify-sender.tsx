@@ -6,14 +6,10 @@ import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
-import { endpoints } from 'src/utils/swr';
 import { useSearchParams } from 'next/navigation';
 import { verifySender } from 'src/services/webhook/sender-emails';
 
 export default function VerifySender() {
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const loading = useBoolean(false);
   const params = useSearchParams();
