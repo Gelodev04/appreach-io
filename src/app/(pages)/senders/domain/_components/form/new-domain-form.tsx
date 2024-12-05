@@ -64,7 +64,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
         if (domain || domainValue) {
           enqueueSnackbar(
             'Sender domain already in use with another sender profile. Please contact support.',
-            { variant: 'warning' }
+            { variant: 'warning', style: { maxWidth: 400 } }
           );
           return undefined;
         }
@@ -81,6 +81,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               message: <VerificationEmailMessage />,
               variant: 'success',
               persist: true,
+              style: { maxWidth: 400 },
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
