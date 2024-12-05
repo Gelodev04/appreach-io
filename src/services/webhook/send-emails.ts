@@ -4,11 +4,11 @@ import { UnverifiedSenderType } from '@prisma/client';
 import axios from 'axios';
 import { env } from 'src/data/env/server';
 
-type UnverifiedEmailType = {
+type SenderVerificationType = {
   type: UnverifiedSenderType;
 };
 
-export const sendSenderVerification = async ({ type }: UnverifiedEmailType) => {
+export const sendSenderVerification = async ({ type }: SenderVerificationType) => {
   try {
     const route = type === 'email' ? 'send-emails' : 'verify-domains';
     const webhookUrl = `${env.VERIFY_SENDERS_FUNCTION}${route}?token=${env.INVOKER_TOKEN}`;
