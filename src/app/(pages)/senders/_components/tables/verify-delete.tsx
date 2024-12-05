@@ -3,7 +3,7 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import React, { useTransition } from 'react';
 import Iconify from 'src/components/iconify';
 import { deleteSenderAddressById, updateUnverifiedEmails } from 'src/services/db/sender-addresses';
-import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import { enqueueSnackbar } from 'notistack';
 import { useSearchParams } from 'next/navigation';
 import VerificationEmailMessage from '../../email/_components/verification-email-message';
@@ -23,7 +23,7 @@ const VerifyAndDeleteAction = ({
   const handleVerify = () => {
     startTransition(async () => {
       const unverifiedSender = await updateUnverifiedEmails(id); // update unverified email status to "ready"
-      const result = await requestForEmailVerification(unverifiedSender);
+      const result = await sendSenderVerification({ type: unverifiedSender.type });
       if (result) {
         const message =
           unverifiedSender.type === 'email'

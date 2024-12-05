@@ -140,6 +140,25 @@ export const getVerifiedEmails = async (type: 'email' | 'domain') => {
   }
 };
 
+export const getVerifiedSenderByEmail = async (email: string) => {
+  try {
+    const verifiedEmail = await prisma.verifiedSenderEmails.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+        hostId: true,
+      },
+    });
+    return verifiedEmail;
+  } catch (error) {
+    console.log('Unable to get verified sender by email', error);
+    return [];
+  }
+};
+
 export const getUnverifiedSenders = async () => {
   try {
     const { hosts } = await getUserSettings({ hosts: true });
@@ -164,7 +183,7 @@ export const getUnverifiedSenders = async () => {
       txtRecord,
     }));
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified senders.', error);
     return [];
   }
 };
@@ -182,7 +201,26 @@ export const getUnverifiedSenderById = async (id: string) => {
     });
     return unverifiedSender;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified sender by id.', error);
+    return null;
+  }
+};
+
+export const getUnverifiedSenderByEmail = async (email: string) => {
+  try {
+    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
+      where: {
+        value: email,
+        type: 'email',
+      },
+      select: {
+        value: true,
+        hostId: true,
+      },
+    });
+    return unverifiedSender;
+  } catch (error) {
+    console.log('Unable to get unverified sender by email.', error);
     return null;
   }
 };
@@ -201,7 +239,7 @@ export const getUnverifiedSenderByDomain = async (value: string) => {
     });
     return unverifiedSender;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified sender by domain.', error);
     return null;
   }
 };
