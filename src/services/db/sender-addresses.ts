@@ -154,7 +154,7 @@ export const getVerifiedSenderByEmail = async (email: string) => {
     });
     return verifiedEmail;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get verified sender by email', error);
     return [];
   }
 };
@@ -183,7 +183,7 @@ export const getUnverifiedSenders = async () => {
       txtRecord,
     }));
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified senders.', error);
     return [];
   }
 };
@@ -201,7 +201,7 @@ export const getUnverifiedSenderById = async (id: string) => {
     });
     return unverifiedSender;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified sender by id.', error);
     return null;
   }
 };
@@ -220,7 +220,7 @@ export const getUnverifiedSenderByEmail = async (email: string) => {
     });
     return unverifiedSender;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified sender by email.', error);
     return null;
   }
 };
@@ -239,7 +239,7 @@ export const getUnverifiedSenderByDomain = async (value: string) => {
     });
     return unverifiedSender;
   } catch (error) {
-    console.log('Unable to get verified emails.', error);
+    console.log('Unable to get unverified sender by domain.', error);
     return null;
   }
 };
