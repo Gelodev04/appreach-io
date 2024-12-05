@@ -38,7 +38,6 @@ export const verifySender = async ({ id, token }: VerifySenderType) => {
           message: 'Sender address is verified. You can close this page.',
           variant: 'success',
         };
-
       case 'ALREADY_VERIFIED':
         return {
           message: 'Sender address is verified. You can close this page.',
