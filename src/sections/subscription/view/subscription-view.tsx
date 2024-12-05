@@ -8,7 +8,6 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
-import { useCurrentSubscription } from 'src/hooks/api/subscription';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
@@ -21,9 +20,9 @@ import {
 import { endpoints } from 'src/utils/swr';
 import { env } from 'src/data/env/client';
 import { updateSubcription } from 'src/services/stripe/update-subscription';
-import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserSettingsPlan } from '@prisma/client';
+import { useState } from 'react';
 import { CheckoutElement } from '../checkout-element';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 // Stripe promise for loading the Stripe object
@@ -34,16 +33,24 @@ type SubscriptionviewType = {
 };
 
 export default function SubscriptionView({ subscription }: SubscriptionviewType) {
+  // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
-  // const { subscription, subscriptionLoading } = useCurrentSubscription();
+
+  // Subscription state management
   const [nextPlan, setNextPlan] = useState<SubscriptionData>();
   const [type, setType] = useState<'downgrade' | 'upgrade'>('upgrade');
+
+  // Session and routing
   const { data: session } = useSession();
+  const router = useRouter();
+
+  // Search parameters and trial status
   const searchParams = useSearchParams();
   const trialExpired = searchParams.get('trial_expired');
+
+  // Confirmation dialogs
   const confirmCancel = useBoolean();
   const confirmUpgradeDowngrade = useBoolean();
-  const router = useRouter();
 
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;

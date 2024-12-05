@@ -15,7 +15,7 @@ import {
 } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
-import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import VerificationEmailMessage from '../verification-email-message';
@@ -54,7 +54,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         const inputEmailDomain = getEmailDomain(data.email);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         if (!inputEmailDomain) {
-          enqueueSnackbar('Domain not found.', { variant: 'error' });
+          enqueueSnackbar('Domain not found.', { variant: 'error', style: { maxWidth: 400 } });
         }
         const domain = await getVerifiedDomain({
           domain: inputEmailDomain,
@@ -62,8 +62,9 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         });
 
         if (!domain) {
+          // TODO: check if email is already existing in verified or unverified sender
           const unverifiedEmail = await createUnverifiedSenders(data.email, data.hostId, 'email');
-          const result = await requestForEmailVerification(unverifiedEmail);
+          const result = await sendSenderVerification({ type: unverifiedEmail.type });
           if (result) {
             enqueueSnackbar({
               message: (
@@ -72,6 +73,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
                 />
               ),
               variant: 'success',
+              style: { maxWidth: 500 },
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
@@ -81,10 +83,12 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             });
           }
         } else {
+          // TODO: checked also if email is already existing
           const newVerifiedEmail = await createVerifiedEmails(data.email, data.hostId);
           if (newVerifiedEmail.id) {
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
+              style: { maxWidth: 400 },
               onClose: () => {
                 router.push(`${paths.senders.root}?tableIndex=0`);
               },

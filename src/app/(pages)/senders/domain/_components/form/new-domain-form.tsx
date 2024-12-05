@@ -14,9 +14,9 @@ import {
   getVerifiedDomain,
 } from 'src/services/db/sender-addresses';
 import { enqueueSnackbar } from 'notistack';
-import { requestForEmailVerification } from 'src/services/webhook/email-verification';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
@@ -64,7 +64,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
         if (domain || domainValue) {
           enqueueSnackbar(
             'Sender domain already in use with another sender profile. Please contact support.',
-            { variant: 'warning' }
+            { variant: 'warning', style: { maxWidth: 400 } }
           );
           return undefined;
         }
@@ -75,12 +75,13 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
             data.hostId,
             'domain'
           );
-          const result = await requestForEmailVerification(unverifiedDomain);
+          const result = await sendSenderVerification({ type: unverifiedDomain.type });
           if (result) {
             enqueueSnackbar({
               message: <VerificationEmailMessage />,
               variant: 'success',
               persist: true,
+              style: { maxWidth: 400 },
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
