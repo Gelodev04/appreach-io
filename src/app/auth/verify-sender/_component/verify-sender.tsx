@@ -1,39 +1,39 @@
 'use client';
 
 import LoadingButton from '@mui/lab/LoadingButton';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { RouterLink } from 'src/routes/components';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { endpoints } from 'src/utils/swr';
+import { useSearchParams } from 'next/navigation';
 
-export default function VerifySender({ id, token }: { id: string; token: string }) {
+export default function VerifySender() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const loading = useBoolean(false);
-
+  const params = useSearchParams();
+  const id = params.get('id');
+  const token = params.get('token');
   const onSubmit = async () => {
     try {
       if (!id || !token) throw new Error('Invalid or missing URL parameters');
 
       loading.setValue(true);
-      const url = endpoints.auth.verifyAccount;
+      /*  const url = endpoints.auth.verifyAccount;
       const body = JSON.stringify({ id, token });
       const response = await fetch(url, { method: 'POST', body });
       const responseData = await response.json();
 
-      if (!response.ok) throw new Error(responseData.message || 'Failed to verify account');
+      if (!response.ok) throw new Error(responseData.message || 'Failed to verify account'); */
 
-      enqueueSnackbar(responseData?.message || 'Account verified successfully', {
+      /*  enqueueSnackbar(responseData?.message || 'Account verified successfully', {
         variant: 'success',
       });
-
+ */
       // Redirect or handle success as needed
       router.push(paths.auth.login);
     } catch (error) {

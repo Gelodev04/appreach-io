@@ -15,7 +15,7 @@ import {
 } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
-import { requestForEmailVerification } from 'src/services/webhook/email-verification';
+import { sendSenderVerification } from 'src/services/webhook/send-emails';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import VerificationEmailMessage from '../verification-email-message';
@@ -63,7 +63,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
 
         if (!domain) {
           const unverifiedEmail = await createUnverifiedSenders(data.email, data.hostId, 'email');
-          const result = await requestForEmailVerification(unverifiedEmail);
+          const result = await sendSenderVerification({ type: unverifiedEmail.type });
           if (result) {
             enqueueSnackbar({
               message: (
