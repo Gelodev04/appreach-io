@@ -3,7 +3,7 @@ import { Stack, Tooltip, Typography } from '@mui/material';
 import React, { useTransition } from 'react';
 import Iconify from 'src/components/iconify';
 import { deleteSenderAddressById, updateUnverifiedEmails } from 'src/services/db/sender-addresses';
-import { sendSenderVerification } from 'src/services/webhook/send-emails';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import { enqueueSnackbar } from 'notistack';
 import { useSearchParams } from 'next/navigation';
 import VerificationEmailMessage from '../../email/_components/verification-email-message';

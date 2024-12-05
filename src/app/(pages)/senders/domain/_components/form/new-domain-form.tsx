@@ -16,7 +16,7 @@ import {
 import { enqueueSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
-import { sendSenderVerification } from 'src/services/webhook/send-emails';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {

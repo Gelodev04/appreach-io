@@ -15,7 +15,7 @@ import {
 } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
-import { sendSenderVerification } from 'src/services/webhook/send-emails';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import VerificationEmailMessage from '../verification-email-message';

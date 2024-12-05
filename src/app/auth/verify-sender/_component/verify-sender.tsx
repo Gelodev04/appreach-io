@@ -10,6 +10,7 @@ import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { endpoints } from 'src/utils/swr';
 import { useSearchParams } from 'next/navigation';
+import { verifySender } from 'src/services/webhook/sender-emails';
 
 export default function VerifySender() {
   const router = useRouter();
@@ -21,23 +22,27 @@ export default function VerifySender() {
   const onSubmit = async () => {
     try {
       if (!id || !token) throw new Error('Invalid or missing URL parameters');
-
       loading.setValue(true);
-      /*  const url = endpoints.auth.verifyAccount;
-      const body = JSON.stringify({ id, token });
-      const response = await fetch(url, { method: 'POST', body });
-      const responseData = await response.json();
+      const { message, variant } = await verifySender({ id, token });
+      switch (variant) {
+        case 'success':
+          enqueueSnackbar(message, { variant });
+          break;
+        case 'info':
+          enqueueSnackbar(message, { variant });
+          break;
+        case 'error':
+          enqueueSnackbar(message, { variant });
+          break;
 
-      if (!response.ok) throw new Error(responseData.message || 'Failed to verify account'); */
-
-      /*  enqueueSnackbar(responseData?.message || 'Account verified successfully', {
-        variant: 'success',
-      });
- */
+        default:
+          enqueueSnackbar(message, { variant: 'error' });
+          break;
+      }
       // Redirect or handle success as needed
-      router.push(paths.auth.login);
+      // router.push(paths.auth.login);
     } catch (error) {
-      console.log('Error verifying account:', error.message);
+      console.log('Error sender verification:', error.message);
       enqueueSnackbar(error.message, { variant: 'error' });
       // Handle error, show error message, etc.
     } finally {
