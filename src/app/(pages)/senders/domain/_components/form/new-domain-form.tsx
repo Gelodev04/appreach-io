@@ -12,6 +12,7 @@ import {
   createUnverifiedSenders,
   getUnverifiedSenderByDomain,
   getVerifiedDomain,
+  getVerifiedSenderByDomain,
 } from 'src/services/db/sender-addresses';
 import { enqueueSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
@@ -52,9 +53,27 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
     },
   });
 
+  const checkDomainExistence = async (domain: string) => {
+    const isUnveriedDomainExist = await getUnverifiedSenderByDomain(domain);
+    const isVerifiedDomainExist = await getVerifiedSenderByDomain(domain);
+
+    if (isUnveriedDomainExist || isVerifiedDomainExist) {
+      enqueueSnackbar(
+        <Typography width={300} p={1}>
+          Sender domain already in use with another sender profile. Please contact support.
+        </Typography>,
+        { variant: 'info' }
+      );
+      return true;
+    }
+    return false;
+  };
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
+        if (await checkDomainExistence(data.domain)) return undefined;
+
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         const domain = await getVerifiedDomain({
           domain: data.domain,
@@ -89,18 +108,6 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
             });
           }
         }
-        // TODO: Confirm to Spencer if domain found do we need to directly create in verifiedDomain?
-        /*  else {
-          const newVerifiedEmail = await createVerifiedDomains(data.domain, data.hostId);
-          if (newVerifiedEmail.id) {
-            enqueueSnackbar('Your email has successfully verified via the domain verification', {
-              variant: 'success',
-              onClose: () => {
-                router.push(paths.senders.root);
-              },
-            });
-          }
-        } */
       });
     } catch (error) {
       console.log(error);
