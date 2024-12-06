@@ -81,7 +81,6 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               message: <VerificationEmailMessage />,
               variant: 'success',
               persist: true,
-              style: { maxWidth: 400 },
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();

@@ -33,7 +33,6 @@ const VerifyAndDeleteAction = ({
         enqueueSnackbar({
           message: <VerificationEmailMessage message={message} />,
           variant: 'success',
-          style: { maxWidth: 400 },
         });
       }
     });
