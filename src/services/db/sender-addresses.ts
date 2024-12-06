@@ -155,7 +155,7 @@ export const getVerifiedSenderByEmail = async (email: string) => {
     return verifiedEmail;
   } catch (error) {
     console.log('Unable to get verified sender by email', error);
-    return [];
+    throw new Error('Unable to get verified sender by email', error);
   }
 };
 
