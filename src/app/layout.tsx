@@ -8,6 +8,7 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
+import Script from 'next/script';
 
 export const viewport = {
   themeColor: '#000000',
@@ -38,6 +39,15 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
+        <Script strategy="afterInteractive">
+          {`    (function() {
+window.__insp = window.__insp || [];
+__insp.push(['wid', 360425918]);
+var ldinsp = function(){
+if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js?wid=360425918&r=' + Math.floor(new Date().getTime()/3600000); var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
+setTimeout(ldinsp, 0);
+})();`}
+        </Script>
         <SessionProvider>
           <AuthProvider>
             <SettingsProvider

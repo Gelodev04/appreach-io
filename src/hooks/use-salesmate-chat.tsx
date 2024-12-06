@@ -7,6 +7,7 @@ declare global {
       tenant_id: string;
     };
     SALESMATE?: any;
+    __insp?: any;
   }
 }
 
