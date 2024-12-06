@@ -11,7 +11,9 @@ import { LoadingButton } from '@mui/lab';
 import {
   createUnverifiedSenders,
   createVerifiedEmails,
+  getUnverifiedSenderByEmail,
   getVerifiedDomain,
+  getVerifiedSenderByEmail,
 } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
@@ -48,13 +50,36 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
     },
   });
 
+  const checkEmailExistence = async (email: string) => {
+    const isUnveriedEmailExist = await getUnverifiedSenderByEmail(email);
+    const isVerifiedEmailExist = await getVerifiedSenderByEmail(email);
+
+    if (isUnveriedEmailExist || isVerifiedEmailExist) {
+      enqueueSnackbar(
+        <Typography width={300} p={1}>
+          Sender address already in use with another sender profile. Please contact support.
+        </Typography>,
+        { variant: 'info' }
+      );
+      return true;
+    }
+    return false;
+  };
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
+        if (await checkEmailExistence(data.email)) return undefined;
+
         const inputEmailDomain = getEmailDomain(data.email);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         if (!inputEmailDomain) {
-          enqueueSnackbar('Domain not found.', { variant: 'error', style: { maxWidth: 400 } });
+          enqueueSnackbar(
+            <Typography width={300} p={1}>
+              Domain not found.
+            </Typography>,
+            { variant: 'error' }
+          );
         }
         const domain = await getVerifiedDomain({
           domain: inputEmailDomain,
@@ -62,7 +87,6 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         });
 
         if (!domain) {
-          // TODO: check if email is already existing in verified or unverified sender
           const unverifiedEmail = await createUnverifiedSenders(data.email, data.hostId, 'email');
           const result = await sendSenderVerification({ type: unverifiedEmail.type });
           if (result) {
@@ -73,7 +97,6 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
                 />
               ),
               variant: 'success',
-              style: { maxWidth: 500 },
               persist: true,
               onClose: (e) => {
                 e?.preventDefault();
@@ -83,7 +106,6 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
             });
           }
         } else {
-          // TODO: checked also if email is already existing
           const newVerifiedEmail = await createVerifiedEmails(data.email, data.hostId);
           if (newVerifiedEmail.id) {
             enqueueSnackbar('Your email has successfully verified via the domain verification', {

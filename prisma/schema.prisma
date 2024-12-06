@@ -451,7 +451,7 @@ model verifiedSenderDomains {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime @db.Date
   dateVerified DateTime @db.Date
-  domain       String
+  domain       String   @unique
   hostId       String   @db.ObjectId
 }
 

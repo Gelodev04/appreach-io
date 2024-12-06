@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function VerificationEmailMessage({ message }: { message: string }) {
   return (
-    <Typography variant="body2" sx={{ fontWeight: 600, width: '100%' }}>
+    <Typography variant="body2" sx={{ fontWeight: 600, width: 430, p: 1 }}>
       {message}
     </Typography>
   );

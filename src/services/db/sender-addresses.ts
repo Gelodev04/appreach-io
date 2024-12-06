@@ -155,7 +155,26 @@ export const getVerifiedSenderByEmail = async (email: string) => {
     return verifiedEmail;
   } catch (error) {
     console.log('Unable to get verified sender by email', error);
-    return [];
+    throw new Error('Unable to get verified sender by email', error);
+  }
+};
+
+export const getVerifiedSenderByDomain = async (domain: string) => {
+  try {
+    const verifiedEmail = await prisma.verifiedSenderDomains.findUnique({
+      where: {
+        domain,
+      },
+      select: {
+        id: true,
+        domain: true,
+        hostId: true,
+      },
+    });
+    return verifiedEmail;
+  } catch (error) {
+    console.log('Unable to get verified domain ', error);
+    throw new Error('Unable to get verified domain ', error);
   }
 };
 
