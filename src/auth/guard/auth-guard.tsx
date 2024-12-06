@@ -31,18 +31,24 @@ function Container({ children }: Props) {
   const { status } = useSession();
   const setUserPlan = useUsersPlanStore((state) => state.setUserPlan);
   const authenticated = status === 'authenticated' || status === 'loading';
-
   const [checked, setChecked] = useState(false);
 
   const check = useCallback(async () => {
     if (!authenticated) {
       const loginPath = loginPaths.nextAuth;
       const href = `${loginPath}`;
-
       router.replace(href);
     } else {
       setChecked(true);
-      const { plan } = await getUserSettings({ plan: true });
+      const {
+        plan,
+        appLogin: { username },
+      } = await getUserSettings({
+        plan: true,
+        appLogin: { select: { username: true } },
+      });
+      // added the user name in inspectlet
+      window.__insp.push(['identify', username]);
       if (!plan) {
         console.log('No plan found.');
         return undefined;
