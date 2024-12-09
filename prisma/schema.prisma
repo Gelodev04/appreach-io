@@ -96,6 +96,40 @@ type EmailAccountsWebMailError {
   value      String?
 }
 
+type EmailValidatorDownload {
+  catch_all     Int
+  csvDownload   String
+  disposable    Int
+  invalid       Int
+  ok            Int
+  unique_emails Int
+  unknown       Int
+  unverified    Int
+  verified      Int
+}
+
+type EmailValidatorMillionverifier {
+  catch_all          Int
+  createdate         String
+  credit             Int
+  disposable         Int
+  error              String
+  estimated_time_sec Int
+  file_id            String
+  file_name          String
+  invalid            Int
+  ok                 Int
+  percent            Int
+  reverify           Int
+  status             String
+  total_rows         Int
+  unique_emails      Int
+  unknown            Int
+  unverified         Int
+  updated_at         String
+  verified           Int
+}
+
 type EmailValidatorUpload {
   csvUpload    String
   dateUploaded DateTime @db.Date
@@ -220,11 +254,11 @@ type UserSettingsAppLogin {
   adminView    Boolean?
   approved     Boolean?
   companyName  String?
-  /// Multiple data types found: String: 22.5%, DateTime (Date): 77.5% out of 60 sampled entries
-  currentLogin Json?
+  /// Multiple data types found: String: 25%, DateTime (Date): 75% out of 60 sampled entries
+  currentLogin DateTime? @db.Date
   firstName    String?
-  /// Multiple data types found: String: 26.5%, DateTime (Date): 73.5% out of 60 sampled entries
-  lastLogin    Json?
+  /// Multiple data types found: String: 29.4%, DateTime (Date): 70.6% out of 60 sampled entries
+  lastLogin    DateTime? @db.Date
   lastName     String?
   password     String?
   phone        String?
@@ -381,13 +415,13 @@ model emailAccounts {
 }
 
 model emailValidator {
-  id          String               @id @default(auto()) @map("_id") @db.ObjectId
-  error       String
-  hostId      String               @db.ObjectId
-  lastUpdated DateTime             @db.Date
-  status      String
-  traceback   String
-  upload      EmailValidatorUpload
+  id              String                        @id @default(auto()) @map("_id") @db.ObjectId
+  download        EmailValidatorDownload
+  hostId          String                        @db.ObjectId
+  lastUpdated     DateTime                      @db.Date
+  millionverifier EmailValidatorMillionverifier
+  status          String
+  upload          EmailValidatorUpload
 }
 
 model hosts {
@@ -417,14 +451,18 @@ model seedBatches {
 }
 
 model unverifiedSenders {
-  id        String               @id @default(auto()) @map("_id") @db.ObjectId
-  type      UnverifiedSenderType
-  value     String               @unique
-  token     String?
-  status    String
-  hostId    String               @unique @db.ObjectId
-  dateAdded DateTime             @default(now())
-  txtRecord String?
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded     DateTime             @default(now())
+  dateEmailSent DateTime?            @db.Date
+  error         String?
+  hostId        String               @unique @db.ObjectId
+  status        String
+  textRecord    String?
+  token         String?
+  traceback     String?
+  txtRecord     String?
+  type          UnverifiedSenderType
+  value         String
 }
 
 model userSettings {
