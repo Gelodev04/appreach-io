@@ -37,7 +37,6 @@ export async function POST(request: Request) {
     if (existingUser) throw new Error('There is already a user with the given email');
 
     const ipAddress = headers().get('x-forwarded-for');
-    console.log({ ipAddress });
 
     // Hash the given password
     const hashedPassword = await bcrypt.hash(password, 12);
