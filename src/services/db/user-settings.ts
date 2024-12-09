@@ -80,12 +80,7 @@ export const getUserSettingsByEmail = async (
   email: string,
   selectFields?: Prisma.userSettingsSelect
 ) => {
-  const session = await auth();
-  const id = session?.user.id;
   try {
-    if (!id) {
-      throw new Error('Access denied.');
-    }
     const userSettings = await prisma.userSettings.findFirst({
       where: {
         appLogin: {
