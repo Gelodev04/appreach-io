@@ -462,7 +462,7 @@ model unverifiedSenders {
   traceback     String?
   txtRecord     String?
   type          UnverifiedSenderType
-  value         String
+  value         String               @unique
 }
 
 model userSettings {

@@ -36,6 +36,9 @@ export async function POST(request: Request) {
       .findOne({ 'appLogin.username': email });
     if (existingUser) throw new Error('There is already a user with the given email');
 
+    const ipAddress = headers().get('x-forwarded-for');
+    console.log({ ipAddress });
+
     // Hash the given password
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -64,6 +67,7 @@ export async function POST(request: Request) {
         hearAboutUs,
         emailsSendsPerDay,
         callRequested,
+        ipAddress,
       },
       approval: {
         lastSent: null,
