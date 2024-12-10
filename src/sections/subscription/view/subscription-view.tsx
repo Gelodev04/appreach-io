@@ -92,6 +92,9 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const handleUpgradeDowngrade = async () => {
     try {
       if (subscription?.status === 'active' && nextPlan?.priceId) {
+        if (!subscription.subscription_id) {
+          throw new Error('No subscription Id found');
+        }
         const updatedSubscription = await updateSubcription(
           subscription.subscription_id,
           nextPlan.priceId
@@ -140,6 +143,10 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     const isCanceled = subscription?.status === 'canceled';
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
+    if (!subscription.price_id) {
+      throw new Error('No subscription price id');
+    }
+
     const currentPlanData = getSubscriptionData(subscription.price_id);
     const nextPlanData = Object.values(STRIPE.subscriptions).find((plan) => plan.key === planKey);
 
@@ -155,6 +162,10 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     if (!isCurrent) return;
 
     if (subscription?.status === 'canceled') {
+      if (!subscription.current_period_end) {
+        throw new Error('No subscription current_period_end');
+      }
+
       const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
       return `Plan will cancel on ${formattedEndDate}`;
     }

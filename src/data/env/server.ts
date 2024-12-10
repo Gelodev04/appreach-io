@@ -10,6 +10,7 @@ const envSchema = Yup.object().shape({
   SEED_EMAIL_GENERATOR: Yup.string(),
   STRIPE_SECRET_KEY: Yup.string(),
   HOST_CRYPT_SECRET: Yup.string(),
+  SIGNUP_WEBHOOK: Yup.string(),
 });
 
 const parsedEnv = envSchema.validateSync(process.env, { abortEarly: false });
