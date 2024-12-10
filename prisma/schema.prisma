@@ -280,15 +280,16 @@ type UserSettingsLookerStudio {
 }
 
 type UserSettingsPlan {
-  amount              Int
-  amount_decimal      String
+  amount              Int?
+  amount_decimal      String?
   checkout_session_id String?
-  current_period_end  DateTime @db.Date
-  lookup_key          String
-  price_id            String
-  start_date          DateTime @db.Date
-  status              String
-  subscription_id     String
+  current_period_end  DateTime? @db.Date
+  lookup_key          String?
+  price_id            String?
+  start_date          DateTime? @db.Date
+  status              String?
+  subscription_id     String?
+  trial_end           DateTime? @db.Date
 }
 
 type UserSettingsResetPassword {
@@ -321,6 +322,7 @@ type UserSettingsTrackingMarketing {
   callRequested     Boolean?
   emailsSendsPerDay String?
   hearAboutUs       String?
+  ipAddress         String?
 }
 
 type UserSettingsVerification {

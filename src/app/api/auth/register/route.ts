@@ -7,6 +7,7 @@ import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 import moment from 'moment-timezone';
 import { headers } from 'next/headers';
+import { signupWebhook } from 'src/services/webhook/signup-hook';
 
 export async function POST(request: Request) {
   try {
@@ -92,9 +93,9 @@ export async function POST(request: Request) {
         ? {
             plan: {
               status: 'trialing',
-              start_date: new Date().toISOString(),
-              current_period_end: new Date(moment().add(10, 'days').toDate()).toISOString(),
-              trial_end: new Date(moment().add(10, 'days').toDate()).toISOString(),
+              start_date: new Date(),
+              current_period_end: new Date(moment().add(10, 'days').toDate()),
+              trial_end: new Date(moment().add(10, 'days').toDate()),
             },
             seeds: {
               assignedCount: 50,
@@ -171,6 +172,9 @@ export async function POST(request: Request) {
       },
       'd-c80c540d168e48ea9d9aa8e95614f541'
     );
+
+    // Send sign up web hook
+    await signupWebhook(userId.toString());
 
     return Response.json({ message: 'User created successfully.' });
   } catch (error) {

@@ -97,3 +97,26 @@ export const getUserSettingsByEmail = async (
     throw new Error('Error on getting user settings by email.'); // Throw a user-friendly error
   }
 };
+
+export const getUserSettingsById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
+  try {
+    if (!id) {
+      throw new Error('Access denied.');
+    }
+    const userSettings = await prisma.userSettings.findUnique({
+      where: {
+        id,
+      },
+      select: selectFields,
+    });
+
+    if (!userSettings) {
+      throw new Error('No user found with the provided id.');
+    }
+
+    return userSettings;
+  } catch (error) {
+    console.error('Error on getting user settings by Id', error); // Log the actual error
+    throw new Error('Error on getting user settings by Id'); // Throw a user-friendly error
+  }
+};
