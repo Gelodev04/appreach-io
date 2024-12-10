@@ -289,6 +289,7 @@ type UserSettingsPlan {
   start_date          DateTime @db.Date
   status              String
   subscription_id     String
+  trial_end           DateTime @db.Date
 }
 
 type UserSettingsResetPassword {
@@ -321,6 +322,7 @@ type UserSettingsTrackingMarketing {
   callRequested     Boolean?
   emailsSendsPerDay String?
   hearAboutUs       String?
+  ipAddress         String?
 }
 
 type UserSettingsVerification {
