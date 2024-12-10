@@ -93,8 +93,6 @@ export function AuthProvider({ children }: Props) {
         const res = await axios.get(endpoints.auth.me);
         const { user } = res.data;
 
-        await signupWebhook(user?.id);
-
         dispatch({
           type: Types.INITIAL,
           payload: {
@@ -161,7 +159,7 @@ export function AuthProvider({ children }: Props) {
     }) => {
       const res = await axios.post(endpoints.auth.register, data);
       const { accessToken, user } = res.data;
-      // post web
+
       sessionStorage.setItem(STORAGE_KEY, accessToken);
 
       dispatch({
