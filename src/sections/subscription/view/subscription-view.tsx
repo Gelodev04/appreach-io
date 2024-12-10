@@ -92,6 +92,9 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const handleUpgradeDowngrade = async () => {
     try {
       if (subscription?.status === 'active' && nextPlan?.priceId) {
+        if (!subscription.subscription_id) {
+          throw new Error('No subscription Id found');
+        }
         const updatedSubscription = await updateSubcription(
           subscription.subscription_id,
           nextPlan.priceId
