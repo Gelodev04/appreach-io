@@ -22,8 +22,10 @@ import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';
 const TableV2 = ({
   rows,
   options,
+  isArchived,
 }: {
   rows: GridRowsProp;
+  isArchived?: boolean;
   options: {
     profile: string;
     id: string;
@@ -33,7 +35,7 @@ const TableV2 = ({
   const [isPending, startTransition] = useTransition();
   const params = useSearchParams();
   const tableIndex = params.get('tableIndex');
-  const { columns } = useSendersEmailCol({ options });
+  const { columns } = useSendersEmailCol({ options, isArchived });
   const handleDeleteRows = () => {
     startTransition(async () => {
       if (!tableIndex) return undefined;

@@ -1,5 +1,14 @@
-import React from 'react';
+import { getArhivedSenderEmails } from 'src/services/db/sender-addresses';
+import TableV2 from './tableV2';
 
-export default function ArchivedSenderEmailsTable() {
-  return <div>ArchivedSenderEmailsTable</div>;
+export type TableOptions = {
+  options: {
+    profile: string;
+    id: string;
+  }[];
+};
+
+export default async function ArchivedSenderEmailsTable({ options }: TableOptions) {
+  const rows = await getArhivedSenderEmails();
+  return <TableV2 rows={rows} options={options} isArchived />;
 }

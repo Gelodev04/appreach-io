@@ -378,6 +378,7 @@ export const getActiveSenderEmails = async () => {
         hostId: {
           in: hosts,
         },
+        archived: false,
       },
       select: {
         id: true,
@@ -393,5 +394,31 @@ export const getActiveSenderEmails = async () => {
   } catch (error) {
     console.log('Unable to get the active sender emails', error);
     throw new Error('Unable to get the active sender emails');
+  }
+};
+export const getArhivedSenderEmails = async () => {
+  try {
+    const { hosts } = await getUserSettings({ hosts: true });
+    const archivedSenderEmails = await prisma.senderAddresses.findMany({
+      where: {
+        hostId: {
+          in: hosts,
+        },
+        archived: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        emailToken: true,
+        verified: true,
+        archived: true,
+        hostId: true,
+      },
+    });
+
+    return archivedSenderEmails;
+  } catch (error) {
+    console.log('Unable to get the archived sender emails', error);
+    throw new Error('Unable to get the archived sender emails');
   }
 };
