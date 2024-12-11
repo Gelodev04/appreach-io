@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { paths } from 'src/routes/paths';
 import axios from 'src/utils/axios';
 import { endpoints } from 'src/utils/swr';
-import { signupWebhook } from 'src/services/webhook/signup-hook';
 import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';

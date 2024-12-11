@@ -1,6 +1,6 @@
 import { GridColDef } from '@mui/x-data-grid';
 import { Icon } from '@iconify/react';
-import { Box, IconButton, Stack, Tooltip, useTheme } from '@mui/material';
+import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 
 type TableColumnsType = {
@@ -42,7 +42,7 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
       headerAlign: 'center',
       align: 'center',
       renderCell: ({ row }) => {
-        const { verified, id } = row;
+        const { verified } = row;
 
         /* TODO: 
           1. handleArchive

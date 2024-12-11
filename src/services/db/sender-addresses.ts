@@ -393,7 +393,7 @@ export const getActiveSenderEmails = async () => {
     return senderEmails;
   } catch (error) {
     console.log('Unable to get the active sender emails', error);
-    throw new Error('Unable to get the active sender emails');
+    return [];
   }
 };
 export const getArhivedSenderEmails = async () => {
@@ -419,6 +419,6 @@ export const getArhivedSenderEmails = async () => {
     return archivedSenderEmails;
   } catch (error) {
     console.log('Unable to get the archived sender emails', error);
-    throw new Error('Unable to get the archived sender emails');
+    return [];
   }
 };

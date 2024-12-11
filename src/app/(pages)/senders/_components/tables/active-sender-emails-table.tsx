@@ -1,4 +1,3 @@
-import React from 'react';
 import { getActiveSenderEmails } from 'src/services/db/sender-addresses';
 import TableV2 from './tableV2';
 
