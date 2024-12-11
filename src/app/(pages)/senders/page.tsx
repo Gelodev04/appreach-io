@@ -53,7 +53,7 @@ const SendersAddressesPage = async () => {
       <SendersTables
         activeSenderEmails={
           <Suspense fallback={<Skeleton height={650} />}>
-            <ActiveSenderEmailsTable />
+            <ActiveSenderEmailsTable options={senderProfiles} />
           </Suspense>
         }
         archivedSenderEmails={
