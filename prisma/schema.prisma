@@ -452,6 +452,32 @@ model seedBatches {
   token     String
 }
 
+model senderAddresses {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded     DateTime  @default(now())
+  dateEmailSent DateTime? @db.Date
+  error         String?
+  hostId        String    @unique @db.ObjectId
+  status        String
+  textRecord    String?
+  emailToken    String?
+  email         String    @unique
+  verified      Boolean
+  archived      Boolean
+}
+
+model senderDomain {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime @default(now())
+  hostId       String   @unique @db.ObjectId
+  status       String
+  textRecord   String?
+  domain       String   @unique
+  verified     Boolean
+  dateVerified DateTime @db.Date
+}
+
+// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
 model unverifiedSenders {
   id            String               @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded     DateTime             @default(now())
@@ -487,6 +513,7 @@ model userSettings {
   verification      UserSettingsVerification
 }
 
+// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
 model verifiedSenderDomains {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime @db.Date
@@ -495,6 +522,7 @@ model verifiedSenderDomains {
   hostId       String   @db.ObjectId
 }
 
+// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
 model verifiedSenderEmails {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime @db.Date
