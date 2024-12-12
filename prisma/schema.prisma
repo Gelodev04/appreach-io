@@ -466,7 +466,7 @@ model senderAddresses {
   archived      Boolean
 }
 
-model senderDomain {
+model senderDomains {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime @default(now())
   hostId       String   @unique @db.ObjectId

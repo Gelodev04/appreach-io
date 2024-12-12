@@ -7,7 +7,7 @@ import SenderUsed from './_components/sender-used';
 import SendersTables from './_components/tabs/sender-tables';
 import ActiveSenderEmailsTable from './_components/tables/active-sender-emails-table';
 import ArchivedSenderEmailsTable from './_components/tables/archived-sender-emails-table';
-import VerifiedDomains from './_components/tables/verified-domains-accord';
+import VerifiedDomains from './_components/accordion/verified-domains';
 
 export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',

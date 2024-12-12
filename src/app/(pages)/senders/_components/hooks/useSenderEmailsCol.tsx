@@ -93,7 +93,7 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
   return { columns };
 };
 
-const VerifiedValue = ({ isVerified }: { isVerified: boolean }) => {
+export const VerifiedValue = ({ isVerified }: { isVerified: boolean }) => {
   const theme = useTheme();
   return (
     <Box>
