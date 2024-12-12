@@ -2,6 +2,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { Icon } from '@iconify/react';
 import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
+import VerifyUnverifyIcon from '../verify-unverify-icon';
 
 type TableColumnsType = {
   options: {
@@ -33,7 +34,7 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
       flex: 1,
       align: 'center',
       headerAlign: 'center',
-      renderCell: ({ value }) => <VerifiedValue isVerified={value} />,
+      renderCell: ({ value }) => <VerifyUnverifyIcon isVerified={value} tooltipText="email" />,
     },
     {
       field: 'archived',
@@ -91,26 +92,4 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
   ];
 
   return { columns };
-};
-
-export const VerifiedValue = ({ isVerified }: { isVerified: boolean }) => {
-  const theme = useTheme();
-  return (
-    <Box>
-      <Tooltip
-        title={isVerified ? 'This sender email is verified.' : 'This sender email is unverified.'}
-        placement="top-start"
-      >
-        <Icon
-          icon={
-            isVerified
-              ? 'material-symbols:verified-rounded'
-              : 'material-symbols-light:error-outline-rounded'
-          }
-          color={theme.palette.primary.lighter}
-          width={24}
-        />
-      </Tooltip>
-    </Box>
-  );
 };
