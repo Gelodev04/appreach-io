@@ -14,11 +14,11 @@ export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord
       headerName: 'Value',
       sortable: false,
       flex: 1,
-      renderCell: ({ value }) => (
+      renderCell: ({ value, row }) => (
         <Box display="flex">
           <CopyTextRecord txtRecord={value} />,
-          <Reverify tooltipText="domain" />
-          <DeleteSender tooltipText="domain" />
+          <Reverify tooltipText="domain" type="domain" id={row.id} />
+          <DeleteSender tooltipText="domain" type="domain" id={row.id} />
         </Box>
       ),
     },

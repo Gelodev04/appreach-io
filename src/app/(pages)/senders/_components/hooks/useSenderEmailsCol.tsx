@@ -44,28 +44,18 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
       headerAlign: 'center',
       align: 'center',
       renderCell: ({ row }) => {
-        const { verified } = row;
-
-        /* TODO: 
-          1. handleArchive
-          2. handleUnarchive
-          3. handleVerify
-          4. handleDelete
-        
-        */
-
+        const { verified, id } = row;
         if (isArchived) {
-          return <Unarchived />;
+          return <Unarchived id={id} />;
         }
-
         return (
           <Box>
             {verified ? (
-              <Archive />
+              <Archive id={id} />
             ) : (
               <Box>
-                <Reverify tooltipText="email" />
-                <DeleteSender tooltipText="email" />
+                <Reverify tooltipText="email" id={id} type="email" />
+                <DeleteSender tooltipText="email" id={id} type="email" />
               </Box>
             )}
           </Box>

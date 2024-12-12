@@ -422,3 +422,45 @@ export const getArhivedSenderEmails = async () => {
     return [];
   }
 };
+
+export const archiveSenderEmail = async (id: string) => {
+  try {
+    const archiveEmail = await prisma.senderAddresses.update({
+      where: {
+        id,
+      },
+      data: {
+        archived: true,
+      },
+      select: {
+        archived: true,
+      },
+    });
+
+    revalidatePath(`${paths.senders.root}?tableIndex=0`);
+    return archiveEmail.archived;
+  } catch (error) {
+    throw new Error('Unable to archive sender email. Please contact support');
+  }
+};
+
+export const unArchiveSenderEmail = async (id: string) => {
+  try {
+    const archiveEmail = await prisma.senderAddresses.update({
+      where: {
+        id,
+      },
+      data: {
+        archived: false,
+      },
+      select: {
+        archived: true,
+      },
+    });
+
+    revalidatePath(`${paths.senders.root}?tableIndex=1`);
+    return archiveEmail.archived;
+  } catch (error) {
+    throw new Error('Unable to archive sender email. Please contact support');
+  }
+};
