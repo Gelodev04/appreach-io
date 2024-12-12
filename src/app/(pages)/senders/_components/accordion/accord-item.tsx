@@ -114,6 +114,14 @@ export default function AccordItem({ domain, hostId, id, txtRecord, verified }: 
             disableEval
             disableVirtualization
             autoHeight
+            sx={{
+              '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
+                outline: 'none !important',
+              },
+              '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
+                outline: 'none !important',
+              },
+            }}
           />
         </Box>
       </AccordionDetails>
