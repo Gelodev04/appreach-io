@@ -102,7 +102,11 @@ export const VerifiedValue = ({ isVerified }: { isVerified: boolean }) => {
         placement="top-start"
       >
         <Icon
-          icon={isVerified ? 'material-symbols:verified-rounded' : 'material-symbols:error'}
+          icon={
+            isVerified
+              ? 'material-symbols:verified-rounded'
+              : 'material-symbols-light:error-outline-rounded'
+          }
           color={theme.palette.primary.lighter}
           width={24}
         />

@@ -12,18 +12,46 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
-import { VerifiedValue } from '../hooks/useSenderEmailsCol';
+import { CopyTextRecord } from '../tables/copy-text-record';
 
 type AccordItemType = {
   id: string;
   domain: string;
-  textRecord: string | null;
+  txtRecord: string | null;
   verified: boolean;
   hostId: string;
 };
 
-export default function AccordItem({ domain, hostId, id, textRecord, verified }: AccordItemType) {
+export default function AccordItem({ domain, hostId, id, txtRecord, verified }: AccordItemType) {
+  const columns: GridColDef[] = [
+    { field: 'type', headerName: 'Type', sortable: false },
+    { field: 'host', headerName: 'Host', sortable: false },
+    {
+      field: 'txtRecord',
+      headerName: 'Value',
+      sortable: false,
+      flex: 1,
+      renderCell: ({ value }) => (
+        <Box display="flex">
+          <CopyTextRecord txtRecord={value} />,
+          <Tooltip title="Resend verification email." placement="top-start">
+            <IconButton size="medium">
+              <Icon icon="material-symbols:refresh" color={theme.palette.primary.lighter} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete sender email." placement="top-start">
+            <IconButton size="medium">
+              <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
+    },
+  ];
+
+  const rows = [{ id, type: 'TXT', host: '@', txtRecord }];
   const theme = useTheme();
   return (
     <Accordion variant="outlined">
@@ -44,7 +72,7 @@ export default function AccordItem({ domain, hostId, id, textRecord, verified }:
         disabled={verified}
       >
         <Box display="flex" alignItems="center" sx={{ width: '100%', paddingRight: 5 }}>
-          <Typography sx={{ flex: 1 }} fontSize={18}>
+          <Typography sx={{ flex: 1 }} fontSize={16}>
             {domain}
           </Typography>
           <Box display="flex" paddingRight={2}>
@@ -53,7 +81,11 @@ export default function AccordItem({ domain, hostId, id, textRecord, verified }:
               placement="top-start"
             >
               <Icon
-                icon={verified ? 'material-symbols:verified-rounded' : 'material-symbols:error'}
+                icon={
+                  verified
+                    ? 'material-symbols:verified-rounded'
+                    : 'material-symbols-light:error-outline-rounded'
+                }
                 color={theme.palette.primary.lighter}
                 width={24}
               />
@@ -62,15 +94,28 @@ export default function AccordItem({ domain, hostId, id, textRecord, verified }:
           <Button
             variant={verified ? 'outlined' : 'contained'}
             color="primary"
-            sx={{ minWidth: 100 }}
+            sx={{ minWidth: 120 }}
           >
-            {verified ? 'Verified' : 'Verify'}
+            <Typography fontSize={14}>{verified ? 'Verified' : 'Verify domain'}</Typography>
           </Button>
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit
-        amet blandit leo lobortis eget.
+        <Box sx={{ width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            hideFooterPagination
+            disableColumnFilter
+            disableColumnMenu
+            disableColumnSelector
+            disableDensitySelector
+            disableRowSelectionOnClick
+            disableEval
+            disableVirtualization
+            autoHeight
+          />
+        </Box>
       </AccordionDetails>
     </Accordion>
   );

@@ -15,7 +15,7 @@ export const getSenderDomains = async () => {
       select: {
         id: true,
         domain: true,
-        textRecord: true,
+        txtRecord: true,
         verified: true,
         hostId: true,
       },
