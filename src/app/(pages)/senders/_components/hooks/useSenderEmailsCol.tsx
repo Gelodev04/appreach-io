@@ -1,8 +1,11 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Icon } from '@iconify/react';
-import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 import VerifyUnverifyIcon from '../verify-unverify-icon';
+import Reverify from '../buttons/reverify';
+import DeleteSender from '../buttons/delete';
+import Unarchived from '../buttons/unarchived';
+import Archive from '../buttons/archived';
 
 type TableColumnsType = {
   options: {
@@ -13,8 +16,6 @@ type TableColumnsType = {
 };
 
 export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) => {
-  const theme = useTheme();
-
   const columns: GridColDef[] = [
     {
       field: 'email',
@@ -54,35 +55,17 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
         */
 
         if (isArchived) {
-          return (
-            <Tooltip title="Unarchive this sender email." placement="top-start">
-              <IconButton size="medium">
-                <Icon icon="material-symbols:unarchive" color={theme.palette.primary.lighter} />
-              </IconButton>
-            </Tooltip>
-          );
+          return <Unarchived />;
         }
 
         return (
           <Box>
             {verified ? (
-              <Tooltip title="Archive this sender email." placement="top-start">
-                <IconButton size="medium">
-                  <Icon icon="material-symbols:archive" color={theme.palette.primary.lighter} />
-                </IconButton>
-              </Tooltip>
+              <Archive />
             ) : (
               <Box>
-                <Tooltip title="Resend verification email." placement="top-start">
-                  <IconButton size="medium">
-                    <Icon icon="material-symbols:refresh" color={theme.palette.primary.lighter} />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete sender email." placement="top-start">
-                  <IconButton size="medium">
-                    <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
-                  </IconButton>
-                </Tooltip>
+                <Reverify tooltipText="email" />
+                <DeleteSender tooltipText="email" />
               </Box>
             )}
           </Box>
