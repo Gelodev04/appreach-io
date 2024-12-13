@@ -1,4 +1,4 @@
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
@@ -14,14 +14,11 @@ export function CopyTextRecord({ txtRecord }: { txtRecord: string }) {
   return (
     <Stack direction="row" alignItems="center">
       <Tooltip title={txtRecord} placement="top">
-        <Typography
-          variant="body2"
-          maxWidth={120}
-          sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-        >
+        <Typography variant="body2" paddingRight={1}>
           {txtRecord}
         </Typography>
       </Tooltip>
+      <Divider orientation="vertical" variant="middle" flexItem />
       <Tooltip title="Copy Text Record" placement="top">
         <IconButton onClick={handleCopy} sx={{ zIndex: 20 }}>
           <Iconify icon="uil:copy" />

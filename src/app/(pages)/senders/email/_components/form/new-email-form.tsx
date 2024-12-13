@@ -8,18 +8,13 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createUnverifiedSenders,
-  createVerifiedEmails,
-  getUnverifiedSenderByEmail,
-  getVerifiedDomain,
-  getVerifiedSenderByEmail,
-} from 'src/services/db/sender-addresses';
+import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
+import { getVerifiedDomain } from 'src/services/db/sender-domains';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
@@ -51,10 +46,9 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
   });
 
   const checkEmailExistence = async (email: string) => {
-    const isUnveriedEmailExist = await getUnverifiedSenderByEmail(email);
-    const isVerifiedEmailExist = await getVerifiedSenderByEmail(email);
+    const isSenderEmailExist = await getSenderByEmail(email);
 
-    if (isUnveriedEmailExist || isVerifiedEmailExist) {
+    if (isSenderEmailExist) {
       enqueueSnackbar(
         <Typography width={300} p={1}>
           Sender address already in use with another sender profile. Please contact support.
@@ -83,17 +77,22 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
         }
         const domain = await getVerifiedDomain({
           domain: inputEmailDomain,
+          verified: true,
           hostId: { in: userHostIds },
         });
 
         if (!domain) {
-          const unverifiedEmail = await createUnverifiedSenders(data.email, data.hostId, 'email');
-          const result = await sendSenderVerification({ type: unverifiedEmail.type });
+          const newSenderAddress = await createSenderAddress({
+            email: data.email,
+            hostId: data.hostId,
+            isVerified: false,
+          });
+          const result = await sendSenderVerification({ type: 'email' });
           if (result) {
             enqueueSnackbar({
               message: (
                 <VerificationEmailMessage
-                  message={`A verification email has been sent to ${unverifiedEmail.value}, click the confirmation link to verify it.`}
+                  message={`A verification email has been sent to ${newSenderAddress.email}, click the confirmation link to verify it.`}
                 />
               ),
               variant: 'success',
@@ -101,13 +100,17 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(`${paths.senders.root}?tableIndex=1`);
+                router.push(`${paths.senders.root}?tableIndex=0`);
               },
             });
           }
         } else {
-          const newVerifiedEmail = await createVerifiedEmails(data.email, data.hostId);
-          if (newVerifiedEmail.id) {
+          const newVerifiedSenderAddress = await createSenderAddress({
+            email: data.email,
+            hostId: data.hostId,
+            isVerified: true,
+          });
+          if (newVerifiedSenderAddress.id) {
             enqueueSnackbar('Your email has successfully verified via the domain verification', {
               variant: 'success',
               style: { maxWidth: 400 },

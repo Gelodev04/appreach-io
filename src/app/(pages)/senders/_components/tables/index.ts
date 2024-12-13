@@ -1,4 +1,5 @@
-import UnverifiedTable from './unverified-table';
-import VerifiedTable from './verified-table';
+import ActiveSenderEmailsTable from './active-sender-emails-table';
+import ArchivedSenderEmailsTable from './archived-sender-emails-table';
+import VerifiedDomains from './verified-domains';
 
-export { VerifiedTable, UnverifiedTable };
+export { ActiveSenderEmailsTable, ArchivedSenderEmailsTable, VerifiedDomains };
