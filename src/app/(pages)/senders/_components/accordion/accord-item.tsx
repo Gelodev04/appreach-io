@@ -41,7 +41,7 @@ export default function AccordItem({ domain, hostId, id, txtRecord, verified }: 
         }}
         disabled={verified}
       >
-        <AccordHeader domain={domain} isVerified={verified} />
+        <AccordHeader domain={domain} isVerified={verified} id={id} />
       </AccordionSummary>
       <AccordionDetails>
         <AccordDetails id={id} txtRecord={txtRecord} />

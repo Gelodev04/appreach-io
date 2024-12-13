@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
 
@@ -17,8 +17,10 @@ export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord
       flex: 1,
       renderCell: ({ value, row }) => (
         <Box display="flex" sx={{ borderRadius: 0 }}>
-          <CopyTextRecord txtRecord={value} />,
+          <CopyTextRecord txtRecord={value} />
+          <Divider orientation="vertical" variant="middle" flexItem />
           <Reverify tooltipText="Resend domain verification." type="domain" id={row.id} />
+          <Divider orientation="vertical" variant="middle" flexItem />
           <DeleteSender tooltipText="Delete domain." type="domain" id={row.id} />
         </Box>
       ),

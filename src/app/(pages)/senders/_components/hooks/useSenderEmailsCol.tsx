@@ -53,7 +53,7 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
             {verified ? (
               <Archive id={id} />
             ) : (
-              <Box>
+              <Box display="flex">
                 <Reverify tooltipText="Resend email verification." id={id} type="email" />
                 <DeleteSender tooltipText="Delete email." id={id} type="email" />
               </Box>

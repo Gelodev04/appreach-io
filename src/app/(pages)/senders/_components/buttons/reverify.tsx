@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { IconButton, Tooltip, useTheme } from '@mui/material';
+import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import React, { useTransition } from 'react';
 import { updateDomainToReadyStatus } from 'src/services/db/sender-domains';
@@ -59,9 +59,24 @@ export default function Reverify({
 
   return (
     <Tooltip title={tooltipText} placement="top-start">
-      <IconButton size="medium" onClick={handleVerify} disabled={isPending}>
-        <Icon icon="material-symbols:refresh" color={theme.palette.primary.lighter} />
-      </IconButton>
+      <Box sx={{ p: 0.5, position: 'relative' }}>
+        {isPending && ( // Show progress only when pending
+          <CircularProgress
+            size={38} // Set size larger than the button
+            sx={{
+              color: theme.palette.grey[300],
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          />
+        )}
+        <IconButton size="medium" onClick={handleVerify} disabled={isPending}>
+          <Icon
+            icon="material-symbols:refresh"
+            color={isPending ? theme.palette.grey[300] : theme.palette.primary.lighter}
+          />
+        </IconButton>
+      </Box>
     </Tooltip>
   );
 }

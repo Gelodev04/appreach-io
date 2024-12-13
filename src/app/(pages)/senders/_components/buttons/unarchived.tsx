@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { IconButton, Tooltip, useTheme } from '@mui/material';
+import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { useTransition } from 'react';
 import { unArchiveSenderEmail } from 'src/services/db/sender-addresses';
 
@@ -17,9 +17,24 @@ export default function Unarchived({ id }: { id: string }) {
   };
   return (
     <Tooltip title="Unarchive this sender email." placement="top-start">
-      <IconButton size="medium" onClick={handleUnArchive} disabled={isPending}>
-        <Icon icon="material-symbols:unarchive" color={theme.palette.primary.lighter} />
-      </IconButton>
+      <Box sx={{ p: 0.5, position: 'relative' }}>
+        {isPending && ( // Show progress only when pending
+          <CircularProgress
+            size={38} // Set size larger than the button
+            sx={{
+              color: theme.palette.grey[300],
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          />
+        )}
+        <IconButton size="medium" disabled={isPending} onClick={handleUnArchive}>
+          <Icon
+            icon="material-symbols:unarchive"
+            color={isPending ? theme.palette.grey[300] : theme.palette.primary.lighter}
+          />
+        </IconButton>
+      </Box>
     </Tooltip>
   );
 }
