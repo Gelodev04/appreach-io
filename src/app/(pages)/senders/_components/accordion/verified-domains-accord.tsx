@@ -12,7 +12,7 @@ type DomainsAccordionType = {
 };
 export default function DomainsAccordion({ domains }: DomainsAccordionType) {
   return (
-    <Box sx={{ minHeight: 600, marginTop: 4 }} padding={2}>
+    <Box sx={{ marginY: 4 }} padding={2}>
       {domains.map((domain) => (
         <AccordItem key={domain.id} {...domain} />
       ))}
