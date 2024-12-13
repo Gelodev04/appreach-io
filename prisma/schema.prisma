@@ -378,11 +378,6 @@ type WebMailSummary {
   type         String
 }
 
-enum UnverifiedSenderType {
-  email
-  domain
-}
-
 model emailAccounts {
   id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
   accessToken         String?
@@ -452,19 +447,29 @@ model seedBatches {
   token     String
 }
 
-model unverifiedSenders {
-  id            String               @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded     DateTime             @default(now())
-  dateEmailSent DateTime?            @db.Date
+model senderAddresses {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded     DateTime  @default(now())
+  dateEmailSent DateTime? @db.Date
   error         String?
-  hostId        String               @unique @db.ObjectId
+  hostId        String    @unique @db.ObjectId
   status        String
   textRecord    String?
-  token         String?
-  traceback     String?
-  txtRecord     String?
-  type          UnverifiedSenderType
-  value         String               @unique
+  emailToken    String?
+  email         String    @unique
+  verified      Boolean
+  archived      Boolean
+}
+
+model senderDomains {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime  @default(now())
+  hostId       String    @unique @db.ObjectId
+  status       String
+  txtRecord    String?
+  domain       String    @unique
+  verified     Boolean
+  dateVerified DateTime? @db.Date
 }
 
 model userSettings {
@@ -485,23 +490,6 @@ model userSettings {
   stripe            UserSettingsStripe?
   trackingMarketing UserSettingsTrackingMarketing?
   verification      UserSettingsVerification
-}
-
-model verifiedSenderDomains {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded    DateTime @db.Date
-  dateVerified DateTime @db.Date
-  domain       String   @unique
-  hostId       String   @db.ObjectId
-}
-
-model verifiedSenderEmails {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded    DateTime @db.Date
-  dateVerified DateTime @db.Date
-  email        String   @unique
-  hostId       String   @unique @db.ObjectId
-  verifiedVia  String
 }
 
 model webMail {

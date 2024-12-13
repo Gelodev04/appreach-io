@@ -5,9 +5,10 @@ import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { ReactNode } from 'react';
-import { Card } from '@mui/material';
+import { Card, Divider } from '@mui/material';
 import TabPanel from './tab-panel';
 import useTabsIndex from '../hooks/useTabsIndex';
+import TabTitle from './tab-title';
 
 function a11yProps(index: number) {
   return {
@@ -16,14 +17,14 @@ function a11yProps(index: number) {
   };
 }
 
-export default function SendersVerificationTable({
-  verifiedTabs,
-  unverifiedSenders,
-  archivedTab,
+export default function SendersTabs({
+  activeSenderEmails,
+  archivedSenderEmails,
+  verifiedDomains,
 }: {
-  verifiedTabs: ReactNode;
-  unverifiedSenders: ReactNode;
-  archivedTab: ReactNode;
+  activeSenderEmails: ReactNode;
+  archivedSenderEmails: ReactNode;
+  verifiedDomains: ReactNode;
 }) {
   const theme = useTheme();
   const { handleChange, value } = useTabsIndex();
@@ -45,22 +46,39 @@ export default function SendersVerificationTable({
           textColor="primary"
           TabIndicatorProps={{ sx: { backgroundColor: '#003087' } }}
         >
-          <Tab label="Active Sender Emails" {...a11yProps(0)} sx={{ fontSize: 16 }} />
-          <Tab label="Archived Sender Emails" {...a11yProps(1)} sx={{ fontSize: 16 }} />
-          <Tab label="Verified Domains" {...a11yProps(2)} sx={{ fontSize: 16 }} />
+          <Tab
+            label={
+              <TabTitle
+                title="Active Sender Emails"
+                icon="material-symbols:mark-email-read-rounded"
+              />
+            }
+            {...a11yProps(0)}
+            sx={{ fontSize: 16 }}
+          />
+          <Tab
+            label={<TabTitle title="Archived Sender Emails" icon="material-symbols:archive" />}
+            {...a11yProps(1)}
+            sx={{ fontSize: 16 }}
+          />
+          <Tab
+            label={<TabTitle title="Verified Domains" icon="mdi:internet" />}
+            {...a11yProps(2)}
+            sx={{ fontSize: 16 }}
+          />
         </Tabs>
       </AppBar>
-
+      <Divider />
       <TabPanel value={value} index={0} dir={theme.direction}>
-        {verifiedTabs}
+        {activeSenderEmails}
       </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
-        {unverifiedSenders}
+        {archivedSenderEmails}
       </TabPanel>
 
       <TabPanel value={value} index={2} dir={theme.direction}>
-        {archivedTab}
+        {verifiedDomains}
       </TabPanel>
     </Card>
   );
