@@ -16,27 +16,26 @@ import Iconify from 'src/components/iconify';
 import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 import { useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useTableColumns } from '../hooks/userTableColumns';
+
+import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';
 
 const Table = ({
   rows,
   options,
-  action = 'both',
-  type,
+  isArchived,
 }: {
   rows: GridRowsProp;
+  isArchived?: boolean;
   options: {
     profile: string;
     id: string;
   }[];
-  action?: 'delete' | 'edit' | 'both';
-  type: 'unverified' | 'verified';
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [isPending, startTransition] = useTransition();
   const params = useSearchParams();
   const tableIndex = params.get('tableIndex');
-  const { columns } = useTableColumns({ action, options, type });
+  const { columns } = useSendersEmailCol({ options, isArchived });
   const handleDeleteRows = () => {
     startTransition(async () => {
       if (!tableIndex) return undefined;

@@ -1,5 +1,5 @@
 import { getActiveSenderEmails } from 'src/services/db/sender-addresses';
-import TableV2 from './tableV2';
+import Table from './table';
 
 export type TableOptions = {
   options: {
@@ -10,5 +10,5 @@ export type TableOptions = {
 
 export default async function ActiveSenderEmailsTable({ options }: TableOptions) {
   const rows = await getActiveSenderEmails();
-  return <TableV2 rows={rows} options={options} />;
+  return <Table rows={rows} options={options} />;
 }

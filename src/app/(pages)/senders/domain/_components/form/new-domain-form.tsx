@@ -8,12 +8,15 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { getVerifiedDomain } from 'src/services/db/sender-addresses';
 import { enqueueSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
-import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
+import {
+  createSenderDomain,
+  getSenderByDomain,
+  getVerifiedDomain,
+} from 'src/services/db/sender-domains';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {

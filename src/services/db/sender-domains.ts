@@ -4,6 +4,8 @@ import prisma from 'src/auth/lib/prisma/db-prisma';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
 import { randomUUID } from 'crypto';
+import { Prisma } from '@prisma/client';
+import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import { getUserSettings } from './user-settings';
 
 export const getSenderDomains = async () => {
@@ -133,5 +135,31 @@ export const createSenderDomain = async ({
   } catch (error) {
     console.log('Error on creating sender domain');
     throw new Error('Error on create senders domain', error);
+  }
+};
+
+export const getVerifiedDomain = async (
+  whereInput: Prisma.senderDomainsWhereInput,
+  selectFields?: Prisma.senderDomainsSelect
+) => {
+  const session = await auth();
+  const id = session?.user.id;
+  try {
+    if (!id) {
+      throw new Error('Access denied.');
+    }
+    const verifiedDomains = await prisma.senderDomains.findFirst({
+      where: whereInput,
+      select: selectFields,
+    });
+
+    if (!verifiedDomains) {
+      return null;
+    }
+
+    return verifiedDomains;
+  } catch (error) {
+    console.error('Error on getting verified domains:', error); // Log the actual error
+    throw new Error('Error on getting verified domains'); // Throw a user-friendly error
   }
 };

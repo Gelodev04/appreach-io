@@ -1,5 +1,5 @@
 import { getArhivedSenderEmails } from 'src/services/db/sender-addresses';
-import TableV2 from './tableV2';
+import Table from './table';
 
 export type TableOptions = {
   options: {
@@ -10,5 +10,5 @@ export type TableOptions = {
 
 export default async function ArchivedSenderEmailsTable({ options }: TableOptions) {
   const rows = await getArhivedSenderEmails();
-  return <TableV2 rows={rows} options={options} isArchived />;
+  return <Table rows={rows} options={options} isArchived />;
 }
