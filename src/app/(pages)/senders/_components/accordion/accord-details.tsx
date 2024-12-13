@@ -1,9 +1,10 @@
 import { Box } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import React from 'react';
-import { CopyTextRecord } from '../tables/copy-text-record';
+
 import Reverify from '../buttons/reverify';
 import DeleteSender from '../buttons/delete';
+import { CopyTextRecord } from '../buttons/copy-text-record';
 
 export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord: string | null }) {
   const columns: GridColDef[] = [

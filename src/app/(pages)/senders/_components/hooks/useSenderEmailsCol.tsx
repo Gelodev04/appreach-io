@@ -1,5 +1,5 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Box, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 import VerifyUnverifyIcon from '../verify-unverify-icon';
 import Reverify from '../buttons/reverify';

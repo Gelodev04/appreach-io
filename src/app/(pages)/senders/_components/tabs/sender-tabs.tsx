@@ -17,7 +17,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function SendersTables({
+export default function SendersTabs({
   activeSenderEmails,
   archivedSenderEmails,
   verifiedDomains,
