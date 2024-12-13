@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
