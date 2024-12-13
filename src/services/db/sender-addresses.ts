@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
 export const getVerifiedDomain = async (
-  whereInput: Prisma.verifiedSenderDomainsWhereInput,
-  selectFields?: Prisma.verifiedSenderDomainsSelect
+  whereInput: Prisma.senderDomainsWhereInput,
+  selectFields?: Prisma.senderDomainsSelect
 ) => {
   const session = await auth();
   const id = session?.user.id;
@@ -18,7 +18,7 @@ export const getVerifiedDomain = async (
     if (!id) {
       throw new Error('Access denied.');
     }
-    const verifiedDomains = await prisma.verifiedSenderDomains.findFirst({
+    const verifiedDomains = await prisma.senderDomains.findFirst({
       where: whereInput,
       select: selectFields,
     });
@@ -34,36 +34,38 @@ export const getVerifiedDomain = async (
   }
 };
 
-export const createUnverifiedSenders = async (
-  value: string,
-  hostId: string,
-  type: 'email' | 'domain'
-) => {
+export const createSenderAddress = async ({
+  email,
+  hostId,
+  isVerified,
+}: {
+  email: string;
+  hostId: string;
+  isVerified: boolean;
+}) => {
   try {
     const token = randomUUID();
-    const upsertUnverifiedSenders = await prisma.unverifiedSenders.upsert({
+    const newSenderAddress = await prisma.senderAddresses.upsert({
       where: {
-        value,
+        email,
         hostId,
       },
       update: {},
       create: {
-        token: type === 'email' ? token : '',
-        txtRecord: type === 'domain' ? token : '',
-        type,
+        archived: false,
+        verified: isVerified,
+        emailToken: token,
         hostId,
-        value,
         status: 'ready',
+        email,
       },
       select: {
         id: true,
-        token: true,
-        value: true,
-        txtRecord: true,
-        type: true,
+        emailToken: true,
+        email: true,
       },
     });
-    return upsertUnverifiedSenders;
+    return newSenderAddress;
   } catch (error) {
     console.log('Error on creating unverified senders');
     throw new Error('Error on create unverified senders', error);
@@ -225,21 +227,20 @@ export const getUnverifiedSenderById = async (id: string) => {
   }
 };
 
-export const getUnverifiedSenderByEmail = async (email: string) => {
+export const getSenderByEmail = async (email: string) => {
   try {
-    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
+    const senderEmail = await prisma.senderAddresses.findUnique({
       where: {
-        value: email,
-        type: 'email',
+        email,
       },
       select: {
-        value: true,
+        email: true,
         hostId: true,
       },
     });
-    return unverifiedSender;
+    return senderEmail;
   } catch (error) {
-    console.log('Unable to get unverified sender by email.', error);
+    console.log('Unable to get  sender by email.', error);
     return null;
   }
 };
