@@ -274,34 +274,11 @@ export const deleteSenderAddressById = async (
   tableIndex: string
 ): Promise<any | null> => {
   try {
-    const deleteActions: Record<string, () => Promise<any>> = {
-      '0': async () => {
-        const deleted = await prisma.verifiedSenderEmails.deleteMany({
-          where: { id: { in: ids } },
-        });
-        revalidatePath(`${paths.senders.root}?tableIndex=0`);
-        return deleted;
-      },
-      '1': async () => {
-        const deleted = await prisma.unverifiedSenders.deleteMany({ where: { id: { in: ids } } });
-        revalidatePath(`${paths.senders.root}?tableIndex=1`);
-        return deleted;
-      },
-      '2': async () => {
-        const deleted = await prisma.verifiedSenderDomains.deleteMany({
-          where: { id: { in: ids } },
-        });
-        revalidatePath(`${paths.senders.root}?tableIndex=2`);
-        return deleted;
-      },
-    };
-
-    const deleteAction = deleteActions[tableIndex];
-    if (deleteAction) {
-      return await deleteAction();
-    }
-
-    return null; // Return null if no valid tableIndex is found
+    const deleted = await prisma.senderAddresses.deleteMany({
+      where: { id: { in: ids } },
+    });
+    revalidatePath(`${paths.senders.root}?tableIndex=${tableIndex}`);
+    return deleted;
   } catch (error) {
     console.log('Unable to delete', error);
     return null;
