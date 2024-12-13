@@ -8,16 +8,12 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createUnverifiedSenders,
-  getUnverifiedSenderByDomain,
-  getVerifiedDomain,
-  getVerifiedSenderByDomain,
-} from 'src/services/db/sender-addresses';
+import { getVerifiedDomain } from 'src/services/db/sender-addresses';
 import { enqueueSnackbar } from 'notistack';
 import { useRouter } from 'next/navigation';
 import { paths } from 'src/routes/paths';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
+import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
@@ -54,10 +50,9 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
   });
 
   const checkDomainExistence = async (domain: string) => {
-    const isUnveriedDomainExist = await getUnverifiedSenderByDomain(domain);
-    const isVerifiedDomainExist = await getVerifiedSenderByDomain(domain);
+    const isSenderDomainExist = await getSenderByDomain(domain);
 
-    if (isUnveriedDomainExist || isVerifiedDomainExist) {
+    if (isSenderDomainExist) {
       enqueueSnackbar(
         <Typography width={300} p={1}>
           Sender domain already in use with another sender profile. Please contact support.
@@ -77,24 +72,17 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
         const domain = await getVerifiedDomain({
           domain: data.domain,
+          verified: true,
           hostId: { in: userHostIds },
         });
-        const domainValue = await getUnverifiedSenderByDomain(data.domain);
-        if (domain || domainValue) {
-          enqueueSnackbar(
-            'Sender domain already in use with another sender profile. Please contact support.',
-            { variant: 'warning', style: { maxWidth: 400 } }
-          );
-          return undefined;
-        }
 
         if (!domain) {
-          const unverifiedDomain = await createUnverifiedSenders(
-            data.domain,
-            data.hostId,
-            'domain'
-          );
-          const result = await sendSenderVerification({ type: unverifiedDomain.type });
+          await createSenderDomain({
+            domain: data.domain,
+            hostId: data.hostId,
+            isVerified: false,
+          });
+          const result = await sendSenderVerification({ type: 'domain' });
           if (result) {
             enqueueSnackbar({
               message: <VerificationEmailMessage />,
@@ -103,7 +91,7 @@ export default function CreateDomainForm({ senderProfiles }: CreateSendersEmailF
               onClose: (e) => {
                 e?.preventDefault();
                 methods.reset();
-                router.push(`${paths.senders.root}?tableIndex=1`);
+                router.push(`${paths.senders.root}?tableIndex=2`);
               },
             });
           }

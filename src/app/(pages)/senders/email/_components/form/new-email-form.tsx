@@ -10,7 +10,6 @@ import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
 import {
   createSenderAddress,
-  createVerifiedEmails,
   getSenderByEmail,
   getVerifiedDomain,
 } from 'src/services/db/sender-addresses';

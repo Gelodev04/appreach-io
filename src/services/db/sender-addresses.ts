@@ -245,25 +245,6 @@ export const getSenderByEmail = async (email: string) => {
   }
 };
 
-export const getUnverifiedSenderByDomain = async (value: string) => {
-  try {
-    const unverifiedSender = await prisma.unverifiedSenders.findUnique({
-      where: {
-        value,
-        type: 'domain',
-      },
-      select: {
-        value: true,
-        hostId: true,
-      },
-    });
-    return unverifiedSender;
-  } catch (error) {
-    console.log('Unable to get unverified sender by domain.', error);
-    return null;
-  }
-};
-
 export const updateUnverifiedEmails = async (id: string) => {
   try {
     const upsertUnverifiedEmails = await prisma.unverifiedSenders.update({
