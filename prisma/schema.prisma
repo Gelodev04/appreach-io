@@ -467,14 +467,14 @@ model senderAddresses {
 }
 
 model senderDomains {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded    DateTime @default(now())
-  hostId       String   @unique @db.ObjectId
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded    DateTime  @default(now())
+  hostId       String    @unique @db.ObjectId
   status       String
   txtRecord    String?
-  domain       String   @unique
+  domain       String    @unique
   verified     Boolean
-  dateVerified DateTime @db.Date
+  dateVerified DateTime? @db.Date
 }
 
 // TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses

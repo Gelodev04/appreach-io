@@ -44,7 +44,7 @@ export const deleteSender = async (id: string, type: 'domain' | 'email') => {
       return deletedDomain;
     }
     if (type === 'email') {
-      const deletedDomain = await prisma.senderAddresses.delete({
+      const deletedEmail = await prisma.senderAddresses.delete({
         where: {
           id,
         },
@@ -52,10 +52,30 @@ export const deleteSender = async (id: string, type: 'domain' | 'email') => {
 
       revalidatePath(`${paths.senders.root}?tableIndex=0`);
 
-      return deletedDomain;
+      return deletedEmail;
     }
   } catch (error) {
     console.log('Unable to delete  sender', error);
     throw new Error('Unable to delete sender', error);
+  }
+};
+
+export const updateDomainToReadyStatus = async (id: string) => {
+  try {
+    const updatedDomainReadyStatus = await prisma.senderDomains.update({
+      where: {
+        id,
+      },
+      data: {
+        status: 'ready',
+      },
+    });
+
+    revalidatePath(`${paths.senders.root}?tableIndex=2`);
+
+    return updatedDomainReadyStatus;
+  } catch (error) {
+    console.log('Unable to update domain status to ready.', error);
+    throw new Error('Unable to update domain status to ready.', error);
   }
 };

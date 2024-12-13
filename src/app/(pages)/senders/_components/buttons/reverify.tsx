@@ -1,6 +1,11 @@
 import { Icon } from '@iconify/react';
 import { IconButton, Tooltip, useTheme } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import React, { useTransition } from 'react';
+import { updateDomainToReadyStatus } from 'src/services/db/sender-domains';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
+import { updateSenderToReadyStatus } from 'src/services/db/sender-addresses';
+import VerificationEmailMessage from '../../email/_components/verification-email-message';
 
 export default function Reverify({
   tooltipText,
@@ -13,16 +18,48 @@ export default function Reverify({
 }) {
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
+
   const handleVerify = () => {
-    /* TODO: 
-      1. update sender domain or email to status ready
-      2. sendSenderVerification with param type if domain or email --> no need to update
-      3. Show pop up
-    */
+    startTransition(async () => {
+      const result = await sendSenderVerification({ type });
+      if (type === 'email') {
+        const readyStatusSender = await updateSenderToReadyStatus(id);
+
+        if (readyStatusSender && result) {
+          const message = `A verification email has been sent to ${readyStatusSender.email}, click the confirmation link to verify it.`;
+          enqueueSnackbar({
+            message: <VerificationEmailMessage message={message} />,
+            variant: 'success',
+          });
+        } else {
+          enqueueSnackbar('Unable to verify sender. Please contact support', {
+            variant: 'error',
+          });
+          return undefined;
+        }
+      }
+
+      if (type === 'domain') {
+        const readyStatusDomain = await updateDomainToReadyStatus(id);
+        if (readyStatusDomain && result) {
+          const message = `We are checking ${readyStatusDomain.domain} for txt record. Check 'Verified Tab' in the next 2 minutes.`;
+          enqueueSnackbar({
+            message: <VerificationEmailMessage message={message} />,
+            variant: 'success',
+          });
+        } else {
+          enqueueSnackbar('Unable to verify sender. Please contact support', {
+            variant: 'error',
+          });
+          return undefined;
+        }
+      }
+    });
   };
+
   return (
-    <Tooltip title="Resend verification email." placement="top-start">
-      <IconButton size="medium">
+    <Tooltip title={tooltipText} placement="top-start">
+      <IconButton size="medium" onClick={handleVerify} disabled={isPending}>
         <Icon icon="material-symbols:refresh" color={theme.palette.primary.lighter} />
       </IconButton>
     </Tooltip>

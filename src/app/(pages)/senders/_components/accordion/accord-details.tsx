@@ -15,10 +15,10 @@ export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord
       sortable: false,
       flex: 1,
       renderCell: ({ value, row }) => (
-        <Box display="flex">
+        <Box display="flex" sx={{ borderRadius: 0 }}>
           <CopyTextRecord txtRecord={value} />,
-          <Reverify tooltipText="domain" type="domain" id={row.id} />
-          <DeleteSender tooltipText="domain" type="domain" id={row.id} />
+          <Reverify tooltipText="Resend domain verification." type="domain" id={row.id} />
+          <DeleteSender tooltipText="Delete domain." type="domain" id={row.id} />
         </Box>
       ),
     },

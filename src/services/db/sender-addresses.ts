@@ -464,3 +464,23 @@ export const unArchiveSenderEmail = async (id: string) => {
     throw new Error('Unable to archive sender email. Please contact support');
   }
 };
+
+export const updateSenderToReadyStatus = async (id: string) => {
+  try {
+    const updatedEmailReadyStatus = await prisma.senderAddresses.update({
+      where: {
+        id,
+      },
+      data: {
+        status: 'ready',
+      },
+    });
+
+    revalidatePath(`${paths.senders.root}?tableIndex=0`);
+
+    return updatedEmailReadyStatus;
+  } catch (error) {
+    console.log('Unable to update sender status to ready.', error);
+    throw new Error('Unable to update sender status to ready.', error);
+  }
+};
