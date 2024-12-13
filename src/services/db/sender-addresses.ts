@@ -340,32 +340,11 @@ export const updateSenderProfiles = async (
         hostId,
       },
     };
-    const updateActions: Record<string, () => Promise<any>> = {
-      '0': async () => {
-        const updated = await prisma.verifiedSenderEmails.update(data);
-        revalidatePath(`${paths.senders.root}?tableIndex=0`);
-        return updated;
-      },
-      '1': async () => {
-        const updated = await prisma.unverifiedSenders.update(data);
-        revalidatePath(`${paths.senders.root}?tableIndex=1`);
-        return updated;
-      },
-      '2': async () => {
-        const updated = await prisma.verifiedSenderDomains.update(data);
-        revalidatePath(`${paths.senders.root}?tableIndex=2`);
-        return updated;
-      },
-    };
-
-    const updateAction = updateActions[tableIndex];
-    if (updateAction) {
-      return await updateAction();
-    }
-
-    return null; // Return null if no valid tableIndex is found
+    const updated = await prisma.senderAddresses.update(data);
+    revalidatePath(`${paths.senders.root}?tableIndex=${tableIndex}`);
+    return updated; // Return null if no valid tableIndex is found
   } catch (error) {
-    console.log('Unable to delete', error);
+    console.log('Unable to update hostId', error);
     return null;
   }
 };
