@@ -477,22 +477,6 @@ model senderDomains {
   dateVerified DateTime? @db.Date
 }
 
-// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
-model unverifiedSenders {
-  id            String               @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded     DateTime             @default(now())
-  dateEmailSent DateTime?            @db.Date
-  error         String?
-  hostId        String               @unique @db.ObjectId
-  status        String
-  textRecord    String?
-  token         String?
-  traceback     String?
-  txtRecord     String?
-  type          UnverifiedSenderType
-  value         String               @unique
-}
-
 model userSettings {
   id                String                         @id @default(auto()) @map("_id") @db.ObjectId
   appLogin          UserSettingsAppLogin
@@ -511,25 +495,6 @@ model userSettings {
   stripe            UserSettingsStripe?
   trackingMarketing UserSettingsTrackingMarketing?
   verification      UserSettingsVerification
-}
-
-// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
-model verifiedSenderDomains {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded    DateTime @db.Date
-  dateVerified DateTime @db.Date
-  domain       String   @unique
-  hostId       String   @db.ObjectId
-}
-
-// TODO:DELETE THIS ONCE VERIFY WORKING THE senderAddresses
-model verifiedSenderEmails {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded    DateTime @db.Date
-  dateVerified DateTime @db.Date
-  email        String   @unique
-  hostId       String   @unique @db.ObjectId
-  verifiedVia  String
 }
 
 model webMail {
