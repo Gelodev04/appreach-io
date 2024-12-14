@@ -42,23 +42,32 @@ export const TourDialog = () => {
               isFinished={status.step1Finished}
               popover={popover}
               step="Generate seed emails"
+              stepIndex={0}
             />
             <Checklist
               isFinished={status.step2Finished}
               popover={popover}
               step="Add sender emails"
+              stepIndex={1}
             />
             <Checklist
               isFinished={status.step3Finished}
               popover={popover}
               step="Create sender profile"
+              stepIndex={2}
             />
             <Checklist
               isFinished={status.step4Finished}
               popover={popover}
               step="Send to seed emails"
+              stepIndex={3}
             />
-            <Checklist isFinished={status.step5Finished} popover={popover} step="View reports" />
+            <Checklist
+              isFinished={status.step5Finished}
+              popover={popover}
+              step="View reports"
+              stepIndex={4}
+            />
           </Box>
         </Box>
       </CustomPopover>
@@ -70,21 +79,23 @@ const Checklist = ({
   isFinished,
   step,
   popover,
+  stepIndex,
 }: {
   isFinished: boolean;
   step: string;
   popover: ReturnType;
+  stepIndex: number;
 }) => {
-  const { setStartTour } = useTourDialogStore((state) => state);
-  const router = useRouter();
+  const { setStep } = useTourDialogStore((state) => state);
   const handleClick = () => {
-    router.push('/seeds');
-    setStartTour(true);
+    // TODO:
+    // setStep
+    setStep(stepIndex);
     popover.onClose();
   };
 
   return (
-    <div onClick={handleClick}>
+    <Box onClick={handleClick}>
       <Box
         p={1}
         sx={{
@@ -125,6 +136,6 @@ const Checklist = ({
           <Iconify icon="tabler:chevron-right" />
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };

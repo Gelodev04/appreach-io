@@ -1,16 +1,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { CallBackProps, Step } from 'react-joyride';
-import Joyride, { EVENTS, STATUS } from 'react-joyride';
+import Joyride, { EVENTS, STATUS, ACTIONS } from 'react-joyride';
 import { useTourDialogStore } from 'src/store/tour-dialog';
 import { State } from './types';
 
 export const TourGuide = () => {
-  const totalSteps = 4;
-  const router = useRouter();
-  const { start, progress, setStartTour, setProgress } = useTourDialogStore((state) => state);
-
-  const generateSteps = (val: number): Step[] => [
+  const steps: Step[] = [
     {
       content: (
         <div>
@@ -34,124 +30,89 @@ export const TourGuide = () => {
     //   title: 'Generate seed emails here',
     //   disableBeacon: true,
     // },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 2: Add the emails you will be sending from</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#sender_addresses',
-    //   title: 'Add sender emails',
-    //   disableBeacon: true,
-    // },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 3: Let us know how you want we should engage with your profiles</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#sender_profiles',
-    //   title: 'Create sender profile',
-    //   disableBeacon: true,
-    // },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 4: Review our tutorial on how to send to our seed accounts</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#subscription',
-    //   title: 'Send to seed emails',
-    //   disableBeacon: true,
-    // },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 5: Review our tutorial on how to review reports</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#logout',
-    //   title: 'View reports',
-    //   disableBeacon: true,
-    // },
+    {
+      content: (
+        <div>
+          <p>Step 2: Add the emails you will be sending from</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#sender_addresses',
+      title: 'Add sender emails',
+      disableBeacon: true,
+    },
+    {
+      content: (
+        <div>
+          <p>Step 3: Let us know how you want we should engage with your profiles</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#sender_profiles',
+      title: 'Create sender profile',
+      disableBeacon: true,
+    },
+    {
+      content: (
+        <div>
+          <p>Step 4: Review our tutorial on how to send to our seed accounts</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#subscription',
+      title: 'Send to seed emails',
+      disableBeacon: true,
+    },
+    {
+      content: (
+        <div>
+          <p>Step 5: Review our tutorial on how to review reports</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#logout',
+      title: 'View reports',
+      disableBeacon: true,
+    },
   ];
 
-  const [{ run, steps }, setState] = useState<State>({
-    run: start,
-    stepIndex: 0,
-    steps: generateSteps(progress),
-  });
+  const { start, stepIndex, onClose } = useTourDialogStore((state) => state);
 
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      steps: generateSteps(progress),
-    }));
-  }, [progress]);
-
-  useEffect(() => {
-    if (start) {
-      setState((prevState) => ({
-        ...prevState,
-        run: true,
-        stepIndex: 0,
-      }));
-    }
-  }, [start]);
-
-  const handleJoyrideCallback = (data: CallBackProps) => {
-    const { status, type, index, action } = data;
-
-    const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
-    const events: string[] = [EVENTS.STEP_BEFORE];
-
-    console.log({ status, type, index, action });
-    if (finishedStatuses.includes(status)) {
-      setState({ steps, run: false, stepIndex: 0 });
-      setStartTour(false);
-    } else if (events.includes(type)) {
-      setProgress(index + 1);
-    }
-
-    //  else if (index === 2) {
-    //   router.push('/senders/');
-    // }
+  const joyrideCallback = (callback: CallBackProps) => {
+    const { action } = callback;
+    if (ACTIONS.CLOSE === action) onClose();
   };
 
   return (
     <Joyride
-      callback={handleJoyrideCallback}
-      run={run}
+      callback={joyrideCallback}
+      run={start}
       steps={steps}
       spotlightClicks
       showProgress
-      hideBackButton
       disableCloseOnEsc
-      disableOverlayClose
+      stepIndex={stepIndex}
+      hideBackButton
       // debug
       styles={{
         options: {
@@ -173,7 +134,7 @@ export const TourGuide = () => {
           borderRadius: '7px',
         },
       }}
-      locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide' }}
+      locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide', close: 'Close' }}
     />
   );
 };

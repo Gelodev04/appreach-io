@@ -2,14 +2,14 @@ import { create } from 'zustand';
 
 type TourDialogStore = {
   start: boolean;
-  progress: number;
-  setStartTour: (value: boolean) => void;
-  setProgress: (value: number) => void;
+  stepIndex: number;
+  setStep: (stepIndex: number) => void;
+  onClose: () => void;
 };
 
 export const useTourDialogStore = create<TourDialogStore>((set) => ({
   start: false,
-  progress: 1,
-  setStartTour: (value) => set({ start: value }),
-  setProgress: (value) => set({ progress: value }),
+  stepIndex: 1,
+  setStep: (stepIndex) => set({ start: true, stepIndex }),
+  onClose: () => set({ start: false }),
 }));
