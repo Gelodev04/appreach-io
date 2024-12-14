@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ReturnType } from 'src/components/custom-popover/use-popover';
 import Iconify from 'src/components/iconify';
+import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 import { useTourDialogStore } from 'src/store/tour-dialog';
 
@@ -43,30 +44,35 @@ export const TourDialog = () => {
               popover={popover}
               step="Generate seed emails"
               stepIndex={0}
+              route={paths.seed.root}
             />
             <Checklist
               isFinished={status.step2Finished}
               popover={popover}
               step="Add sender emails"
               stepIndex={1}
+              route={paths.senders.root}
             />
             <Checklist
               isFinished={status.step3Finished}
               popover={popover}
               step="Create sender profile"
               stepIndex={2}
+              route={paths.settings.root}
             />
             <Checklist
               isFinished={status.step4Finished}
               popover={popover}
               step="Send to seed emails"
               stepIndex={3}
+              route={paths.dashboard.root}
             />
             <Checklist
               isFinished={status.step5Finished}
               popover={popover}
               step="View reports"
               stepIndex={4}
+              route={paths.dashboard.root}
             />
           </Box>
         </Box>
@@ -80,16 +86,19 @@ const Checklist = ({
   step,
   popover,
   stepIndex,
+  route,
 }: {
   isFinished: boolean;
   step: string;
   popover: ReturnType;
   stepIndex: number;
+  route: string;
 }) => {
   const { setStep } = useTourDialogStore((state) => state);
+  const router = useRouter();
+
   const handleClick = () => {
-    // TODO:
-    // setStep
+    router.push(route);
     setStep(stepIndex);
     popover.onClose();
   };

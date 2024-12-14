@@ -12,7 +12,7 @@ export default function NavList({ data, depth, slotProps }: NavListProps) {
   const pathname = usePathname();
   const active = useActiveLink(data.path);
   const [openMenu, setOpenMenu] = useState(active);
-  const { start, setStartTour } = useTourDialogStore((state) => state);
+  const { start } = useTourDialogStore((state) => state);
   const id = data.title.replace(/\s+/g, '_').toLowerCase();
 
   useEffect(() => {
