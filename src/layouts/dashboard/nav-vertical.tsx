@@ -5,13 +5,16 @@ import { useEffect } from 'react';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
+import { TourGuide } from 'src/components/tour/tour';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
+import { useTourDialogStore } from 'src/store/tour-dialog';
 import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
+import { TourDialog } from './tour-dialog';
 
 type Props = {
   openNav: boolean;
@@ -23,6 +26,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const pathname = usePathname();
   const lgUp = useResponsive('up', 'lg');
   const navData = useNavData();
+
+  const { start } = useTourDialogStore((state) => state);
 
   useEffect(() => {
     if (openNav) {
@@ -43,17 +48,24 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       }}
     >
       <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
-
       <NavSectionVertical
         data={navData}
         slotProps={{
           currentRole: user?.role,
         }}
       />
-
       <Box sx={{ flexGrow: 1 }} />
-
       <NavBottom />
+      {/* {pathname === '/dashboard/' && ( */}
+      <div
+        style={{
+          margin: '1rem',
+        }}
+      >
+        <TourDialog />
+      </div>
+      {/* )} */}
+      {start && <TourGuide />}
     </Scrollbar>
   );
 

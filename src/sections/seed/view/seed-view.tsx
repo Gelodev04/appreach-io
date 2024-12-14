@@ -26,6 +26,7 @@ import { useGetSeeds } from 'src/hooks/api/seed';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { useChecklistStore } from 'src/store/checklist-store';
 import { ISeed } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import {
@@ -46,6 +47,7 @@ export default function SeedView() {
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
   const { seeds, seedsLoading } = useGetSeeds();
+  const { setStepStatus } = useChecklistStore((state) => state);
   const [tableData, setTableData] = useState<ISeed[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -54,6 +56,7 @@ export default function SeedView() {
   useEffect(() => {
     if (seeds.length) {
       setTableData(seeds);
+      setStepStatus('step1Finished', true); //Complete step on checklist
     }
   }, [seeds]);
 
@@ -186,7 +189,6 @@ export default function SeedView() {
       renderCell: (params) => <RenderCellDateAdded params={params} />,
     },
   ];
-
   const getTogglableColumns = () =>
     columns
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
@@ -206,7 +208,7 @@ export default function SeedView() {
           heading="Seeds"
           links={[{ name: 'Seeds' }]}
           action={
-            <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+            <Stack id="generate_seed_btn" direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
                 component={RouterLink}
                 href={paths.seed.new}
