@@ -33,7 +33,7 @@ const SendersAddressesPage = async () => {
         }
         verifiedDomains={
           <Suspense fallback={<Skeleton height={650} />}>
-            <VerifiedDomains />
+            <VerifiedDomains options={senderProfiles} />
           </Suspense>
         }
       />

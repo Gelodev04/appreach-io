@@ -9,12 +9,16 @@ type DomainsAccordionType = {
     verified: boolean;
     hostId: string;
   }[];
+  options: {
+    profile: string;
+    id: string;
+  }[];
 };
-export default function DomainsAccordion({ domains }: DomainsAccordionType) {
+export default function DomainsAccordion({ domains, options }: DomainsAccordionType) {
   return (
     <Box sx={{ marginY: 4 }} padding={2}>
       {domains.map((domain) => (
-        <AccordItem key={domain.id} {...domain} />
+        <AccordItem key={domain.id} {...domain} options={options} />
       ))}
     </Box>
   );
