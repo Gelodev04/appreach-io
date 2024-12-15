@@ -1,16 +1,42 @@
 import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
 
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { ReturnType } from 'src/components/custom-popover/use-popover';
 import Iconify from 'src/components/iconify';
-import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 import { useTourDialogStore } from 'src/store/tour-dialog';
+import { TourChecklist } from './types';
 
 export const TourDialog = () => {
   const popover = usePopover();
   const { status } = useChecklistStore((state) => state);
+
+  const checklist = [
+    {
+      isFinished: status.step1Finished,
+      stepTitle: 'Generate seed emails',
+      stepIndex: 0,
+    },
+    {
+      isFinished: status.step2Finished,
+      stepTitle: 'Add sender emails',
+      stepIndex: 1,
+    },
+    {
+      isFinished: status.step3Finished,
+      stepTitle: 'Create sender profile',
+      stepIndex: 2,
+    },
+    {
+      isFinished: status.step4Finished,
+      stepTitle: 'Send to seed emails',
+      stepIndex: 3,
+    },
+    {
+      isFinished: status.step5Finished,
+      stepTitle: 'View reports',
+      stepIndex: 4,
+    },
+  ];
 
   return (
     <>
@@ -39,41 +65,16 @@ export const TourDialog = () => {
               gap: '10px',
             }}
           >
-            <Checklist
-              isFinished={status.step1Finished}
-              popover={popover}
-              step="Generate seed emails"
-              stepIndex={0}
-              route={paths.seed.root}
-            />
-            <Checklist
-              isFinished={status.step2Finished}
-              popover={popover}
-              step="Add sender emails"
-              stepIndex={1}
-              route={paths.senders.root}
-            />
-            <Checklist
-              isFinished={status.step3Finished}
-              popover={popover}
-              step="Create sender profile"
-              stepIndex={2}
-              route={paths.settings.root}
-            />
-            <Checklist
-              isFinished={status.step4Finished}
-              popover={popover}
-              step="Send to seed emails"
-              stepIndex={3}
-              route={paths.dashboard.root}
-            />
-            <Checklist
-              isFinished={status.step5Finished}
-              popover={popover}
-              step="View reports"
-              stepIndex={4}
-              route={paths.dashboard.root}
-            />
+            {checklist.map((item) => {
+              return (
+                <Checklist
+                  isFinished={item.isFinished}
+                  popover={popover}
+                  stepTitle={item.stepTitle}
+                  stepIndex={item.stepIndex}
+                />
+              );
+            })}
           </Box>
         </Box>
       </CustomPopover>
@@ -81,24 +82,10 @@ export const TourDialog = () => {
   );
 };
 
-const Checklist = ({
-  isFinished,
-  step,
-  popover,
-  stepIndex,
-  route,
-}: {
-  isFinished: boolean;
-  step: string;
-  popover: ReturnType;
-  stepIndex: number;
-  route: string;
-}) => {
+const Checklist = ({ isFinished, stepTitle, popover, stepIndex }: TourChecklist) => {
   const { setStep } = useTourDialogStore((state) => state);
-  const router = useRouter();
 
   const handleClick = () => {
-    router.push(route);
     setStep(stepIndex);
     popover.onClose();
   };
@@ -139,7 +126,7 @@ const Checklist = ({
                 textDecoration: isFinished ? 'line-through' : 'none',
               }}
             >
-              {step}
+              {stepTitle}
             </Typography>
           </Box>
           <Iconify icon="tabler:chevron-right" />

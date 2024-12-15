@@ -1,9 +1,6 @@
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import type { CallBackProps, Step } from 'react-joyride';
-import Joyride, { EVENTS, STATUS, ACTIONS } from 'react-joyride';
+import Joyride, { ACTIONS } from 'react-joyride';
 import { useTourDialogStore } from 'src/store/tour-dialog';
-import { State } from './types';
 
 export const TourGuide = () => {
   const steps: Step[] = [
@@ -18,18 +15,11 @@ export const TourGuide = () => {
       target: '#seeds',
       title: 'Generate seed emails',
       disableBeacon: true,
+      data: {
+        close: '/seeds',
+      },
     },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 2: Generate seed emails</p>
-    //     </div>
-    //   ),
 
-    //   target: '#generate_seed_btn',
-    //   title: 'Generate seed emails here',
-    //   disableBeacon: true,
-    // },
     {
       content: (
         <div>
@@ -99,8 +89,11 @@ export const TourGuide = () => {
   const { start, stepIndex, onClose } = useTourDialogStore((state) => state);
 
   const joyrideCallback = (callback: CallBackProps) => {
-    const { action } = callback;
+    const { action, status, type, index } = callback;
+
     if (ACTIONS.CLOSE === action) onClose();
+
+    console.log({ action, status, type, index });
   };
 
   return (
@@ -108,9 +101,11 @@ export const TourGuide = () => {
       callback={joyrideCallback}
       run={start}
       steps={steps}
-      spotlightClicks
       showProgress
+      disableScrolling
+      spotlightClicks
       disableCloseOnEsc
+      disableOverlayClose
       stepIndex={stepIndex}
       hideBackButton
       // debug
