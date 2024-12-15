@@ -56,7 +56,7 @@ export default function SeedView() {
   useEffect(() => {
     if (seeds.length) {
       setTableData(seeds);
-      setStepStatus('step1Finished', true); //Complete step on checklist
+      setStepStatus('step1Finished', true); // Complete step on checklist
     }
   }, [seeds]);
 
