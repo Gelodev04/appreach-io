@@ -52,48 +52,46 @@ export const TourGuide = () => {
       title: 'Create sender profile',
       disableBeacon: true,
     },
-    {
-      content: (
-        <div>
-          <p>Step 4: Review our tutorial on how to send to our seed accounts</p>
-        </div>
-      ),
-      styles: {
-        options: {
-          width: 380,
-        },
-      },
-      placement: 'right',
-      target: '#subscription',
-      title: 'Send to seed emails',
-      disableBeacon: true,
-    },
-    {
-      content: (
-        <div>
-          <p>Step 5: Review our tutorial on how to review reports</p>
-        </div>
-      ),
-      styles: {
-        options: {
-          width: 380,
-        },
-      },
-      placement: 'right',
-      target: '#logout',
-      title: 'View reports',
-      disableBeacon: true,
-    },
+    // {
+    //   content: (
+    //     <div>
+    //       <p>Step 4: Review our tutorial on how to send to our seed accounts</p>
+    //     </div>
+    //   ),
+    //   styles: {
+    //     options: {
+    //       width: 380,
+    //     },
+    //   },
+    //   placement: 'right',
+    //   target: '#subscription',
+    //   title: 'Send to seed emails',
+    //   disableBeacon: true,
+    // },
+    // {
+    //   content: (
+    //     <div>
+    //       <p>Step 5: Review our tutorial on how to review reports</p>
+    //     </div>
+    //   ),
+    //   styles: {
+    //     options: {
+    //       width: 380,
+    //     },
+    //   },
+    //   placement: 'right',
+    //   target: '#logout',
+    //   title: 'View reports',
+    //   disableBeacon: true,
+    // },
   ];
 
   const { start, stepIndex, onClose } = useTourDialogStore((state) => state);
 
   const joyrideCallback = (callback: CallBackProps) => {
-    const { action, status, type, index } = callback;
+    const { action } = callback;
 
     if (ACTIONS.CLOSE === action) onClose();
-
-    console.log({ action, status, type, index });
   };
 
   return (

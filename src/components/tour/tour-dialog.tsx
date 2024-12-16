@@ -26,16 +26,16 @@ export const TourDialog = () => {
       stepTitle: 'Create sender profile',
       stepIndex: 2,
     },
-    {
-      isFinished: status.step4Finished,
-      stepTitle: 'Send to seed emails',
-      stepIndex: 3,
-    },
-    {
-      isFinished: status.step5Finished,
-      stepTitle: 'View reports',
-      stepIndex: 4,
-    },
+    // {
+    //   isFinished: status.step4Finished,
+    //   stepTitle: 'Send to seed emails',
+    //   stepIndex: 3,
+    // },
+    // {
+    //   isFinished: status.step5Finished,
+    //   stepTitle: 'View reports',
+    //   stepIndex: 4,
+    // },
   ];
 
   return (
