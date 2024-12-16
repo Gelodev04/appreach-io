@@ -5,6 +5,7 @@ import CreateSendersEmailForm from './form/new-email-form';
 
 export default async function AddSenderEmailPage() {
   const senderProfiles = await getSenderProfiles();
+
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <Header />
