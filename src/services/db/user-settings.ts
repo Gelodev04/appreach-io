@@ -64,6 +64,9 @@ export const getSenderProfiles = async () => {
           in: hostsIds,
         },
       },
+      orderBy: {
+        host: 'asc',
+      },
     });
 
     return hosts.map((host) => ({
