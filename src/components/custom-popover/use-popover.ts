@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
-type ReturnType = {
+export type ReturnType = {
   onClose: VoidFunction;
   open: HTMLElement | null;
   onOpen: (event: React.MouseEvent<HTMLElement>) => void;

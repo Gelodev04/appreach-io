@@ -2,9 +2,9 @@ import { forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import ListItemButton from '@mui/material/ListItemButton';
 import Tooltip from '@mui/material/Tooltip';
 import { alpha, styled } from '@mui/material/styles';
-import ListItemButton from '@mui/material/ListItemButton';
 
 import { RouterLink } from 'src/routes/components';
 
@@ -20,6 +20,7 @@ const NavItem = forwardRef<HTMLDivElement, NavItemProps>(
       path,
       icon,
       info,
+      id,
       disabled,
       caption,
       roles,
@@ -41,6 +42,7 @@ const NavItem = forwardRef<HTMLDivElement, NavItemProps>(
         ref={ref}
         disableGutters
         open={open}
+        id={id}
         depth={depth}
         active={active}
         disabled={disabled}
