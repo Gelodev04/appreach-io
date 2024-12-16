@@ -163,3 +163,26 @@ export const getVerifiedDomain = async (
     throw new Error('Error on getting verified domains'); // Throw a user-friendly error
   }
 };
+
+export const updateDomainProfiles = async (
+  id: string,
+  hostId: string,
+  tableIndex: string
+): Promise<any | null> => {
+  try {
+    const data = {
+      where: {
+        id,
+      },
+      data: {
+        hostId,
+      },
+    };
+    const updated = await prisma.senderDomains.update(data);
+    revalidatePath(`${paths.senders.root}?tableIndex=${tableIndex}`);
+    return updated; // Return null if no valid tableIndex is found
+  } catch (error) {
+    console.log('Unable to update hostId', error);
+    return null;
+  }
+};

@@ -27,7 +27,9 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
       headerName: 'Assigned Profile',
       flex: 1,
       sortable: false,
-      renderCell: (params) => <AssignedProfileDropdown params={params} options={options} />,
+      renderCell: (params) => (
+        <AssignedProfileDropdown params={params} options={options} type="email" />
+      ),
     },
     {
       field: 'verified',

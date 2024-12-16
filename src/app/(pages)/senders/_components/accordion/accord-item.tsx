@@ -12,9 +12,20 @@ type AccordItemType = {
   txtRecord: string | null;
   verified: boolean;
   hostId: string;
+  options: {
+    profile: string;
+    id: string;
+  }[];
 };
 
-export default function AccordItem({ domain, hostId, id, txtRecord, verified }: AccordItemType) {
+export default function AccordItem({
+  domain,
+  hostId,
+  id,
+  txtRecord,
+  verified,
+  options,
+}: AccordItemType) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
 
@@ -44,7 +55,7 @@ export default function AccordItem({ domain, hostId, id, txtRecord, verified }: 
         <AccordHeader domain={domain} isVerified={verified} id={id} />
       </AccordionSummary>
       <AccordionDetails>
-        <AccordDetails id={id} txtRecord={txtRecord} />
+        <AccordDetails id={id} txtRecord={txtRecord} options={options} hostId={hostId} />
       </AccordionDetails>
     </Accordion>
   );

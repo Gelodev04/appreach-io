@@ -5,16 +5,35 @@ import React from 'react';
 import Reverify from '../buttons/reverify';
 import DeleteSender from '../buttons/delete';
 import { CopyTextRecord } from '../buttons/copy-text-record';
+import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 
-export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord: string | null }) {
+type AccordDetailsType = {
+  id: string;
+  txtRecord: string | null;
+  hostId: string;
+  options: {
+    profile: string;
+    id: string;
+  }[];
+};
+
+export default function AccordDetails({ id, txtRecord, options, hostId }: AccordDetailsType) {
   const columns: GridColDef[] = [
     { field: 'type', headerName: 'Type', sortable: false },
     { field: 'host', headerName: 'Host', sortable: false },
     {
+      field: 'hostId',
+      headerName: 'Assigned Profile',
+      flex: 1,
+      renderCell: (params) => (
+        <AssignedProfileDropdown params={params} options={options} type="domain" />
+      ),
+    },
+    {
       field: 'txtRecord',
       headerName: 'Value',
       sortable: false,
-      flex: 1,
+      flex: 2,
       renderCell: ({ value, row }) => (
         <Box display="flex" sx={{ borderRadius: 0 }}>
           <CopyTextRecord txtRecord={value} />
@@ -27,7 +46,7 @@ export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord
     },
   ];
 
-  const rows = [{ id, type: 'TXT', host: '@', txtRecord }];
+  const rows = [{ id, type: 'TXT', host: '@', txtRecord, hostId }];
   return (
     <Box sx={{ width: '100%' }}>
       <DataGrid
@@ -42,6 +61,7 @@ export default function AccordDetails({ id, txtRecord }: { id: string; txtRecord
         disableEval
         disableVirtualization
         autoHeight
+        rowHeight={65}
         sx={{
           '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
             outline: 'none !important',
