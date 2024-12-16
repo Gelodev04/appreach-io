@@ -27,7 +27,7 @@ export default function NavList({ data, depth, slotProps }: NavListProps) {
       setOpenMenu((prev) => !prev);
     }
     onClose();
-  }, [data.children]);
+  }, [data.children, onClose]);
 
   const handleCloseMenu = useCallback(() => {
     setOpenMenu(false);

@@ -58,7 +58,7 @@ export default function SeedView() {
       setTableData(seeds);
       setStepStatus('step1Finished', true); // Complete step on checklist
     }
-  }, [seeds]);
+  }, [seeds, setStepStatus]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
