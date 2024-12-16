@@ -6,9 +6,9 @@ if [[ "$VERCEL_ENV" == "dev" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "dev" ]]; then
   # Build on dev branch or push to dev
   echo "✅ - Build can proceed for dev branch"
   exit 1
-elif [[ "$VERCEL_ENV" == "release" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "release" ]]; then
+elif [[ "$VERCEL_ENV" == "main" ]] || [[ "$VERCEL_GIT_COMMIT_REF" == "main" ]]; then
   # Build on release branch or push to release
-  echo "✅ - Build can proceed for release branch"
+  echo "✅ - Build can proceed for main branch"
   exit 1
 else
   # Don't build
