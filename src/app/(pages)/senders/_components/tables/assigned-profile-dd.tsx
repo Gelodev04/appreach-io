@@ -14,6 +14,17 @@ type AssignedProfileDropdownTypes = {
   type: 'email' | 'domain';
 };
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export default function AssignedProfileDropdown({
   params,
   options,
@@ -44,10 +55,11 @@ export default function AssignedProfileDropdown({
       disabled={isPending}
       onChange={handleChange}
       style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
+      MenuProps={MenuProps}
     >
       {options.map((profile) => (
         <MenuItem value={profile.id} key={`${profile.id}-${params.id}`}>
-          {isPending ? 'Updating...' : profile.profile}
+          {profile.profile}
         </MenuItem>
       ))}
     </Select>
