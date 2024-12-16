@@ -54,8 +54,8 @@ export const updateUserSettings = async (
   }
 };
 export const getSenderProfiles = async () => {
+  const { hosts: hostsIds } = await getUserSettings({ hosts: true });
   try {
-    const { hosts: hostsIds } = await getUserSettings({ hosts: true });
     if (!hostsIds?.length) return [];
 
     const hosts = await prisma.hosts.findMany({
