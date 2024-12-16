@@ -44,7 +44,7 @@ export default function AssignedProfileDropdown({
           await updateDomainProfiles(params.id as string, e.target.value, tableIndex);
         }
       } catch (error) {
-        throw new Error('Unable to update the assigned profile.');
+        throw new Error('Unable to update the assigned profile. Please contact support.');
       }
     });
   };
