@@ -2,6 +2,7 @@ import Collapse from '@mui/material/Collapse';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'src/routes/hooks';
 import { useActiveLink } from 'src/routes/hooks/use-active-link';
+import { useTourDialogStore } from 'src/store/tour-dialog';
 import { NavListProps, NavSubListProps } from '../types';
 import NavItem from './nav-item';
 
@@ -11,6 +12,8 @@ export default function NavList({ data, depth, slotProps }: NavListProps) {
   const pathname = usePathname();
   const active = useActiveLink(data.path);
   const [openMenu, setOpenMenu] = useState(active);
+  const { onClose } = useTourDialogStore((state) => state);
+  const id = data.title.replace(/\s+/g, '_').toLowerCase();
 
   useEffect(() => {
     if (!active) {
@@ -23,7 +26,8 @@ export default function NavList({ data, depth, slotProps }: NavListProps) {
     if (data.children) {
       setOpenMenu((prev) => !prev);
     }
-  }, [data.children]);
+    onClose();
+  }, [data.children, onClose]);
 
   const handleCloseMenu = useCallback(() => {
     setOpenMenu(false);
@@ -37,6 +41,7 @@ export default function NavList({ data, depth, slotProps }: NavListProps) {
         //
         title={data.title}
         path={data.path}
+        id={id}
         icon={data.icon}
         info={data.info}
         roles={data.roles}

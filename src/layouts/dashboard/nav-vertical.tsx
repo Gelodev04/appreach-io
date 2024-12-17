@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
+import { TourDialog } from 'src/components/tour';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
@@ -43,17 +44,23 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       }}
     >
       <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
-
       <NavSectionVertical
         data={navData}
         slotProps={{
           currentRole: user?.role,
         }}
       />
-
       <Box sx={{ flexGrow: 1 }} />
-
       <NavBottom />
+      {/* {pathname === '/dashboard/' && ( */}
+      <div
+        style={{
+          margin: '1rem',
+        }}
+      >
+        <TourDialog />
+      </div>
+      {/* )} */}
     </Scrollbar>
   );
 

@@ -28,7 +28,7 @@ export default function SeedAccountsGenerator({
             name="seedAccountsGenerator"
             size="small"
             sx={{ maxWidth: 100 }}
-            placeholder="25"
+            placeholder="100"
             type="number"
           />
         </Stack>
