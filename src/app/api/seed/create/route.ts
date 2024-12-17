@@ -15,7 +15,6 @@ export async function POST(request: Request) {
       googlePersonal,
       microsoftBusiness,
       microsoftPersonal,
-      yahooPersonal,
       totalSeedAccounts,
     } = data;
 
@@ -32,7 +31,6 @@ export async function POST(request: Request) {
           googlePersonal,
           microsoftBusiness,
           microsoftPersonal,
-          yahooPersonal,
         },
         type: 'engagement',
       },
