@@ -40,7 +40,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
   const { hosts, assignedCount } = useGetSeedSettings();
-  const { seedAccounts, totalSeedAccounts } = useGetSeedAccounts();
+  const { seedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
 
@@ -95,6 +95,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const googlePersonal = watch('googlePersonal');
   const microsoftBusiness = watch('microsoftBusiness');
   const microsoftPersonal = watch('microsoftPersonal');
+  const totalSeedAccounts = watch('totalSeedAccounts');
   // const yahooPersonal = watch('yahooPersonal'); not needed anymore
 
   useEffect(() => {
@@ -125,55 +126,24 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   };
 
   useEffect(() => {
-    const distributeAccounts = (total: number, seeds: ISeedAccount[]) => {
-      if (!seeds || seeds.length === 0) return;
+    const total = getValues('seedAccountsGenerator');
+    const individualFields = [
+      'googleBusiness',
+      'googlePersonal',
+      'microsoftBusiness',
+      'microsoftPersonal',
+    ];
+    const count = individualFields.length;
 
-      const allocations: { [key: string]: number } = {};
-      let remaining = total;
+    if (total && total > 0) {
+      const distributedValue = Math.floor(total / count);
+      const remaining = total % count;
 
-      // Initialize allocations
-      seeds.forEach((seed) => {
-        allocations[seed.name] = 0;
+      individualFields.forEach((field, index) => {
+        setValue(field as any, distributedValue + (index === count - 1 ? remaining : 0));
       });
-
-      // Sort seeds by available capacity (amount - current allocation) descending
-      const sortedSeeds = [...seeds].sort(
-        (a, b) => b.amount - allocations[b.name] - (a.amount - allocations[a.name])
-      );
-
-      const allocateSeeds = (allocated: boolean) => {
-        sortedSeeds.some((seed) => {
-          const currentAllocation = allocations[seed.name];
-          if (currentAllocation < seed.amount) {
-            allocations[seed.name] += 1;
-            remaining -= 1;
-            allocated = true;
-            return remaining === 0; // Stop iterating if no more remaining
-          }
-          return false; // Continue to next seed
-        });
-        return allocated;
-      };
-
-      while (remaining > 0) {
-        let allocated = false;
-        allocated = allocateSeeds(allocated);
-        if (!allocated) break;
-      }
-
-      // Set the values in the form
-      seeds.forEach((seed) => {
-        const type = seed.name as SeedAccountType;
-        const desiredValue = allocations[seed.name];
-
-        if (getValues(type) !== desiredValue) {
-          setValue(type, desiredValue);
-        }
-      });
-    };
-
-    distributeAccounts(seedAccountsGenerator as number, seedAccounts);
-  }, [seedAccountsGenerator, seedAccounts, setValue, getValues]);
+    }
+  }, [getValues, setValue, seedAccountsGenerator]); // Watch totalInputField
 
   useEffect(() => {
     const total =
@@ -182,7 +152,14 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       (microsoftBusiness ?? 0) +
       (microsoftPersonal ?? 0);
     setValue('totalSeedAccounts', total);
-  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal, setValue]);
+  }, [
+    googleBusiness,
+    googlePersonal,
+    microsoftBusiness,
+    microsoftPersonal,
+    setValue,
+    seedAccountsGenerator,
+  ]);
 
   const renderProperties = (
     <>
