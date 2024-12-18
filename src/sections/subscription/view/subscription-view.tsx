@@ -10,19 +10,17 @@ import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE } from 'src/config-global';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useSearchParams } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
 import type { SubscriptionData } from 'src/types/stripe';
 import {
   createSubscriptionSession,
   getSubscriptionData,
   redirectToCheckout,
 } from 'src/utils/stripe';
-import { endpoints } from 'src/utils/swr';
 import { env } from 'src/data/env/client';
-import { updateSubcription } from 'src/services/stripe/update-subscription';
 import { useRouter } from 'next/navigation';
 import { UserSettingsPlan } from '@prisma/client';
 import { useState } from 'react';
+import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
 import { CheckoutElement } from '../checkout-element';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 // Stripe promise for loading the Stripe object
@@ -70,18 +68,10 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const handleCancel = async () => {
     try {
-      const url = endpoints.stripe.cancelSubscription;
-      const response = await fetch(url, { method: 'DELETE' });
-      const responseData = await response.json();
-
-      if (!response.ok) throw new Error(responseData.message || 'Failed to cancel subscription');
-
-      enqueueSnackbar(responseData?.message || 'Subscription cancelled successfully', {
+      await cancelSubscription(subscription?.subscription_id ?? '');
+      enqueueSnackbar('Subscription cancelled successfully', {
         variant: 'success',
       });
-
-      // Reload the page to refresh subscription data
-      window.location.href = paths.checkout.root;
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     } finally {

@@ -9,7 +9,7 @@ import { getUserSettings } from '../db/user-settings';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || '');
 
-export const getCurrentSubscription = async () => {
+export const getCurrentPlan = async () => {
   const { plan } = await getUserSettings({ plan: true });
   revalidatePath(paths.checkout.root);
   revalidateTag('current-subscription'); // Add this line to prevent caching
@@ -54,6 +54,27 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
     return !!updatedSubscription;
   } catch (error) {
     console.error('Error updating subscription:', error);
-    throw error;
+    throw new Error(error);
+  }
+};
+
+export const cancelSubscription = async (subscriptionId: string) => {
+  try {
+    if (!subscriptionId) {
+      throw new Error('No subscription id found.');
+    }
+    const canceledSubscription =
+      process.env.NODE_ENV === 'development'
+        ? await stripe.subscriptions.update(subscriptionId, {
+            cancel_at: Math.floor(Date.now() / 1000) + 120,
+          })
+        : await stripe.subscriptions.cancel(subscriptionId);
+
+    revalidatePath(paths.checkout.root);
+    revalidateTag('current-subscription'); // Add this line to prevent caching
+    return canceledSubscription;
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    throw new Error(error);
   }
 };
