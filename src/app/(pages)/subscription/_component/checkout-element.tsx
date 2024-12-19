@@ -28,12 +28,13 @@ export function CheckoutElementV2({
   expirationDate,
   planStatus,
 }: Props) {
-  const { submitTitle, submitSubtitle, submitButtonVariant, isExpired } = useGetSubmitTitle({
-    name,
-    planStatus,
-    currentPlan,
-    expirationDate,
-  });
+  const { submitTitle, submitSubtitle, submitButtonVariant, isCancelledButNotExpired } =
+    useGetSubmitTitle({
+      name,
+      planStatus,
+      currentPlan,
+      expirationDate,
+    });
 
   return (
     <Stack
@@ -93,8 +94,8 @@ export function CheckoutElementV2({
                 {submitSubtitle}
               </Typography>
             }
-            variant={isExpired ? 'filled' : 'outlined'}
-            color={isExpired ? 'default' : 'error'}
+            variant={isCancelledButNotExpired ? 'outlined' : 'filled'}
+            color={isCancelledButNotExpired ? 'error' : 'default'}
           />
         )}
 

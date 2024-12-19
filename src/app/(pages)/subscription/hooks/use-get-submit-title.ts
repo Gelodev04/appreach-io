@@ -70,6 +70,6 @@ export default function useGetSubmitTitle({
     submitSubtitle,
     submitTitle,
     submitButtonVariant,
-    isExpired,
+    isCancelledButNotExpired: isPlanCancelled && !isExpired,
   };
 }
