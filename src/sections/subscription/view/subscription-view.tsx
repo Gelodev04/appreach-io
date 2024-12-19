@@ -21,7 +21,8 @@ import { useRouter } from 'next/navigation';
 import { UserSettingsPlan } from '@prisma/client';
 import { useState } from 'react';
 import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
-import { CheckoutElement } from '../checkout-element';
+import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
+
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -147,31 +148,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     return 'Upgrade';
   };
 
-  const getSubmitSubtitle = (planKey: string) => {
-    const isCurrent = planKey === subscription?.lookup_key;
-    if (!isCurrent) return;
-
-    if (subscription?.status === 'canceled') {
-      if (!subscription.current_period_end) {
-        throw new Error('No subscription current_period_end');
-      }
-
-      const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
-      return `Plan will cancel on ${formattedEndDate}`;
-    }
-
-    return 'This is your current plan';
-  };
-
-  const getSubmitVariant = (planKey: string): 'purchase' | 'cancel' => {
-    const isCanceled = subscription?.status === 'canceled';
-    const isCurrent = subscription?.lookup_key === planKey;
-
-    if (!isCurrent) return 'purchase';
-    if (isCurrent && !isCanceled) return 'cancel';
-    return 'purchase';
-  };
-
   const renderHead = (
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       <Logo />
@@ -189,7 +165,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const renderOptions = (
     <Box display="flex" gap={4}>
-      <CheckoutElement
+      <CheckoutElementV2
+        name={STRIPE.subscriptions.starter.key}
         title="Starter"
         subtitle="100 Seed Accounts"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
@@ -200,12 +177,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
-        submitTitle={getSubmitTitle(STRIPE.subscriptions.starter.key)}
-        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.starter.key)}
-        variant={getSubmitVariant(STRIPE.subscriptions.starter.key)}
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
-      <CheckoutElement
+      <CheckoutElementV2
         title="Established"
+        name={STRIPE.subscriptions.established.key}
         subtitle="500 Seed Accounts*"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
@@ -216,12 +194,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
-        submitTitle={getSubmitTitle(STRIPE.subscriptions.established.key)}
-        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.established.key)}
-        variant={getSubmitVariant(STRIPE.subscriptions.established.key)}
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
-      <CheckoutElement
+      <CheckoutElementV2
         title="Managed Service"
+        name="custom"
         subtitle="Contact Us"
         features={[
           'Send 500+ emails daily to our seed list',
@@ -229,8 +208,9 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           'Think of us as part of your team',
           '1-on-1 zoom calls',
         ]}
-        submitTitle="Contact Us"
-        variant="neutral"
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
     </Box>
   );
