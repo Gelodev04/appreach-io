@@ -50,7 +50,7 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
         console.log('No invoice found for the updated subscription');
       }
     } */
-    // revalidatePath(paths.checkout.root);
+    revalidatePath(paths.checkout.root);
     return !!updatedSubscription;
   } catch (error) {
     console.error('Error updating subscription:', error);
@@ -63,12 +63,14 @@ export const cancelSubscription = async (subscriptionId: string) => {
     if (!subscriptionId) {
       throw new Error('No subscription id found.');
     }
-    const canceledSubscription =
+    /* const canceledSubscription =
       process.env.NODE_ENV === 'development'
         ? await stripe.subscriptions.update(subscriptionId, {
             cancel_at: Math.floor(Date.now() / 1000) + 120,
           })
-        : await stripe.subscriptions.cancel(subscriptionId);
+        : await stripe.subscriptions.cancel(subscriptionId); */
+
+    const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
 
     revalidatePath(paths.checkout.root);
     revalidateTag('current-subscription'); // Add this line to prevent caching

@@ -24,7 +24,7 @@ export default function useGetSubmitTitle({
 }) {
   let submitTitle;
   let submitSubtitle;
-  const isPlanCancelled = planStatus === 'cancelled';
+  const isPlanCancelled = planStatus === 'canceled';
   const isExpired = expirationDate && expirationDate < new Date();
 
   if (name === STRIPE.subscriptions.starter.key) {
@@ -35,7 +35,7 @@ export default function useGetSubmitTitle({
     } else if (currentPlan === 'starter') {
       if (isPlanCancelled) {
         submitTitle = 'Upgrade';
-        submitSubtitle = isExpired ? undefined : `Expires on: ${expirationDate}`;
+        submitSubtitle = isExpired ? undefined : `Expires on: ${expirationDate?.toDateString()}`;
       } else {
         submitTitle = 'Cancel';
         submitSubtitle = 'Current Plan';
@@ -51,7 +51,7 @@ export default function useGetSubmitTitle({
     } else if (currentPlan === 'established') {
       if (isPlanCancelled) {
         submitTitle = 'Upgrade';
-        submitSubtitle = isExpired ? undefined : `Expires on: ${expirationDate}`;
+        submitSubtitle = isExpired ? undefined : `Expires on: ${expirationDate?.toDateString()}`;
       } else {
         submitTitle = 'Cancel';
         submitSubtitle = 'Current Plan';
@@ -70,5 +70,6 @@ export default function useGetSubmitTitle({
     submitSubtitle,
     submitTitle,
     submitButtonVariant,
+    isExpired,
   };
 }

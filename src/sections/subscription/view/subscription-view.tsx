@@ -2,7 +2,7 @@
 
 import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { format } from 'date-fns';
+
 import { useSession } from 'next-auth/react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
@@ -24,6 +24,7 @@ import { cancelSubscription, updateSubcription } from 'src/services/stripe/subsc
 import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
+
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
@@ -70,9 +71,12 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const handleCancel = async () => {
     try {
       await cancelSubscription(subscription?.subscription_id ?? '');
-      enqueueSnackbar('Subscription cancelled successfully', {
-        variant: 'success',
-      });
+      enqueueSnackbar(
+        'Subscription cancelled successfully. (Note: if not updated please refresh the browser.)',
+        {
+          variant: 'success',
+        }
+      );
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     } finally {
@@ -91,10 +95,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           nextPlan.priceId
         );
         if (updatedSubscription) {
-          enqueueSnackbar(`Updated the plan successfully`, { variant: 'success' });
+          enqueueSnackbar(
+            `Updated the plan successfully. (Note: if not updated please refresh the browser.)`,
+            { variant: 'success' }
+          );
           confirmUpgradeDowngrade.setValue(false);
-          router.refresh();
         }
+        router.refresh();
       } else {
         enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
       }
@@ -106,17 +113,17 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const handlePlanSelection = (plan: SubscriptionData) => {
     const currentSubcription = getSubmitTitle(plan.key);
-
     const isCurrentPlan = subscription?.lookup_key === plan.key;
+    const isSubscriptionCancelled = subscription?.status === 'canceled';
     // Handle upgrade or downgrade confirmation
-    if (subscription && !isCurrentPlan) {
+    if (subscription && !isCurrentPlan && !isSubscriptionCancelled) {
       confirmUpgradeDowngrade.setValue(true);
       setType(currentSubcription.toLowerCase() as 'downgrade' | 'upgrade');
       setNextPlan(plan);
       return;
     }
 
-    if (subscription?.status === 'canceled') return handleSubscribe(plan.priceId);
+    if (isSubscriptionCancelled) return handleSubscribe(plan.priceId);
 
     // Handle current plan actions
     if (isCurrentPlan) return confirmCancel.onTrue();
