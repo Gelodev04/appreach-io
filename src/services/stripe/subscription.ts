@@ -31,7 +31,7 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
   try {
     const currentSubscription = await getSubscriptionsById(subscriptionId);
     const subscriptionItemId = currentSubscription.items.data[0].id; // Assuming you want to update the first item
-    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+    await stripe.subscriptions.update(subscriptionId, {
       items: [
         {
           id: subscriptionItemId, // The subscription item ID
@@ -51,7 +51,6 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
       }
     } */
     revalidatePath(paths.checkout.root);
-    return !!updatedSubscription;
   } catch (error) {
     console.error('Error updating subscription:', error);
     throw new Error(error);

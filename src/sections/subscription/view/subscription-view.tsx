@@ -90,17 +90,14 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         if (!subscription.subscription_id) {
           throw new Error('No subscription Id found');
         }
-        const updatedSubscription = await updateSubcription(
-          subscription.subscription_id,
-          nextPlan.priceId
+        await updateSubcription(subscription.subscription_id, nextPlan.priceId);
+
+        enqueueSnackbar(
+          `Updated the plan successfully. (Note: if not updated please refresh the browser.)`,
+          { variant: 'success' }
         );
-        if (updatedSubscription) {
-          enqueueSnackbar(
-            `Updated the plan successfully. (Note: if not updated please refresh the browser.)`,
-            { variant: 'success' }
-          );
-          confirmUpgradeDowngrade.setValue(false);
-        }
+        confirmUpgradeDowngrade.setValue(false);
+
         router.refresh();
       } else {
         enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
