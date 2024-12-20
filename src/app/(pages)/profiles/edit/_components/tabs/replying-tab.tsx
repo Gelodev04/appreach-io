@@ -62,7 +62,7 @@ export const ReplyingTab = () => {
           disabled={!enabled}
           sliderTitle="Reply using AI"
           icon="mdi:robot"
-          description="We will reply to 250 out of 1,000 to primary"
+          description="We will reply to {value} out of 1,000 to primary"
         />
       </Box>
 

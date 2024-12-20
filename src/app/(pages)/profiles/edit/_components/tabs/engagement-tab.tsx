@@ -7,27 +7,27 @@ const sliderItems = [
   {
     sliderTitle: 'Scroll through message',
     icon: 'ri:scroll-to-bottom-fill',
-    description: 'We will scroll through the message of 250 out of 1,000 emails',
+    description: 'We will scroll through the message of {value} out of 1,000 emails',
   },
   {
     sliderTitle: 'Mark as important',
     icon: 'material-symbols:bookmark-star-rounded',
-    description: 'We will mark 250 out of 1,000 emails as important',
+    description: 'We will mark {value} out of 1,000 emails as important',
   },
   {
     sliderTitle: 'Remove from spam',
     icon: 'mdi:email-remove',
-    description: 'We will remove 250 out of 1,000 emails from spam',
+    description: 'We will remove {value} out of 1,000 emails from spam',
   },
   {
     sliderTitle: 'Move to primary',
     icon: 'material-symbols:forward-to-inbox-rounded',
-    description: 'We will move 250 out of 1,000 emails to the primary inbox',
+    description: 'We will move {value} out of 1,000 emails to the primary inbox',
   },
   {
     sliderTitle: 'Click links',
     icon: 'mdi:cursor-default-click',
-    description: 'We will click on links in 250 out of 1,000 emails',
+    description: 'We will click on links in {value} out of 1,000 emails',
     tooltipContent:
       ' Let us know what text to click / not click or leave blank for random. You can have multiple links by seperating with a coma',
   },
@@ -43,6 +43,7 @@ export const EngagementTab = () => {
         {sliderItems.map((item) => {
           return (
             <SliderItem
+              key={item.sliderTitle}
               sliderTitle={item.sliderTitle}
               icon={item.icon}
               description={item.description}

@@ -2,7 +2,8 @@
 
 import { Icon } from '@iconify/react';
 import { Box, Card, Popover, Slider, Typography, useMediaQuery } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { useEditProfileStore } from 'src/store/edit-profile-store';
 
 type SliderProps = {
   sliderTitle: string;
@@ -22,6 +23,11 @@ export const SliderItem = ({
   const matches = useMediaQuery('(min-width:768px)');
   const popoverAnchor = useRef(null);
   const [openedPopover, setOpenedPopover] = useState(false);
+  const { value, setValue } = useEditProfileStore((state) => state);
+
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    setValue(sliderTitle, newValue as number);
+  };
 
   const popoverEnter = () => {
     setOpenedPopover(true);
@@ -30,6 +36,10 @@ export const SliderItem = ({
   const popoverLeave = () => {
     setOpenedPopover(false);
   };
+
+  const updatedDesc = useMemo(() => {
+    return description.replace('{value}', String(value[sliderTitle]));
+  }, [value, description]);
 
   return (
     <Box
@@ -119,6 +129,8 @@ export const SliderItem = ({
           <Slider
             disabled={disabled}
             size="medium"
+            value={value[sliderTitle]}
+            onChange={handleSliderChange}
             min={0}
             max={1000}
             defaultValue={250}
@@ -131,12 +143,12 @@ export const SliderItem = ({
               color: disabled ? '#94A0AE' : 'black',
             }}
           >
-            <Typography>250</Typography>
+            <Typography>{value[sliderTitle]}</Typography>
             <Typography>1000</Typography>
           </Box>
         </Box>
         <Typography sx={{ textAlign: 'center', color: disabled ? '#94A0AE' : 'black' }}>
-          {description}
+          {updatedDesc}
         </Typography>
       </Box>
     </Box>
