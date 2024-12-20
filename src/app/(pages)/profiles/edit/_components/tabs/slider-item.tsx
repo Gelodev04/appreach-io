@@ -71,7 +71,7 @@ export const SliderItem = ({
             color: '#9F9F9F',
           }}
         >
-          <Icon width={20} icon={'material-symbols:info-outline'} />
+          <Icon width={20} icon="material-symbols:info-outline" />
         </Box>
       </Card>
       <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', width: '100%' }}>

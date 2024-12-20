@@ -1,4 +1,5 @@
 'use client';
+
 import { Icon } from '@iconify/react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
@@ -26,8 +27,8 @@ export const ReplyingTab = () => {
         ) : (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
             <span>
-              <Link href={'/subscription'}>Upgrade</Link>
-            </span>{' '}
+              <Link href="/subscription">Upgrade</Link>
+            </span>
             to enable this feature.
           </Typography>
         )}
@@ -53,15 +54,15 @@ export const ReplyingTab = () => {
               color: '#9F9F9F',
             }}
           >
-            <Icon width={20} icon={'material-symbols:info-outline'} />
+            <Icon width={20} icon="material-symbols:info-outline" />
           </Box>
         </Box>
 
         <SliderItem
           disabled={!enabled}
-          sliderTitle={'Reply using AI'}
-          icon={'mdi:robot'}
-          description={'We will reply to 250 out of 1,000 to primary'}
+          sliderTitle="Reply using AI"
+          icon="mdi:robot"
+          description="We will reply to 250 out of 1,000 to primary"
         />
       </Box>
 
@@ -102,7 +103,7 @@ export const ReplyingTab = () => {
             color: '#9F9F9F',
           }}
         >
-          <Icon width={20} icon={'material-symbols:info-outline'} />
+          <Icon width={20} icon="material-symbols:info-outline" />
         </Box>
       </Box>
 
