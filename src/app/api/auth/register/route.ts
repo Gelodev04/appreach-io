@@ -5,9 +5,10 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { sendEmail } from 'src/auth/lib/sendgrid';
 import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
-import moment from 'moment-timezone';
 import { headers } from 'next/headers';
 import { signupWebhook } from 'src/services/webhook/signup-hook';
+import moment from 'moment-timezone';
+import { TRIAL_STATUS } from 'src/config-global';
 
 export async function POST(request: Request) {
   try {
@@ -48,8 +49,7 @@ export async function POST(request: Request) {
     // Set token expiration to 24h from now
     const tokenExpiration = addDays(new Date(), 1);
 
-    // Create user
-    const { insertedId: userId } = await db.collection('userSettings').insertOne({
+    const signupParams = {
       appLogin: {
         username: email,
         firstName,
@@ -89,20 +89,23 @@ export async function POST(request: Request) {
       },
       created: new Date(),
       lastUpdated: new Date(),
-      ...(isTrial
-        ? {
-            plan: {
-              status: 'trialing',
-              start_date: new Date(),
-              current_period_end: new Date(moment().add(10, 'days').toDate()),
-              trial_end: new Date(moment().add(10, 'days').toDate()),
-            },
-            seeds: {
-              assignedCount: 50,
-            },
-          }
-        : { seeds: {} }),
-    });
+      seeds: {},
+      plan: {},
+    };
+
+    if (isTrial) {
+      signupParams.seeds = { assignedCount: 50 };
+      signupParams.plan = {
+        lookup_key: 'trial',
+        status: TRIAL_STATUS.ACTIVE, // active or canceled
+        start_date: new Date(),
+        current_period_end: new Date(moment().add(10, 'days').toDate()),
+        trial_end: new Date(moment().add(10, 'days').toDate()),
+      };
+    }
+
+    // Create user
+    const { insertedId: userId } = await db.collection('userSettings').insertOne(signupParams);
 
     // Generate a unique host name
     const generateUniqueHostName = async (

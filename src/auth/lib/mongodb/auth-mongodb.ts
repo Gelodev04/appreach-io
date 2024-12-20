@@ -2,8 +2,9 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN, TRIAL_STATUS } from 'src/config-global';
 import { env } from 'src/data/env/server';
+
 import clientPromise from './db-mongo';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -80,11 +81,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         .collection('userSettings')
         .findOne({ 'appLogin.username': session.user.email });
 
+      const { plan } = user;
+      if (plan.current_period_end < new Date()) {
+        await db.collection('userSettings').updateOne(
+          { _id: user._id },
+          {
+            $set: {
+              'plan.status': TRIAL_STATUS.CANCELED, // Update the status
+            },
+          }
+        );
+
+        console.log('Trial period has been cancelled.');
+      }
+
       session.user.id = user._id;
       session.user.firstName = user.appLogin.firstName;
       session.user.lastName = user.appLogin.lastName;
       session.user.phone = user.appLogin.phone;
-
       return session;
     },
 

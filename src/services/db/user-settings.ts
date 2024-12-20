@@ -81,7 +81,8 @@ export const getSenderProfiles = async () => {
 
 export const getUserSettingsByEmail = async (
   email: string,
-  selectFields?: Prisma.userSettingsSelect
+  selectFields?: Prisma.userSettingsSelect,
+  where?: Prisma.userSettingsWhereInput
 ) => {
   try {
     const userSettings = await prisma.userSettings.findFirst({
@@ -91,6 +92,7 @@ export const getUserSettingsByEmail = async (
             username: email,
           },
         },
+        ...where,
       },
       select: selectFields,
     });
