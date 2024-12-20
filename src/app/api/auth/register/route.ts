@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       signupParams.seeds = { assignedCount: 50 };
       signupParams.plan = {
         lookup_key: 'trial',
-        status: TRIAL_STATUS.ACTIVE, // active or canceled
+        status: TRIAL_STATUS.ACTIVE, // active or canceled which is also used in stripe
         start_date: new Date(),
         current_period_end: new Date(moment().add(10, 'days').toDate()),
         trial_end: new Date(moment().add(10, 'days').toDate()),

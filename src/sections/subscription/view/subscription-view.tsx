@@ -7,9 +7,8 @@ import { useSession } from 'next-auth/react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
-import { STRIPE } from 'src/config-global';
+import { STRIPE, TRIAL_STATUS } from 'src/config-global';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useSearchParams } from 'src/routes/hooks';
 import type { SubscriptionData } from 'src/types/stripe';
 import {
   createSubscriptionSession,
@@ -23,6 +22,7 @@ import { useState } from 'react';
 import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
 import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 
+import { calculateRemainingDays } from 'src/utils';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 
 // Stripe promise for loading the Stripe object
@@ -47,7 +47,10 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   // Confirmation dialogs
   const confirmCancel = useBoolean();
   const confirmUpgradeDowngrade = useBoolean();
-
+  const isTrialExpired = subscription?.status === TRIAL_STATUS.CANCELED;
+  const expiredDate = isTrialExpired
+    ? 0
+    : subscription?.current_period_end && calculateRemainingDays(subscription?.current_period_end);
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
@@ -132,6 +135,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     const isCanceled = subscription?.status === 'canceled';
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
+    if (subscription.lookup_key === STRIPE.subscriptions.trial.key) return 'Upgrade';
+
     if (!subscription.price_id) {
       throw new Error('No subscription price id');
     }
@@ -157,7 +162,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const renderWarning = (
     <Alert variant="standard" severity="warning" sx={{ mt: 1 }}>
-      Your free trial has expired. Select a plan to continue.
+      {`You are on a free trial mode. You have ${expiredDate} remaining days for trial version. Consider upgrading
+      to a paid plan for additional features and benefits!`}
     </Alert>
   );
 
