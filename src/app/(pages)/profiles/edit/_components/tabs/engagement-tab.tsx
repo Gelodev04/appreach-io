@@ -28,6 +28,8 @@ const sliderItems = [
     sliderTitle: 'Click links',
     icon: 'mdi:cursor-default-click',
     description: 'We will click on links in 250 out of 1,000 emails',
+    tooltipContent:
+      ' Let us know what text to click / not click or leave blank for random. You can have multiple links by seperating with a coma',
   },
 ];
 
@@ -44,6 +46,7 @@ export const EngagementTab = () => {
               sliderTitle={item.sliderTitle}
               icon={item.icon}
               description={item.description}
+              tooltipContent={item?.tooltipContent}
             />
           );
         })}

@@ -1,7 +1,8 @@
 'use client';
 
 import { Icon } from '@iconify/react';
-import { Box, Card, Slider, Typography, useMediaQuery } from '@mui/material';
+import { Box, Card, Popover, Slider, Typography, useMediaQuery } from '@mui/material';
+import { useRef, useState } from 'react';
 
 type SliderProps = {
   sliderTitle: string;
@@ -15,10 +16,20 @@ export const SliderItem = ({
   sliderTitle,
   icon,
   description,
-  tooltipContent,
+  tooltipContent = 'Tooltip content',
   disabled,
 }: SliderProps) => {
   const matches = useMediaQuery('(min-width:768px)');
+  const popoverAnchor = useRef(null);
+  const [openedPopover, setOpenedPopover] = useState(false);
+
+  const popoverEnter = () => {
+    setOpenedPopover(true);
+  };
+
+  const popoverLeave = () => {
+    setOpenedPopover(false);
+  };
 
   return (
     <Box
@@ -36,7 +47,7 @@ export const SliderItem = ({
           justifyContent: 'center',
           position: 'relative',
           width: '100%',
-          maxWidth: '120px',
+          maxWidth: matches ? '120px' : 'none',
           padding: 1.5,
           minHeight: '120px',
           overflow: 'visible',
@@ -59,6 +70,11 @@ export const SliderItem = ({
           </Typography>
         </Box>
         <Box
+          ref={popoverAnchor}
+          aria-owns={openedPopover ? 'mouse-over-popover' : undefined}
+          aria-haspopup="true"
+          onMouseEnter={popoverEnter}
+          onMouseLeave={popoverLeave}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -73,6 +89,30 @@ export const SliderItem = ({
         >
           <Icon width={20} icon="material-symbols:info-outline" />
         </Box>
+
+        {tooltipContent && (
+          <Popover
+            id="mouse-over-popover"
+            open={openedPopover}
+            anchorEl={popoverAnchor.current}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            onMouseEnter={popoverEnter}
+            onMouseLeave={popoverLeave}
+            slotProps={{ paper: { sx: { pointerEvents: 'auto' } } }}
+            sx={{ pointerEvents: 'none' }}
+          >
+            <Box sx={{ maxWidth: '300px', padding: 1 }}>
+              <Typography variant="body2">{tooltipContent}</Typography>
+            </Box>
+          </Popover>
+        )}
       </Card>
       <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', width: '100%' }}>
         <Box>

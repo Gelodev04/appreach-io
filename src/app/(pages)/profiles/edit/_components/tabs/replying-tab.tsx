@@ -33,7 +33,7 @@ export const ReplyingTab = () => {
           </Typography>
         )}
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box sx={{ alignSelf: 'center', position: 'relative', minWidth: '300px', padding: 1.5 }}>
           <RHFTextField
             disabled={!enabled}
