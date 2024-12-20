@@ -79,7 +79,7 @@ export const EngagementTab = () => {
               color: '#9F9F9F',
             }}
           >
-            <Icon width={20} icon={'material-symbols:info-outline'} />
+            <Icon width={20} icon="material-symbols:info-outline" />
           </Box>
         </Box>
         <Box sx={{ position: 'relative', padding: 1.5 }}>
@@ -104,7 +104,7 @@ export const EngagementTab = () => {
               color: '#9F9F9F',
             }}
           >
-            <Icon width={20} icon={'material-symbols:info-outline'} />
+            <Icon width={20} icon="material-symbols:info-outline" />
           </Box>
         </Box>
       </Box>
