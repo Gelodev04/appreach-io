@@ -22,7 +22,7 @@ export const TEN_DAYS_TRIAL_PERIOD = 10;
 export const STRIPE = {
   subscriptions: {
     trial: {
-      key: '10_day_free_trial',
+      key: 'trial',
       name: 'Trial',
       product: 'prod_RQS1wGMIZh506N',
       priceId: 'price_1QXb6yIPvbQKS9UKVczFWI34',

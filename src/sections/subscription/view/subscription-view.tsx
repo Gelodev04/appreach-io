@@ -44,10 +44,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Search parameters and trial status
-  const searchParams = useSearchParams();
-  const trialExpired = searchParams.get('trial_expired');
-
   // Confirmation dialogs
   const confirmCancel = useBoolean();
   const confirmUpgradeDowngrade = useBoolean();
@@ -220,7 +216,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   return (
     <>
       <Container maxWidth="lg" sx={{ height: '100%' }}>
-        {trialExpired && renderWarning}
+        {subscription?.lookup_key === STRIPE.subscriptions.trial.key && renderWarning}
         <Stack
           alignItems="center"
           justifyContent="center"
