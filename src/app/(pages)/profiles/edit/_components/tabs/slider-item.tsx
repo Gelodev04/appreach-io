@@ -39,7 +39,7 @@ export const SliderItem = ({
 
   const updatedDesc = useMemo(() => {
     return description.replace('{value}', String(value[sliderTitle]));
-  }, [value, description]);
+  }, [value, description, sliderTitle]);
 
   return (
     <Box
