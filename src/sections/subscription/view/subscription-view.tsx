@@ -37,7 +37,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
 
-  //Prefill message for 'Contact Us'
+  // Prefill message for 'Contact Us'
   const { prefillMessage } = useSalesmateChat();
 
   // Subscription state management
