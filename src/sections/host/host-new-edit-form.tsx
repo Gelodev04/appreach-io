@@ -11,7 +11,8 @@ import moment from 'moment-timezone';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import FormProvider, { RHFAutocomplete, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
+import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/_components';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
@@ -180,6 +181,7 @@ abdulrehman@outreachmagic.io ⏎`;
               name="externalSenderAddresses"
               label="Sender addresses (separated by newlines)"
               minRows={3}
+              maxRows={5}
               multiline
               placeholder={externalSenderAddressesPlaceholder}
             />
@@ -196,7 +198,9 @@ abdulrehman@outreachmagic.io ⏎`;
               placeholder="cfeda7bf-2f21-4d9e-8bf2-082f31f29acb_o26lz3v"
             /> */}
 
-            <Stack spacing={1}>
+            <SenderProfileTabs />
+
+            {/* <Stack spacing={1}>
               <Typography variant="subtitle2">Inbox engagement</Typography>
               <Box
                 sx={{
@@ -212,7 +216,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 <RHFCheckbox name="inboxEngagement.movePrimary" label="Move to primary" />
                 <RHFCheckbox name="inboxEngagement.scrollMessage" label="Scroll message" />
               </Box>
-            </Stack>
+            </Stack> */}
           </Stack>
         </Card>
       </Grid>
@@ -230,10 +234,10 @@ abdulrehman@outreachmagic.io ⏎`;
             priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Register new sender profile
+            Edit sender profile
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            Add your sender accounts and engagement settings.
+            Edit your sender profile engagement settings.
           </Typography>
           <LoadingButton
             type="submit"

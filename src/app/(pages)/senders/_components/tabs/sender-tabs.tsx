@@ -1,13 +1,13 @@
 'use client';
 
-import { useTheme } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import { ReactNode } from 'react';
 import { Card, Divider } from '@mui/material';
-import TabPanel from './tab-panel';
+import AppBar from '@mui/material/AppBar';
+import { useTheme } from '@mui/material/styles';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import { ReactNode } from 'react';
 import useTabsIndex from '../hooks/useTabsIndex';
+import TabPanel from './tab-panel';
 import TabTitle from './tab-title';
 
 function a11yProps(index: number) {
