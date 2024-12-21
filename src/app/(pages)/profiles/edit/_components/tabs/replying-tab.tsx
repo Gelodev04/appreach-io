@@ -27,8 +27,8 @@ export const ReplyingTab = () => {
         ) : (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
             <span>
-              <Link href="/subscription">Upgrade </Link>
-            </span>
+              <Link href="/subscription">Upgrade</Link>
+            </span>{' '}
             to enable this feature.
           </Typography>
         )}
