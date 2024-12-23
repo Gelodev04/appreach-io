@@ -1,15 +1,5 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from '@mui/material';
 import type { CallBackProps, Step } from 'react-joyride';
 import Joyride, { ACTIONS } from 'react-joyride';
-import ReactPlayer from 'react-player';
 import { useTourDialogStore } from 'src/store/tour-dialog';
 
 export const TourGuide = () => {
@@ -113,9 +103,7 @@ export const TourGuide = () => {
     },
   ];
 
-  const { start, stepIndex, onClose, openModal, setOpenModal } = useTourDialogStore(
-    (state) => state
-  );
+  const { start, stepIndex, onClose } = useTourDialogStore((state) => state);
 
   const joyrideCallback = (callback: CallBackProps) => {
     const { action, status, index } = callback;
@@ -133,70 +121,39 @@ export const TourGuide = () => {
   };
 
   return (
-    <>
-      <Joyride
-        callback={joyrideCallback}
-        run={start}
-        steps={steps}
-        showProgress
-        disableScrolling
-        spotlightClicks
-        disableCloseOnEsc
-        disableOverlayClose
-        stepIndex={stepIndex}
-        hideBackButton
-        // debug
-        styles={{
-          options: {
-            zIndex: 9999,
-            arrowColor: '#FFFFFF',
-            backgroundColor: '#FFFFFF',
-            textColor: '#000000',
-            overlayColor: 'rgba(0, 0, 0, 0.9)',
-            primaryColor: '#003087',
-          },
-          buttonClose: {
-            marginTop: '5px',
-            marginRight: '5px',
-            width: '12px',
-          },
-          buttonNext: {
-            padding: '0.5rem 2rem',
-            marginLeft: '1rem',
-            borderRadius: '7px',
-          },
-        }}
-        locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide', close: 'Close' }}
-      />
-      <Dialog sx={{ zIndex: 10000 }} fullWidth={true} maxWidth="lg" open={openModal}>
-        <DialogTitle>Send to seed emails</DialogTitle>
-
-        <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflow: 'hidden' }}
-        >
-          <Typography variant="body1" sx={{}}>
-            Review our tutorial on how to send to our seed accounts
-          </Typography>
-          <Box sx={{ width: '100%', height: 'auto' }} id="tutorial_modal">
-            <Box sx={{ position: 'relative', paddingTop: '56.25%' }}>
-              <ReactPlayer
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                width="100%"
-                height="100%"
-                url="https://www.youtube.com/watch?v=10_y4x38jbU"
-                playing={true}
-                muted={true}
-                controls={true}
-              />
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color="primary" onClick={() => setOpenModal(false)}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Joyride
+      callback={joyrideCallback}
+      run={start}
+      steps={steps}
+      showProgress
+      disableScrolling
+      spotlightClicks
+      disableCloseOnEsc
+      disableOverlayClose
+      stepIndex={stepIndex}
+      hideBackButton
+      // debug
+      styles={{
+        options: {
+          zIndex: 9999,
+          arrowColor: '#FFFFFF',
+          backgroundColor: '#FFFFFF',
+          textColor: '#000000',
+          overlayColor: 'rgba(0, 0, 0, 0.9)',
+          primaryColor: '#003087',
+        },
+        buttonClose: {
+          marginTop: '5px',
+          marginRight: '5px',
+          width: '12px',
+        },
+        buttonNext: {
+          padding: '0.5rem 2rem',
+          marginLeft: '1rem',
+          borderRadius: '7px',
+        },
+      }}
+      locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide', close: 'Close' }}
+    />
   );
 };

@@ -93,8 +93,6 @@ const Checklist = ({ isFinished, stepTitle, popover, stepIndex }: TourChecklist)
 
   const handleClick = () => {
     if (stepIndex === 3) {
-      console.log('Open Modal');
-      setStep(stepIndex);
       setOpenModal(true);
 
       // setTimeout(() => {
