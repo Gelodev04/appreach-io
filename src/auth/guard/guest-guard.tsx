@@ -1,10 +1,10 @@
 import { useSession } from 'next-auth/react';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
-import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
-import Script from 'next/script';
-import { useCheckUserPlan } from 'src/hooks/api/plan';
 import { env } from 'src/data/env/client';
+import { useCheckUserPlan } from 'src/hooks/api/plan';
+import { usePathname, useRouter, useSearchParams } from 'src/routes/hooks';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -57,6 +57,27 @@ export default function GuestGuard({ children }: Props) {
       setIsRedirecting(false);
     }
   }, [isLoading, isAuthenticated, returnTo, plan?.status, pathname, router, trialExpired]);
+
+  useEffect(() => {
+    // Override the z-index of the iframe and add an onClick handler
+    const setupIframe = () => {
+      const iframe = document.getElementById('sm-widget-launcher-btn');
+      if (iframe) {
+        iframe.style.zIndex = '9999';
+      }
+    };
+
+    // Wait for the iframe to load and apply the style and onClick
+    const interval = setInterval(() => {
+      const iframe = document.getElementById('sm-widget-launcher-btn');
+      if (iframe) {
+        setupIframe();
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (isLoading || isRedirecting) {
     return <SplashScreen />;

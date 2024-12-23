@@ -26,16 +26,21 @@ export const TourDialog = () => {
       stepTitle: 'Create sender profile',
       stepIndex: 2,
     },
-    // {
-    //   isFinished: status.step4Finished,
-    //   stepTitle: 'Send to seed emails',
-    //   stepIndex: 3,
-    // },
-    // {
-    //   isFinished: status.step5Finished,
-    //   stepTitle: 'View reports',
-    //   stepIndex: 4,
-    // },
+    {
+      isFinished: status.step4Finished,
+      stepTitle: 'Send to seed emails',
+      stepIndex: 3,
+    },
+    {
+      isFinished: status.step5Finished,
+      stepTitle: 'View reports',
+      stepIndex: 4,
+    },
+    {
+      isFinished: status.step5Finished,
+      stepTitle: 'Get Chat Support',
+      stepIndex: 5,
+    },
   ];
 
   return (
@@ -84,10 +89,21 @@ export const TourDialog = () => {
 };
 
 const Checklist = ({ isFinished, stepTitle, popover, stepIndex }: TourChecklist) => {
-  const { setStep } = useTourDialogStore((state) => state);
+  const { setStep, setOpenModal } = useTourDialogStore((state) => state);
 
   const handleClick = () => {
-    setStep(stepIndex);
+    if (stepIndex === 3) {
+      console.log('Open Modal');
+      setStep(stepIndex);
+      setOpenModal(true);
+
+      // setTimeout(() => {
+      //   setStep(stepIndex);
+      // }, 500);
+    } else {
+      setStep(stepIndex);
+    }
+
     popover.onClose();
   };
 

@@ -7,6 +7,7 @@ type ChecklistStore = {
     step3Finished: boolean;
     step4Finished: boolean;
     step5Finished: boolean;
+    step6Finished: boolean;
   };
   setStepStatus: (step: keyof ChecklistStore['status'], value: boolean) => void;
 };
@@ -18,6 +19,7 @@ export const useChecklistStore = create<ChecklistStore>((set) => ({
     step3Finished: false,
     step4Finished: false,
     step5Finished: false,
+    step6Finished: false,
   },
   setStepStatus: (step, value) =>
     set((state) => ({
