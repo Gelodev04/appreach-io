@@ -1,4 +1,3 @@
-import { Chip } from '@mui/material';
 import { STRIPE } from 'src/config-global';
 
 type buttonVariantColor =
