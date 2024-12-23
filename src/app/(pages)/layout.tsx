@@ -2,7 +2,6 @@
 
 import { AuthGuard, GuestGuard } from 'src/auth/guard';
 import { TourGuide } from 'src/components/tour';
-import TourModal from 'src/components/tour/tour-modal';
 
 import DashboardLayout from 'src/layouts/dashboard';
 import { useTourDialogStore } from 'src/store/tour-dialog';
@@ -20,7 +19,6 @@ export default function Layout({ children }: Props) {
         <DashboardLayout>
           {start && <TourGuide />}
           {children}
-          <TourModal />
         </DashboardLayout>
       </GuestGuard>
     </AuthGuard>
