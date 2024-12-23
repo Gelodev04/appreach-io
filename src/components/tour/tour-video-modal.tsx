@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { useTourDialogStore } from 'src/store/tour-dialog';
 
-export default function TourModal() {
+export default function TourVideoModal() {
   const { stepIndex, setStep, setOpenModal, openModal, setStart } = useTourDialogStore(
     (state) => state
   );
