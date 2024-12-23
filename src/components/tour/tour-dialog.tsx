@@ -68,6 +68,7 @@ export const TourDialog = () => {
             {checklist.map((item) => {
               return (
                 <Checklist
+                  key={item.stepTitle}
                   isFinished={item.isFinished}
                   popover={popover}
                   stepTitle={item.stepTitle}

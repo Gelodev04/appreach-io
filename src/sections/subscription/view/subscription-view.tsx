@@ -3,25 +3,26 @@
 import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 
+import { UserSettingsPlan } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
 import { STRIPE, TRIAL_STATUS } from 'src/config-global';
+import { env } from 'src/data/env/client';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
 import type { SubscriptionData } from 'src/types/stripe';
 import {
   createSubscriptionSession,
   getSubscriptionData,
   redirectToCheckout,
 } from 'src/utils/stripe';
-import { env } from 'src/data/env/client';
-import { useRouter } from 'next/navigation';
-import { UserSettingsPlan } from '@prisma/client';
-import { useState } from 'react';
-import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
-import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { calculateRemainingDays } from 'src/utils';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 
@@ -35,6 +36,9 @@ type SubscriptionviewType = {
 export default function SubscriptionView({ subscription }: SubscriptionviewType) {
   // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
+
+  // Prefill message for 'Contact Us'
+  const { prefillMessage } = useSalesmateChat();
 
   // Subscription state management
   const [nextPlan, setNextPlan] = useState<SubscriptionData>();
@@ -63,7 +67,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         await redirectToCheckout(sessionId);
       }
     } catch (err) {
-      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error', persist: true });
     }
   };
 
@@ -74,10 +78,11 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         'Subscription cancelled successfully. (Note: if not updated please refresh the browser.)',
         {
           variant: 'success',
+          persist: true,
         }
       );
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     } finally {
       confirmCancel.onFalse();
     }
@@ -93,11 +98,11 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         router.refresh();
         enqueueSnackbar(
           `Updated the plan successfully. (Note: if not updated please refresh the browser.)`,
-          { variant: 'success' }
+          { variant: 'success', persist: true }
         );
         confirmUpgradeDowngrade.setValue(false);
       } else {
-        enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
+        enqueueSnackbar(`Unable to ${type}.`, { variant: 'error', persist: true });
       }
     } catch (error) {
       console.log(error);
@@ -206,6 +211,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         title="Managed Service"
         name="custom"
         subtitle="Contact Us"
+        onSubmit={() => prefillMessage('I am interested in more seeds account.')}
         features={[
           'Send 500+ emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
