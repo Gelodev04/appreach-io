@@ -1,4 +1,3 @@
-import { Chip } from '@mui/material';
 import { STRIPE } from 'src/config-global';
 
 type buttonVariantColor =
@@ -28,7 +27,7 @@ export default function useGetSubmitTitle({
   const isExpired = expirationDate && expirationDate < new Date();
 
   if (name === STRIPE.subscriptions.starter.key) {
-    if (!currentPlan) {
+    if (!currentPlan || currentPlan === STRIPE.subscriptions.trial.key) {
       submitTitle = 'Upgrade';
     } else if (currentPlan === 'established') {
       submitTitle = 'Downgrade';
@@ -44,7 +43,7 @@ export default function useGetSubmitTitle({
   }
 
   if (name === STRIPE.subscriptions.established.key) {
-    if (!currentPlan) {
+    if (!currentPlan || currentPlan === STRIPE.subscriptions.trial.key) {
       submitTitle = 'Upgrade';
     } else if (currentPlan === 'starter') {
       submitTitle = 'Upgrade';

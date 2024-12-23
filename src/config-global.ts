@@ -12,8 +12,23 @@ export const { MONGODB_URI } = envServer;
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
 
 // STRIPE
+
+export const TRIAL_STATUS = {
+  CANCELED: 'canceled',
+  ACTIVE: 'active',
+};
+export const TEN_DAYS_TRIAL_PERIOD = 10;
+
 export const STRIPE = {
   subscriptions: {
+    trial: {
+      key: 'trial',
+      name: 'Trial',
+      product: 'prod_RQS1wGMIZh506N',
+      priceId: 'price_1QXb6yIPvbQKS9UKVczFWI34',
+      price: 0,
+      order: 1,
+    },
     starter: {
       key: 'starter',
       name: 'Starter',
