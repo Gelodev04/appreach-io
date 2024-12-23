@@ -18,7 +18,7 @@ import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { ISeedAccount, ISeedForm } from 'src/types/seed';
+import { ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
@@ -27,13 +27,6 @@ import SeedAccountsGenerator from './seed-accounts-generator';
 type Props = {
   currentItem?: ISeedForm;
 };
-
-type SeedAccountType =
-  | 'googleBusiness'
-  | 'googlePersonal'
-  | 'microsoftBusiness'
-  | 'microsoftPersonal';
-// | 'yahooPersonal'; remove yahooPersonal type
 
 export default function SeedNewEditForm({ currentItem }: Props) {
   const router = useRouter();
