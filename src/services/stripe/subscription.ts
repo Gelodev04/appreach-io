@@ -9,7 +9,7 @@ import { getUserSettings } from '../db/user-settings';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || '');
 
-export const getCurrentSubscription = async () => {
+export const getCurrentPlan = async () => {
   const { plan } = await getUserSettings({ plan: true });
   revalidatePath(paths.checkout.root);
   revalidateTag('current-subscription'); // Add this line to prevent caching
@@ -31,7 +31,7 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
   try {
     const currentSubscription = await getSubscriptionsById(subscriptionId);
     const subscriptionItemId = currentSubscription.items.data[0].id; // Assuming you want to update the first item
-    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+    await stripe.subscriptions.update(subscriptionId, {
       items: [
         {
           id: subscriptionItemId, // The subscription item ID
@@ -50,10 +50,32 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
         console.log('No invoice found for the updated subscription');
       }
     } */
-    // revalidatePath(paths.checkout.root);
-    return !!updatedSubscription;
+    revalidatePath(paths.checkout.root);
   } catch (error) {
     console.error('Error updating subscription:', error);
-    throw error;
+    throw new Error(error);
+  }
+};
+
+export const cancelSubscription = async (subscriptionId: string) => {
+  try {
+    if (!subscriptionId) {
+      throw new Error('No subscription id found.');
+    }
+    /* const canceledSubscription =
+      process.env.NODE_ENV === 'development'
+        ? await stripe.subscriptions.update(subscriptionId, {
+            cancel_at: Math.floor(Date.now() / 1000) + 120,
+          })
+        : await stripe.subscriptions.cancel(subscriptionId); */
+
+    const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
+
+    revalidatePath(paths.checkout.root);
+    revalidateTag('current-subscription'); // Add this line to prevent caching
+    return canceledSubscription;
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
+    throw new Error(error);
   }
 };

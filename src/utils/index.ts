@@ -4,3 +4,10 @@ export const getEmailDomain = (email: string): string | undefined => {
 
   return match ? match[1] : undefined; // Return the domain or null if not found
 };
+
+export const calculateRemainingDays = (inputDate: Date) => {
+  const currentDate = new Date();
+  const expirationDate = new Date(inputDate ?? 0);
+  const timeDiff = expirationDate.getTime() - currentDate.getTime();
+  return Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days
+};

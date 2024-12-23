@@ -2,29 +2,30 @@
 
 import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { format } from 'date-fns';
+
+import { UserSettingsPlan } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
-import { STRIPE } from 'src/config-global';
+import { STRIPE, TRIAL_STATUS } from 'src/config-global';
+import { env } from 'src/data/env/client';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useSearchParams } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
+import { cancelSubscription, updateSubcription } from 'src/services/stripe/subscription';
 import type { SubscriptionData } from 'src/types/stripe';
 import {
   createSubscriptionSession,
   getSubscriptionData,
   redirectToCheckout,
 } from 'src/utils/stripe';
-import { endpoints } from 'src/utils/swr';
-import { env } from 'src/data/env/client';
-import { updateSubcription } from 'src/services/stripe/update-subscription';
-import { useRouter } from 'next/navigation';
-import { UserSettingsPlan } from '@prisma/client';
-import { useState } from 'react';
-import { CheckoutElement } from '../checkout-element';
+
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
+import { calculateRemainingDays } from 'src/utils';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
+
 // Stripe promise for loading the Stripe object
 const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
@@ -36,6 +37,9 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
 
+  // Prefill message for 'Contact Us'
+  const { prefillMessage } = useSalesmateChat();
+
   // Subscription state management
   const [nextPlan, setNextPlan] = useState<SubscriptionData>();
   const [type, setType] = useState<'downgrade' | 'upgrade'>('upgrade');
@@ -44,14 +48,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Search parameters and trial status
-  const searchParams = useSearchParams();
-  const trialExpired = searchParams.get('trial_expired');
-
   // Confirmation dialogs
   const confirmCancel = useBoolean();
   const confirmUpgradeDowngrade = useBoolean();
-
+  const isTrialExpired = subscription?.status === TRIAL_STATUS.CANCELED;
+  const expiredDate = isTrialExpired
+    ? 0
+    : subscription?.current_period_end && calculateRemainingDays(subscription?.current_period_end);
   const handleSubscribe = async (priceId: string) => {
     const stripe: Stripe | null = await stripePromise;
     if (!stripe) return;
@@ -64,26 +67,22 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         await redirectToCheckout(sessionId);
       }
     } catch (err) {
-      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error' });
+      enqueueSnackbar(err.message || 'An error occurred', { variant: 'error', persist: true });
     }
   };
 
   const handleCancel = async () => {
     try {
-      const url = endpoints.stripe.cancelSubscription;
-      const response = await fetch(url, { method: 'DELETE' });
-      const responseData = await response.json();
-
-      if (!response.ok) throw new Error(responseData.message || 'Failed to cancel subscription');
-
-      enqueueSnackbar(responseData?.message || 'Subscription cancelled successfully', {
-        variant: 'success',
-      });
-
-      // Reload the page to refresh subscription data
-      window.location.href = paths.checkout.root;
+      await cancelSubscription(subscription?.subscription_id ?? '');
+      enqueueSnackbar(
+        'Subscription cancelled successfully. (Note: if not updated please refresh the browser.)',
+        {
+          variant: 'success',
+          persist: true,
+        }
+      );
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error', persist: true });
     } finally {
       confirmCancel.onFalse();
     }
@@ -95,17 +94,15 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         if (!subscription.subscription_id) {
           throw new Error('No subscription Id found');
         }
-        const updatedSubscription = await updateSubcription(
-          subscription.subscription_id,
-          nextPlan.priceId
+        await updateSubcription(subscription.subscription_id, nextPlan.priceId);
+        router.refresh();
+        enqueueSnackbar(
+          `Updated the plan successfully. (Note: if not updated please refresh the browser.)`,
+          { variant: 'success', persist: true }
         );
-        if (updatedSubscription) {
-          enqueueSnackbar(`Updated the plan successfully`, { variant: 'success' });
-          confirmUpgradeDowngrade.setValue(false);
-          router.refresh();
-        }
+        confirmUpgradeDowngrade.setValue(false);
       } else {
-        enqueueSnackbar(`Unable to ${type}.`, { variant: 'error' });
+        enqueueSnackbar(`Unable to ${type}.`, { variant: 'error', persist: true });
       }
     } catch (error) {
       console.log(error);
@@ -115,17 +112,17 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const handlePlanSelection = (plan: SubscriptionData) => {
     const currentSubcription = getSubmitTitle(plan.key);
-
     const isCurrentPlan = subscription?.lookup_key === plan.key;
+    const isSubscriptionCancelled = subscription?.status === 'canceled';
     // Handle upgrade or downgrade confirmation
-    if (subscription && !isCurrentPlan) {
+    if (subscription && !isCurrentPlan && !isSubscriptionCancelled) {
       confirmUpgradeDowngrade.setValue(true);
       setType(currentSubcription.toLowerCase() as 'downgrade' | 'upgrade');
       setNextPlan(plan);
       return;
     }
 
-    if (subscription?.status === 'canceled') return handleSubscribe(plan.priceId);
+    if (isSubscriptionCancelled) return handleSubscribe(plan.priceId);
 
     // Handle current plan actions
     if (isCurrentPlan) return confirmCancel.onTrue();
@@ -143,6 +140,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     const isCanceled = subscription?.status === 'canceled';
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
+    if (subscription.lookup_key === STRIPE.subscriptions.trial.key) return 'Upgrade';
+
     if (!subscription.price_id) {
       throw new Error('No subscription price id');
     }
@@ -157,31 +156,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     return 'Upgrade';
   };
 
-  const getSubmitSubtitle = (planKey: string) => {
-    const isCurrent = planKey === subscription?.lookup_key;
-    if (!isCurrent) return;
-
-    if (subscription?.status === 'canceled') {
-      if (!subscription.current_period_end) {
-        throw new Error('No subscription current_period_end');
-      }
-
-      const formattedEndDate = format(new Date(subscription.current_period_end), 'MMMMMM do');
-      return `Plan will cancel on ${formattedEndDate}`;
-    }
-
-    return 'This is your current plan';
-  };
-
-  const getSubmitVariant = (planKey: string): 'purchase' | 'cancel' => {
-    const isCanceled = subscription?.status === 'canceled';
-    const isCurrent = subscription?.lookup_key === planKey;
-
-    if (!isCurrent) return 'purchase';
-    if (isCurrent && !isCanceled) return 'cancel';
-    return 'purchase';
-  };
-
   const renderHead = (
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       <Logo />
@@ -193,13 +167,15 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const renderWarning = (
     <Alert variant="standard" severity="warning" sx={{ mt: 1 }}>
-      Your free trial has expired. Select a plan to continue.
+      {`You are on a free trial mode. You have ${expiredDate} remaining days for trial version. Consider upgrading
+      to a paid plan for additional features and benefits!`}
     </Alert>
   );
 
   const renderOptions = (
     <Box display="flex" gap={4}>
-      <CheckoutElement
+      <CheckoutElementV2
+        name={STRIPE.subscriptions.starter.key}
         title="Starter"
         subtitle="100 Seed Accounts"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
@@ -210,12 +186,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
-        submitTitle={getSubmitTitle(STRIPE.subscriptions.starter.key)}
-        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.starter.key)}
-        variant={getSubmitVariant(STRIPE.subscriptions.starter.key)}
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
-      <CheckoutElement
+      <CheckoutElementV2
         title="Established"
+        name={STRIPE.subscriptions.established.key}
         subtitle="500 Seed Accounts*"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
@@ -226,21 +203,24 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           'Email and live chat support included',
         ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
-        submitTitle={getSubmitTitle(STRIPE.subscriptions.established.key)}
-        submitSubtitle={getSubmitSubtitle(STRIPE.subscriptions.established.key)}
-        variant={getSubmitVariant(STRIPE.subscriptions.established.key)}
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
-      <CheckoutElement
+      <CheckoutElementV2
         title="Managed Service"
+        name="custom"
         subtitle="Contact Us"
+        onSubmit={() => prefillMessage('I am interested in more seeds account.')}
         features={[
           'Send 500+ emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
           'Think of us as part of your team',
           '1-on-1 zoom calls',
         ]}
-        submitTitle="Contact Us"
-        variant="neutral"
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       />
     </Box>
   );
@@ -248,7 +228,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   return (
     <>
       <Container maxWidth="lg" sx={{ height: '100%' }}>
-        {trialExpired && renderWarning}
+        {subscription?.lookup_key === STRIPE.subscriptions.trial.key && renderWarning}
         <Stack
           alignItems="center"
           justifyContent="center"
