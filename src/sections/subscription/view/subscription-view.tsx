@@ -165,10 +165,18 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     </Stack>
   );
 
-  const renderWarning = (
+  const renderWarning = isTrialExpired ? (
+    <Alert
+      variant="filled"
+      severity="info"
+      sx={{ mt: 1, backgroundColor: '#212B36', fontWeight: '700' }}
+    >
+      Your trial has expired.
+    </Alert>
+  ) : (
     <Alert variant="standard" severity="warning" sx={{ mt: 1 }}>
       {`You are on a free trial mode. You have ${expiredDate} remaining days for trial version. Consider upgrading
-      to a paid plan for additional features and benefits!`}
+    to a paid plan for additional features and benefits!`}
     </Alert>
   );
 
