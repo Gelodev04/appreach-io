@@ -3,10 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
 import { UserSettingsPlan } from '@prisma/client';
+import NextAuth from 'next-auth';
+import { authConfig } from 'auth.config';
 import { env } from './data/env/server';
 import { paths } from './routes/paths';
 
 const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
+
+export default NextAuth(authConfig).auth;
 
 export async function middleware(req: NextRequest) {
   // Check if the request is already for the checkout path
