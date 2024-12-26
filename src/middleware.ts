@@ -6,7 +6,7 @@ import { UserSettingsPlan } from '@prisma/client';
 import { env } from './data/env/server';
 import { paths } from './routes/paths';
 
-const isTrialExpiredConfigRoute = ['/dashboard', '/senders', '/profiles', '/seeds'];
+const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
 
 export async function middleware(req: NextRequest) {
   // Check if the request is already for the checkout path
@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   const userId = token?.sub; // Extract user ID from the token (assuming 'sub' contains the user ID)
   const currentPath = req.nextUrl.pathname;
   const isKeywordIncluded = isTrialExpiredConfigRoute.some((route) => currentPath.includes(route));
-  console.log({ currentPath });
+  console.log({ userId, currentPath, isKeywordIncluded, origin: req.nextUrl.origin });
   if (userId && isKeywordIncluded) {
     const { data } = await axios.get<UserSettingsPlan>(
       `${req.nextUrl.origin}/api/plan/check-plan`,
