@@ -13,8 +13,9 @@ const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
 export default NextAuth(authConfig).auth;
 
 export async function middleware(req: NextRequest) {
-  // Check if the request is already for the checkout path
+  console.log('Request Headers:', req.headers); // Log request headers
   const token = await getToken({ req, secret: env.NEXTAUTH_SECRET! });
+  console.log('Token:', token);
   const userId = token?.sub; // Extract user ID from the token (assuming 'sub' contains the user ID)
   const currentPath = req.nextUrl.pathname;
   const isKeywordIncluded = isTrialExpiredConfigRoute.some((route) => currentPath.includes(route));
