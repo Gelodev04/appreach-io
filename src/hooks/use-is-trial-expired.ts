@@ -9,7 +9,7 @@ export function useIsTrialExpired(): boolean {
     if (plan?.lookup_key !== STRIPE.subscriptions.trial.key || !plan?.current_period_end)
       return false;
 
-    return plan?.current_period_end < new Date();
+    return new Date(plan?.current_period_end) < new Date();
   }, [plan?.current_period_end, plan?.lookup_key]);
 
   return isExpired;
