@@ -8,11 +8,9 @@ import { authConfig } from 'auth.config';
 import { env } from './data/env/server';
 import { paths } from './routes/paths';
 
-const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
-
 export default NextAuth(authConfig).auth;
 
-export async function middleware(req: NextRequest) {
+/* export async function middleware(req: NextRequest) {
   console.log('Request Headers:', req.headers); // Log request headers
   const token = await getToken({ req, secret: env.NEXTAUTH_SECRET! });
   console.log('Token:', token);
@@ -36,7 +34,7 @@ export async function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
+} */
 
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
