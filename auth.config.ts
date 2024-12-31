@@ -25,7 +25,8 @@ export const authConfig = {
         const { data } = await axios.get<UserSettingsPlan>(url, {
           params: { email: auth.user.email },
           headers: {
-            Authorization: `Bearer ${auth.accessToken}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${request.headers.get('authorization')}`,
           },
         });
 
