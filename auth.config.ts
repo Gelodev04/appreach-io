@@ -24,6 +24,9 @@ export const authConfig = {
         const url = `${request.nextUrl.origin}/api/plan/check-trial`;
         const { data } = await axios.get<UserSettingsPlan>(url, {
           params: { email: auth.user.email },
+          headers: {
+            Authorization: `Bearer ${auth.accessToken}`,
+          },
         });
 
         if (!data?.current_period_end || data.lookup_key !== STRIPE.subscriptions.trial.key)
