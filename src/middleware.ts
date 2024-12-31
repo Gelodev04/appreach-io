@@ -20,13 +20,10 @@ export async function middleware(req: NextRequest) {
   const isKeywordIncluded = isTrialExpiredConfigRoute.some((route) => currentPath.includes(route));
 
   if (userId && isKeywordIncluded) {
-    const { data } = await axios.get<UserSettingsPlan>(
-      `${req.nextUrl.origin}/api/plan/check-plan`,
-      {
-        params: { id: userId },
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const { data } = await axios.get<UserSettingsPlan>('/api/plan/check-plan', {
+      params: { id: userId },
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     if (!data?.current_period_end) return NextResponse.next();
 
