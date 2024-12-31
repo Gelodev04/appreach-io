@@ -1,3 +1,5 @@
+import { UserSettingsPlan } from '@prisma/client';
+import axios from 'axios';
 import type { NextAuthConfig } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { env } from 'src/data/env/server';
@@ -10,9 +12,18 @@ export const authConfig = {
   },
   callbacks: {
     async authorized({ auth, request }) {
-      // const token = await getToken({ req: request, secret: env.NEXTAUTH_SECRET! });
-      // console.log({ token });
+      const token = await getToken({ req: request, secret: env.NEXTAUTH_SECRET! });
+      console.log({ token });
+      console.log({ auth: auth?.user.id });
       const isLoggedIn = !!auth?.user;
+      if (auth?.user.id) {
+        const { data } = await axios.get<UserSettingsPlan>(
+          `${request.nextUrl.origin}/api/plan/check-plan`,
+          {
+            params: { id: auth?.user.id },
+          }
+        );
+      }
 
       const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
