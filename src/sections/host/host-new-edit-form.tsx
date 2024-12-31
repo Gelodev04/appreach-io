@@ -226,7 +226,6 @@ abdulrehman@outreachmagic.io ⏎`;
           sx={{
             position: 'sticky',
             top: '4rem',
-            border: '1px solid red',
           }}
         >
           <Image
