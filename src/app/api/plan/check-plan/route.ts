@@ -1,47 +1,21 @@
-import { NextResponse } from 'next/server';
-import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { getUser } from 'src/auth/lib/mongodb/get-user';
+import { NextRequest, NextResponse } from 'next/server';
+import { getUserSettingsById } from 'src/services/db/user-settings';
 
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
+// src/app/api/plan/check-plan/route.ts
+export async function GET(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    // Example: Extract query parameters from the request
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id'); // Replace 'param' with your actual query parameter name
 
-    // Fetch the user settings
-    const userSettings = await getUser();
+    if (!id) return NextResponse.json({ error: 'Id is not found.' }, { status: 500 });
+    // Example: Process the request (this could be a database call, etc.)
+    const { plan } = await getUserSettingsById(id, { plan: true });
 
-    // Check if the plan and trial_end exist and if the trial has expired
-    if (userSettings?.plan?.trial_end) {
-      const now = new Date();
-      const trialEndDate = new Date(userSettings.plan.trial_end);
-
-      if (trialEndDate < now) {
-        // Update the plan status to 'trial_expired' if the trial has ended
-        await db.collection('userSettings').updateOne(
-          { _id: userSettings._id }, // Ensure _id is the correct identifier for your userSettings document
-          { $set: { 'plan.status': 'trial_expired' } }
-        );
-
-        // Update the local userSettings object to reflect this change
-        userSettings.plan.status = 'trial_expired';
-      }
-    }
-
-    // Always return the plan status, reflecting updates if necessary
-    return NextResponse.json(
-      { plan: userSettings.plan },
-      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
-    );
+    // Return a successful response
+    return NextResponse.json(plan, { status: 200 });
   } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { error: error.message },
-      {
-        status: error.statusCode || 500,
-        headers: { 'Cache-Control': 'no-store, max-age=0' },
-      }
-    );
+    // Handle any errors that occur
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
