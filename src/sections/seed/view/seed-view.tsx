@@ -15,6 +15,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -43,6 +44,7 @@ const HIDE_COLUMNS = {
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function SeedView() {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
@@ -63,31 +65,6 @@ export default function SeedView() {
   const dataFiltered = applyFilter({
     inputData: tableData,
   });
-
-  // const handleDeleteRow = useCallback(
-  //   async (id: string) => {
-  //     try {
-  //       const res = await fetch(endpoints.seed.delete, {
-  //         method: 'POST',
-  //         body: JSON.stringify({ ids: [id] }),
-  //       });
-
-  //       if (!res.ok) {
-  //         const data = await res.json();
-  //         throw new Error(data.error);
-  //       }
-
-  //       enqueueSnackbar('Item deleted', { variant: 'warning' });
-
-  //       const newTableData = tableData.filter((row) => row._id.toString() !== id);
-
-  //       setTableData(newTableData);
-  //     } catch (error) {
-  //       enqueueSnackbar(error.message, { variant: 'error' });
-  //     }
-  //   },
-  //   [enqueueSnackbar, tableData]
-  // );
 
   const handleDeleteRows = useCallback(async () => {
     try {

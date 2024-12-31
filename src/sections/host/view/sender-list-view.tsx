@@ -24,15 +24,15 @@ import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetHosts } from 'src/hooks/api/host';
+import { useGetSenders } from 'src/hooks/api/senders';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
 import { endpoints, revalidateData } from 'src/utils/swr';
-import { useGetSenders } from 'src/hooks/api/senders';
 import HostAddExistingHost from '../host-add-existing-host';
-import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import SenderProfileUsed from '../host-sender-profile-used';
+import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
 const HIDE_COLUMNS = {
