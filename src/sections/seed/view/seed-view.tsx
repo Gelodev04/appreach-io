@@ -15,6 +15,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -29,8 +30,6 @@ import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 import { ISeed } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
-import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
-import { useRouter } from 'next/navigation';
 import {
   RenderCellDateAdded,
   RenderCellImportName,
@@ -45,7 +44,6 @@ const HIDE_COLUMNS = {
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function SeedView() {
-  const isTrialExpired = useIsTrialExpired();
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
@@ -63,10 +61,6 @@ export default function SeedView() {
       setStepStatus('step1Finished', true); // Complete step on checklist
     }
   }, [seeds, setStepStatus]);
-
-  if (isTrialExpired) {
-    router.push(paths.checkout.root);
-  }
 
   const dataFiltered = applyFilter({
     inputData: tableData,
