@@ -10,7 +10,11 @@ import { paths } from './routes/paths';
 const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
 export async function middleware(req: NextRequest) {
   console.log('Request Headers:', req.headers); // Log request headers
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET as string });
+  const token = await getToken({
+    req,
+    secret: env.NEXTAUTH_SECRET as string,
+    secureCookie: true,
+  });
   console.log('Token:', token);
   const userId = token?.sub; // Extract user ID from the token (assuming 'sub' contains the user ID)
   const currentPath = req.nextUrl.pathname;
