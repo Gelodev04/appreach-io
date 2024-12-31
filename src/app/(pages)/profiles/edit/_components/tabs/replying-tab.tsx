@@ -1,17 +1,12 @@
 'use client';
 
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
-import { useState } from 'react';
 import { RHFTextField } from 'src/components/hook-form';
 import { SliderItem } from './slider-item';
 
 export const ReplyingTab = () => {
-  const [enabled, setEnabled] = useState(true);
-
-  const handleClick = () => {
-    setEnabled(!enabled);
-  };
+  const enabled = true;
 
   return (
     <Stack spacing={7}>
@@ -89,15 +84,6 @@ export const ReplyingTab = () => {
           tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand voice and objectives. Use {email_content} to insert the email content."
           tooltipID="ai-prompt-popover"
         />
-      </Box>
-
-      <Box
-        sx={{ alignSelf: 'center', alignItems: 'center', flexDirection: 'column', display: 'flex' }}
-      >
-        <Button variant="contained" onClick={handleClick}>
-          Toggle Feature
-        </Button>
-        <Typography variant="body2">For testing purposes*</Typography>
       </Box>
     </Stack>
   );
