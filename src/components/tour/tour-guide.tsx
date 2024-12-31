@@ -120,41 +120,39 @@ export const TourGuide = () => {
   };
 
   return (
-    <>
-      <Joyride
-        callback={joyrideCallback}
-        run={start}
-        steps={steps}
-        showProgress
-        disableScrolling
-        spotlightClicks
-        disableCloseOnEsc
-        disableOverlayClose
-        stepIndex={stepIndex}
-        hideBackButton
-        // debug
-        styles={{
-          options: {
-            zIndex: 9999,
-            arrowColor: '#FFFFFF',
-            backgroundColor: '#FFFFFF',
-            textColor: '#000000',
-            overlayColor: 'rgba(0, 0, 0, 0.9)',
-            primaryColor: '#003087',
-          },
-          buttonClose: {
-            marginTop: '5px',
-            marginRight: '5px',
-            width: '12px',
-          },
-          buttonNext: {
-            padding: '0.5rem 2rem',
-            marginLeft: '1rem',
-            borderRadius: '7px',
-          },
-        }}
-        locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide', close: 'Close' }}
-      />
-    </>
+    <Joyride
+      callback={joyrideCallback}
+      run={start}
+      steps={steps}
+      showProgress
+      disableScrolling
+      spotlightClicks
+      disableCloseOnEsc
+      disableOverlayClose
+      stepIndex={stepIndex}
+      hideBackButton
+      // debug
+      styles={{
+        options: {
+          zIndex: 9999,
+          arrowColor: '#FFFFFF',
+          backgroundColor: '#FFFFFF',
+          textColor: '#000000',
+          overlayColor: 'rgba(0, 0, 0, 0.9)',
+          primaryColor: '#003087',
+        },
+        buttonClose: {
+          marginTop: '5px',
+          marginRight: '5px',
+          width: '12px',
+        },
+        buttonNext: {
+          padding: '0.5rem 2rem',
+          marginLeft: '1rem',
+          borderRadius: '7px',
+        },
+      }}
+      locale={{ skip: 'Stop guide', last: 'Finish', open: 'Show guide', close: 'Close' }}
+    />
   );
 };

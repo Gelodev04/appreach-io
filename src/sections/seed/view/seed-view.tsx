@@ -15,7 +15,6 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -44,7 +43,6 @@ const HIDE_COLUMNS = {
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function SeedView() {
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
