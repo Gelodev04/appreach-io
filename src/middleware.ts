@@ -3,14 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
 import { UserSettingsPlan } from '@prisma/client';
-import NextAuth from 'next-auth';
-import { authConfig } from 'auth.config';
+
 import { env } from './data/env/server';
 import { paths } from './routes/paths';
 
-export default NextAuth(authConfig).auth;
-
-/* export async function middleware(req: NextRequest) {
+const isTrialExpiredConfigRoute = ['dashboard', 'senders', 'profiles', 'seeds'];
+export async function middleware(req: NextRequest) {
   console.log('Request Headers:', req.headers); // Log request headers
   const token = await getToken({ req, secret: env.NEXTAUTH_SECRET! });
   console.log('Token:', token);
@@ -34,7 +32,7 @@ export default NextAuth(authConfig).auth;
   }
 
   return NextResponse.next();
-} */
+}
 
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
