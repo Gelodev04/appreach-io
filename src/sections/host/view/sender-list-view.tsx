@@ -30,6 +30,7 @@ import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
 import { endpoints, revalidateData } from 'src/utils/swr';
 import { useGetSenders } from 'src/hooks/api/senders';
+import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
 import HostAddExistingHost from '../host-add-existing-host';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import SenderProfileUsed from '../host-sender-profile-used';
@@ -42,6 +43,7 @@ const HIDE_COLUMNS = {
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 export default function HostListView() {
+  const isTrialExpired = useIsTrialExpired();
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
@@ -57,6 +59,10 @@ export default function HostListView() {
   useEffect(() => {
     setTableData(hosts);
   }, [hosts]);
+
+  if (isTrialExpired) {
+    router.push(paths.checkout.root);
+  }
 
   const dataFiltered = applyFilter({
     inputData: tableData,

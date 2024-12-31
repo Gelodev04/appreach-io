@@ -8,6 +8,9 @@ import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
 import { Alert } from '@mui/material';
+import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
+import { useRouter } from 'next/navigation';
+import { paths } from 'src/routes/paths';
 import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 
 export default function LookerStudioView() {
@@ -15,6 +18,8 @@ export default function LookerStudioView() {
   const { hosts } = useGetHosts();
   const [mappedHosts, setMappedHosts] = useState<string[]>([]);
   const lgUp = useResponsive('up', 'lg');
+  const router = useRouter();
+  const isTrialExpired = useIsTrialExpired();
 
   // Use useEffect to map hosts and set hostCrypt into mappedHosts
   useEffect(() => {
@@ -23,6 +28,10 @@ export default function LookerStudioView() {
       setMappedHosts(mapped);
     }
   }, [hosts]);
+
+  if (isTrialExpired) {
+    router.push(paths.checkout.root);
+  }
 
   const renderSkeleton = <LookerStudioSkeleton />;
 
