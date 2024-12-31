@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react';
 import { Box, Stack, Typography } from '@mui/material';
 import { RHFTextField } from 'src/components/hook-form';
 import { SliderItem } from './slider-item';
@@ -69,56 +68,27 @@ export const EngagementTab = () => {
           md: 'repeat(2, 1fr)',
         }}
       >
-        <Box sx={{ position: 'relative', padding: 1.5 }}>
-          <RHFTextField
-            name="links_to_click"
-            label="Links to click"
-            placeholder="download, apply"
-            multiline
-            minRows={1}
-            maxRows={3}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '100%',
-              position: 'absolute',
-              right: -10,
-              top: -10,
-              padding: '3px',
-              color: '#9F9F9F',
-            }}
-          >
-            <Icon width={20} icon="material-symbols:info-outline" />
-          </Box>
-        </Box>
-        <Box sx={{ position: 'relative', padding: 1.5 }}>
-          <RHFTextField
-            name="links_not_to_click"
-            label="Links not to click"
-            placeholder="unsubscribe, do not contact"
-            multiline
-            minRows={1}
-            maxRows={3}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '100%',
-              position: 'absolute',
-              right: -10,
-              top: -10,
-              padding: '3px',
-              color: '#9F9F9F',
-            }}
-          >
-            <Icon width={20} icon="material-symbols:info-outline" />
-          </Box>
-        </Box>
+        <RHFTextField
+          name="links_to_click"
+          label="Links to click"
+          tooltipContent="Prioritize clicks on important links, driving attention to your key content and increasing click-through rates."
+          tooltipID="links-to-click-popover"
+          placeholder="download, apply"
+          multiline
+          minRows={1}
+          maxRows={3}
+        />
+
+        <RHFTextField
+          name="links_not_to_click"
+          label="Links not to click"
+          tooltipContent="Avoid interacting with certain links, such as unsubscribe links, to maintain natural engagement behavior."
+          tooltipID="links-not-to-click-popover"
+          placeholder="unsubscribe, do not contact"
+          multiline
+          minRows={1}
+          maxRows={3}
+        />
       </Box>
     </Stack>
   );
