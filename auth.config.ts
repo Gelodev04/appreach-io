@@ -12,7 +12,7 @@ export const authConfig = {
     async authorized({ auth, request }) {
       const token = await getToken({ req: request, secret: env.NEXTAUTH_SECRET! });
       console.log({ token });
-      const isLoggedIn = !!auth?.accessToken?.substring;
+      const isLoggedIn = !!auth?.user;
 
       const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
