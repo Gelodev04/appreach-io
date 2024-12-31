@@ -8,28 +8,36 @@ const sliderItems = [
     sliderTitle: 'Scroll through message',
     icon: 'ri:scroll-to-bottom-fill',
     description: 'We will scroll through the message of {value} out of 1,000 emails',
+    tooltipContent:
+      'Mimic real users by scrolling through your emails in a web browser, signaling to email providers that your messages are engaging and improving deliverability.',
   },
   {
     sliderTitle: 'Mark as important',
     icon: 'material-symbols:bookmark-star-rounded',
     description: 'We will mark {value} out of 1,000 emails as important',
+    tooltipContent:
+      "Marking emails as important increases their priority in recipients' inboxes and improves future deliverability.",
   },
   {
     sliderTitle: 'Remove from spam',
     icon: 'mdi:email-remove',
     description: 'We will remove {value} out of 1,000 emails from spam',
+    tooltipContent:
+      'Moving emails from spam to the inbox trains email providers to trust your messages.',
   },
   {
     sliderTitle: 'Move to primary',
     icon: 'material-symbols:forward-to-inbox-rounded',
     description: 'We will move {value} out of 1,000 emails to the primary inbox',
+    tooltipContent:
+      'Using real browsing actions, we move emails to the primary inbox, improving visibility and engagement.',
   },
   {
     sliderTitle: 'Click links',
     icon: 'mdi:cursor-default-click',
     description: 'We will click on links in {value} out of 1,000 emails',
     tooltipContent:
-      ' Let us know what text to click / not click or leave blank for random. You can have multiple links by seperating with a coma',
+      'We replicate real user behavior by clicking on links within your email, boosting engagement metrics and campaign performance.',
   },
 ];
 

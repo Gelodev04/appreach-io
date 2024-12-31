@@ -1,10 +1,10 @@
 'use client';
 
-import { Icon } from '@iconify/react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useState } from 'react';
-import { RHFTextField } from 'src/components/hook-form';
+import { AIPromptField } from './ai-prompt-field';
+import { FilterIDField } from './filter-id-field';
 import { SliderItem } from './slider-item';
 
 export const ReplyingTab = () => {
@@ -18,7 +18,7 @@ export const ReplyingTab = () => {
     <Stack spacing={7}>
       <Box>
         <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          Advanced Feature: Reply using AI
+          New feature! Maximize your cold email campaigns by replying to actually campaign emails.
         </Typography>
         {enabled ? (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
@@ -34,78 +34,18 @@ export const ReplyingTab = () => {
         )}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Box sx={{ alignSelf: 'center', position: 'relative', minWidth: '300px', padding: 1.5 }}>
-          <RHFTextField
-            disabled={!enabled}
-            name="filter_id_key"
-            label="Filter ID Key"
-            defaultValue="Kajda3"
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '100%',
-              position: 'absolute',
-              right: -10,
-              top: -10,
-              padding: '3px',
-              color: '#9F9F9F',
-            }}
-          >
-            <Icon width={20} icon="material-symbols:info-outline" />
-          </Box>
-        </Box>
+        <FilterIDField enabled={enabled} />
 
         <SliderItem
           disabled={!enabled}
           sliderTitle="Reply using AI"
           icon="mdi:robot"
           description="We will reply to {value} out of 1,000 to primary"
+          tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
         />
       </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          position: 'relative',
-          gap: 2,
-          flexDirection: 'column',
-          alignSelf: 'center',
-          minWidth: '500px',
-        }}
-      >
-        <Typography
-          variant="subtitle1"
-          sx={{ textAlign: 'center', color: enabled ? 'black' : '#94A0AE' }}
-        >
-          Customize your AI Prompt
-        </Typography>
-        <RHFTextField
-          name="ai_prompt"
-          disabled={!enabled}
-          multiline
-          minRows={1}
-          label="AI Prompt"
-          defaultValue="Write a professional, friendly, and engaging reply to a cold email. The response should express interest in the sender's proposal or service, show appreciation for their outreach, and ask a thoughtful follow-up question to keep the conversation going. Use a tone that is warm and approachable but professional. Ensure the reply sounds personalized and tailored to the email content, referencing specific details provided by the sender. Here’s the original cold email: [email content goes here]"
-        />
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '100%',
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            padding: '3px',
-            color: '#9F9F9F',
-          }}
-        >
-          <Icon width={20} icon="material-symbols:info-outline" />
-        </Box>
-      </Box>
+      <AIPromptField enabled={enabled} />
 
       <Box
         sx={{ alignSelf: 'center', alignItems: 'center', flexDirection: 'column', display: 'flex' }}
