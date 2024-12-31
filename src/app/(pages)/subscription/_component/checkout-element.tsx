@@ -39,7 +39,7 @@ export function CheckoutElementV2({
   return (
     <Stack
       gap={1}
-      minWidth={320}
+      width={350}
       minHeight={480}
       borderRadius={2}
       p={2}

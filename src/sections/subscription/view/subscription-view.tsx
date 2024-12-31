@@ -22,6 +22,7 @@ import {
   redirectToCheckout,
 } from 'src/utils/stripe';
 
+import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { calculateRemainingDays } from 'src/utils';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
@@ -36,6 +37,7 @@ type SubscriptionviewType = {
 export default function SubscriptionView({ subscription }: SubscriptionviewType) {
   // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
+  const lgUp = useResponsive('up', 'lg');
 
   // Prefill message for 'Contact Us'
   const { prefillMessage } = useSalesmateChat();
@@ -158,7 +160,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   const renderHead = (
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
-      <Logo />
+      {lgUp && <Logo />}
       <Typography variant="h4" color="text.primary">
         Upgrade Or Downgrade Anytime
       </Typography>
@@ -181,7 +183,15 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   );
 
   const renderOptions = (
-    <Box display="flex" gap={4}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 4,
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <CheckoutElementV2
         name={STRIPE.subscriptions.starter.key}
         title="Starter"
@@ -235,7 +245,15 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ height: '100%' }}>
+      <Container
+        maxWidth="lg"
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+        }}
+      >
         {subscription?.lookup_key === STRIPE.subscriptions.trial.key && renderWarning}
         <Stack
           alignItems="center"
@@ -244,7 +262,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           height="100%"
           width="100%"
           spacing={4}
-          sx={{ padding: 4, margin: '0 auto' }}
+          sx={{ padding: 0, margin: '0 auto' }}
         >
           {renderHead}
           {renderOptions}
