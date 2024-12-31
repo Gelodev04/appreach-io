@@ -38,7 +38,9 @@ export const SliderItem = ({
   };
 
   const updatedDesc = useMemo(() => {
-    return description.replace('{value}', String(value[sliderTitle]));
+    const computedValue = (value[sliderTitle] / 100) * 1000;
+
+    return description.replace('{value}', String(computedValue));
   }, [value, description, sliderTitle]);
 
   return (
@@ -132,8 +134,8 @@ export const SliderItem = ({
             value={value[sliderTitle]}
             onChange={handleSliderChange}
             min={0}
-            max={1000}
-            defaultValue={250}
+            max={100}
+            defaultValue={25}
             valueLabelDisplay="auto"
           />
           <Box
@@ -143,8 +145,8 @@ export const SliderItem = ({
               color: disabled ? '#94A0AE' : 'black',
             }}
           >
-            <Typography>{value[sliderTitle]}</Typography>
-            <Typography>1000</Typography>
+            <Typography>{value[sliderTitle]}%</Typography>
+            <Typography>100%</Typography>
           </Box>
         </Box>
         <Typography sx={{ textAlign: 'center', color: disabled ? '#94A0AE' : 'black' }}>

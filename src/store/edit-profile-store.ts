@@ -7,12 +7,12 @@ type EditProfileStore = {
 
 export const useEditProfileStore = create<EditProfileStore>((set) => ({
   value: {
-    'Scroll through message': 250,
-    'Mark as important': 250,
-    'Remove from spam': 250,
-    'Move to primary': 250,
-    'Click links': 250,
-    'Reply using AI': 250,
+    'Scroll through message': 25,
+    'Mark as important': 25,
+    'Remove from spam': 25,
+    'Move to primary': 25,
+    'Click links': 25,
+    'Reply using AI': 25,
   },
   setValue: (name, val) =>
     set((state) => ({

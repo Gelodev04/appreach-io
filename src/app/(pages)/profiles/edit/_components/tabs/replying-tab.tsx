@@ -1,6 +1,5 @@
 'use client';
 
-import { Icon } from '@iconify/react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -16,9 +15,15 @@ export const ReplyingTab = () => {
 
   return (
     <Stack spacing={7}>
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+        }}
+      >
         <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          Advanced Feature: Reply using AI
+          New feature! Maximize your cold email campaigns by replying to actually campaign emails.
         </Typography>
         {enabled ? (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
@@ -34,28 +39,20 @@ export const ReplyingTab = () => {
         )}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Box sx={{ alignSelf: 'center', position: 'relative', minWidth: '300px', padding: 1.5 }}>
+        <Box
+          sx={{
+            alignSelf: 'center',
+            minWidth: '300px',
+          }}
+        >
           <RHFTextField
             disabled={!enabled}
             name="filter_id_key"
             label="Filter ID Key"
             defaultValue="Kajda3"
+            tooltipContent="Assign a unique identifier to filter out AI-generated replies."
+            tooltipID="filter-id-popover"
           />
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '100%',
-              position: 'absolute',
-              right: -10,
-              top: -10,
-              padding: '3px',
-              color: '#9F9F9F',
-            }}
-          >
-            <Icon width={20} icon="material-symbols:info-outline" />
-          </Box>
         </Box>
 
         <SliderItem
@@ -63,13 +60,13 @@ export const ReplyingTab = () => {
           sliderTitle="Reply using AI"
           icon="mdi:robot"
           description="We will reply to {value} out of 1,000 to primary"
+          tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
         />
       </Box>
 
       <Box
         sx={{
           display: 'flex',
-          position: 'relative',
           gap: 2,
           flexDirection: 'column',
           alignSelf: 'center',
@@ -89,22 +86,9 @@ export const ReplyingTab = () => {
           minRows={1}
           label="AI Prompt"
           defaultValue="Write a professional, friendly, and engaging reply to a cold email. The response should express interest in the sender's proposal or service, show appreciation for their outreach, and ask a thoughtful follow-up question to keep the conversation going. Use a tone that is warm and approachable but professional. Ensure the reply sounds personalized and tailored to the email content, referencing specific details provided by the sender. Here’s the original cold email: [email content goes here]"
+          tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand voice and objectives. Use {email_content} to insert the email content."
+          tooltipID="ai-prompt-popover"
         />
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '100%',
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            padding: '3px',
-            color: '#9F9F9F',
-          }}
-        >
-          <Icon width={20} icon="material-symbols:info-outline" />
-        </Box>
       </Box>
 
       <Box

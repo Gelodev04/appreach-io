@@ -221,7 +221,13 @@ abdulrehman@outreachmagic.io ⏎`;
         </Card>
       </Grid>
       <Grid xs={12} md={4}>
-        <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
+        <Stack
+          alignItems={mdUp ? 'flex-start' : 'center'}
+          sx={{
+            position: 'sticky',
+            top: '4rem',
+          }}
+        >
           <Image
             src={
               currentItem
@@ -234,7 +240,7 @@ abdulrehman@outreachmagic.io ⏎`;
             priority
           />
           <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Edit sender profile
+            {currentItem ? 'Edit sender profile' : 'Add sender profile'}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
             Edit your sender profile engagement settings.
