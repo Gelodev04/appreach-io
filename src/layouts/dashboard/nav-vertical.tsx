@@ -30,7 +30,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const navData = useNavData();
   const isTrialExpired = useIsTrialExpired();
 
-  if (isTrialExpired) {
+  if (isTrialExpired && !pathname.includes('subscription')) {
     router.push(paths.checkout.root);
   }
 
