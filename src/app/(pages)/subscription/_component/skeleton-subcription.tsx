@@ -5,10 +5,17 @@ import Logo from 'src/components/logo';
 
 function SkeletonSubscription() {
   const renderSkeleton = (
-    <Box display="flex" gap={4}>
-      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
-      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
-      <Skeleton sx={{ minWidth: 320, minHeight: 480, height: '100%' }} />
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 4,
+        flexWrap: 'wrap',
+      }}
+    >
+      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
+      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
+      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
     </Box>
   );
   const renderHead = (

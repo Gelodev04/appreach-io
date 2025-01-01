@@ -69,6 +69,7 @@ export const EngagementTab = () => {
         }}
       >
         <RHFTextField
+          InputLabelProps={{ shrink: true }}
           name="links_to_click"
           label="Links to click"
           tooltipContent="Prioritize clicks on important links, driving attention to your key content and increasing click-through rates."
@@ -80,6 +81,7 @@ export const EngagementTab = () => {
         />
 
         <RHFTextField
+          InputLabelProps={{ shrink: true }}
           name="links_not_to_click"
           label="Links not to click"
           tooltipContent="Avoid interacting with certain links, such as unsubscribe links, to maintain natural engagement behavior."
