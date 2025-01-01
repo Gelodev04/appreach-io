@@ -34,8 +34,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     router.push(paths.checkout.root);
   }
 
-  console.log({ pathname });
-
   useEffect(() => {
     if (openNav) {
       onCloseNav();
