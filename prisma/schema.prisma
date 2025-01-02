@@ -378,6 +378,24 @@ type WebMailSummary {
   type         String
 }
 
+type UserSettingsPlanPermission {
+  seeds              Int
+  senderProfiles     Int
+  senderAddresses    Int
+  verifyCredits      Int
+  engagementMax      Int
+  engagementFeatures EngagementFeatures
+}
+
+type EngagementFeatures {
+  scrollMessage Boolean
+  markImportant Boolean
+  removeSpam    Boolean
+  movePrimary   Boolean
+  clickLink     Boolean
+  replyMessage  Boolean
+}
+
 model emailAccounts {
   id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
   accessToken         String?
@@ -490,6 +508,7 @@ model userSettings {
   stripe            UserSettingsStripe?
   trackingMarketing UserSettingsTrackingMarketing?
   verification      UserSettingsVerification
+  planPermission    UserSettingsPlanPermission
 }
 
 model webMail {
