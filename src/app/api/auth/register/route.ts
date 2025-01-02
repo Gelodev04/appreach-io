@@ -115,7 +115,7 @@ export async function POST(request: Request) {
           removeSpam: true,
           movePrimary: true,
           clickLink: true,
-          replyMessage: true,
+          replyMessage: false,
         },
       };
     }
