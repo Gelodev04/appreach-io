@@ -1,3 +1,5 @@
+'use client';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useTheme } from '@mui/material';
@@ -11,7 +13,7 @@ import moment from 'moment-timezone';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/_components';
+import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -31,6 +33,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
   const mdUp = useResponsive('up', 'md');
   const timezones = moment.tz.names();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  console.log({ currentItem });
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
@@ -139,130 +142,88 @@ export default function HostNewEditForm({ currentItem }: Props) {
 mark@outreachmagic.io ⏎
 abdulrehman@outreachmagic.io ⏎`;
 
-  const renderProperties = (
-    <>
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Properties" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField
-                name="host"
-                label="Sender profile name"
-                placeholder="outreachmagic"
-                disabled={!!currentItem}
-              />
-
-              <RHFAutocomplete
-                name="timezone"
-                label="Timezone"
-                placeholder="Choose a timezone"
-                options={timezones.map((timezone) => `${timezone}`)}
-                getOptionLabel={(option) => option}
-              />
-            </Box>
-            {/* <RHFTextField
-              name="notificationAddresses"
-              label="Notification addresses (separated by newlines)"
-              minRows={3}
-              multiline
-              placeholder={externalSenderAddressesPlaceholder}
-            /> */}
-            <RHFTextField
-              name="externalSenderAddresses"
-              label="Sender addresses (separated by newlines)"
-              minRows={3}
-              maxRows={5}
-              multiline
-              placeholder={externalSenderAddressesPlaceholder}
-            />
-
-            {/* <RHFTextField
-              name="slack.notificationChannelId"
-              label="Slack notification channel ID"
-              placeholder="C06SWJC9V47"
-            /> */}
-
-            {/* <RHFTextField
-              name="smartLead.apiKey"
-              label="Smart lead API key"
-              placeholder="cfeda7bf-2f21-4d9e-8bf2-082f31f29acb_o26lz3v"
-            /> */}
-
-            <SenderProfileTabs />
-
-            {/* <Stack spacing={1}>
-              <Typography variant="subtitle2">Inbox engagement</Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 1,
-                }}
-              >
-                <RHFCheckbox name="inboxEngagement.markImportant" label="Mark as important" />
-                <RHFCheckbox name="inboxEngagement.removeSpam" label="Remove from spam" />
-                <RHFCheckbox name="inboxEngagement.replyMessage" label="Reply using AI" />
-                <RHFCheckbox name="inboxEngagement.clickLink" label="Click link" />
-                <RHFCheckbox name="inboxEngagement.movePrimary" label="Move to primary" />
-                <RHFCheckbox name="inboxEngagement.scrollMessage" label="Scroll message" />
-              </Box>
-            </Stack> */}
-          </Stack>
-        </Card>
-      </Grid>
-      <Grid xs={12} md={4}>
-        <Stack
-          alignItems={mdUp ? 'flex-start' : 'center'}
-          sx={{
-            position: 'sticky',
-            top: '4rem',
-          }}
-        >
-          <Image
-            src={
-              currentItem
-                ? '/assets/illustrations/hosts/server-2.png'
-                : '/assets/illustrations/hosts/server.png'
-            }
-            alt="host"
-            width={250}
-            height={250}
-            priority
-          />
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            {currentItem ? 'Edit sender profile' : 'Add sender profile'}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            Edit your sender profile engagement settings.
-          </Typography>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            color="primary"
-            loading={isSubmitting}
-            sx={{ boxShadow: theme.customShadows.primary }}
-          >
-            {currentItem ? 'Save Changes' : 'Add sender profile'}
-          </LoadingButton>
-        </Stack>
-      </Grid>
-    </>
-  );
-
   return (
     <FormProvider methods={methods} onSubmit={currentItem ? onEdit : onCreate}>
       <Grid container spacing={3}>
-        {renderProperties}
+        <Grid xs={12} md={8}>
+          <Card>
+            {!mdUp && <CardHeader title="Properties" />}
+
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFTextField
+                  name="host"
+                  label="Sender profile name"
+                  placeholder="outreachmagic"
+                  disabled={!!currentItem}
+                />
+
+                <RHFAutocomplete
+                  name="timezone"
+                  label="Timezone"
+                  placeholder="Choose a timezone"
+                  options={timezones.map((timezone) => `${timezone}`)}
+                  getOptionLabel={(option) => option}
+                />
+              </Box>
+
+              <RHFTextField
+                name="externalSenderAddresses"
+                label="Sender addresses (separated by newlines)"
+                minRows={3}
+                maxRows={5}
+                multiline
+                placeholder={externalSenderAddressesPlaceholder}
+              />
+
+              <SenderProfileTabs />
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} md={4}>
+          <Stack
+            alignItems={mdUp ? 'flex-start' : 'center'}
+            sx={{
+              position: 'sticky',
+              top: '4rem',
+            }}
+          >
+            <Image
+              src={
+                currentItem
+                  ? '/assets/illustrations/hosts/server-2.png'
+                  : '/assets/illustrations/hosts/server.png'
+              }
+              alt="host"
+              width={250}
+              height={250}
+              priority
+            />
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentItem ? 'Edit sender profile' : 'Add sender profile'}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+              Edit your sender profile engagement settings.
+            </Typography>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              loading={isSubmitting}
+              sx={{ boxShadow: theme.customShadows.primary }}
+            >
+              {currentItem ? 'Save Changes' : 'Add sender profile'}
+            </LoadingButton>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );
