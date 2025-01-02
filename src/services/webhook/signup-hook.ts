@@ -22,7 +22,7 @@ export const signupWebhook = async (id: string) => {
       environment: process.env.NODE_ENV === 'development' ? 'development' : 'production',
     };
     const baseUrl = 'https://hook.us1.make.com/mtoh9l8p1yy9cvia2hinin32fjxmej7a';
-    const { data: dataHook } = await axios.post(baseUrl, data);
+    await axios.post(baseUrl, data);
   } catch (error) {
     console.log('Unable to post web hook');
   }
