@@ -378,7 +378,7 @@ type WebMailSummary {
   type         String
 }
 
-type UserSettingsPlanPermission {
+type UserSettingsPlanPermissions {
   seeds              Int
   senderProfiles     Int
   senderAddresses    Int
@@ -508,7 +508,7 @@ model userSettings {
   stripe            UserSettingsStripe?
   trackingMarketing UserSettingsTrackingMarketing?
   verification      UserSettingsVerification
-  planPermission    UserSettingsPlanPermission
+  planPermissions   UserSettingsPlanPermissions
 }
 
 model webMail {
