@@ -20,7 +20,7 @@ export const getHostById = async (id: string, selectFields?: Prisma.userSettings
       throw new Error('Host not found.');
     }
 
-    return { host, error: null };
+    return host;
   } catch (error) {
     console.error('Error on getting host:', error); // Log the actual error
     throw new Error('Failed to fetch host details.');

@@ -6,41 +6,41 @@ const sliderItems = [
   {
     sliderTitle: 'Scroll through message',
     icon: 'ri:scroll-to-bottom-fill',
-    description: 'We will scroll through the message of {value} out of 1,000 emails',
+    description: 'We will scroll through the message of {value} out of {max_value} emails',
     tooltipContent:
       'Mimic real users by scrolling through your emails in a web browser, signaling to email providers that your messages are engaging and improving deliverability.',
   },
   {
     sliderTitle: 'Mark as important',
     icon: 'material-symbols:bookmark-star-rounded',
-    description: 'We will mark {value} out of 1,000 emails as important',
+    description: 'We will mark {value} out of {max_value} emails as important',
     tooltipContent:
       "Marking emails as important increases their priority in recipients' inboxes and improves future deliverability.",
   },
   {
     sliderTitle: 'Remove from spam',
     icon: 'mdi:email-remove',
-    description: 'We will remove {value} out of 1,000 emails from spam',
+    description: 'We will remove {value} out of {max_value} emails from spam',
     tooltipContent:
       'Moving emails from spam to the inbox trains email providers to trust your messages.',
   },
   {
     sliderTitle: 'Move to primary',
     icon: 'material-symbols:forward-to-inbox-rounded',
-    description: 'We will move {value} out of 1,000 emails to the primary inbox',
+    description: 'We will move {value} out of {max_value} emails to the primary inbox',
     tooltipContent:
       'Using real browsing actions, we move emails to the primary inbox, improving visibility and engagement.',
   },
   {
     sliderTitle: 'Click links',
     icon: 'mdi:cursor-default-click',
-    description: 'We will click on links in {value} out of 1,000 emails',
+    description: 'We will click on links in {value} out of {max_value} emails',
     tooltipContent:
       'We replicate real user behavior by clicking on links within your email, boosting engagement metrics and campaign performance.',
   },
 ];
 
-export const EngagementTab = () => {
+export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
   return (
     <Stack spacing={2}>
       <Typography variant="h5" sx={{ textAlign: 'center' }}>
@@ -54,6 +54,7 @@ export const EngagementTab = () => {
               sliderTitle={item.sliderTitle}
               icon={item.icon}
               description={item.description}
+              maxVal={maxVal}
               tooltipContent={item?.tooltipContent}
             />
           );

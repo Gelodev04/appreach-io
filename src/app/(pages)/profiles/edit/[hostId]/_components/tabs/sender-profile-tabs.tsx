@@ -1,10 +1,11 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { useState } from 'react';
+import { HostProps } from 'src/types/host';
 import { EngagementTab } from './engagement-tab';
 import { ReplyingTab } from './replying-tab';
 
-export const SenderProfileTabs = () => {
+export const SenderProfileTabs = ({ currentItem, userSettings }: HostProps) => {
   const [value, setValue] = useState('sender_engagement');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -27,10 +28,10 @@ export const SenderProfileTabs = () => {
           </TabList>
         </Box>
         <TabPanel value="sender_engagement">
-          <EngagementTab />
+          <EngagementTab maxVal={userSettings.planPermissions.seeds} />
         </TabPanel>
         <TabPanel value="sender_replying">
-          <ReplyingTab />
+          <ReplyingTab currentItem={currentItem} maxVal={userSettings.planPermissions.seeds} />
         </TabPanel>
       </TabContext>
     </Box>

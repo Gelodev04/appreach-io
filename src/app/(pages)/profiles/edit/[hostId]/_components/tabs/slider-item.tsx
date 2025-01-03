@@ -10,6 +10,7 @@ type SliderProps = {
   icon: string;
   description: string;
   tooltipContent?: string;
+  maxVal: number;
   disabled?: boolean;
 };
 
@@ -18,6 +19,7 @@ export const SliderItem = ({
   icon,
   description,
   tooltipContent = 'Tooltip content',
+  maxVal,
   disabled,
 }: SliderProps) => {
   const matches = useMediaQuery('(min-width:768px)');
@@ -38,9 +40,11 @@ export const SliderItem = ({
   };
 
   const updatedDesc = useMemo(() => {
-    const computedValue = (value[sliderTitle] / 100) * 1000;
+    const computedValue = (value[sliderTitle] / 100) * maxVal;
 
-    return description.replace('{value}', String(computedValue));
+    return description
+      .replace('{value}', String(computedValue.toFixed(0)))
+      .replace('{max_value}', String(maxVal));
   }, [value, description, sliderTitle]);
 
   return (

@@ -1,4 +1,5 @@
 import { getHostById } from 'src/services/db/hosts';
+import { getUserSettings } from 'src/services/db/user-settings';
 import { HostContainer } from './_components/host-container';
 
 export const metadata = {
@@ -7,9 +8,10 @@ export const metadata = {
 
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
   const { hostId } = params;
-  const { host } = await getHostById(hostId);
+  const host = await getHostById(hostId);
+  const userSettings = await getUserSettings({ planPermissions: true });
 
   console.log({ currentItemParams: host });
 
-  return <HostContainer host={host} />;
+  return <HostContainer currentItem={host} userSettings={userSettings} />;
 }

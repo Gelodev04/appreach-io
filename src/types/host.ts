@@ -1,3 +1,4 @@
+import { hosts, userSettings } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 
 interface ILookerStudio {
@@ -28,6 +29,11 @@ interface IInboxEngagement {
   downloadMessage: boolean;
   movePrimary: boolean;
   scrollMessage: boolean;
+}
+
+export interface HostProps {
+  currentItem: hosts;
+  userSettings: userSettings;
 }
 
 export interface IHost {

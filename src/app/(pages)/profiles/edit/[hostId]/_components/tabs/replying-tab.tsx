@@ -1,10 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material';
+import { hosts } from '@prisma/client';
 import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = () => {
+export const ReplyingTab = ({ currentItem, maxVal }: { currentItem: hosts; maxVal: number }) => {
   const enabled = true;
+  const filterIdKey = currentItem.hostCrypt.split('_')[1];
 
   return (
     <Stack spacing={7}>
@@ -42,13 +44,14 @@ export const ReplyingTab = () => {
             disabled={!enabled}
             name="filter_id_key"
             label="Filter ID Key"
-            defaultValue="Kajda3"
+            defaultValue={filterIdKey}
             tooltipContent="Assign a unique identifier to filter out AI-generated replies."
             tooltipID="filter-id-popover"
           />
         </Box>
 
         <SliderItem
+          maxVal={maxVal}
           disabled={!enabled}
           sliderTitle="Reply using AI"
           icon="mdi:robot"
@@ -68,7 +71,7 @@ export const ReplyingTab = () => {
       >
         <Typography
           variant="subtitle1"
-          sx={{ textAlign: 'center', color: enabled ? 'black' : '#94A0AE' }}
+          sx={{ textAlign: 'center', color: !enabled ? '#94A0AE' : 'black' }}
         >
           Customize your AI Prompt
         </Typography>

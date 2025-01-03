@@ -1,5 +1,3 @@
-'use client';
-
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useTheme } from '@mui/material';
@@ -9,7 +7,6 @@ import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { hosts } from '@prisma/client';
 import moment from 'moment-timezone';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
@@ -20,14 +17,11 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { HostProps } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
-type Props = {
-  currentItem?: hosts;
-};
-
-export default function HostNewEditForm({ currentItem }: Props) {
+export default function HostNewEditForm({ currentItem, userSettings }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
@@ -166,7 +160,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs />
+              <SenderProfileTabs currentItem={currentItem} userSettings={userSettings} />
             </Stack>
           </Card>
         </Grid>
