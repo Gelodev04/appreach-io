@@ -7,6 +7,7 @@ import { useEditProfileStore } from 'src/store/edit-profile-store';
 
 type SliderProps = {
   sliderTitle: string;
+  sliderName: string;
   icon: string;
   description: string;
   tooltipContent?: string;
@@ -16,6 +17,7 @@ type SliderProps = {
 
 export const SliderItem = ({
   sliderTitle,
+  sliderName,
   icon,
   description,
   tooltipContent = 'Tooltip content',
@@ -28,7 +30,7 @@ export const SliderItem = ({
   const { value, setValue } = useEditProfileStore((state) => state);
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    setValue(sliderTitle, newValue as number);
+    setValue(sliderName, newValue as number);
   };
 
   const popoverEnter = () => {
@@ -40,12 +42,12 @@ export const SliderItem = ({
   };
 
   const updatedDesc = useMemo(() => {
-    const computedValue = (value[sliderTitle] / 100) * maxVal;
+    const computedValue = (value[sliderName] / 100) * maxVal;
 
     return description
       .replace('{value}', String(computedValue.toFixed(0)))
       .replace('{max_value}', String(maxVal));
-  }, [value, description, sliderTitle, maxVal]);
+  }, [value, description, sliderName, maxVal]);
 
   return (
     <Box
@@ -135,7 +137,7 @@ export const SliderItem = ({
           <Slider
             disabled={disabled}
             size="medium"
-            value={value[sliderTitle]}
+            value={value[sliderName]}
             onChange={handleSliderChange}
             min={0}
             max={100}
@@ -149,7 +151,7 @@ export const SliderItem = ({
               color: disabled ? '#94A0AE' : 'black',
             }}
           >
-            <Typography>{value[sliderTitle]}%</Typography>
+            <Typography>{value[sliderName]}%</Typography>
             <Typography>100%</Typography>
           </Box>
         </Box>

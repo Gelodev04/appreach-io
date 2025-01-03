@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ currentItem, maxVal }: { currentItem: hosts; maxVal: number }) => {
+export const ReplyingTab = ({ currentItem, maxVal }: { currentItem?: hosts; maxVal: number }) => {
   const enabled = true;
-  const filterIdKey = currentItem.hostCrypt.split('_')[1];
+  const filterIdKey = currentItem?.hostCrypt.split('_')[1];
 
   return (
     <Stack spacing={7}>
@@ -42,7 +42,7 @@ export const ReplyingTab = ({ currentItem, maxVal }: { currentItem: hosts; maxVa
         >
           <RHFTextField
             disabled={!enabled}
-            name="filter_id_key"
+            name="filterId"
             label="Filter ID Key"
             defaultValue={filterIdKey}
             tooltipContent="Assign a unique identifier to filter out AI-generated replies."
@@ -54,6 +54,7 @@ export const ReplyingTab = ({ currentItem, maxVal }: { currentItem: hosts; maxVa
           maxVal={maxVal}
           disabled={!enabled}
           sliderTitle="Reply using AI"
+          sliderName="replyMessage"
           icon="mdi:robot"
           description="We will reply to {value} out of 1,000 to primary"
           tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
@@ -76,7 +77,7 @@ export const ReplyingTab = ({ currentItem, maxVal }: { currentItem: hosts; maxVa
           Customize your AI Prompt
         </Typography>
         <RHFTextField
-          name="ai_prompt"
+          name="replyPrompt"
           disabled={!enabled}
           multiline
           minRows={1}

@@ -32,7 +32,7 @@ interface IInboxEngagement {
 }
 
 export interface HostProps {
-  currentItem: hosts;
+  currentItem?: hosts;
   userSettings: userSettings;
 }
 

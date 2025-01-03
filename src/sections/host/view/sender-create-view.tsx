@@ -1,12 +1,13 @@
 'use client';
 
 import Container from '@mui/material/Container';
+import { userSettings } from '@prisma/client';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import HostsNewEditForm from '../host-new-edit-form';
 
-export default function HostCreateView() {
+export default function HostCreateView({ userSettings }: { userSettings: userSettings }) {
   const settings = useSettingsContext();
 
   return (
@@ -25,7 +26,7 @@ export default function HostCreateView() {
         }}
       />
 
-      <HostsNewEditForm />
+      <HostsNewEditForm userSettings={userSettings} />
     </Container>
   );
 }

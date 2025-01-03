@@ -20,14 +20,15 @@ import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
+import { useSetValues } from './hooks';
 
 export default function HostNewEditForm({ currentItem, userSettings }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const timezones = moment.tz.names();
+  const updatedHostItem = useSetValues(currentItem);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  console.log({ currentItem });
+  const timezones = moment.tz.names();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
@@ -38,22 +39,32 @@ export default function HostNewEditForm({ currentItem, userSettings }: HostProps
       // apiKey: Yup.string(),
       webhook: Yup.string(),
     }),
+    // scrollMessage: Yup.number(),
+    // markImportant: Yup.number(),
+    // removeSpam: Yup.number(),
+    // movePrimary: Yup.number(),
+    // clickLink: Yup.number(),
+    // replyMessage: Yup.number(),
+    // linksToClick: Yup.string().required('This field cannot be empty.'),
+    // linksNotToClick: Yup.string().required('This field cannot be empty.'),
+    // filterId: Yup.string().required('Filter ID is required'),
+    // replyPrompt: Yup.string().required('Reply prompt is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      host: currentItem?.host || '',
-      timezone: currentItem?.userSettings?.timezone || '',
-      notificationAddresses: Array.isArray(currentItem?.userSettings?.notificationAddressArray)
-        ? currentItem.userSettings?.notificationAddressArray.join('\n')
-        : currentItem?.userSettings?.notificationAddressArray || '',
-      externalSenderAddresses: Array.isArray(currentItem?.userSettings?.externalSenderAddresses)
-        ? currentItem.userSettings?.externalSenderAddresses.join('\n')
-        : currentItem?.userSettings?.externalSenderAddresses || '',
+      host: updatedHostItem?.host || '',
+      timezone: updatedHostItem?.userSettings?.timezone || '',
+      notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
+        ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
+        : updatedHostItem?.userSettings?.notificationAddressArray || '',
+      externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
+        ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
+        : updatedHostItem?.userSettings?.externalSenderAddresses || '',
       // slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: currentItem?.smartlead || { /* apiKey: '', */ webhook: '' },
+      smartLead: updatedHostItem?.smartlead || { /* apiKey: '', */ webhook: '' },
     }),
-    [currentItem]
+    [updatedHostItem]
   );
 
   const methods = useForm({

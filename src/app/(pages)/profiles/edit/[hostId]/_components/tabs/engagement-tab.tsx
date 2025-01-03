@@ -5,6 +5,7 @@ import { SliderItem } from './slider-item';
 const sliderItems = [
   {
     sliderTitle: 'Scroll through message',
+    sliderName: 'scrollMessage',
     icon: 'ri:scroll-to-bottom-fill',
     description: 'We will scroll through the message of {value} out of {max_value} emails',
     tooltipContent:
@@ -12,6 +13,7 @@ const sliderItems = [
   },
   {
     sliderTitle: 'Mark as important',
+    sliderName: 'markImportant',
     icon: 'material-symbols:bookmark-star-rounded',
     description: 'We will mark {value} out of {max_value} emails as important',
     tooltipContent:
@@ -19,6 +21,7 @@ const sliderItems = [
   },
   {
     sliderTitle: 'Remove from spam',
+    sliderName: 'removeSpam',
     icon: 'mdi:email-remove',
     description: 'We will remove {value} out of {max_value} emails from spam',
     tooltipContent:
@@ -26,6 +29,7 @@ const sliderItems = [
   },
   {
     sliderTitle: 'Move to primary',
+    sliderName: 'movePrimary',
     icon: 'material-symbols:forward-to-inbox-rounded',
     description: 'We will move {value} out of {max_value} emails to the primary inbox',
     tooltipContent:
@@ -33,6 +37,7 @@ const sliderItems = [
   },
   {
     sliderTitle: 'Click links',
+    sliderName: 'clickLink',
     icon: 'mdi:cursor-default-click',
     description: 'We will click on links in {value} out of {max_value} emails',
     tooltipContent:
@@ -48,16 +53,7 @@ export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
       </Typography>
       <Stack spacing={5}>
         {sliderItems.map((item) => {
-          return (
-            <SliderItem
-              key={item.sliderTitle}
-              sliderTitle={item.sliderTitle}
-              icon={item.icon}
-              description={item.description}
-              maxVal={maxVal}
-              tooltipContent={item?.tooltipContent}
-            />
-          );
+          return <SliderItem key={item.sliderTitle} maxVal={maxVal} {...item} />;
         })}
       </Stack>
       <Box
@@ -71,7 +67,7 @@ export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
       >
         <RHFTextField
           InputLabelProps={{ shrink: true }}
-          name="links_to_click"
+          name="linksToClick"
           label="Links to click"
           tooltipContent="Prioritize clicks on important links, driving attention to your key content and increasing click-through rates."
           tooltipID="links-to-click-popover"
@@ -83,7 +79,7 @@ export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
 
         <RHFTextField
           InputLabelProps={{ shrink: true }}
-          name="links_not_to_click"
+          name="linksNotToClick"
           label="Links not to click"
           tooltipContent="Avoid interacting with certain links, such as unsubscribe links, to maintain natural engagement behavior."
           tooltipID="links-not-to-click-popover"

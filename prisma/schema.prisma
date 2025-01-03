@@ -213,6 +213,19 @@ type HostsUserSettingsLeadCategories {
   sendNotification String
 }
 
+type HostsEngagementSettings {
+  scrollMessage   Int
+  markImportant   Int
+  removeSpam      Int
+  movePrimary     Int
+  clickLink       Int
+  replyMessage    Int
+  linksToClick    String[]
+  linksNotToClick String[]
+  filterId        String?
+  replyPrompt     String
+}
+
 type SeedBatchesGenerate {
   clickLink       Boolean?
   downloadMessage Boolean?
@@ -440,18 +453,19 @@ model emailValidator {
 }
 
 model hosts {
-  id              String                @id @default(auto()) @map("_id") @db.ObjectId
-  autoCc          HostsAutoCc?
-  counts          HostsCounts?
-  crmIntegration  HostsCrmIntegration?
-  host            String
-  hostCrypt       String
-  inboxEngagement HostsInboxEngagement?
-  instantly       HostsInstantly?
-  lookerStudio    HostsLookerStudio?
-  slack           HostsSlack?
-  smartlead       HostsSmartlead?
-  userSettings    HostsUserSettings?
+  id                 String                   @id @default(auto()) @map("_id") @db.ObjectId
+  autoCc             HostsAutoCc?
+  counts             HostsCounts?
+  crmIntegration     HostsCrmIntegration?
+  host               String
+  hostCrypt          String
+  inboxEngagement    HostsInboxEngagement?
+  instantly          HostsInstantly?
+  lookerStudio       HostsLookerStudio?
+  slack              HostsSlack?
+  smartlead          HostsSmartlead?
+  userSettings       HostsUserSettings?
+  engagementSettings HostsEngagementSettings?
 }
 
 model seedBatches {
