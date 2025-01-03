@@ -9,7 +9,6 @@ import Iconify from 'src/components/iconify/iconify';
 import { useGetHost } from 'src/hooks/api/host';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import HostNewEditForm from '../host-new-edit-form';
 import { HostSkeleton } from '../host-skeleton';
 
 export default function HostEditView() {
@@ -53,7 +52,7 @@ export default function HostEditView() {
         }}
       />
 
-      <HostNewEditForm currentItem={host} />
+      {/* <HostNewEditForm currentItem={host} /> */}
     </Container>
   );
 }
