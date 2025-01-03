@@ -45,7 +45,7 @@ export const SliderItem = ({
     return description
       .replace('{value}', String(computedValue.toFixed(0)))
       .replace('{max_value}', String(maxVal));
-  }, [value, description, sliderTitle]);
+  }, [value, description, sliderTitle, maxVal]);
 
   return (
     <Box
