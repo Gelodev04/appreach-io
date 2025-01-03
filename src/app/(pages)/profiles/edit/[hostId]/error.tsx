@@ -9,7 +9,7 @@ import { paths } from 'src/routes/paths';
 export default function Error({ error }: { error: Error & { digest?: string } }) {
   return (
     <EmptyContent
-      title={'Oops, unexpected error!'}
+      title="Oops, unexpected error!"
       description={error.message}
       action={
         <Button
