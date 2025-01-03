@@ -1,12 +1,12 @@
 'use client';
 
 import { Container } from '@mui/material';
+import { hosts } from '@prisma/client';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { paths } from 'src/routes/paths';
 import HostNewEditForm from 'src/sections/host/host-new-edit-form';
-import { IHost } from 'src/types/host';
 
-export const HostContainer = ({ host }: { host: IHost | undefined }) => {
+export const HostContainer = ({ host }: { host: hosts | undefined }) => {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs

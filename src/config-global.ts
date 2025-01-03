@@ -31,6 +31,7 @@ export const STRIPE = {
       permission: {
         seeds: 50,
         senderProfiles: 1,
+        senderAddresses: 1,
         verifyCredits: 100,
         engagementMax: 50,
         engagementFeatures: {

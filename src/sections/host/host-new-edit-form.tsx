@@ -9,6 +9,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { hosts } from '@prisma/client';
 import moment from 'moment-timezone';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
@@ -19,12 +20,11 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { IHost } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 
 type Props = {
-  currentItem?: IHost;
+  currentItem?: hosts;
 };
 
 export default function HostNewEditForm({ currentItem }: Props) {
@@ -44,38 +44,20 @@ export default function HostNewEditForm({ currentItem }: Props) {
       // apiKey: Yup.string(),
       webhook: Yup.string(),
     }),
-    inboxEngagement: Yup.object().shape({
-      markImportant: Yup.boolean(),
-      removeSpam: Yup.boolean(),
-      replyMessage: Yup.boolean(),
-      clickLink: Yup.boolean(),
-      // downloadMessage: Yup.boolean(),
-      movePrimary: Yup.boolean(),
-      scrollMessage: Yup.boolean(),
-    }),
   });
 
   const defaultValues = useMemo(
     () => ({
       host: currentItem?.host || '',
-      timezone: currentItem?.userSettings.timezone || '',
-      notificationAddresses: Array.isArray(currentItem?.userSettings.notificationAddressArray)
-        ? currentItem.userSettings.notificationAddressArray.join('\n')
-        : currentItem?.userSettings.notificationAddressArray || '',
-      externalSenderAddresses: Array.isArray(currentItem?.userSettings.externalSenderAddresses)
-        ? currentItem.userSettings.externalSenderAddresses.join('\n')
-        : currentItem?.userSettings.externalSenderAddresses || '',
+      timezone: currentItem?.userSettings?.timezone || '',
+      notificationAddresses: Array.isArray(currentItem?.userSettings?.notificationAddressArray)
+        ? currentItem.userSettings?.notificationAddressArray.join('\n')
+        : currentItem?.userSettings?.notificationAddressArray || '',
+      externalSenderAddresses: Array.isArray(currentItem?.userSettings?.externalSenderAddresses)
+        ? currentItem.userSettings?.externalSenderAddresses.join('\n')
+        : currentItem?.userSettings?.externalSenderAddresses || '',
       // slack: currentItem?.slack || { notificationChannelId: '' },
       smartLead: currentItem?.smartlead || { /* apiKey: '', */ webhook: '' },
-      inboxEngagement: {
-        markImportant: currentItem?.inboxEngagement?.markImportant || false,
-        removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
-        replyMessage: currentItem?.inboxEngagement?.replyMessage || false,
-        clickLink: currentItem?.inboxEngagement?.clickLink || false,
-        // downloadMessage: currentItem?.inboxEngagement?.downloadMessage || false,
-        movePrimary: currentItem?.inboxEngagement?.movePrimary || false,
-        scrollMessage: currentItem?.inboxEngagement?.scrollMessage || false,
-      },
     }),
     [currentItem]
   );
@@ -103,7 +85,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
         method: 'POST',
         body: JSON.stringify({
           ...data,
-          _id: currentItem?._id,
+          _id: currentItem?.id,
         }),
       });
 

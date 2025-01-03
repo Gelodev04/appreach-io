@@ -41,8 +41,6 @@ const sliderItems = [
 ];
 
 export const EngagementTab = () => {
-  // const userSettings = await getUserSettings({ planPermissions: true });
-  // console.log(userSettings);
   return (
     <Stack spacing={2}>
       <Typography variant="h5" sx={{ textAlign: 'center' }}>

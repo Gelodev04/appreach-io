@@ -1,5 +1,3 @@
-'use client';
-
 import { Box, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
