@@ -7,7 +7,11 @@ import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import HostsNewEditForm from '../host-new-edit-form';
 
-export default function HostCreateView({ userSettings }: { userSettings: userSettings }) {
+export default function HostCreateView({
+  userSettings: userSettingsProp,
+}: {
+  userSettings: userSettings;
+}) {
   const settings = useSettingsContext();
 
   return (
@@ -26,7 +30,7 @@ export default function HostCreateView({ userSettings }: { userSettings: userSet
         }}
       />
 
-      <HostsNewEditForm userSettings={userSettings} />
+      <HostsNewEditForm userSettings={userSettingsProp} />
     </Container>
   );
 }
