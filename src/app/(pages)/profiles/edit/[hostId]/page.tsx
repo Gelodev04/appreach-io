@@ -11,7 +11,5 @@ export default async function HostsEditPage({ params }: { params: { hostId: stri
   const host = await getHostById(hostId);
   const { planPermissions } = await getUserSettings({ planPermissions: true });
 
-  console.log({ currentItemParams: host });
-
   return <HostContainer currentItem={host} planPermissions={planPermissions} />;
 }

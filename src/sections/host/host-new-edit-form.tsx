@@ -19,7 +19,7 @@ import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
-import { useDefaultEngagementSettings } from './hooks/useSetValues';
+import { useDefaultEngagementSettings } from './hooks';
 
 export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
   const router = useRouter();
@@ -39,16 +39,16 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
       // apiKey: Yup.string(),
       webhook: Yup.string(),
     }),
-    // scrollMessage: Yup.number(),
-    // markImportant: Yup.number(),
-    // removeSpam: Yup.number(),
-    // movePrimary: Yup.number(),
-    // clickLink: Yup.number(),
-    // replyMessage: Yup.number(),
-    // linksToClick: Yup.string().required('This field cannot be empty.'),
-    // linksNotToClick: Yup.string().required('This field cannot be empty.'),
-    // filterId: Yup.string().required('Filter ID is required'),
-    // replyPrompt: Yup.string().required('Reply prompt is required'),
+    scrollMessage: Yup.number(),
+    markImportant: Yup.number(),
+    removeSpam: Yup.number(),
+    movePrimary: Yup.number(),
+    clickLink: Yup.number(),
+    replyMessage: Yup.number(),
+    linksToClick: Yup.string().required('This field cannot be empty.'),
+    linksNotToClick: Yup.string().required('This field cannot be empty.'),
+    filterId: Yup.string().required('Filter ID is required'),
+    replyPrompt: Yup.string().required('Reply prompt is required'),
   });
 
   const defaultValues = {
@@ -60,8 +60,21 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
       ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
       : updatedHostItem?.userSettings?.externalSenderAddresses || '',
-    // slack: currentItem?.slack || { notificationChannelId: '' },
     smartLead: updatedHostItem?.smartlead || { /* apiKey: '', */ webhook: '' },
+    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage || 0,
+    markImportant: updatedHostItem?.engagementSettings?.markImportant || 0,
+    removeSpam: updatedHostItem?.engagementSettings?.removeSpam || 0,
+    movePrimary: updatedHostItem?.engagementSettings?.movePrimary || 0,
+    clickLink: updatedHostItem?.engagementSettings?.clickLink || 0,
+    replyMessage: updatedHostItem?.engagementSettings?.replyMessage || 0,
+    linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
+      ? updatedHostItem.engagementSettings?.linksToClick.join('\n')
+      : updatedHostItem?.engagementSettings?.linksToClick || '',
+    linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
+      ? updatedHostItem.engagementSettings?.linksNotToClick.join('\n')
+      : updatedHostItem?.engagementSettings?.linksNotToClick || '',
+    filterId: updatedHostItem?.engagementSettings?.filterId || '',
+    replyPrompt: updatedHostItem?.engagementSettings?.replyPrompt || '',
   };
 
   const methods = useForm({
