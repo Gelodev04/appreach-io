@@ -171,7 +171,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs currentItem={currentItem} userSettings={userSettings} />
+              <SenderProfileTabs currentItem={updatedHostItem} userSettings={userSettings} />
             </Stack>
           </Card>
         </Grid>

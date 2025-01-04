@@ -6,7 +6,9 @@ import { SliderItem } from './slider-item';
 
 export const ReplyingTab = ({ currentItem, maxVal }: { currentItem?: hosts; maxVal: number }) => {
   const enabled = true;
-  const filterIdKey = currentItem?.hostCrypt.split('_')[1];
+  const filterIdKey = currentItem?.engagementSettings?.filterId
+    ? currentItem.engagementSettings.filterId
+    : currentItem?.hostCrypt.split('_')[1];
 
   return (
     <Stack spacing={7}>
