@@ -21,7 +21,7 @@ import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks/useSetValues';
 
-export default function HostNewEditForm({ currentItem, userSettings }: HostProps) {
+export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
@@ -161,7 +161,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs currentItem={updatedHostItem} userSettings={userSettings} />
+              <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
             </Stack>
           </Card>
         </Grid>

@@ -5,7 +5,7 @@ import { HostProps } from 'src/types/host';
 import { EngagementTab } from './engagement-tab';
 import { ReplyingTab } from './replying-tab';
 
-export const SenderProfileTabs = ({ currentItem, userSettings }: HostProps) => {
+export const SenderProfileTabs = ({ currentItem, planPermissions }: HostProps) => {
   const [value, setValue] = useState('sender_engagement');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -28,10 +28,10 @@ export const SenderProfileTabs = ({ currentItem, userSettings }: HostProps) => {
           </TabList>
         </Box>
         <TabPanel value="sender_engagement">
-          <EngagementTab maxVal={userSettings.planPermissions.seeds} />
+          <EngagementTab maxVal={planPermissions.seeds} />
         </TabPanel>
         <TabPanel value="sender_replying">
-          <ReplyingTab currentItem={currentItem} maxVal={userSettings.planPermissions.seeds} />
+          <ReplyingTab currentItem={currentItem} maxVal={planPermissions.seeds} />
         </TabPanel>
       </TabContext>
     </Box>

@@ -1,4 +1,4 @@
-import { hosts, userSettings } from '@prisma/client';
+import { hosts, UserSettingsPlanPermissions } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 
 interface ILookerStudio {
@@ -33,7 +33,7 @@ interface IInboxEngagement {
 
 export interface HostProps {
   currentItem?: hosts;
-  userSettings: userSettings;
+  planPermissions: UserSettingsPlanPermissions;
 }
 
 export interface IHost {
