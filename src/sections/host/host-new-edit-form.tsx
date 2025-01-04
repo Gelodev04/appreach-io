@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import moment from 'moment-timezone';
 import Image from 'next/image';
-import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
@@ -20,13 +19,14 @@ import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
-import { useSetValues } from './hooks';
+import { useDefaultEngagementSettings } from './hooks/useSetValues';
 
 export default function HostNewEditForm({ currentItem, userSettings }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const updatedHostItem = useSetValues(currentItem);
+  const updatedHostItem = useDefaultEngagementSettings(currentItem);
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const timezones = moment.tz.names();
 
@@ -51,21 +51,18 @@ export default function HostNewEditForm({ currentItem, userSettings }: HostProps
     // replyPrompt: Yup.string().required('Reply prompt is required'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      host: updatedHostItem?.host || '',
-      timezone: updatedHostItem?.userSettings?.timezone || '',
-      notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
-        ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
-        : updatedHostItem?.userSettings?.notificationAddressArray || '',
-      externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
-        ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
-        : updatedHostItem?.userSettings?.externalSenderAddresses || '',
-      // slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: updatedHostItem?.smartlead || { /* apiKey: '', */ webhook: '' },
-    }),
-    [updatedHostItem]
-  );
+  const defaultValues = {
+    host: updatedHostItem?.host || '',
+    timezone: updatedHostItem?.userSettings?.timezone || '',
+    notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
+      ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
+      : updatedHostItem?.userSettings?.notificationAddressArray || '',
+    externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
+      ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
+      : updatedHostItem?.userSettings?.externalSenderAddresses || '',
+    // slack: currentItem?.slack || { notificationChannelId: '' },
+    smartLead: updatedHostItem?.smartlead || { /* apiKey: '', */ webhook: '' },
+  };
 
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
@@ -73,16 +70,9 @@ export default function HostNewEditForm({ currentItem, userSettings }: HostProps
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  useEffect(() => {
-    if (currentItem) {
-      reset(defaultValues);
-    }
-  }, [currentItem, defaultValues, reset]);
 
   const onEdit = handleSubmit(async (data) => {
     try {

@@ -1,22 +1,15 @@
 import { hosts } from '@prisma/client';
-import { useEffect, useState } from 'react';
 import { defaultEngagementSettings } from 'src/constants';
 
-export const useSetValues = (currentItem: hosts | undefined) => {
-  const [hostItem, setHostItem] = useState<hosts | undefined>(currentItem);
-
-  useEffect(() => {
-    if (currentItem) {
-      const updatedHostItem = {
-        ...currentItem,
-        engagementSettings: currentItem.engagementSettings
-          ? currentItem.engagementSettings
-          : defaultEngagementSettings.engagementSettings,
-      };
-
-      setHostItem(updatedHostItem);
-    }
-  }, [currentItem]);
-
-  return hostItem;
+export const useDefaultEngagementSettings = (currentItem?: hosts) => {
+  let updatedItem: hosts | undefined = currentItem;
+  console.log({ currentItem });
+  if (!currentItem?.engagementSettings && currentItem?.id) {
+    updatedItem = {
+      ...currentItem,
+      engagementSettings: defaultEngagementSettings.engagementSettings,
+    };
+  }
+  console.log({ updatedItem });
+  return updatedItem;
 };
