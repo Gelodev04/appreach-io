@@ -2,8 +2,8 @@
 
 import { Icon } from '@iconify/react';
 import { Box, Card, Popover, Slider, Typography, useMediaQuery } from '@mui/material';
-import { useMemo, useRef, useState } from 'react';
-import { useEditProfileStore } from 'src/store/edit-profile-store';
+import { useRef, useState } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 
 type SliderProps = {
   sliderTitle: string;
@@ -24,13 +24,13 @@ export const SliderItem = ({
   maxVal,
   disabled,
 }: SliderProps) => {
+  const [openedPopover, setOpenedPopover] = useState(false);
+  const { control } = useFormContext();
   const matches = useMediaQuery('(min-width:768px)');
   const popoverAnchor = useRef(null);
-  const [openedPopover, setOpenedPopover] = useState(false);
-  const { value, setValue } = useEditProfileStore((state) => state);
 
-  const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    setValue(sliderName, newValue as number);
+  const handleSliderChange = (fieldOnChange: (value: any) => void, value: number | number[]) => {
+    fieldOnChange(value);
   };
 
   const popoverEnter = () => {
@@ -41,13 +41,13 @@ export const SliderItem = ({
     setOpenedPopover(false);
   };
 
-  const updatedDesc = useMemo(() => {
-    const computedValue = (value[sliderName] / 100) * maxVal;
+  const updatedDesc = (value: number) => {
+    const computedValue = (value / 100) * maxVal;
 
     return description
       .replace('{value}', String(computedValue.toFixed(0)))
       .replace('{max_value}', String(maxVal));
-  }, [value, description, sliderName, maxVal]);
+  };
 
   return (
     <Box
@@ -133,31 +133,39 @@ export const SliderItem = ({
         )}
       </Card>
       <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', width: '100%' }}>
-        <Box>
-          <Slider
-            disabled={disabled}
-            size="medium"
-            value={value[sliderName]}
-            onChange={handleSliderChange}
-            min={0}
-            max={100}
-            defaultValue={25}
-            valueLabelDisplay="auto"
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              color: disabled ? '#94A0AE' : 'black',
-            }}
-          >
-            <Typography>{value[sliderName]}%</Typography>
-            <Typography>100%</Typography>
-          </Box>
-        </Box>
-        <Typography sx={{ textAlign: 'center', color: disabled ? '#94A0AE' : 'black' }}>
-          {updatedDesc}
-        </Typography>
+        <Controller
+          name={sliderName}
+          control={control}
+          disabled={disabled}
+          render={({ field }) => (
+            <Box>
+              <Slider
+                {...field}
+                value={field.value}
+                size="medium"
+                onChange={(_, value) => handleSliderChange(field.onChange, value)}
+                min={0}
+                max={100}
+                defaultValue={25}
+                valueLabelDisplay="auto"
+              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  color: disabled ? '#94A0AE' : 'black',
+                }}
+              >
+                <Typography>{field.value}%</Typography>
+                <Typography>100%</Typography>
+              </Box>
+
+              <Typography sx={{ textAlign: 'center', color: disabled ? '#94A0AE' : 'black' }}>
+                {updatedDesc(field.value)}
+              </Typography>
+            </Box>
+          )}
+        />
       </Box>
     </Box>
   );

@@ -4,11 +4,8 @@ import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ currentItem, maxVal }: { currentItem?: hosts; maxVal: number }) => {
+export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number }) => {
   const enabled = true;
-  const filterIdKey = currentItem?.engagementSettings?.filterId
-    ? currentItem.engagementSettings.filterId
-    : currentItem?.hostCrypt.split('_')[1];
 
   return (
     <Stack spacing={7}>
@@ -46,7 +43,6 @@ export const ReplyingTab = ({ currentItem, maxVal }: { currentItem?: hosts; maxV
             disabled={!enabled}
             name="filterId"
             label="Filter ID Key"
-            defaultValue={filterIdKey}
             tooltipContent="Assign a unique identifier to filter out AI-generated replies."
             tooltipID="filter-id-popover"
           />
