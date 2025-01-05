@@ -1,6 +1,6 @@
 'use server';
 
-import { Prisma } from '@prisma/client';
+import { hosts, Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
@@ -24,5 +24,44 @@ export const getHostById = async (id: string, selectFields?: Prisma.userSettings
   } catch (error) {
     console.error('Error on getting host:', error); // Log the actual error
     throw new Error('Failed to fetch host details.');
+  }
+};
+
+
+
+export const updateHostData = async (id: string, data: hosts) => {
+  try {
+    console.log({ data });
+
+    const normalizedData = {
+      ...data,
+      engagementSettings: {
+        scrollMessage: data.scrollMessage,
+        markImportant: data.markImportant,
+        removeSpam: data.removeSpam,
+        movePrimary: data.movePrimary,
+        clickLink: data.clickLink,
+        replyMessage: data.replyMessage,
+        filterId: data.filterId,
+        replyPrompt: data.replyPrompt,
+        linksToClick: data.linksToClick ? data.linksToClick.split(',').map((link) => link.trim()) : [''],
+        linksNotToClick: data.linksNotToClick ? data.linksNotToClick.split(',').map((link) => link.trim()) : [''],
+      }
+      userSettings: {
+        ...data.userSettings,
+        timezone: data.timezone,
+        externalSenderAddresses: data.externalSenderAddresses ? data.externalSenderAddresses.split('\n').map((link) => link.trim()) : [''],
+      }
+    };
+
+    const updatedHostData = await prisma.hosts.update({
+      where: { id },
+      data: normalizedData,
+    });
+
+    return updatedHostData;
+  } catch (error) {
+    console.log('Unable to update sender status to ready.', error);
+    throw new Error('Unable to update sender status to ready.', error);
   }
 };

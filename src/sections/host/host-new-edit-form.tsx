@@ -16,8 +16,8 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { updateHostData } from 'src/services/db/hosts';
 import { HostProps } from 'src/types/host';
-import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
@@ -25,7 +25,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const updatedHostItem = useDefaultEngagementSettings(currentItem);
+  const updatedHostItem = useDefaultEngagementSettings({ currentItem, planPermissions });
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const timezones = moment.tz.names();
@@ -33,19 +33,14 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
     timezone: Yup.string().required('Timezone is required'),
-    notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    smartLead: Yup.object().shape({
-      // apiKey: Yup.string(),
-      webhook: Yup.string(),
-    }),
     scrollMessage: Yup.number(),
     markImportant: Yup.number(),
     removeSpam: Yup.number(),
     movePrimary: Yup.number(),
     clickLink: Yup.number(),
     replyMessage: Yup.number(),
-    linksToClick: Yup.string().required('This field cannot be empty.'),
+    linksToClick: Yup.string(),
     linksNotToClick: Yup.string().required('This field cannot be empty.'),
     filterId: Yup.string().required('Filter ID is required'),
     replyPrompt: Yup.string().required('Reply prompt is required'),
@@ -68,12 +63,14 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     clickLink: updatedHostItem?.engagementSettings?.clickLink || 0,
     replyMessage: updatedHostItem?.engagementSettings?.replyMessage || 0,
     linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
-      ? updatedHostItem.engagementSettings?.linksToClick.join('\n')
+      ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
       : updatedHostItem?.engagementSettings?.linksToClick || '',
     linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
-      ? updatedHostItem.engagementSettings?.linksNotToClick.join('\n')
+      ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
       : updatedHostItem?.engagementSettings?.linksNotToClick || '',
-    filterId: updatedHostItem?.engagementSettings?.filterId || '',
+    filterId: updatedHostItem?.engagementSettings?.filterId
+      ? updatedHostItem.engagementSettings.filterId
+      : currentItem?.hostCrypt.split('_')[1] || '',
     replyPrompt: updatedHostItem?.engagementSettings?.replyPrompt || '',
   };
 
@@ -87,39 +84,46 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     formState: { isSubmitting },
   } = methods;
 
-  const onEdit = handleSubmit(async (data) => {
+  const onEdit = handleSubmit(async (data: any) => {
     try {
-      const res = await fetch(endpoints.host.edit, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...data,
-          _id: currentItem?.id,
-        }),
-      });
+      // const res = await fetch(endpoints.host.edit, {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     ...data,
+      //     _id: currentItem?.id,
+      //   }),
+      // });
 
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.error ?? 'Failed to update host');
+      // if (!res.ok) {
+      //   const body = await res.json();
+      //   throw new Error(body.error ?? 'Failed to update host');
+      // }
+
+      if (!currentItem?.id) {
+        throw new Error('Host ID not found');
       }
+      const updatedData = await updateHostData(currentItem?.id, data);
+
       closeSnackbar();
       enqueueSnackbar('Update success!');
-      router.push(paths.settings.root);
+      // router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 
   const onCreate = handleSubmit(async (data) => {
+    console.log({ data });
     try {
-      const res = await fetch(endpoints.host.create, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      // const res = await fetch(endpoints.host.create, {
+      //   method: 'POST',
+      //   body: JSON.stringify(data),
+      // });
 
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.error ?? 'Failed to create host');
-      }
+      // if (!res.ok) {
+      //   const body = await res.json();
+      //   throw new Error(body.error ?? 'Failed to create host');
+      // }
       closeSnackbar();
       enqueueSnackbar('Create success!');
       router.push(paths.settings.root);
