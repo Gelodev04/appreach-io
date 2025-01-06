@@ -20,11 +20,11 @@ import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
+export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const updatedHostItem = useDefaultEngagementSettings({ currentItem, planPermissions });
+  const updatedHostItem = useDefaultEngagementSettings({ currentItem });
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const timezones = moment.tz.names();
@@ -177,7 +177,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
+              <SenderProfileTabs currentItem={updatedHostItem} seeds={seeds} />
             </Stack>
           </Card>
         </Grid>
