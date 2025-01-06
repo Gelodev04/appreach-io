@@ -9,8 +9,18 @@ export const metadata = {
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
   const { hostId } = params;
   const host = await getHostById(hostId);
-  const data = await getUserSettings({ planPermissionsAssigned: true });
-  console.log({ data });
+  const planPermissions = await getUserSettings({
+    planPermissionsAssigned: true,
+    planPermissionFeatures: true,
+  });
 
-  return <HostContainer currentItem={host} />;
+  return (
+    <HostContainer
+      currentItem={host}
+      planPermissions={{
+        seeds: planPermissions.planPermissionsAssigned.seeds,
+        planPermissionFeatures: planPermissions.planPermissionFeatures,
+      }}
+    />
+  );
 }

@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { hosts } from '@prisma/client';
 import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
+import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number }) => {
+export const ReplyingTab = ({ planPermissions }: HostProps) => {
   const enabled = true;
 
   return (
@@ -49,7 +49,7 @@ export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number })
         </Box>
 
         <SliderItem
-          maxVal={maxVal}
+          maxVal={planPermissions.seeds}
           disabled={!enabled}
           sliderTitle="Reply using AI"
           sliderName="replyMessage"

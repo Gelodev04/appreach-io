@@ -6,7 +6,17 @@ export const metadata = {
 };
 
 export default async function HostsCreatePage() {
-  const data = await getUserSettings({ planPermissionAssigned: true });
+  const planPermissions = await getUserSettings({
+    planPermissionsAssigned: true,
+    planPermissionFeatures: true,
+  });
 
-  return <SenderCreateView seeds={data.planPermissionAssigned.seeds} />;
+  return (
+    <SenderCreateView
+      planPermissions={{
+        seeds: planPermissions.planPermissionsAssigned.seeds,
+        planPermissionFeatures: planPermissions.planPermissionFeatures,
+      }}
+    />
+  );
 }
