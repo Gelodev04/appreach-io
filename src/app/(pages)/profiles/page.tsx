@@ -1,4 +1,5 @@
 import HostListView from 'src/sections/host/view/sender-list-view';
+import { getUserHosts } from 'src/services/db/hosts';
 import { getProfilePlanPermissions } from 'src/services/db/user-settings';
 
 export const metadata = {
@@ -7,8 +8,9 @@ export const metadata = {
 
 export default async function Page() {
   const profilePlanPermission = await getProfilePlanPermissions();
+  const userHosts = await getUserHosts();
 
-  console.log({ profilePlanPermission });
+  console.log({ profilePlanPermission, userHosts });
 
-  return <HostListView {...profilePlanPermission} />;
+  return <HostListView {...profilePlanPermission} userHosts={userHosts} />;
 }

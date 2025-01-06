@@ -2,6 +2,7 @@
 
 import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { getUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
   try {
@@ -81,5 +82,21 @@ export const updateHostData = async (id: string, data: hostData) => {
   } catch (error) {
     console.log('Unable to update sender status to ready.', error);
     throw new Error('Unable to update sender status to ready.', error);
+  }
+};
+
+export const getUserHosts = async () => {
+  try {
+    const { hosts } = await getUserSettings({ hosts: true });
+    const userHosts = await prisma.hosts.findMany({
+      where: {
+        id: {
+          in: hosts,
+        },
+      },
+    });
+    return userHosts;
+  } catch (error) {
+    throw new Error("Couldn't fetch user's hosts.");
   }
 };

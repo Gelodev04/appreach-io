@@ -16,19 +16,19 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import { ObjectId } from 'mongodb';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetHosts } from 'src/hooks/api/host';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { IHost } from 'src/types/host';
 import { endpoints, revalidateData } from 'src/utils/swr';
+import { hosts } from '@prisma/client';
 import HostAddExistingHost from '../host-add-existing-host';
 import SenderProfileUsed from '../host-sender-profile-used';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
@@ -44,30 +44,23 @@ type THostListView = {
   numOfProfileAssigned: number;
   numOfProfileUsed: number;
   isAllProfileUsed: boolean;
+  userHosts: hosts[];
 };
 
 export default function HostListView({
   numOfProfileAssigned,
   numOfProfileUsed,
   isAllProfileUsed,
+  userHosts,
 }: THostListView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
   const settings = useSettingsContext();
-  const { hosts, hostsLoading } = useGetHosts();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
-
-  useEffect(() => {
-    setTableData(hosts);
-  }, [hosts]);
-
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-  });
 
   const handleDeleteRow = useCallback(
     async (id: string) => {
@@ -117,7 +110,7 @@ export default function HostListView({
 
   const handleEditRow = useCallback(
     (id: ObjectId) => {
-      router.push(paths.settings.edit(id));
+      router.push(paths.settings.edit(id.toString()));
     },
     [router]
   );
@@ -241,11 +234,10 @@ export default function HostListView({
           <DataGrid
             checkboxSelection
             disableRowSelectionOnClick
-            rows={dataFiltered}
+            rows={userHosts}
             columns={columns}
-            loading={hostsLoading}
+            loading={false}
             getRowHeight={() => 'auto'}
-            getRowId={(row) => row._id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
@@ -321,10 +313,4 @@ export default function HostListView({
       />
     </>
   );
-}
-
-// ----------------------------------------------------------------------
-
-function applyFilter({ inputData }: { inputData: IHost[] }) {
-  return inputData;
 }
