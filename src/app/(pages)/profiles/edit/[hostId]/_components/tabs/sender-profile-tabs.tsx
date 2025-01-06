@@ -2,10 +2,8 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { useState } from 'react';
 import { HostProps } from 'src/types/host';
-import { EngagementTab } from './engagement-tab';
-import { ReplyingTab } from './replying-tab';
 
-export const SenderProfileTabs = ({ currentItem, planPermissions }: HostProps) => {
+export const SenderProfileTabs = ({ currentItem, seeds }: HostProps) => {
   const [value, setValue] = useState('sender_engagement');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -27,11 +25,9 @@ export const SenderProfileTabs = ({ currentItem, planPermissions }: HostProps) =
             <Tab sx={{ fontSize: 16 }} label="Replying" value="sender_replying" />
           </TabList>
         </Box>
-        <TabPanel value="sender_engagement">
-          <EngagementTab maxVal={planPermissions.seeds} />
-        </TabPanel>
+        <TabPanel value="sender_engagement">{/* <EngagementTab maxVal={seeds} /> */}</TabPanel>
         <TabPanel value="sender_replying">
-          <ReplyingTab currentItem={currentItem} maxVal={planPermissions.seeds} />
+          {/* <ReplyingTab currentItem={currentItem} maxVal={seeds} /> */}
         </TabPanel>
       </TabContext>
     </Box>

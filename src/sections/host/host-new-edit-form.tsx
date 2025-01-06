@@ -16,16 +16,15 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { updateHostData } from 'src/services/db/hosts';
 import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
+export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const updatedHostItem = useDefaultEngagementSettings({ currentItem, planPermissions });
+  const updatedHostItem = useDefaultEngagementSettings({ currentItem });
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const timezones = moment.tz.names();
@@ -34,12 +33,12 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     host: Yup.string().required('Host name is required'),
     timezone: Yup.string().required('Timezone is required'),
     externalSenderAddresses: Yup.string(),
-    scrollMessage: Yup.number(),
-    markImportant: Yup.number(),
-    removeSpam: Yup.number(),
-    movePrimary: Yup.number(),
-    clickLink: Yup.number(),
-    replyMessage: Yup.number(),
+    scrollMessage: Yup.number().required('This field cannot be empty.'),
+    markImportant: Yup.number().required('This field cannot be empty.'),
+    removeSpam: Yup.number().required('This field cannot be empty.'),
+    movePrimary: Yup.number().required('This field cannot be empty.'),
+    clickLink: Yup.number().required('This field cannot be empty.'),
+    replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
     linksNotToClick: Yup.string().required('This field cannot be empty.'),
     filterId: Yup.string().required('Filter ID is required'),
@@ -47,31 +46,31 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   });
 
   const defaultValues = {
-    host: updatedHostItem?.host || '',
-    timezone: updatedHostItem?.userSettings?.timezone || '',
+    host: updatedHostItem?.host ?? '',
+    timezone: updatedHostItem?.userSettings?.timezone ?? '',
     notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
       ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
-      : updatedHostItem?.userSettings?.notificationAddressArray || '',
+      : (updatedHostItem?.userSettings?.notificationAddressArray ?? ''),
     externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
       ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
-      : updatedHostItem?.userSettings?.externalSenderAddresses || '',
-    smartLead: updatedHostItem?.smartlead || { /* apiKey: '', */ webhook: '' },
-    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage || 0,
-    markImportant: updatedHostItem?.engagementSettings?.markImportant || 0,
-    removeSpam: updatedHostItem?.engagementSettings?.removeSpam || 0,
-    movePrimary: updatedHostItem?.engagementSettings?.movePrimary || 0,
-    clickLink: updatedHostItem?.engagementSettings?.clickLink || 0,
-    replyMessage: updatedHostItem?.engagementSettings?.replyMessage || 0,
+      : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
+    smartLead: updatedHostItem?.smartlead ?? { /* apiKey: '', */ webhook: '' },
+    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
+    markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
+    removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
+    movePrimary: updatedHostItem?.engagementSettings?.movePrimary ?? 0,
+    clickLink: updatedHostItem?.engagementSettings?.clickLink ?? 0,
+    replyMessage: updatedHostItem?.engagementSettings?.replyMessage ?? 0,
     linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
-      : updatedHostItem?.engagementSettings?.linksToClick || '',
+      : (updatedHostItem?.engagementSettings?.linksToClick ?? ''),
     linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
       ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
-      : updatedHostItem?.engagementSettings?.linksNotToClick || '',
+      : (updatedHostItem?.engagementSettings?.linksNotToClick ?? ''),
     filterId: updatedHostItem?.engagementSettings?.filterId
       ? updatedHostItem.engagementSettings.filterId
-      : currentItem?.hostCrypt.split('_')[1] || '',
-    replyPrompt: updatedHostItem?.engagementSettings?.replyPrompt || '',
+      : (currentItem?.hostCrypt.split('_')[1] ?? ''),
+    replyPrompt: updatedHostItem?.engagementSettings?.replyPrompt ?? '',
   };
 
   const methods = useForm({
@@ -84,7 +83,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     formState: { isSubmitting },
   } = methods;
 
-  const onEdit = handleSubmit(async (data: any) => {
+  const onEdit = handleSubmit(async (data) => {
     try {
       // const res = await fetch(endpoints.host.edit, {
       //   method: 'POST',
@@ -102,7 +101,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
       if (!currentItem?.id) {
         throw new Error('Host ID not found');
       }
-      const updatedData = await updateHostData(currentItem?.id, data);
+      // const updatedData = await updateHostData(currentItem?.id, data);
 
       closeSnackbar();
       enqueueSnackbar('Update success!');
@@ -178,7 +177,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
+              <SenderProfileTabs currentItem={updatedHostItem} seeds={seeds} />
             </Stack>
           </Card>
         </Grid>

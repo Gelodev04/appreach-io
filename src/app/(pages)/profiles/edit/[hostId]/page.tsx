@@ -9,7 +9,8 @@ export const metadata = {
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
   const { hostId } = params;
   const host = await getHostById(hostId);
-  const { planPermissions } = await getUserSettings({ planPermissions: true });
+  const data = await getUserSettings({ planPermissionsAssigned: true });
+  console.log({ data });
 
-  return <HostContainer currentItem={host} planPermissions={planPermissions} />;
+  return <HostContainer currentItem={host} />;
 }

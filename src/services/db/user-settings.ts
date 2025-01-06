@@ -25,7 +25,7 @@ export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) 
     return userSettings;
   } catch (error) {
     console.error('Error on getting user settings:', error); // Log the actual error
-    throw new Error('Error on getting user settings.'); // Throw a user-friendly error
+    throw new Error('Error on getting user settings.', error); // Throw a user-friendly error
   }
 };
 

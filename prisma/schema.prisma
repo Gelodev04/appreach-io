@@ -392,12 +392,9 @@ type WebMailSummary {
 }
 
 type UserSettingsPlanPermissions {
-  seeds              Int
-  senderProfiles     Int
-  senderAddresses    Int
-  verifyCredits      Int
-  engagementMax      Int
-  engagementFeatures EngagementFeatures
+  seeds           Int @default(0)
+  senderProfiles  Int @default(0)
+  senderAddresses Int @default(0)
 }
 
 type EngagementFeatures {
@@ -505,24 +502,25 @@ model senderDomains {
 }
 
 model userSettings {
-  id                String                         @id @default(auto()) @map("_id") @db.ObjectId
-  appLogin          UserSettingsAppLogin
-  approval          UserSettingsApproval
+  id                      String                         @id @default(auto()) @map("_id") @db.ObjectId
+  appLogin                UserSettingsAppLogin
+  approval                UserSettingsApproval
   /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
-  created           Json?
-  embedUrl          String?
-  hosts             String[]
+  created                 Json?
+  embedUrl                String?
+  hosts                   String[]
   /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
-  lastUpdated       Json?
-  lookerStudio      UserSettingsLookerStudio?
-  plan              UserSettingsPlan?
-  resetPassword     UserSettingsResetPassword
-  seeds             UserSettingsSeeds?
-  senders           UserSettingsSenders?
-  stripe            UserSettingsStripe?
-  trackingMarketing UserSettingsTrackingMarketing?
-  verification      UserSettingsVerification
-  planPermissions   UserSettingsPlanPermissions
+  lastUpdated             Json?
+  lookerStudio            UserSettingsLookerStudio?
+  plan                    UserSettingsPlan?
+  resetPassword           UserSettingsResetPassword
+  seeds                   UserSettingsSeeds?
+  senders                 UserSettingsSenders?
+  stripe                  UserSettingsStripe?
+  trackingMarketing       UserSettingsTrackingMarketing?
+  verification            UserSettingsVerification
+  planPermissionsAssigned UserSettingsPlanPermissions?
+  planPermissionsUsed     UserSettingsPlanPermissions?
 }
 
 model webMail {
