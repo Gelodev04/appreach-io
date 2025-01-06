@@ -27,14 +27,9 @@ export const getHostById = async (id: string, selectFields?: Prisma.userSettings
   }
 };
 
-
-
-export const updateHostData = async (id: string, data: hosts) => {
+export const updateHostData = async (id: string, data: any) => {
   try {
-    console.log({ data });
-
     const normalizedData = {
-      ...data,
       engagementSettings: {
         scrollMessage: data.scrollMessage,
         markImportant: data.markImportant,
@@ -44,14 +39,19 @@ export const updateHostData = async (id: string, data: hosts) => {
         replyMessage: data.replyMessage,
         filterId: data.filterId,
         replyPrompt: data.replyPrompt,
-        linksToClick: data.linksToClick ? data.linksToClick.split(',').map((link) => link.trim()) : [''],
-        linksNotToClick: data.linksNotToClick ? data.linksNotToClick.split(',').map((link) => link.trim()) : [''],
-      }
+        linksToClick: data.linksToClick
+          ? data.linksToClick.split(',').map((link: string) => link.trim())
+          : [''],
+        linksNotToClick: data.linksNotToClick
+          ? data.linksNotToClick.split(',').map((link: string) => link.trim())
+          : [''],
+      },
       userSettings: {
-        ...data.userSettings,
         timezone: data.timezone,
-        externalSenderAddresses: data.externalSenderAddresses ? data.externalSenderAddresses.split('\n').map((link) => link.trim()) : [''],
-      }
+        externalSenderAddresses: data.externalSenderAddresses
+          ? data.externalSenderAddresses.split('\n').map((link: string) => link.trim())
+          : [''],
+      },
     };
 
     const updatedHostData = await prisma.hosts.update({
