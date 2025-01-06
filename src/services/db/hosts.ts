@@ -2,6 +2,8 @@
 
 import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { revalidatePath } from 'next/cache';
+import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
@@ -98,5 +100,37 @@ export const getUserHosts = async () => {
     return userHosts;
   } catch (error) {
     throw new Error("Couldn't fetch user's hosts.");
+  }
+};
+
+export const deleteUserHost = async (ids: string[]) => {
+  try {
+    const { hosts, id, planPermissionsUsed } = await getUserSettings({
+      id: true,
+      hosts: true,
+      planPermissionsUsed: true,
+    });
+    const updatedHosts = hosts.filter((host) => !ids.includes(host));
+    const newSenderProfilesUsed = planPermissionsUsed.senderProfiles - ids.length;
+    await prisma.userSettings.update({
+      where: {
+        id,
+      },
+      data: {
+        hosts: updatedHosts,
+        planPermissionsUsed: {
+          senderProfiles: newSenderProfilesUsed,
+        },
+      },
+      select: {
+        appLogin: false,
+        hosts: true,
+      },
+    });
+
+    revalidatePath(paths.profiles.root);
+  } catch (error) {
+    console.error('Error deleting host:', error);
+    throw new Error('Error deleting host.');
   }
 };

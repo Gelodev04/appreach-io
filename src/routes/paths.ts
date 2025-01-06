@@ -79,4 +79,8 @@ export const paths = {
     email: '/senders/email',
     domain: '/senders/domain',
   },
+
+  profiles: {
+    root: '/profiles',
+  },
 };
