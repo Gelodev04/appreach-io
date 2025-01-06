@@ -39,6 +39,21 @@ export interface HostProps {
   };
 }
 
+export type UpdateHostData = {
+  scrollMessage: number;
+  markImportant: number;
+  removeSpam: number;
+  movePrimary: number;
+  clickLink: number;
+  replyMessage: number;
+  filterId: string;
+  replyPrompt: string;
+  linksToClick?: string;
+  linksNotToClick: string;
+  timezone: string;
+  externalSenderAddresses?: string;
+};
+
 export interface IHost {
   _id: ObjectId;
   host: string;

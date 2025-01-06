@@ -16,6 +16,7 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { updateHostData } from 'src/services/db/hosts';
 import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
@@ -48,13 +49,9 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
-    notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
-      ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
-      : (updatedHostItem?.userSettings?.notificationAddressArray ?? ''),
     externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
       ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
       : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
-    smartLead: updatedHostItem?.smartlead ?? { /* apiKey: '', */ webhook: '' },
     scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
     markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
     removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
@@ -85,27 +82,14 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
 
   const onEdit = handleSubmit(async (data) => {
     try {
-      // const res = await fetch(endpoints.host.edit, {
-      //   method: 'POST',
-      //   body: JSON.stringify({
-      //     ...data,
-      //     _id: currentItem?.id,
-      //   }),
-      // });
-
-      // if (!res.ok) {
-      //   const body = await res.json();
-      //   throw new Error(body.error ?? 'Failed to update host');
-      // }
-
       if (!currentItem?.id) {
         throw new Error('Host ID not found');
       }
-      // const updatedData = await updateHostData(currentItem?.id, data);
+      const updatedData = await updateHostData(currentItem?.id, data);
 
       closeSnackbar();
       enqueueSnackbar('Update success!');
-      // router.push(paths.settings.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
