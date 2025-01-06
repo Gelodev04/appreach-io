@@ -515,11 +515,9 @@ model userSettings {
   id                      String                             @id @default(auto()) @map("_id") @db.ObjectId
   appLogin                UserSettingsAppLogin
   approval                UserSettingsApproval
-  /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
   created                 Json?
   embedUrl                String?
-  hosts                   String[]
-  /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
+  hosts                   String[]                           @db.ObjectId
   lastUpdated             Json?
   lookerStudio            UserSettingsLookerStudio?
   plan                    UserSettingsPlan?
