@@ -146,3 +146,24 @@ export const getProfilePlanPermissions = async () => {
     throw new Error('Unable to get sender profile plan permissions');
   }
 };
+
+export const getAddressesPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfAddressesUsed = planPermissionsUsed.senderAddresses;
+    const numOfAddressesAssigned = planPermissionsAssigned.senderAddresses;
+    const isAllAddressesUsed = numOfAddressesUsed >= numOfAddressesAssigned;
+    return {
+      numOfAddressesUsed,
+      numOfAddressesAssigned,
+      isAllAddressesUsed,
+    };
+  } catch (error) {
+    throw new Error('Unable to get sender addresses plan permissions');
+  }
+};
