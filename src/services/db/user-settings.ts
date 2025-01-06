@@ -125,3 +125,24 @@ export const getUserSettingsById = async (id: string, selectFields?: Prisma.user
     throw new Error('Error on getting user settings by Id'); // Throw a user-friendly error
   }
 };
+
+export const getProfilePlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfProfileUsed = planPermissionsUsed.senderProfiles;
+    const numOfProfileAssigned = planPermissionsAssigned.senderProfiles;
+    const isAllProfileUsed = numOfProfileUsed >= numOfProfileAssigned;
+    return {
+      numOfProfileAssigned,
+      numOfProfileUsed,
+      isAllProfileUsed,
+    };
+  } catch (error) {
+    throw new Error('Unable to get sender profile plan permissions');
+  }
+};

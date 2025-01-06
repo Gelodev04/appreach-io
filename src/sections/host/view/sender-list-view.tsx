@@ -24,7 +24,6 @@ import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetHosts } from 'src/hooks/api/host';
-import { useGetSenders } from 'src/hooks/api/senders';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
@@ -41,14 +40,22 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-export default function HostListView() {
+type THostListView = {
+  numOfProfileAssigned: number;
+  numOfProfileUsed: number;
+  isAllProfileUsed: boolean;
+};
+
+export default function HostListView({
+  numOfProfileAssigned,
+  numOfProfileUsed,
+  isAllProfileUsed,
+}: THostListView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
   const settings = useSettingsContext();
   const { hosts, hostsLoading } = useGetHosts();
-  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
-    useGetSenders();
   const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
@@ -175,7 +182,7 @@ export default function HostListView() {
       .map((column) => column.field);
 
   const handleClickAddNewSenderProfile = () => {
-    if (isAllSenderProfilesUsed) {
+    if (isAllProfileUsed) {
       enqueueSnackbar({
         message: <PopupWarningForAllUsedProfiles />,
         variant: 'warning',
@@ -206,7 +213,7 @@ export default function HostListView() {
           links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostAddExistingHost isAllSenderProfilesUsed={isAllSenderProfilesUsed} />
+              <HostAddExistingHost isAllSenderProfilesUsed={isAllProfileUsed} />
 
               <Button
                 onClick={handleClickAddNewSenderProfile}
@@ -220,10 +227,8 @@ export default function HostListView() {
           }
         />
         <SenderProfileUsed
-          senders={senders}
-          sendersError={sendersError}
-          sendersLoading={sendersLoading}
-          sendersValidating={sendersValidating}
+          numOfProfileAssigned={numOfProfileAssigned}
+          numOfProfileUsed={numOfProfileUsed}
         />
         <Card
           sx={{

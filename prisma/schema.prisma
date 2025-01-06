@@ -519,8 +519,8 @@ model userSettings {
   stripe                  UserSettingsStripe?
   trackingMarketing       UserSettingsTrackingMarketing?
   verification            UserSettingsVerification
-  planPermissionsAssigned UserSettingsPlanPermissions?
-  planPermissionsUsed     UserSettingsPlanPermissions?
+  planPermissionsAssigned UserSettingsPlanPermissions
+  planPermissionsUsed     UserSettingsPlanPermissions
 }
 
 model webMail {
