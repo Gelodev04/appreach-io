@@ -397,6 +397,16 @@ type UserSettingsPlanPermissions {
   senderAddresses Int @default(0)
 }
 
+type UserSettingsPlanPermissionFeatures {
+  engagementMax Int
+  scrollMessage Boolean
+  markImportant Boolean
+  removeSpam    Boolean
+  movePrimary   Boolean
+  clickLink     Boolean
+  replyMessage  Boolean
+}
+
 type EngagementFeatures {
   scrollMessage Boolean
   markImportant Boolean
@@ -502,7 +512,7 @@ model senderDomains {
 }
 
 model userSettings {
-  id                      String                         @id @default(auto()) @map("_id") @db.ObjectId
+  id                      String                             @id @default(auto()) @map("_id") @db.ObjectId
   appLogin                UserSettingsAppLogin
   approval                UserSettingsApproval
   /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
@@ -521,6 +531,7 @@ model userSettings {
   verification            UserSettingsVerification
   planPermissionsAssigned UserSettingsPlanPermissions
   planPermissionsUsed     UserSettingsPlanPermissions
+  planPermissionFeatures  UserSettingsPlanPermissionFeatures
 }
 
 model webMail {

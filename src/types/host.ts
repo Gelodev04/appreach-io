@@ -1,4 +1,4 @@
-import { hosts } from '@prisma/client';
+import { hosts, UserSettingsPlanPermissionFeatures } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 
 interface ILookerStudio {
@@ -33,8 +33,28 @@ interface IInboxEngagement {
 
 export interface HostProps {
   currentItem?: hosts;
-  seeds?: number;
+  planPermissions: {
+    seeds: number;
+    planPermissionFeatures: UserSettingsPlanPermissionFeatures;
+  };
+  hosts?: string[];
 }
+
+export type UpdateHostData = {
+  host: string;
+  scrollMessage: number;
+  markImportant: number;
+  removeSpam: number;
+  movePrimary: number;
+  clickLink: number;
+  replyMessage: number;
+  filterId: string;
+  replyPrompt: string;
+  linksToClick?: string;
+  linksNotToClick: string;
+  timezone: string;
+  externalSenderAddresses?: string;
+};
 
 export interface IHost {
   _id: ObjectId;

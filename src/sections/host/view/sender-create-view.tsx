@@ -4,9 +4,10 @@ import Container from '@mui/material/Container';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
+import { HostProps } from 'src/types/host';
 import HostsNewEditForm from '../host-new-edit-form';
 
-export default function HostCreateView({ seeds }: { seeds: number }) {
+export default function HostCreateView({ planPermissions, hosts }: HostProps) {
   const settings = useSettingsContext();
 
   return (
@@ -25,7 +26,7 @@ export default function HostCreateView({ seeds }: { seeds: number }) {
         }}
       />
 
-      <HostsNewEditForm seeds={seeds} />
+      <HostsNewEditForm planPermissions={planPermissions} hosts={hosts} />
     </Container>
   );
 }

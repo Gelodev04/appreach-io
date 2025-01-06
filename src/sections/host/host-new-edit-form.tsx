@@ -13,18 +13,20 @@ import { useForm } from 'react-hook-form';
 import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
+import { defaultEngagementSettings } from 'src/constants';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { createHost, updateHostData } from 'src/services/db/hosts';
 import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
+export default function HostNewEditForm({ currentItem, planPermissions, hosts }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const updatedHostItem = useDefaultEngagementSettings({ currentItem });
+  const updatedHostItem = useDefaultEngagementSettings(currentItem);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const timezones = moment.tz.names();
@@ -48,13 +50,9 @@ export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
-    notificationAddresses: Array.isArray(updatedHostItem?.userSettings?.notificationAddressArray)
-      ? updatedHostItem.userSettings?.notificationAddressArray.join('\n')
-      : (updatedHostItem?.userSettings?.notificationAddressArray ?? ''),
     externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
       ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
       : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
-    smartLead: updatedHostItem?.smartlead ?? { /* apiKey: '', */ webhook: '' },
     scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
     markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
     removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
@@ -63,14 +61,16 @@ export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
     replyMessage: updatedHostItem?.engagementSettings?.replyMessage ?? 0,
     linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
-      : (updatedHostItem?.engagementSettings?.linksToClick ?? ''),
+      : defaultEngagementSettings.engagementSettings.linksToClick.join(', '),
     linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
       ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
-      : (updatedHostItem?.engagementSettings?.linksNotToClick ?? ''),
+      : defaultEngagementSettings.engagementSettings.linksNotToClick.join(', '),
     filterId: updatedHostItem?.engagementSettings?.filterId
       ? updatedHostItem.engagementSettings.filterId
       : (currentItem?.hostCrypt.split('_')[1] ?? ''),
-    replyPrompt: updatedHostItem?.engagementSettings?.replyPrompt ?? '',
+    replyPrompt:
+      updatedHostItem?.engagementSettings?.replyPrompt ??
+      defaultEngagementSettings.engagementSettings.replyPrompt,
   };
 
   const methods = useForm({
@@ -85,47 +85,25 @@ export default function HostNewEditForm({ currentItem, seeds }: HostProps) {
 
   const onEdit = handleSubmit(async (data) => {
     try {
-      // const res = await fetch(endpoints.host.edit, {
-      //   method: 'POST',
-      //   body: JSON.stringify({
-      //     ...data,
-      //     _id: currentItem?.id,
-      //   }),
-      // });
-
-      // if (!res.ok) {
-      //   const body = await res.json();
-      //   throw new Error(body.error ?? 'Failed to update host');
-      // }
-
       if (!currentItem?.id) {
         throw new Error('Host ID not found');
       }
-      // const updatedData = await updateHostData(currentItem?.id, data);
+      const updatedData = await updateHostData(currentItem?.id, data);
 
       closeSnackbar();
       enqueueSnackbar('Update success!');
-      // router.push(paths.settings.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
   });
 
   const onCreate = handleSubmit(async (data) => {
-    console.log({ data });
     try {
-      // const res = await fetch(endpoints.host.create, {
-      //   method: 'POST',
-      //   body: JSON.stringify(data),
-      // });
-
-      // if (!res.ok) {
-      //   const body = await res.json();
-      //   throw new Error(body.error ?? 'Failed to create host');
-      // }
+      await createHost(data, hosts);
       closeSnackbar();
       enqueueSnackbar('Create success!');
-      router.push(paths.settings.root);
+      // router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }
@@ -177,7 +155,7 @@ abdulrehman@outreachmagic.io ⏎`;
                 placeholder={externalSenderAddressesPlaceholder}
               />
 
-              <SenderProfileTabs currentItem={updatedHostItem} seeds={seeds} />
+              <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
             </Stack>
           </Card>
         </Grid>

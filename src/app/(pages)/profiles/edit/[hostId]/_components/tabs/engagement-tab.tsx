@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { RHFTextField } from 'src/components/hook-form';
+import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
 const sliderItems = [
@@ -45,7 +46,7 @@ const sliderItems = [
   },
 ];
 
-export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
+export const EngagementTab = ({ planPermissions }: HostProps) => {
   return (
     <Stack spacing={2}>
       <Typography variant="h5" sx={{ textAlign: 'center' }}>
@@ -53,7 +54,7 @@ export const EngagementTab = ({ maxVal }: { maxVal: number }) => {
       </Typography>
       <Stack spacing={5}>
         {sliderItems.map((item) => {
-          return <SliderItem key={item.sliderTitle} maxVal={maxVal} {...item} />;
+          return <SliderItem key={item.sliderTitle} maxVal={planPermissions.seeds} {...item} />;
         })}
       </Stack>
       <Box

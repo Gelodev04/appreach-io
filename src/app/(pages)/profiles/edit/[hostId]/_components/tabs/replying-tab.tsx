@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { hosts } from '@prisma/client';
 import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
+import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number }) => {
+export const ReplyingTab = ({ planPermissions }: HostProps) => {
   const enabled = true;
 
   return (
@@ -49,7 +49,7 @@ export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number })
         </Box>
 
         <SliderItem
-          maxVal={maxVal}
+          maxVal={planPermissions.seeds}
           disabled={!enabled}
           sliderTitle="Reply using AI"
           sliderName="replyMessage"
@@ -80,7 +80,6 @@ export const ReplyingTab = ({ maxVal }: { currentItem?: hosts; maxVal: number })
           multiline
           minRows={1}
           label="AI Prompt"
-          defaultValue="Write a professional, friendly, and engaging reply to a cold email. The response should express interest in the sender's proposal or service, show appreciation for their outreach, and ask a thoughtful follow-up question to keep the conversation going. Use a tone that is warm and approachable but professional. Ensure the reply sounds personalized and tailored to the email content, referencing specific details provided by the sender. Here’s the original cold email: [email content goes here]"
           tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand voice and objectives. Use {email_content} to insert the email content."
           tooltipID="ai-prompt-popover"
         />
