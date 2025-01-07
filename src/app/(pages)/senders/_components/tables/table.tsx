@@ -61,7 +61,6 @@ const Table = ({
         columns={columns}
         checkboxSelection
         disableRowSelectionOnClick
-        rowSelection={false}
         getRowHeight={() => 'auto'}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
@@ -70,6 +69,7 @@ const Table = ({
           },
         }}
         onRowSelectionModelChange={(newSelectionModel) => {
+          console.log({ newSelectionModel });
           setSelectedRowIds(newSelectionModel);
         }}
         sx={{
