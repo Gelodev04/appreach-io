@@ -74,9 +74,6 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
       },
       userSettings: {
         timezone: data.timezone,
-        externalSenderAddresses: data.externalSenderAddresses
-          ? data.externalSenderAddresses.split('\n').map((link) => link.trim())
-          : [''],
       },
     };
 
