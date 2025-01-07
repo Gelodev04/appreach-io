@@ -1,6 +1,6 @@
+import { HostEditView } from 'src/sections/host/view';
 import { getHostById } from 'src/services/db/hosts';
 import { getUserSettings } from 'src/services/db/user-settings';
-import { HostContainer } from './_components/host-container';
 
 export const metadata = {
   title: 'Edit sender profile | Inbox Daddy',
@@ -15,7 +15,7 @@ export default async function HostsEditPage({ params }: { params: { hostId: stri
   });
 
   return (
-    <HostContainer
+    <HostEditView
       currentItem={host}
       planPermissions={{
         seeds: planPermissions.planPermissionsAssigned.seeds,

@@ -88,7 +88,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
       if (!currentItem?.id) {
         throw new Error('Host ID not found');
       }
-      const updatedData = await updateHostData(currentItem?.id, data);
+      await updateHostData(currentItem?.id, data);
 
       closeSnackbar();
       enqueueSnackbar('Update success!');

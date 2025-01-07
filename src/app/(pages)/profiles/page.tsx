@@ -1,4 +1,4 @@
-import HostListView from 'src/sections/host/view/sender-list-view';
+import { HostListView } from 'src/sections/host/view';
 
 export const metadata = {
   title: 'Sender Profiles | Inbox Daddy',

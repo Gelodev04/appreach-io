@@ -41,7 +41,7 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-export default function HostListView() {
+export const HostListView = () => {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
@@ -316,7 +316,7 @@ export default function HostListView() {
       />
     </>
   );
-}
+};
 
 // ----------------------------------------------------------------------
 
