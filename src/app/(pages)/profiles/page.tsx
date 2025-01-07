@@ -6,6 +6,8 @@ export const metadata = {
   title: 'Sender Profiles | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const profilePlanPermission = await getProfilePlanPermissions();
   const userHosts = await getUserHosts();
