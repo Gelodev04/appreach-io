@@ -188,10 +188,10 @@ export const incrementSenderAddressesUsed = async () => {
   }
 };
 
-export const decrementSenderAddressesUsed = async () => {
+export const decrementSenderAddressesUsed = async (value: number = 1) => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
-    const numOfAddressesUsed = planPermissionsUsed.senderAddresses - 1;
+    const numOfAddressesUsed = planPermissionsUsed.senderAddresses - value;
     await updateUserSettings(
       {
         planPermissionsUsed: {

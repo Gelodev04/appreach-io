@@ -17,6 +17,7 @@ import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 import { useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 
+import { decrementSenderAddressesUsed } from 'src/services/db/user-settings';
 import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';
 
 const Table = ({
@@ -88,6 +89,7 @@ const Table = ({
       if (!tableIndex) return undefined;
       const deletedRows = await deleteSenderAddressById(selectedRowIds as string[], tableIndex);
       if (deletedRows) {
+        await decrementSenderAddressesUsed(selectedRowIds.length);
         enqueueSnackbar('Successfully Deleted', { variant: 'success' });
       }
     });
