@@ -3,6 +3,8 @@ import { Container, Typography } from '@mui/material';
 import AddSenderEmailPage from './_components/senders-email';
 import Header from './_components/header';
 
+export const dynamic = 'force-dynamic';
+
 const EmailPage = async () => {
   const addressesPlanPermissions = await getAddressesPlanPermissions();
 
