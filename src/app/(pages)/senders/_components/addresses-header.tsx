@@ -3,7 +3,7 @@ import React from 'react';
 import AddDomainNameButton from './add-domain-name-btn';
 import AddEmailAddressBtn from './add-email-address-btn';
 
-const AddressesHeader = () => {
+const AddressesHeader = ({ isAllAddressedUsed }: { isAllAddressedUsed: boolean }) => {
   return (
     <Grid
       container
@@ -31,8 +31,8 @@ const AddressesHeader = () => {
       </Grid>
       <Grid item>
         <Stack direction={{ xs: 'column', md: 'row' }} gap={2} alignItems="center">
-          <AddEmailAddressBtn />
-          <AddDomainNameButton />
+          <AddEmailAddressBtn isAllAddressedUsed={isAllAddressedUsed} />
+          <AddDomainNameButton isAllAddressedUsed={isAllAddressedUsed} />
         </Stack>
       </Grid>
     </Grid>

@@ -14,12 +14,14 @@ export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 const SendersAddressesPage = async () => {
   const senderProfiles = await getSenderProfiles();
   const addressesPlanPermissions = await getAddressesPlanPermissions();
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      <AddressesHeader />
+      <AddressesHeader isAllAddressedUsed={addressesPlanPermissions.isAllAddressesUsed} />
       <SenderUsed {...addressesPlanPermissions} />
       <SendersTabs
         activeSenderEmails={

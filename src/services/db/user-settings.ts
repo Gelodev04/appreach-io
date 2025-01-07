@@ -1,6 +1,7 @@
 'use server';
 
 import { Prisma } from '@prisma/client';
+import { tr } from 'date-fns/locale';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 
@@ -165,5 +166,37 @@ export const getAddressesPlanPermissions = async () => {
     };
   } catch (error) {
     throw new Error('Unable to get sender addresses plan permissions');
+  }
+};
+
+export const incrementSenderAddressesUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfAddressesUsed = planPermissionsUsed.senderAddresses + 1;
+    await updateUserSettings(
+      {
+        planPermissionsUsed: {
+          update: {
+            senderAddresses: numOfAddressesUsed,
+          },
+        },
+      },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment sender addresses used');
+  }
+};
+
+export const incrementSenderProfilesUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfProfileUsed = planPermissionsUsed.senderProfiles + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { senderProfiles: numOfProfileUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment sender profiles used');
   }
 };

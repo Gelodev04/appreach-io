@@ -62,6 +62,23 @@ export const getSenderByEmail = async (email: string) => {
   }
 };
 
+export const getSenderAddressByHostId = async (hostId: string) => {
+  try {
+    const senderHostId = await prisma.senderAddresses.findUnique({
+      where: {
+        hostId,
+      },
+      select: {
+        hostId: true,
+      },
+    });
+    return senderHostId;
+  } catch (error) {
+    console.log('Unable to get sender by hostId.', error);
+    return null;
+  }
+};
+
 export const deleteSenderAddressById = async (
   ids: string[],
   tableIndex: string

@@ -12,7 +12,5 @@ export default async function Page() {
   const profilePlanPermission = await getProfilePlanPermissions();
   const userHosts = await getUserHosts();
 
-  console.log({ profilePlanPermission, userHosts });
-
   return <HostListView {...profilePlanPermission} userHosts={userHosts} />;
 }
