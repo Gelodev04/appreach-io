@@ -69,7 +69,6 @@ const Table = ({
           },
         }}
         onRowSelectionModelChange={(newSelectionModel) => {
-          console.log({ newSelectionModel });
           setSelectedRowIds(newSelectionModel);
         }}
         sx={{
