@@ -188,6 +188,25 @@ export const incrementSenderAddressesUsed = async () => {
   }
 };
 
+export const decrementSenderAddressesUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfAddressesUsed = planPermissionsUsed.senderAddresses - 1;
+    await updateUserSettings(
+      {
+        planPermissionsUsed: {
+          update: {
+            senderAddresses: numOfAddressesUsed,
+          },
+        },
+      },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment sender addresses used');
+  }
+};
+
 export const incrementSenderProfilesUsed = async () => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
