@@ -22,7 +22,7 @@ import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, planPermissions, hosts }: HostProps) {
+export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
@@ -100,7 +100,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, hosts }:
 
   const onCreate = handleSubmit(async (data) => {
     try {
-      await createHost(data, hosts);
+      await createHost(data);
       closeSnackbar();
       enqueueSnackbar('Create success!');
       // router.push(paths.settings.root);

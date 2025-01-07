@@ -9,7 +9,6 @@ export default async function HostsCreatePage() {
   const planPermissions = await getUserSettings({
     planPermissionsAssigned: true,
     planPermissionFeatures: true,
-    hosts: true,
   });
 
   return (
@@ -18,7 +17,6 @@ export default async function HostsCreatePage() {
         seeds: planPermissions.planPermissionsAssigned.seeds,
         planPermissionFeatures: planPermissions.planPermissionFeatures,
       }}
-      hosts={planPermissions.hosts}
     />
   );
 }
