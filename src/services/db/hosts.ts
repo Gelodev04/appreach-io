@@ -5,10 +5,9 @@ import prisma from 'src/auth/lib/prisma/db-prisma';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
 import { UpdateHostData } from 'src/types/host';
-import { updateUserSettings } from './user-settings';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
-import { getUserSettings } from './user-settings';
+import { updateUserSettings, getUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
   try {

@@ -109,11 +109,13 @@ export async function POST(request: Request) {
         seeds: 50,
         senderProfiles: 1,
         senderAddresses: 1,
+        verifyCredits: 0,
       };
       signupParams.planPermissionsUsed = {
         seeds: 0,
         senderProfiles: 0,
         senderAddresses: 0,
+        verifyCredits: 0,
       };
 
       signupParams.planPermissionFeatures = {

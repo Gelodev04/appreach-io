@@ -350,7 +350,7 @@ type UserSettingsPlanPermissions {
   seeds           Int @default(0)
   senderProfiles  Int @default(0)
   senderAddresses Int @default(0)
-  verifyCredits   Int
+  verifyCredits   Int @default(0)
 }
 
 type UserSettingsPlanPermissionFeatures {
