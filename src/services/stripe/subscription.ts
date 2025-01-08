@@ -40,16 +40,6 @@ export const updateSubcription = async (subscriptionId: string, newPriceId: stri
       ],
       proration_behavior: 'always_invoice', // Options: 'create_prorations', 'none', 'always_invoice'
     });
-    /* if (updatedSubscription) {
-      const id = updatedSubscription?.latest_invoice as string;
-      const invoice = await stripe.invoices.retrieve(id);
-      if (invoice) {
-        const proratedAmount = invoice.amount_due; // This will give you the prorated amount
-        console.log('Prorated Amount:', proratedAmount);
-      } else {
-        console.log('No invoice found for the updated subscription');
-      }
-    } */
     revalidatePath(paths.checkout.root);
   } catch (error) {
     console.error('Error updating subscription:', error);
@@ -62,12 +52,6 @@ export const cancelSubscription = async (subscriptionId: string) => {
     if (!subscriptionId) {
       throw new Error('No subscription id found.');
     }
-    /* const canceledSubscription =
-      process.env.NODE_ENV === 'development'
-        ? await stripe.subscriptions.update(subscriptionId, {
-            cancel_at: Math.floor(Date.now() / 1000) + 120,
-          })
-        : await stripe.subscriptions.cancel(subscriptionId); */
 
     const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
 

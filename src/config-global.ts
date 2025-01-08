@@ -1,7 +1,7 @@
 import { paths } from 'src/routes/paths';
 import { env as envClient } from './data/env/client';
 import { env as envServer } from './data/env/server';
-// API
+
 // --------------------------------------------------------------------
 
 export const { NEXT_PUBLIC_HOST_API: HOST_API, NEXT_PUBLIC_ASSETS_API: ASSETS_API } = envClient;
@@ -28,6 +28,21 @@ export const STRIPE = {
       priceId: 'price_1QXb6yIPvbQKS9UKVczFWI34',
       price: 0,
       order: 1,
+      permission: {
+        seeds: 50,
+        senderProfiles: 1,
+        senderAddresses: 1,
+        verifyCredits: 100,
+        engagementMax: 50,
+        engagementFeatures: {
+          scrollMessage: true,
+          markImportant: true,
+          removeSpam: true,
+          movePrimary: true,
+          clickLink: true,
+          replyMessage: false,
+        },
+      },
     },
     starter: {
       key: 'starter',
@@ -36,6 +51,21 @@ export const STRIPE = {
       priceId: 'price_1Q0OMZIPvbQKS9UKZ3h12FoK',
       price: 150,
       order: 1,
+      permission: {
+        seeds: 100,
+        senderProfiles: 1,
+        senderAddresses: 1,
+        verifyCredits: 500,
+        engagementMax: 100,
+        engagementFeatures: {
+          scrollMessage: true,
+          markImportant: true,
+          removeSpam: true,
+          movePrimary: true,
+          clickLink: true,
+          replyMessage: false,
+        },
+      },
     },
     established: {
       key: 'established',
@@ -44,6 +74,21 @@ export const STRIPE = {
       priceId: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
       price: 650,
       order: 2,
+      permission: {
+        seeds: 500,
+        senderProfiles: 1,
+        senderAddresses: 1,
+        verifyCredits: 1000,
+        engagementMax: 100,
+        engagementFeatures: {
+          scrollMessage: true,
+          markImportant: true,
+          removeSpam: true,
+          movePrimary: true,
+          clickLink: true,
+          replyMessage: true,
+        },
+      },
     },
   },
 };

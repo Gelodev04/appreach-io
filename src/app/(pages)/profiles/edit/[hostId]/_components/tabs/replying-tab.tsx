@@ -1,13 +1,11 @@
-'use client';
-
 import { Box, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { RHFTextField } from 'src/components/hook-form';
+import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = () => {
-  const enabled = true;
-
+export const ReplyingTab = ({ planPermissions }: HostProps) => {
+  const enabled = planPermissions.planPermissionFeatures.replyMessage;
   return (
     <Stack spacing={7}>
       <Box
@@ -42,19 +40,21 @@ export const ReplyingTab = () => {
         >
           <RHFTextField
             disabled={!enabled}
-            name="filter_id_key"
+            name="filterId"
             label="Filter ID Key"
-            defaultValue="Kajda3"
             tooltipContent="Assign a unique identifier to filter out AI-generated replies."
             tooltipID="filter-id-popover"
           />
         </Box>
 
         <SliderItem
+          maxVal={planPermissions.seeds}
           disabled={!enabled}
           sliderTitle="Reply using AI"
+          sliderName="replyMessage"
+          engagementMax={planPermissions.planPermissionFeatures.engagementMax}
           icon="mdi:robot"
-          description="We will reply to {value} out of 1,000 to primary"
+          description="We will reply to {value} out of {max_value} to primary"
           tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
         />
       </Box>
@@ -70,17 +70,16 @@ export const ReplyingTab = () => {
       >
         <Typography
           variant="subtitle1"
-          sx={{ textAlign: 'center', color: enabled ? 'black' : '#94A0AE' }}
+          sx={{ textAlign: 'center', color: !enabled ? '#94A0AE' : 'black' }}
         >
           Customize your AI Prompt
         </Typography>
         <RHFTextField
-          name="ai_prompt"
+          name="replyPrompt"
           disabled={!enabled}
           multiline
           minRows={1}
           label="AI Prompt"
-          defaultValue="Write a professional, friendly, and engaging reply to a cold email. The response should express interest in the sender's proposal or service, show appreciation for their outreach, and ask a thoughtful follow-up question to keep the conversation going. Use a tone that is warm and approachable but professional. Ensure the reply sounds personalized and tailored to the email content, referencing specific details provided by the sender. Here’s the original cold email: [email content goes here]"
           tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand voice and objectives. Use {email_content} to insert the email content."
           tooltipID="ai-prompt-popover"
         />
