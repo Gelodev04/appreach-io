@@ -132,7 +132,7 @@ export const createHost = async (data: UpdateHostData) => {
         });
         const newHostId = createdHost.id;
 
-        //TODO: Update the senders useCount when added a new host
+        // TODO: Update the senders useCount when added a new host
 
         // Add the newHostId to the hosts array under the userSettings collection
         await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
