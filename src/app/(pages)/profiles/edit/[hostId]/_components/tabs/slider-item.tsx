@@ -39,7 +39,7 @@ export const SliderItem = ({
         Max engagement value of {engagementMax}% on your current plan.{' '}
       </Typography>
       <Typography variant="body1" sx={{ color: 'primary' }}>
-        Upgrade your <Link href={'/subscription'}>subscription</Link>
+        Upgrade your <Link href="/subscription">subscription</Link>
       </Typography>
     </Box>
   );
@@ -113,7 +113,7 @@ export const SliderItem = ({
               justifyContent: 'center',
             }}
           >
-            <Icon color={'#003087'} icon={icon} width={35} />
+            <Icon color="#003087" icon={icon} width={35} />
             <Typography variant="body2" sx={{ textAlign: 'center', color: 'black' }}>
               {sliderTitle}
             </Typography>
@@ -238,7 +238,7 @@ export const SliderItem = ({
                 Setting not enabled
               </Typography>
               <Typography variant="body2" sx={{ textAlign: 'center' }}>
-                Update your <Link href={'/subscription'}>subscription</Link>
+                Update your <Link href="/subscription">subscription</Link>
               </Typography>
             </Paper>
           </Box>

@@ -1,10 +1,11 @@
 'use server';
+
 import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
 import { UpdateHostData } from 'src/types/host';
-import { getUserSettings, updateUserSettings } from './user-settings';
+import { updateUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
   try {
@@ -131,9 +132,9 @@ export const createHost = async (data: UpdateHostData) => {
         });
         const newHostId = createdHost.id;
 
-        // Update the senders useCount when added a new host
+        //TODO: Update the senders useCount when added a new host
+
         // Add the newHostId to the hosts array under the userSettings collection
-        const { senders } = await getUserSettings({ senders: true });
         await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
       });
       return result;
