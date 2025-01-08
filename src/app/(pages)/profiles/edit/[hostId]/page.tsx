@@ -19,6 +19,7 @@ export default async function HostsEditPage({ params }: { params: { hostId: stri
       currentItem={host}
       planPermissions={{
         seeds: planPermissions.planPermissionsAssigned.seeds,
+        engagementMax: planPermissions.planPermissionFeatures.engagementMax,
         planPermissionFeatures: planPermissions.planPermissionFeatures,
       }}
     />

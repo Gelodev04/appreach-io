@@ -103,7 +103,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
       await createHost(data);
       closeSnackbar();
       enqueueSnackbar('Create success!');
-      // router.push(paths.settings.root);
+      router.push(paths.settings.root);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error', persist: true });
     }

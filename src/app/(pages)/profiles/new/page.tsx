@@ -16,6 +16,7 @@ export default async function HostsCreatePage() {
       planPermissions={{
         seeds: planPermissions.planPermissionsAssigned.seeds,
         planPermissionFeatures: planPermissions.planPermissionFeatures,
+        engagementMax: planPermissions.planPermissionFeatures.engagementMax,
       }}
     />
   );

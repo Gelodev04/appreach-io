@@ -352,10 +352,11 @@ type UserSettingsPlanPermissions {
   seeds           Int @default(0)
   senderProfiles  Int @default(0)
   senderAddresses Int @default(0)
+  verifyCredits   Int
 }
 
 type UserSettingsPlanPermissionFeatures {
-  engagementMax Int
+  engagementMax Int     @default(0)
   scrollMessage Boolean
   markImportant Boolean
   removeSpam    Boolean
@@ -468,7 +469,7 @@ model userSettings {
   /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
   created                 Json?
   embedUrl                String?
-  hosts                   String[]
+  hosts                   String[]                           @db.ObjectId
   /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
   lastUpdated             Json?
   lookerStudio            UserSettingsLookerStudio?

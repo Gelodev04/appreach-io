@@ -5,8 +5,7 @@ import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
 export const ReplyingTab = ({ planPermissions }: HostProps) => {
-  const enabled = true;
-
+  const enabled = planPermissions.planPermissionFeatures.replyMessage;
   return (
     <Stack spacing={7}>
       <Box
@@ -53,8 +52,9 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
           disabled={!enabled}
           sliderTitle="Reply using AI"
           sliderName="replyMessage"
+          engagementMax={planPermissions.planPermissionFeatures.engagementMax}
           icon="mdi:robot"
-          description="We will reply to {value} out of 1,000 to primary"
+          description="We will reply to {value} out of {max_value} to primary"
           tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
         />
       </Box>

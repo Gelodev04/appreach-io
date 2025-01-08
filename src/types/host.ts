@@ -36,6 +36,7 @@ export interface HostProps {
   planPermissions: {
     seeds: number;
     planPermissionFeatures: UserSettingsPlanPermissionFeatures;
+    engagementMax: number;
   };
 }
 
