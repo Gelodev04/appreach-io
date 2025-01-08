@@ -7,6 +7,8 @@ export const metadata = {
   title: 'Seeds | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const seedsPlanPermission = await getSeedsPlanPermissions();
   const seeds = await getSeeds();
