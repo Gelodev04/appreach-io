@@ -54,7 +54,21 @@ export const EngagementTab = ({ planPermissions }: HostProps) => {
       </Typography>
       <Stack spacing={5}>
         {sliderItems.map((item) => {
-          return <SliderItem key={item.sliderTitle} maxVal={planPermissions.seeds} {...item} />;
+          const featureValue =
+            planPermissions.planPermissionFeatures[
+              item.sliderName as keyof typeof planPermissions.planPermissionFeatures
+            ];
+
+          const isDisabled = typeof featureValue === 'boolean' ? featureValue : undefined;
+          return (
+            <SliderItem
+              key={item.sliderTitle}
+              maxVal={planPermissions.seeds}
+              disabled={!isDisabled}
+              engagementMax={planPermissions.planPermissionFeatures.engagementMax}
+              {...item}
+            />
+          );
         })}
       </Stack>
       <Box

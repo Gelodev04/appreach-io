@@ -7,7 +7,7 @@ import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import HostsNewEditForm from '../host-new-edit-form';
 
-export default function HostCreateView({ planPermissions, hosts }: HostProps) {
+export const HostCreateView = ({ planPermissions }: HostProps) => {
   const settings = useSettingsContext();
 
   return (
@@ -26,7 +26,7 @@ export default function HostCreateView({ planPermissions, hosts }: HostProps) {
         }}
       />
 
-      <HostsNewEditForm planPermissions={planPermissions} hosts={hosts} />
+      <HostsNewEditForm planPermissions={planPermissions} />
     </Container>
   );
-}
+};

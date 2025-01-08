@@ -136,52 +136,9 @@ type EmailValidatorUpload {
   listName     String
 }
 
-type HostsAutoCc {
-  active           Boolean
-  hasCustomMessage Boolean?
-}
-
-type HostsCounts {
-  lastUpdated   DateTime? @db.Date
-  totalReceived Int?
-  totalSent     Int?
-}
-
-type HostsCrmIntegration {
-  activateUrl String
-  enabled     Boolean
-  hub_id      String?
-  type        String
-}
-
-type HostsInboxEngagement {
-  clickLink       Boolean?
-  downloadMessage Boolean?
-  markImportant   Boolean
-  movePrimary     Boolean?
-  removeSpam      Boolean
-  replyMessage    Boolean
-  scrollMessage   Boolean?
-}
-
-type HostsInstantly {
-  apiKey      String?
-  workspaceId String?
-}
-
 type HostsLookerStudio {
   embedUrl        String
   hasToRegenerate Boolean?
-}
-
-type HostsSlack {
-  notificationChannelId String?
-}
-
-type HostsSmartlead {
-  apiKey         String?
-  hubspotEnabled Boolean?
-  webhook        String
 }
 
 type HostsUserSettings {
@@ -393,10 +350,11 @@ type UserSettingsPlanPermissions {
   seeds           Int @default(0)
   senderProfiles  Int @default(0)
   senderAddresses Int @default(0)
+  verifyCredits   Int
 }
 
 type UserSettingsPlanPermissionFeatures {
-  engagementMax Int
+  engagementMax Int     @default(0)
   scrollMessage Boolean
   markImportant Boolean
   removeSpam    Boolean
@@ -459,17 +417,10 @@ model emailValidator {
 
 model hosts {
   id                 String                   @id @default(auto()) @map("_id") @db.ObjectId
-  autoCc             HostsAutoCc?
-  counts             HostsCounts?
-  crmIntegration     HostsCrmIntegration?
   host               String
   hostCrypt          String
-  inboxEngagement    HostsInboxEngagement?
-  instantly          HostsInstantly?
-  lookerStudio       HostsLookerStudio?
-  slack              HostsSlack?
-  smartlead          HostsSmartlead?
   userSettings       HostsUserSettings?
+  lookerStudio       HostsLookerStudio?
   engagementSettings HostsEngagementSettings?
 }
 
@@ -516,6 +467,7 @@ model userSettings {
   created                 Json?
   embedUrl                String?
   hosts                   String[]                           @db.ObjectId
+  /// Multiple data types found: String: 63.6%, DateTime (Date): 36.4% out of 11 sampled entries
   lastUpdated             Json?
   lookerStudio            UserSettingsLookerStudio?
   plan                    UserSettingsPlan?

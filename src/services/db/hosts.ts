@@ -2,11 +2,10 @@
 
 import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
-import {
-  generateArrayAddresses,
-  retrieveDuplicateAddresses,
-} from 'src/sections/host/utils/generate-array-adresses';
+import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+
 import { UpdateHostData } from 'src/types/host';
+import { updateUserSettings } from './user-settings';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
@@ -78,12 +77,10 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
       },
       userSettings: {
         timezone: data.timezone,
-        externalSenderAddresses: data.externalSenderAddresses
-          ? data.externalSenderAddresses.split('\n').map((link) => link.trim())
-          : [''],
       },
     };
 
+    console.log({ normalizedData });
     const updatedHostData = await prisma.hosts.update({
       where: { id },
       data: normalizedData,
@@ -96,74 +93,57 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
   }
 };
 
-export const createHost = async (data: UpdateHostData, hosts: string[] | undefined) => {
+export const createHost = async (data: UpdateHostData) => {
   try {
-    // const normalizedData = {
-    //   engagementSettings: {
-    //     scrollMessage: data.scrollMessage,
-    //     markImportant: data.markImportant,
-    //     removeSpam: data.removeSpam,
-    //     movePrimary: data.movePrimary,
-    //     clickLink: data.clickLink,
-    //     replyMessage: data.replyMessage,
-    //     filterId: data.filterId,
-    //     replyPrompt: data.replyPrompt,
-    //     linksToClick: data.linksToClick
-    //       ? data.linksToClick.split(',').map((link) => link.trim())
-    //       : [''],
-    //     linksNotToClick: data.linksNotToClick
-    //       ? data.linksNotToClick.split(',').map((link) => link.trim())
-    //       : [''],
-    //   },
-    //   userSettings: {
-    //     timezone: data.timezone,
-    //     externalSenderAddresses: data.externalSenderAddresses
-    //       ? data.externalSenderAddresses.split('\n').map((link) => link.trim())
-    //       : [''],
-    //   },
-    // };
-
     // Check if a host with the same name already exists
     const existingHost = await getHostByName(data.host);
     if (existingHost) throw new Error('Cannot create, profile name already in use');
 
-    // Check for duplicate external sender addresses across user hosts
-    if (data.externalSenderAddresses) {
-      const userHosts = hosts as string[];
-      const externalSenderAddressesArray = generateArrayAddresses(data.externalSenderAddresses);
-      const hostsData = await prisma.hosts.findMany({
-        where: {
-          id: { in: userHosts },
-        },
-        select: {
-          id: true,
-          userSettings: {
-            select: {
-              externalSenderAddresses: true,
-            },
-          },
-        },
-      });
+    const hostCrypt = generateHostCrypt(data.host);
+    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
 
-      const duplicates = retrieveDuplicateAddresses({ hostsData, externalSenderAddressesArray });
-      // If there are duplicates, throw the error
-      if (duplicates.length > 0) {
-        throw new Error(
-          `Cannot create, sender address(es) "${duplicates.join(', ')}" already in use.`
-        );
-      }
+    const normalizedData = {
+      host: data.host,
+      hostCrypt,
+      userSettings: {
+        timezone: data.timezone,
+      },
+      lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
+      engagementSettings: {
+        scrollMessage: data.scrollMessage,
+        markImportant: data.markImportant,
+        removeSpam: data.removeSpam,
+        movePrimary: data.movePrimary,
+        clickLink: data.clickLink,
+        linksToClick: data.linksToClick
+          ? data.linksToClick.split(',').map((link) => link.trim())
+          : [''],
+        linksNotToClick: data.linksNotToClick
+          ? data.linksNotToClick.split(',').map((link) => link.trim())
+          : [''],
+        replyMessage: data.replyMessage,
+        filterId: data.filterId,
+        replyPrompt: data.replyPrompt,
+      },
+    };
 
-      console.log({
-        test: hostsData[0].userSettings?.externalSenderAddresses,
-        externalSenderAddressesArray,
+    try {
+      const result = await prisma.$transaction(async (tx) => {
+        // Create a new host and get the _id of the new document
+        const createdHost = await tx.hosts.create({
+          data: normalizedData,
+        });
+        const newHostId = createdHost.id;
+
+        // TODO: Update the senders useCount when added a new host
+
+        // Add the newHostId to the hosts array under the userSettings collection
+        await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
       });
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
     }
-
-    // const createdHost = await prisma.hosts.create({
-    //   data: normalizedData,
-    // });
-
-    // return createdHost;
   } catch (error) {
     console.log('Unable to create host.', error);
     throw new Error(`Unable to create host: ${error.message}`);

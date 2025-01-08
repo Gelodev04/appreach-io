@@ -1,4 +1,4 @@
-import HostListView from 'src/sections/host/view/sender-list-view';
+import { HostListView } from 'src/sections/host/view';
 import { getUserHosts } from 'src/services/db/hosts';
 import { getProfilePlanPermissions } from 'src/services/db/user-settings';
 

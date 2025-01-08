@@ -1,4 +1,4 @@
-import { SenderCreateView } from 'src/sections/host/view';
+import { HostCreateView } from 'src/sections/host/view';
 import { getUserSettings } from 'src/services/db/user-settings';
 
 export const metadata = {
@@ -9,16 +9,15 @@ export default async function HostsCreatePage() {
   const planPermissions = await getUserSettings({
     planPermissionsAssigned: true,
     planPermissionFeatures: true,
-    hosts: true,
   });
 
   return (
-    <SenderCreateView
+    <HostCreateView
       planPermissions={{
         seeds: planPermissions.planPermissionsAssigned.seeds,
         planPermissionFeatures: planPermissions.planPermissionFeatures,
+        engagementMax: planPermissions.planPermissionFeatures.engagementMax,
       }}
-      hosts={planPermissions.hosts}
     />
   );
 }

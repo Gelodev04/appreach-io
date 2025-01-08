@@ -36,8 +36,8 @@ export interface HostProps {
   planPermissions: {
     seeds: number;
     planPermissionFeatures: UserSettingsPlanPermissionFeatures;
+    engagementMax: number;
   };
-  hosts?: string[];
 }
 
 export type UpdateHostData = {
