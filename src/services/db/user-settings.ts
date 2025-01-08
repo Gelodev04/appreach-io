@@ -2,8 +2,10 @@
 
 import { Prisma } from '@prisma/client';
 import { tr } from 'date-fns/locale';
+import { revalidatePath } from 'next/cache';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { paths } from 'src/routes/paths';
 
 export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) => {
   const session = await auth();
@@ -202,6 +204,7 @@ export const decrementSenderAddressesUsed = async (value: number = 1) => {
       },
       { planPermissionsUsed: true }
     );
+    revalidatePath(paths.senders.root);
   } catch (error) {
     throw new Error('Unable to increment sender addresses used');
   }
@@ -215,6 +218,7 @@ export const incrementSenderProfilesUsed = async () => {
       { planPermissionsUsed: { update: { senderProfiles: numOfProfileUsed } } },
       { planPermissionsUsed: true }
     );
+    revalidatePath(paths.senders.root);
   } catch (error) {
     throw new Error('Unable to increment sender profiles used');
   }

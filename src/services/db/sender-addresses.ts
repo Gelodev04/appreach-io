@@ -37,6 +37,8 @@ export const createSenderAddress = async ({
         email: true,
       },
     });
+    revalidatePath(paths.senders.root);
+    // revalidatePath(paths.senders.root);
     return newSenderAddress;
   } catch (error) {
     console.log('Error on creating unverified senders');
@@ -87,6 +89,7 @@ export const deleteSenderAddressById = async (
     const deleted = await prisma.senderAddresses.deleteMany({
       where: { id: { in: ids } },
     });
+
     revalidatePath(`${paths.senders.root}?tableIndex=${tableIndex}`);
     return deleted;
   } catch (error) {
