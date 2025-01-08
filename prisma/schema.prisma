@@ -489,7 +489,7 @@ model senderAddresses {
   dateAdded     DateTime  @default(now())
   dateEmailSent DateTime? @db.Date
   error         String?
-  hostId        String    @db.ObjectId
+  hostId        String    @unique
   status        String
   textRecord    String?
   emailToken    String?
