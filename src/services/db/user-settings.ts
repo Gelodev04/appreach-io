@@ -171,6 +171,28 @@ export const getAddressesPlanPermissions = async () => {
   }
 };
 
+export const getSeedsPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfSeedsUsed = planPermissionsUsed.seeds;
+    const numOfSeedsAssigned = planPermissionsAssigned.seeds;
+    const isAllSeedsUsed = numOfSeedsUsed >= numOfSeedsAssigned;
+    return {
+      numOfSeedsUsed,
+      numOfSeedsAssigned,
+      isAllSeedsUsed,
+    };
+  } catch (error) {
+    console.log('Unable to get seeds plan permissions', error);
+    throw new Error('Unable to get seeds plan permissions');
+  }
+};
+
 export const incrementSenderAddressesUsed = async () => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });

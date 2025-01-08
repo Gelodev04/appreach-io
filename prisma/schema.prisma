@@ -245,7 +245,6 @@ type SeedBatchesGenerateEsps {
   googlePersonal    Int
   microsoftBusiness Int
   microsoftPersonal Int
-  yahooPersonal     Int
 }
 
 type SeedBatchesResults {
@@ -260,7 +259,6 @@ type SeedBatchesResultsEsps {
   googlePersonal    Int?
   microsoftBusiness Int?
   microsoftPersonal Int?
-  yahooPersonal     Int?
 }
 
 type UserSettingsAppLogin {
@@ -491,7 +489,7 @@ model senderAddresses {
   dateAdded     DateTime  @default(now())
   dateEmailSent DateTime? @db.Date
   error         String?
-  hostId        String    @unique @db.ObjectId
+  hostId        String    @db.ObjectId
   status        String
   textRecord    String?
   emailToken    String?
