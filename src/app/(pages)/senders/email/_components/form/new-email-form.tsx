@@ -50,9 +50,8 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
     },
   });
 
-  const checkEmailAndHostExistence = async (email: string, hostId: string) => {
+  const checkEmailExistenceInSenderAddresses = async (email: string) => {
     const isSenderEmailExist = await getSenderByEmail(email);
-    const isSenderHostExist = await getSenderAddressByHostId(hostId);
 
     if (isSenderEmailExist) {
       enqueueSnackbar(
@@ -64,22 +63,13 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
       return true;
     }
 
-    if (isSenderHostExist) {
-      enqueueSnackbar(
-        <Typography width={300} p={1}>
-          Sender profile already in use with another sender email. Please contact support.
-        </Typography>,
-        { variant: 'info' }
-      );
-      return true;
-    }
     return false;
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        if (await checkEmailAndHostExistence(data.email, data.hostId)) return undefined;
+        if (await checkEmailExistenceInSenderAddresses(data.email)) return undefined;
 
         const inputEmailDomain = getEmailDomain(data.email);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);
