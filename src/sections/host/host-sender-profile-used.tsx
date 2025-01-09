@@ -1,10 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
-import EmptyContent from 'src/components/empty-content';
-import Iconify from 'src/components/iconify';
-import { RouterLink } from 'src/routes/components';
-import { paths } from 'src/routes/paths';
-import { ISenders } from 'src/types/senders';
-import { SenderProfileSkeleton } from './sender-profile-skeleton';
+import { Box, Typography } from '@mui/material';
 
 type TSenderProfileUsed = {
   numOfProfileAssigned: number;
