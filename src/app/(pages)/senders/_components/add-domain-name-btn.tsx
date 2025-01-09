@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Link } from '@mui/material';
+import { Button } from '@mui/material';
 import React from 'react';
 import Iconify from 'src/components/iconify';
 import { paths } from 'src/routes/paths';

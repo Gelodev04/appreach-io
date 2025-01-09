@@ -12,7 +12,6 @@ export async function POST(request: Request) {
     });
 
     if (user) {
-      console.log({ user });
       throw new Error('Email is already has an account. Please use a different email or sign in');
     }
 

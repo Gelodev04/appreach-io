@@ -18,7 +18,5 @@ export default async function Page() {
     return <Typography>Upgrade your plan to add more seeds</Typography>;
   }
 
-  console.log({ seedsPlanPermission, seeds });
-
   return <SeedView {...seedsPlanPermission} seeds={seeds} />;
 }

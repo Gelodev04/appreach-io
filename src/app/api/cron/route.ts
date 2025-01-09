@@ -31,8 +31,6 @@ export async function GET(req: NextRequest) {
         select: { id: true, hostId: true },
       });
 
-      console.log({ records });
-
       const [retain, ...remove] = records;
 
       const idsToRemove = remove.map((record) => record.id);

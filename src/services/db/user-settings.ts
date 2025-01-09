@@ -1,7 +1,6 @@
 'use server';
 
 import { Prisma } from '@prisma/client';
-import { tr } from 'date-fns/locale';
 import { revalidatePath } from 'next/cache';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
 import prisma from 'src/auth/lib/prisma/db-prisma';

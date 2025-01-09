@@ -79,7 +79,6 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
       },
     };
 
-    console.log({ normalizedData });
     const updatedHostData = await prisma.hosts.update({
       where: { id },
       data: normalizedData,
