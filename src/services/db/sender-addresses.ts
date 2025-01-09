@@ -37,6 +37,8 @@ export const createSenderAddress = async ({
         email: true,
       },
     });
+    revalidatePath(paths.senders.root);
+    // revalidatePath(paths.senders.root);
     return newSenderAddress;
   } catch (error) {
     console.log('Error on creating unverified senders');
@@ -62,6 +64,23 @@ export const getSenderByEmail = async (email: string) => {
   }
 };
 
+export const getSenderAddressByHostId = async (hostId: string) => {
+  try {
+    const senderHostId = await prisma.senderAddresses.findUnique({
+      where: {
+        hostId,
+      },
+      select: {
+        hostId: true,
+      },
+    });
+    return senderHostId;
+  } catch (error) {
+    console.log('Unable to get sender by hostId.', error);
+    return null;
+  }
+};
+
 export const deleteSenderAddressById = async (
   ids: string[],
   tableIndex: string
@@ -70,6 +89,7 @@ export const deleteSenderAddressById = async (
     const deleted = await prisma.senderAddresses.deleteMany({
       where: { id: { in: ids } },
     });
+
     revalidatePath(`${paths.senders.root}?tableIndex=${tableIndex}`);
     return deleted;
   } catch (error) {

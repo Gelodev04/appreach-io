@@ -15,21 +15,18 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-import { ObjectId } from 'mongodb';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetHosts } from 'src/hooks/api/host';
-import { useGetSenders } from 'src/hooks/api/senders';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { IHost } from 'src/types/host';
-import { endpoints, revalidateData } from 'src/utils/swr';
+import { hosts } from '@prisma/client';
+import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
 import SenderProfileUsed from '../host-sender-profile-used';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
@@ -41,76 +38,51 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-export const HostListView = () => {
+type THostListView = {
+  numOfProfileAssigned: number;
+  numOfProfileUsed: number;
+  isAllProfileUsed: boolean;
+  userHosts: hosts[];
+};
+
+export const HostListView = ({
+  numOfProfileAssigned,
+  numOfProfileUsed,
+  isAllProfileUsed,
+  userHosts,
+}: THostListView) => {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
   const settings = useSettingsContext();
-  const { hosts, hostsLoading } = useGetHosts();
-  const { senders, isAllSenderProfilesUsed, sendersError, sendersLoading, sendersValidating } =
-    useGetSenders();
-  const [tableData, setTableData] = useState<IHost[]>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
-  useEffect(() => {
-    setTableData(hosts);
-  }, [hosts]);
-
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-  });
-
   const handleDeleteRow = useCallback(
     async (id: string) => {
       try {
-        const res = await fetch(endpoints.host.delete, {
-          method: 'POST',
-          body: JSON.stringify({ ids: [id] }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error);
-        }
+        await deleteUserHost([id]);
         enqueueSnackbar('Item deleted', { variant: 'warning' });
-        const newTableData = tableData.filter((row) => row._id.toString() !== id);
-
-        setTableData(newTableData);
-        await revalidateData(endpoints.senders.list);
       } catch (error) {
         enqueueSnackbar('Error deleting item', { variant: 'error' });
       }
     },
-    [enqueueSnackbar, tableData]
+    [enqueueSnackbar]
   );
 
   const handleDeleteRows = useCallback(async () => {
     try {
-      const res = await fetch(endpoints.host.delete, {
-        method: 'POST',
-        body: JSON.stringify({ ids: selectedRowIds }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error);
-      }
+      await deleteUserHost(selectedRowIds as string[]);
       enqueueSnackbar('Items deleted', { variant: 'warning' });
-
-      const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
-
-      setTableData(deleteRows);
-      await revalidateData(endpoints.senders.list);
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [enqueueSnackbar, selectedRowIds, tableData]);
+  }, [enqueueSnackbar, selectedRowIds]);
 
   const handleEditRow = useCallback(
-    (id: ObjectId) => {
-      router.push(paths.settings.edit(id));
+    (id: string) => {
+      router.push(paths.settings.edit(id.toString()));
     },
     [router]
   );
@@ -154,14 +126,14 @@ export const HostListView = () => {
           showInMenu
           icon={<Iconify icon="flowbite:edit-outline" />}
           label="Edit"
-          onClick={() => handleEditRow(params.row._id)}
+          onClick={() => handleEditRow(params.id.toString())}
         />,
         <GridActionsCellItem
           showInMenu
           icon={<Iconify icon="ph:trash-bold" />}
           label="Delete"
           onClick={() => {
-            handleDeleteRow(params.row._id);
+            handleDeleteRow(params.id.toString());
           }}
           sx={{ color: 'error.main' }}
         />,
@@ -175,7 +147,7 @@ export const HostListView = () => {
       .map((column) => column.field);
 
   const handleClickAddNewSenderProfile = () => {
-    if (isAllSenderProfilesUsed) {
+    if (isAllProfileUsed) {
       enqueueSnackbar({
         message: <PopupWarningForAllUsedProfiles />,
         variant: 'warning',
@@ -206,7 +178,7 @@ export const HostListView = () => {
           links={[{ name: 'Sender Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-              <HostAddExistingHost isAllSenderProfilesUsed={isAllSenderProfilesUsed} />
+              <HostAddExistingHost isAllSenderProfilesUsed={isAllProfileUsed} />
 
               <Button
                 onClick={handleClickAddNewSenderProfile}
@@ -220,10 +192,8 @@ export const HostListView = () => {
           }
         />
         <SenderProfileUsed
-          senders={senders}
-          sendersError={sendersError}
-          sendersLoading={sendersLoading}
-          sendersValidating={sendersValidating}
+          numOfProfileAssigned={numOfProfileAssigned}
+          numOfProfileUsed={numOfProfileUsed}
         />
         <Card
           sx={{
@@ -236,11 +206,10 @@ export const HostListView = () => {
           <DataGrid
             checkboxSelection
             disableRowSelectionOnClick
-            rows={dataFiltered}
+            rows={userHosts}
             columns={columns}
-            loading={hostsLoading}
+            loading={false}
             getRowHeight={() => 'auto'}
-            getRowId={(row) => row._id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
@@ -317,9 +286,3 @@ export const HostListView = () => {
     </>
   );
 };
-
-// ----------------------------------------------------------------------
-
-function applyFilter({ inputData }: { inputData: IHost[] }) {
-  return inputData;
-}

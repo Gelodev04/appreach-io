@@ -4,15 +4,15 @@ import React from 'react';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { paths } from 'src/routes/paths';
 
-const PopupWarningForAllUsedProfiles = () => {
+const WarningAllAddressesUsed = () => {
   const { prefillMessage } = useSalesmateChat();
   const handleSalesmateOpen = () => {
-    prefillMessage('I am interested in more sender profiles.');
+    prefillMessage('I am interested in more sender addresses.');
   };
 
   return (
     <Typography variant="body2">
-      You have used all your sender profiles,{' '}
+      You have used all your sender addresses,{' '}
       <Link href={paths.checkout.root} variant="subtitle2">
         Upgrade your subscription{' '}
       </Link>
@@ -25,4 +25,4 @@ const PopupWarningForAllUsedProfiles = () => {
   );
 };
 
-export default PopupWarningForAllUsedProfiles;
+export default WarningAllAddressesUsed;

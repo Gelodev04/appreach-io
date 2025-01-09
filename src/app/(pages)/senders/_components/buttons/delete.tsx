@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { useTransition } from 'react';
 import { deleteSender } from 'src/services/db/sender-domains';
+import { decrementSenderAddressesUsed } from 'src/services/db/user-settings';
 
 function DeleteSender({
   tooltipText,
@@ -18,13 +19,14 @@ function DeleteSender({
     try {
       startTransition(async () => {
         await deleteSender(id, type);
+        await decrementSenderAddressesUsed();
       });
     } catch (error) {
       throw new Error('Error on archiving. Please contact support');
     }
   };
   return (
-    <Tooltip title={`Delete sender ${tooltipText}.`} placement="top-start">
+    <Tooltip title={`${tooltipText}`} placement="top-start">
       <Box sx={{ p: 0.5, position: 'relative' }}>
         {isPending && ( // Show progress only when pending
           <CircularProgress

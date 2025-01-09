@@ -43,7 +43,6 @@ export const deleteSender = async (id: string, type: 'domain' | 'email') => {
       });
 
       revalidatePath(`${paths.senders.root}?tableIndex=2`);
-
       return deletedDomain;
     }
     if (type === 'email') {

@@ -17,6 +17,7 @@ import {
   getSenderByDomain,
   getVerifiedDomain,
 } from 'src/services/db/sender-domains';
+
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
