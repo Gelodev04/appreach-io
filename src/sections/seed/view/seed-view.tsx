@@ -22,13 +22,12 @@ import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetSeeds } from 'src/hooks/api/seed';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
-import { ISeed } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
+import { seedBatches } from '@prisma/client';
 import {
   RenderCellDateAdded,
   RenderCellImportName,
@@ -42,52 +41,33 @@ const HIDE_COLUMNS = {
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
-export default function SeedView() {
+type TSeedsView = {
+  seeds: seedBatches[];
+  numOfSeedsUsed: number;
+  numOfSeedsAssigned: number;
+  isAllSeedsUsed: boolean;
+};
+
+export default function SeedView({
+  seeds,
+  isAllSeedsUsed,
+  numOfSeedsAssigned,
+  numOfSeedsUsed,
+}: TSeedsView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
-  const { seeds, seedsLoading } = useGetSeeds();
   const { setStepStatus } = useChecklistStore((state) => state);
-  const [tableData, setTableData] = useState<ISeed[]>([]);
+
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
   useEffect(() => {
     if (seeds.length) {
-      setTableData(seeds);
       setStepStatus('step1Finished', true); // Complete step on checklist
     }
   }, [seeds, setStepStatus]);
-
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-  });
-
-  // const handleDeleteRow = useCallback(
-  //   async (id: string) => {
-  //     try {
-  //       const res = await fetch(endpoints.seed.delete, {
-  //         method: 'POST',
-  //         body: JSON.stringify({ ids: [id] }),
-  //       });
-
-  //       if (!res.ok) {
-  //         const data = await res.json();
-  //         throw new Error(data.error);
-  //       }
-
-  //       enqueueSnackbar('Item deleted', { variant: 'warning' });
-
-  //       const newTableData = tableData.filter((row) => row._id.toString() !== id);
-
-  //       setTableData(newTableData);
-  //     } catch (error) {
-  //       enqueueSnackbar(error.message, { variant: 'error' });
-  //     }
-  //   },
-  //   [enqueueSnackbar, tableData]
-  // );
 
   const handleDeleteRows = useCallback(async () => {
     try {
@@ -103,13 +83,13 @@ export default function SeedView() {
 
       enqueueSnackbar('Items deleted', { variant: 'warning' });
 
-      const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
+      /* const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row._id.toString()));
 
-      setTableData(deleteRows);
+      setTableData(deleteRows); */
     } catch (error) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [enqueueSnackbar, selectedRowIds, tableData]);
+  }, [enqueueSnackbar, selectedRowIds]);
 
   const handleDownloadCsv = useCallback(
     (csvUrl?: string) => {
@@ -238,11 +218,9 @@ export default function SeedView() {
           <DataGrid
             checkboxSelection
             disableRowSelectionOnClick
-            rows={dataFiltered}
+            rows={seeds}
             columns={columns}
-            loading={seedsLoading}
             getRowHeight={() => 'auto'}
-            getRowId={(row) => row._id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
@@ -321,14 +299,3 @@ export default function SeedView() {
 }
 
 // ----------------------------------------------------------------------
-
-function applyFilter({ inputData }: { inputData: ISeed[] }) {
-  // Sort the inputData based on the dateAdded field in descending order
-  const sortedData = inputData.slice().sort((a, b) => {
-    const dateA = new Date(a.dateAdded).getTime();
-    const dateB = new Date(b.dateAdded).getTime();
-    return dateB - dateA; // Sort in descending order
-  });
-
-  return sortedData;
-}

@@ -1,5 +1,5 @@
 import { Container, Skeleton } from '@mui/material';
-import { getSenderProfiles } from 'src/services/db/user-settings';
+import { getAddressesPlanPermissions, getSenderProfiles } from 'src/services/db/user-settings';
 import { Suspense } from 'react';
 import AddressesHeader from './_components/addresses-header';
 import SenderUsed from './_components/sender-used';
@@ -14,12 +14,15 @@ export const metadata = {
   title: 'Sender Addresses | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 const SendersAddressesPage = async () => {
   const senderProfiles = await getSenderProfiles();
+  const addressesPlanPermissions = await getAddressesPlanPermissions();
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      <AddressesHeader />
-      <SenderUsed />
+      <AddressesHeader isAllAddressedUsed={addressesPlanPermissions.isAllAddressesUsed} />
+      <SenderUsed {...addressesPlanPermissions} />
       <SendersTabs
         activeSenderEmails={
           <Suspense fallback={<Skeleton height={650} />}>

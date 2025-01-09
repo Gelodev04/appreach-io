@@ -91,11 +91,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
           }
         );
-
-        console.log('Trial period has been cancelled.');
       }
 
-      session.user.id = user._id;
+      session.user.id = user._id as string;
       session.user.firstName = user.appLogin.firstName;
       session.user.lastName = user.appLogin.lastName;
       session.user.phone = user.appLogin.phone;

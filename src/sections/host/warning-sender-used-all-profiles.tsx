@@ -7,7 +7,7 @@ import { paths } from 'src/routes/paths';
 const PopupWarningForAllUsedProfiles = () => {
   const { prefillMessage } = useSalesmateChat();
   const handleSalesmateOpen = () => {
-    prefillMessage('I am interested in more seeds account.');
+    prefillMessage('I am interested in more sender profiles.');
   };
 
   return (

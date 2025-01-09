@@ -91,6 +91,9 @@ export async function POST(request: Request) {
       lastUpdated: new Date(),
       seeds: {},
       plan: {},
+      planPermissionsUsed: {},
+      planPermissionsAssigned: {},
+      planPermissionFeatures: {},
     };
 
     if (isTrial) {
@@ -101,6 +104,28 @@ export async function POST(request: Request) {
         start_date: new Date(),
         current_period_end: new Date(moment().add(10, 'days').toDate()),
         trial_end: new Date(moment().add(10, 'days').toDate()),
+      };
+      signupParams.planPermissionsAssigned = {
+        seeds: 50,
+        senderProfiles: 1,
+        senderAddresses: 1,
+        verifyCredits: 0,
+      };
+      signupParams.planPermissionsUsed = {
+        seeds: 0,
+        senderProfiles: 0,
+        senderAddresses: 0,
+        verifyCredits: 0,
+      };
+
+      signupParams.planPermissionFeatures = {
+        engagementMax: 50,
+        scrollMessage: true,
+        markImportant: true,
+        removeSpam: true,
+        movePrimary: true,
+        clickLink: true,
+        replyMessage: true,
       };
     }
 

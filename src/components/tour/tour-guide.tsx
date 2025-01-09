@@ -7,7 +7,10 @@ export const TourGuide = () => {
     {
       content: (
         <div>
-          <p>Step 1: Generate seed emails</p>
+          <p>
+            Click &quot;Generate Seed List&quot; and select the number of seed accounts for each
+            ESP.
+          </p>
         </div>
       ),
 
@@ -23,7 +26,10 @@ export const TourGuide = () => {
     {
       content: (
         <div>
-          <p>Step 2: Add the emails you will be sending from</p>
+          <p>
+            Add the email accounts you use to send emails (e.g., from SmartLead, Mailchimp,
+            HubSpot). Verify emails one at at time or an entire domain.
+          </p>
         </div>
       ),
       styles: {
@@ -39,7 +45,7 @@ export const TourGuide = () => {
     {
       content: (
         <div>
-          <p>Step 3: Let us know how you want we should engage with your profiles</p>
+          <p>Set up sender profiles to define how we should engage with your emails.</p>
         </div>
       ),
       styles: {
@@ -52,38 +58,55 @@ export const TourGuide = () => {
       title: 'Create sender profile',
       disableBeacon: true,
     },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 4: Review our tutorial on how to send to our seed accounts</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#subscription',
-    //   title: 'Send to seed emails',
-    //   disableBeacon: true,
-    // },
-    // {
-    //   content: (
-    //     <div>
-    //       <p>Step 5: Review our tutorial on how to review reports</p>
-    //     </div>
-    //   ),
-    //   styles: {
-    //     options: {
-    //       width: 380,
-    //     },
-    //   },
-    //   placement: 'right',
-    //   target: '#logout',
-    //   title: 'View reports',
-    //   disableBeacon: true,
-    // },
+    {
+      content: (
+        <div>
+          <p>Review our tutorial on how to send to our seed accounts.</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#tutorial_modal',
+      title: 'Send to seed emails',
+      disableBeacon: true,
+    },
+    {
+      content: (
+        <div>
+          <p>Review our tutorial on how to send to our understand the reports.</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#dashboard',
+      title: 'View reports',
+      disableBeacon: true,
+    },
+    {
+      content: (
+        <div>
+          <p>Send us a message with any questions you might have</p>
+        </div>
+      ),
+      styles: {
+        options: {
+          width: 380,
+        },
+      },
+      placement: 'right',
+      target: '#sm-widget-launcher-btn',
+      title: 'View reports',
+      disableBeacon: true,
+      spotlightClicks: false,
+    },
   ];
 
   const { start, stepIndex, onClose } = useTourDialogStore((state) => state);
@@ -92,6 +115,14 @@ export const TourGuide = () => {
     const { action } = callback;
 
     if (ACTIONS.CLOSE === action) onClose();
+
+    // if (index === 3) {
+    //   setStart(false);
+
+    //   setTimeout(() => {
+    //     setStart(true);
+    //   }, 500);
+    // }
   };
 
   return (

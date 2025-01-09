@@ -112,9 +112,7 @@ const NavItem = forwardRef<HTMLDivElement, NavItemProps>(
           color="inherit"
           underline="none"
           sx={{
-            ...(disabled && {
-              cursor: 'default',
-            }),
+            pointerEvents: disabled ? 'none' : 'auto',
           }}
         >
           {renderContent}
@@ -128,9 +126,7 @@ const NavItem = forwardRef<HTMLDivElement, NavItemProps>(
         color="inherit"
         underline="none"
         sx={{
-          ...(disabled && {
-            cursor: 'default',
-          }),
+          pointerEvents: disabled ? 'none' : 'auto',
         }}
       >
         {renderContent}

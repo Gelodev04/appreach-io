@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card, Stack } from '@mui/material';
+import { Button, Card, Stack, SxProps, Theme } from '@mui/material';
 import {
   DataGrid,
   GridRowSelectionModel,
@@ -17,6 +17,7 @@ import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 import { useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 
+import { decrementSenderAddressesUsed } from 'src/services/db/user-settings';
 import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';
 
 const Table = ({
@@ -31,16 +32,64 @@ const Table = ({
     id: string;
   }[];
 }) => {
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const [isPending, startTransition] = useTransition();
   const params = useSearchParams();
   const tableIndex = params.get('tableIndex');
+  const [isPending, startTransition] = useTransition();
   const { columns } = useSendersEmailCol({ options, isArchived });
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+
+  const initialState = {
+    pagination: {
+      paginationModel: { pageSize: 10 },
+    },
+  };
+
+  const sx: SxProps<Theme> = {
+    '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
+      outline: 'none !important',
+    },
+    '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
+      outline: 'none !important',
+    },
+  };
+
+  const slots = {
+    toolbar: () => (
+      <GridToolbarContainer>
+        <GridToolbarQuickFilter />
+        <Stack
+          spacing={1}
+          flexGrow={1}
+          direction="row"
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          {!!selectedRowIds.length && (
+            <Button
+              size="small"
+              color="error"
+              disabled={isPending}
+              onClick={handleDeleteRows}
+              startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+            >
+              {isPending ? `Deleting...` : `Delete (${selectedRowIds.length})`}
+            </Button>
+          )}
+          <GridToolbarColumnsButton />
+          <GridToolbarFilterButton />
+        </Stack>
+      </GridToolbarContainer>
+    ),
+    noRowsOverlay: () => <EmptyContent title="No Data" />,
+    noResultsOverlay: () => <EmptyContent title="No results found" />,
+  };
+
   const handleDeleteRows = () => {
     startTransition(async () => {
       if (!tableIndex) return undefined;
       const deletedRows = await deleteSenderAddressById(selectedRowIds as string[], tableIndex);
       if (deletedRows) {
+        await decrementSenderAddressesUsed(selectedRowIds.length);
         enqueueSnackbar('Successfully Deleted', { variant: 'success' });
       }
     });
@@ -57,59 +106,16 @@ const Table = ({
       }}
     >
       <DataGrid
+        sx={sx}
         rows={rows}
+        slots={slots}
         columns={columns}
         checkboxSelection
         disableRowSelectionOnClick
-        rowSelection={false}
+        initialState={initialState}
         getRowHeight={() => 'auto'}
         pageSizeOptions={[5, 10, 25]}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        onRowSelectionModelChange={(newSelectionModel) => {
-          setSelectedRowIds(newSelectionModel);
-        }}
-        sx={{
-          '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
-            outline: 'none !important',
-          },
-          '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
-            outline: 'none !important',
-          },
-        }}
-        slots={{
-          toolbar: () => (
-            <GridToolbarContainer>
-              <GridToolbarQuickFilter />
-              <Stack
-                spacing={1}
-                flexGrow={1}
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
-              >
-                {!!selectedRowIds.length && (
-                  <Button
-                    size="small"
-                    color="error"
-                    disabled={isPending}
-                    onClick={handleDeleteRows}
-                    startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-                  >
-                    {isPending ? `Deleting...` : `Delete (${selectedRowIds.length})`}
-                  </Button>
-                )}
-                <GridToolbarColumnsButton />
-                <GridToolbarFilterButton />
-              </Stack>
-            </GridToolbarContainer>
-          ),
-          noRowsOverlay: () => <EmptyContent title="No Data" />,
-          noResultsOverlay: () => <EmptyContent title="No results found" />,
-        }}
+        onRowSelectionModelChange={setSelectedRowIds}
       />
     </Card>
   );

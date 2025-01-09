@@ -9,73 +9,69 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import moment from 'moment-timezone';
 import Image from 'next/image';
-import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/_components';
+import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
+import { defaultEngagementSettings } from 'src/constants';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { IHost } from 'src/types/host';
-import { endpoints } from 'src/utils/swr';
+import { createHost, updateHostData } from 'src/services/db/hosts';
+import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
+import { useDefaultEngagementSettings } from './hooks';
 
-type Props = {
-  currentItem?: IHost;
-};
-
-export default function HostNewEditForm({ currentItem }: Props) {
+export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const timezones = moment.tz.names();
+  const updatedHostItem = useDefaultEngagementSettings(currentItem);
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const timezones = moment.tz.names();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
     timezone: Yup.string().required('Timezone is required'),
-    notificationAddresses: Yup.string(),
     externalSenderAddresses: Yup.string(),
-    smartLead: Yup.object().shape({
-      // apiKey: Yup.string(),
-      webhook: Yup.string(),
-    }),
-    inboxEngagement: Yup.object().shape({
-      markImportant: Yup.boolean(),
-      removeSpam: Yup.boolean(),
-      replyMessage: Yup.boolean(),
-      clickLink: Yup.boolean(),
-      // downloadMessage: Yup.boolean(),
-      movePrimary: Yup.boolean(),
-      scrollMessage: Yup.boolean(),
-    }),
+    scrollMessage: Yup.number().required('This field cannot be empty.'),
+    markImportant: Yup.number().required('This field cannot be empty.'),
+    removeSpam: Yup.number().required('This field cannot be empty.'),
+    movePrimary: Yup.number().required('This field cannot be empty.'),
+    clickLink: Yup.number().required('This field cannot be empty.'),
+    replyMessage: Yup.number().required('This field cannot be empty.'),
+    linksToClick: Yup.string(),
+    linksNotToClick: Yup.string().required('This field cannot be empty.'),
+    filterId: Yup.string().required('Filter ID is required'),
+    replyPrompt: Yup.string().required('Reply prompt is required'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      host: currentItem?.host || '',
-      timezone: currentItem?.userSettings.timezone || '',
-      notificationAddresses: Array.isArray(currentItem?.userSettings.notificationAddressArray)
-        ? currentItem.userSettings.notificationAddressArray.join('\n')
-        : currentItem?.userSettings.notificationAddressArray || '',
-      externalSenderAddresses: Array.isArray(currentItem?.userSettings.externalSenderAddresses)
-        ? currentItem.userSettings.externalSenderAddresses.join('\n')
-        : currentItem?.userSettings.externalSenderAddresses || '',
-      // slack: currentItem?.slack || { notificationChannelId: '' },
-      smartLead: currentItem?.smartlead || { /* apiKey: '', */ webhook: '' },
-      inboxEngagement: {
-        markImportant: currentItem?.inboxEngagement?.markImportant || false,
-        removeSpam: currentItem?.inboxEngagement?.removeSpam || false,
-        replyMessage: currentItem?.inboxEngagement?.replyMessage || false,
-        clickLink: currentItem?.inboxEngagement?.clickLink || false,
-        // downloadMessage: currentItem?.inboxEngagement?.downloadMessage || false,
-        movePrimary: currentItem?.inboxEngagement?.movePrimary || false,
-        scrollMessage: currentItem?.inboxEngagement?.scrollMessage || false,
-      },
-    }),
-    [currentItem]
-  );
+  const defaultValues = {
+    host: updatedHostItem?.host ?? '',
+    timezone: updatedHostItem?.userSettings?.timezone ?? '',
+    externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
+      ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
+      : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
+    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
+    markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
+    removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
+    movePrimary: updatedHostItem?.engagementSettings?.movePrimary ?? 0,
+    clickLink: updatedHostItem?.engagementSettings?.clickLink ?? 0,
+    replyMessage: updatedHostItem?.engagementSettings?.replyMessage ?? 0,
+    linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
+      ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
+      : defaultEngagementSettings.engagementSettings.linksToClick.join(', '),
+    linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
+      ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
+      : defaultEngagementSettings.engagementSettings.linksNotToClick.join(', '),
+    filterId: updatedHostItem?.engagementSettings?.filterId
+      ? updatedHostItem.engagementSettings.filterId
+      : (currentItem?.hostCrypt.split('_')[1] ?? ''),
+    replyPrompt:
+      updatedHostItem?.engagementSettings?.replyPrompt ??
+      defaultEngagementSettings.engagementSettings.replyPrompt,
+  };
 
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
@@ -83,31 +79,17 @@ export default function HostNewEditForm({ currentItem }: Props) {
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  useEffect(() => {
-    if (currentItem) {
-      reset(defaultValues);
-    }
-  }, [currentItem, defaultValues, reset]);
-
   const onEdit = handleSubmit(async (data) => {
     try {
-      const res = await fetch(endpoints.host.edit, {
-        method: 'POST',
-        body: JSON.stringify({
-          ...data,
-          _id: currentItem?._id,
-        }),
-      });
-
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.error ?? 'Failed to update host');
+      if (!currentItem?.id) {
+        throw new Error('Host ID not found');
       }
+      await updateHostData(currentItem?.id, data);
+
       closeSnackbar();
       enqueueSnackbar('Update success!');
       router.push(paths.settings.root);
@@ -118,15 +100,7 @@ export default function HostNewEditForm({ currentItem }: Props) {
 
   const onCreate = handleSubmit(async (data) => {
     try {
-      const res = await fetch(endpoints.host.create, {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.error ?? 'Failed to create host');
-      }
+      await createHost(data);
       closeSnackbar();
       enqueueSnackbar('Create success!');
       router.push(paths.settings.root);
@@ -139,124 +113,88 @@ export default function HostNewEditForm({ currentItem }: Props) {
 mark@outreachmagic.io ⏎
 abdulrehman@outreachmagic.io ⏎`;
 
-  const renderProperties = (
-    <>
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Properties" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField
-                name="host"
-                label="Sender profile name"
-                placeholder="outreachmagic"
-                disabled={!!currentItem}
-              />
-
-              <RHFAutocomplete
-                name="timezone"
-                label="Timezone"
-                placeholder="Choose a timezone"
-                options={timezones.map((timezone) => `${timezone}`)}
-                getOptionLabel={(option) => option}
-              />
-            </Box>
-            {/* <RHFTextField
-              name="notificationAddresses"
-              label="Notification addresses (separated by newlines)"
-              minRows={3}
-              multiline
-              placeholder={externalSenderAddressesPlaceholder}
-            /> */}
-            <RHFTextField
-              name="externalSenderAddresses"
-              label="Sender addresses (separated by newlines)"
-              minRows={3}
-              maxRows={5}
-              multiline
-              placeholder={externalSenderAddressesPlaceholder}
-            />
-
-            {/* <RHFTextField
-              name="slack.notificationChannelId"
-              label="Slack notification channel ID"
-              placeholder="C06SWJC9V47"
-            /> */}
-
-            {/* <RHFTextField
-              name="smartLead.apiKey"
-              label="Smart lead API key"
-              placeholder="cfeda7bf-2f21-4d9e-8bf2-082f31f29acb_o26lz3v"
-            /> */}
-
-            <SenderProfileTabs />
-
-            {/* <Stack spacing={1}>
-              <Typography variant="subtitle2">Inbox engagement</Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 1,
-                }}
-              >
-                <RHFCheckbox name="inboxEngagement.markImportant" label="Mark as important" />
-                <RHFCheckbox name="inboxEngagement.removeSpam" label="Remove from spam" />
-                <RHFCheckbox name="inboxEngagement.replyMessage" label="Reply using AI" />
-                <RHFCheckbox name="inboxEngagement.clickLink" label="Click link" />
-                <RHFCheckbox name="inboxEngagement.movePrimary" label="Move to primary" />
-                <RHFCheckbox name="inboxEngagement.scrollMessage" label="Scroll message" />
-              </Box>
-            </Stack> */}
-          </Stack>
-        </Card>
-      </Grid>
-      <Grid xs={12} md={4}>
-        <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
-          <Image
-            src={
-              currentItem
-                ? '/assets/illustrations/hosts/server-2.png'
-                : '/assets/illustrations/hosts/server.png'
-            }
-            alt="host"
-            width={250}
-            height={250}
-            priority
-          />
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Edit sender profile
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            Edit your sender profile engagement settings.
-          </Typography>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            color="primary"
-            loading={isSubmitting}
-            sx={{ boxShadow: theme.customShadows.primary }}
-          >
-            {currentItem ? 'Save Changes' : 'Add sender profile'}
-          </LoadingButton>
-        </Stack>
-      </Grid>
-    </>
-  );
-
   return (
     <FormProvider methods={methods} onSubmit={currentItem ? onEdit : onCreate}>
       <Grid container spacing={3}>
-        {renderProperties}
+        <Grid xs={12} md={8}>
+          <Card>
+            {!mdUp && <CardHeader title="Properties" />}
+
+            <Stack spacing={3} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFTextField
+                  name="host"
+                  label="Sender profile name"
+                  placeholder="outreachmagic"
+                  disabled={!!currentItem}
+                />
+
+                <RHFAutocomplete
+                  name="timezone"
+                  label="Timezone"
+                  placeholder="Choose a timezone"
+                  options={timezones.map((timezone) => `${timezone}`)}
+                  getOptionLabel={(option) => option}
+                />
+              </Box>
+
+              <RHFTextField
+                name="externalSenderAddresses"
+                label="Sender addresses (separated by newlines)"
+                minRows={3}
+                maxRows={5}
+                multiline
+                placeholder={externalSenderAddressesPlaceholder}
+              />
+
+              <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
+            </Stack>
+          </Card>
+        </Grid>
+        <Grid xs={12} md={4}>
+          <Stack
+            alignItems={mdUp ? 'flex-start' : 'center'}
+            sx={{
+              position: 'sticky',
+              top: '4rem',
+            }}
+          >
+            <Image
+              src={
+                currentItem
+                  ? '/assets/illustrations/hosts/server-2.png'
+                  : '/assets/illustrations/hosts/server.png'
+              }
+              alt="host"
+              width={250}
+              height={250}
+              priority
+            />
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              {currentItem ? 'Edit sender profile' : 'Add sender profile'}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+              Edit your sender profile engagement settings.
+            </Typography>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              loading={isSubmitting}
+              sx={{ boxShadow: theme.customShadows.primary }}
+            >
+              {currentItem ? 'Save Changes' : 'Add sender profile'}
+            </LoadingButton>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );

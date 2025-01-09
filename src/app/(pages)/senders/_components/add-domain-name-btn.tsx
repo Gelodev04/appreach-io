@@ -1,22 +1,41 @@
 'use client';
 
-import { Button, Link } from '@mui/material';
+import { Button } from '@mui/material';
 import React from 'react';
 import Iconify from 'src/components/iconify';
 import { paths } from 'src/routes/paths';
+import { enqueueSnackbar } from 'notistack';
+import { useRouter } from 'next/navigation';
+import WarningAllAddressesUsed from './warning-all-addresses-used';
 
-const AddDomainNameButton = () => {
+const AddDomainNameButton = ({ isAllAddressedUsed }: { isAllAddressedUsed: boolean }) => {
+  const router = useRouter();
+  const handleClick = () => {
+    if (isAllAddressedUsed) {
+      enqueueSnackbar({
+        message: <WarningAllAddressesUsed />,
+        variant: 'warning',
+        persist: true,
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top',
+        },
+      });
+
+      return null;
+    }
+
+    router.push(paths.senders.domain);
+  };
   return (
-    <Link href={paths.senders.domain}>
-      <Button
-        onClick={() => {}}
-        variant="contained"
-        color="primary"
-        startIcon={<Iconify icon="mingcute:add-line" />}
-      >
-        Add Domain Name
-      </Button>
-    </Link>
+    <Button
+      onClick={handleClick}
+      variant="contained"
+      color="primary"
+      startIcon={<Iconify icon="mingcute:add-line" />}
+    >
+      Add Domain Name
+    </Button>
   );
 };
 

@@ -18,7 +18,8 @@ type ParamsProps = {
 };
 
 export function RenderHostName({ params }: ParamsProps) {
-  const href = paths.settings.edit(params.row._id.toString());
+  const { id } = params;
+  const href = paths.settings.edit(id.toString());
 
   return (
     <Link component={RouterLink} href={href} color="inherit">

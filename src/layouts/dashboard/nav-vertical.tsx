@@ -1,14 +1,17 @@
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
 import { TourDialog } from 'src/components/tour';
+import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
@@ -21,9 +24,15 @@ type Props = {
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { user } = useMockedUser();
+  const router = useRouter();
   const pathname = usePathname();
   const lgUp = useResponsive('up', 'lg');
   const navData = useNavData();
+  const isTrialExpired = useIsTrialExpired();
+
+  if (isTrialExpired && !pathname.includes('subscription')) {
+    router.push(paths.checkout.root);
+  }
 
   useEffect(() => {
     if (openNav) {
@@ -52,7 +61,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       />
       <Box sx={{ flexGrow: 1 }} />
       <NavBottom />
-      {/* {pathname === '/dashboard/' && ( */}
       <div
         style={{
           margin: '1rem',
@@ -60,7 +68,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       >
         <TourDialog />
       </div>
-      {/* )} */}
     </Scrollbar>
   );
 

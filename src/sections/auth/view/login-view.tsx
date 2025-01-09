@@ -52,7 +52,6 @@ export default function LoginView() {
       });
 
       if (result?.error) {
-        console.log(result, 'result');
         throw new Error('Invalid Credentials');
       }
 
