@@ -7,7 +7,7 @@ import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/ut
 import { UpdateHostData } from 'src/types/host';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
-import { updateUserSettings, getUserSettings } from './user-settings';
+import { updateUserSettings, getUserSettings, incrementSenderProfilesUsed } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
   try {
@@ -138,6 +138,7 @@ export const createHost = async (data: UpdateHostData) => {
 
         // Add the newHostId to the hosts array under the userSettings collection
         await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
+        await incrementSenderProfilesUsed();
       });
       return result;
     } catch (error) {
