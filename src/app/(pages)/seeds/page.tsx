@@ -13,10 +13,5 @@ export default async function Page() {
   const seedsPlanPermission = await getSeedsPlanPermissions();
   const seeds = await getSeeds();
 
-  if (seedsPlanPermission.isAllSeedsUsed) {
-    // TODO: Add upgrade plan link
-    return <Typography>Upgrade your plan to add more seeds</Typography>;
-  }
-
   return <SeedView {...seedsPlanPermission} seeds={seeds} />;
 }
