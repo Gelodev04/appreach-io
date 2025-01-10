@@ -6,7 +6,7 @@ import { paths } from 'src/routes/paths';
 import HostNewEditForm from 'src/sections/host/host-new-edit-form';
 import { HostProps } from 'src/types/host';
 
-export const HostEditView = ({ currentItem, planPermissions }: HostProps) => {
+export const HostEditView = ({ currentItem, planPermissions, emails }: HostProps) => {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
@@ -23,7 +23,11 @@ export const HostEditView = ({ currentItem, planPermissions }: HostProps) => {
         }}
       />
 
-      <HostNewEditForm currentItem={currentItem} planPermissions={planPermissions} />
+      <HostNewEditForm
+        currentItem={currentItem}
+        planPermissions={planPermissions}
+        emails={emails}
+      />
     </Container>
   );
 };

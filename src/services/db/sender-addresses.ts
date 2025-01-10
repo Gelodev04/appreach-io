@@ -1,8 +1,8 @@
 'use server';
 
 import { randomUUID } from 'crypto';
-import prisma from 'src/auth/lib/prisma/db-prisma';
 import { revalidatePath } from 'next/cache';
+import prisma from 'src/auth/lib/prisma/db-prisma';
 import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
@@ -233,5 +233,24 @@ export const updateSenderToReadyStatus = async (id: string) => {
   } catch (error) {
     console.log('Unable to update sender status to ready.', error);
     throw new Error('Unable to update sender status to ready.', error);
+  }
+};
+
+export const getVerifiedSenderAddressByHostId = async (hostId: string) => {
+  try {
+    const hostSenderAddress = await prisma.senderAddresses.findMany({
+      where: {
+        hostId,
+        archived: false,
+        verified: true,
+      },
+      select: {
+        email: true,
+      },
+    });
+    return hostSenderAddress;
+  } catch (error) {
+    console.log('Unable to get sender address by hostId.', error);
+    throw new Error(`Unable to get host: ${error.message}`);
   }
 };
