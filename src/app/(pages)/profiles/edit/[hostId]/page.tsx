@@ -1,5 +1,6 @@
 import { HostEditView } from 'src/sections/host/view';
 import { getHostById } from 'src/services/db/hosts';
+import { getVerifiedSenderAddressByHostId } from 'src/services/db/sender-addresses';
 import { getUserSettings } from 'src/services/db/user-settings';
 
 export const metadata = {
@@ -9,6 +10,8 @@ export const metadata = {
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
   const { hostId } = params;
   const host = await getHostById(hostId);
+  const emails = await getVerifiedSenderAddressByHostId(hostId);
+  console.log({ emails });
   const planPermissions = await getUserSettings({
     planPermissionsAssigned: true,
     planPermissionFeatures: true,
@@ -22,6 +25,7 @@ export default async function HostsEditPage({ params }: { params: { hostId: stri
         engagementMax: planPermissions.planPermissionFeatures.engagementMax,
         planPermissionFeatures: planPermissions.planPermissionFeatures,
       }}
+      emails={emails}
     />
   );
 }

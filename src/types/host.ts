@@ -31,6 +31,10 @@ interface IInboxEngagement {
   scrollMessage: boolean;
 }
 
+export type senderEmail = {
+  email?: string;
+};
+
 export interface HostProps {
   currentItem?: hosts;
   planPermissions: {
@@ -38,6 +42,7 @@ export interface HostProps {
     planPermissionFeatures: UserSettingsPlanPermissionFeatures;
     engagementMax: number;
   };
+  emails?: senderEmail[];
 }
 
 export type UpdateHostData = {
