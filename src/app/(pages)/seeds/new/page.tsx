@@ -6,6 +6,8 @@ export const metadata = {
   title: 'Generate seed list | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function HostsCreatePage() {
   const seedsPlanPermission = await getSeedsPlanPermissions();
 

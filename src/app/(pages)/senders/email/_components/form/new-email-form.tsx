@@ -8,11 +8,7 @@ import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form'
 import * as Yup from 'yup';
 import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createSenderAddress,
-  getSenderAddressByHostId,
-  getSenderByEmail,
-} from 'src/services/db/sender-addresses';
+import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
 import { getEmailDomain } from 'src/utils';
 import { enqueueSnackbar } from 'notistack';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
