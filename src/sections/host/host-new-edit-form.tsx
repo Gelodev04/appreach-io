@@ -19,6 +19,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { createHost, updateHostData } from 'src/services/db/hosts';
+import { useSenderAddressTabStore } from 'src/store/sender-address-tab';
 import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
@@ -27,6 +28,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
+  const setTab = useSenderAddressTabStore((state) => state.setTab);
   const updatedHostItem = useDefaultEngagementSettings(currentItem);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -44,20 +46,38 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
     linksNotToClick: Yup.string().required('This field cannot be empty.'),
-    filterId: Yup.string().required('Filter ID is required'),
-    replyPrompt: Yup.string().required('Reply prompt is required'),
+    filterId: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
+      is: true,
+      then: (schema) => schema.required('Filter ID is required.'),
+    }),
+    replyPrompt: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
+      is: true,
+      then: (schema) => schema.required('Reply prompt is required'),
+    }),
   });
 
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
     externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
-    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
-    markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
-    removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
-    movePrimary: updatedHostItem?.engagementSettings?.movePrimary ?? 0,
-    clickLink: updatedHostItem?.engagementSettings?.clickLink ?? 0,
-    replyMessage: updatedHostItem?.engagementSettings?.replyMessage ?? 0,
+    scrollMessage: planPermissions.planPermissionFeatures.scrollMessage
+      ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
+      : 0,
+    markImportant: planPermissions.planPermissionFeatures.markImportant
+      ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
+      : 0,
+    removeSpam: planPermissions.planPermissionFeatures.removeSpam
+      ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
+      : 0,
+    movePrimary: planPermissions.planPermissionFeatures.movePrimary
+      ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
+      : 0,
+    clickLink: planPermissions.planPermissionFeatures.clickLink
+      ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
+      : 0,
+    replyMessage: planPermissions.planPermissionFeatures.replyMessage
+      ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
+      : 0,
     linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
       : defaultEngagementSettings.engagementSettings.linksToClick.join(', '),
@@ -75,6 +95,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
     defaultValues,
+    context: { planPermissions },
   });
 
   const {
@@ -82,38 +103,53 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     formState: { isSubmitting },
   } = methods;
 
-  const onEdit = handleSubmit(async (data) => {
-    try {
-      if (!currentItem?.id) {
-        throw new Error('Host ID not found');
+  const onSubmit = handleSubmit(
+    async (data) => {
+      // If no validation errors, proceed
+      closeSnackbar();
+      try {
+        if (currentItem) {
+          await updateHostData(currentItem?.id, data);
+          enqueueSnackbar('Update success!');
+        } else {
+          await createHost(data);
+          enqueueSnackbar('Create success!');
+        }
+
+        router.push(paths.settings.root);
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error', persist: true });
       }
-      await updateHostData(currentItem?.id, data);
+    },
+    (errors) => {
+      const errorKeys = Object.keys(errors);
+      if (errorKeys.length > 0) {
+        const firstErrorKey = errorKeys[0];
+        console.log({ firstErrorKey, errorKeys });
 
-      closeSnackbar();
-      enqueueSnackbar('Update success!');
-      router.push(paths.settings.root);
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error', persist: true });
-    }
-  });
+        const fieldToTabMap = {
+          host: 'sender_engagement',
+          timezone: 'sender_engagement',
+          linksToClick: 'sender_engagement',
+          linksNotToClick: 'sender_engagement',
+          filterId: 'sender_replying',
+          replyPrompt: 'sender_replying',
+        };
 
-  const onCreate = handleSubmit(async (data) => {
-    try {
-      await createHost(data);
-      closeSnackbar();
-      enqueueSnackbar('Create success!');
-      router.push(paths.settings.root);
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error', persist: true });
+        const tabToSwitch = fieldToTabMap[firstErrorKey as keyof typeof fieldToTabMap];
+        if (tabToSwitch) {
+          setTab(tabToSwitch); // Switch to the tab where the error is
+        }
+      }
     }
-  });
+  );
 
   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
 mark@outreachmagic.io ⏎
 abdulrehman@outreachmagic.io ⏎`;
 
   return (
-    <FormProvider methods={methods} onSubmit={currentItem ? onEdit : onCreate}>
+    <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <Card>

@@ -53,8 +53,8 @@ export type UpdateHostData = {
   movePrimary: number;
   clickLink: number;
   replyMessage: number;
-  filterId: string;
-  replyPrompt: string;
+  filterId?: string;
+  replyPrompt?: string;
   linksToClick?: string;
   linksNotToClick: string;
   timezone: string;

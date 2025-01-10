@@ -4,10 +4,10 @@ import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
 
-import { UpdateHostData } from 'src/types/host';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
-import { updateUserSettings, getUserSettings, incrementSenderProfilesUsed } from './user-settings';
+import { UpdateHostData } from 'src/types/host';
+import { getUserSettings, incrementSenderProfilesUsed, updateUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
   try {
@@ -65,8 +65,8 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
         movePrimary: data.movePrimary,
         clickLink: data.clickLink,
         replyMessage: data.replyMessage,
-        filterId: data.filterId,
-        replyPrompt: data.replyPrompt,
+        filterId: data.filterId ? data.filterId : '',
+        replyPrompt: data.replyPrompt ? data.replyPrompt : '',
         linksToClick: data.linksToClick
           ? data.linksToClick.split(',').map((link) => link.trim())
           : [''],
@@ -120,8 +120,8 @@ export const createHost = async (data: UpdateHostData) => {
           ? data.linksNotToClick.split(',').map((link) => link.trim())
           : [''],
         replyMessage: data.replyMessage,
-        filterId: data.filterId,
-        replyPrompt: data.replyPrompt,
+        filterId: data.filterId ? data.filterId : '',
+        replyPrompt: data.replyPrompt ? data.replyPrompt : '',
       },
     };
 
