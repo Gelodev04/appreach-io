@@ -23,11 +23,13 @@ import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
-import { endpoints } from 'src/utils/swr';
+
 import { seedBatches } from '@prisma/client';
+import PopupWarningForAllUsedSeeds from 'src/app/(pages)/seeds/_components/popup-warning-used-seeds';
+import { useRouter } from 'next/navigation';
+import { deleteSeedsByIds } from 'src/services/db/seeds';
 import {
   RenderCellDateAdded,
   RenderCellImportName,
@@ -58,7 +60,7 @@ export default function SeedView({
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
   const { setStepStatus } = useChecklistStore((state) => state);
-
+  const router = useRouter();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
@@ -71,15 +73,7 @@ export default function SeedView({
 
   const handleDeleteRows = useCallback(async () => {
     try {
-      const res = await fetch(endpoints.seed.delete, {
-        method: 'POST',
-        body: JSON.stringify({ ids: selectedRowIds }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error);
-      }
+      await deleteSeedsByIds(selectedRowIds as string[]);
 
       enqueueSnackbar('Items deleted', { variant: 'warning' });
 
@@ -102,6 +96,23 @@ export default function SeedView({
     },
     [enqueueSnackbar]
   );
+
+  const handleClickAddNewSeed = () => {
+    if (isAllSeedsUsed) {
+      enqueueSnackbar({
+        message: <PopupWarningForAllUsedSeeds />,
+        variant: 'warning',
+        persist: true,
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top',
+        },
+      });
+
+      return null;
+    }
+    router.push(paths.seed.new);
+  };
 
   const columns: GridColDef[] = [
     {
@@ -190,8 +201,7 @@ export default function SeedView({
           action={
             <Stack id="generate_seed_btn" direction={{ xs: 'column', md: 'row' }} gap={2}>
               <Button
-                component={RouterLink}
-                href={paths.seed.new}
+                onClick={handleClickAddNewSeed}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >

@@ -66,7 +66,7 @@ export const getSenderByEmail = async (email: string) => {
 
 export const getSenderAddressByHostId = async (hostId: string) => {
   try {
-    const senderHostId = await prisma.senderAddresses.findUnique({
+    const senderHostId = await prisma.senderAddresses.findFirst({
       where: {
         hostId,
       },

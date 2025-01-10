@@ -452,7 +452,7 @@ model senderAddresses {
 model senderDomains {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   dateAdded    DateTime  @default(now())
-  hostId       String    @unique @db.ObjectId
+  hostId       String    @db.ObjectId
   status       String
   txtRecord    String?
   domain       String    @unique

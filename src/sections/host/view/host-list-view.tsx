@@ -130,6 +130,7 @@ export const HostListView = ({
         />,
         <GridActionsCellItem
           showInMenu
+          disabled
           icon={<Iconify icon="ph:trash-bold" />}
           label="Delete"
           onClick={() => {
@@ -204,7 +205,6 @@ export const HostListView = ({
           }}
         >
           <DataGrid
-            checkboxSelection
             disableRowSelectionOnClick
             rows={userHosts}
             columns={columns}
