@@ -125,7 +125,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       const errorKeys = Object.keys(errors);
       if (errorKeys.length > 0) {
         const firstErrorKey = errorKeys[0];
-        console.log({ firstErrorKey, errorKeys });
 
         const fieldToTabMap = {
           host: 'sender_engagement',
