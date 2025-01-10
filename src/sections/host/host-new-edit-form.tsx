@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useTheme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import moment from 'moment-timezone';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
@@ -22,7 +23,7 @@ import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
+export default function HostNewEditForm({ currentItem, planPermissions, emails }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
@@ -50,9 +51,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
-    externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
-      ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
-      : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
+    externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
     scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
     markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
     removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
@@ -145,16 +144,24 @@ abdulrehman@outreachmagic.io ⏎`;
                   getOptionLabel={(option) => option}
                 />
               </Box>
-
-              <RHFTextField
-                name="externalSenderAddresses"
-                label="Sender addresses (separated by newlines)"
-                minRows={3}
-                maxRows={5}
-                multiline
-                placeholder={externalSenderAddressesPlaceholder}
-              />
-
+              {currentItem && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <RHFTextField
+                    name="externalSenderAddresses"
+                    label="Sender addresses (separated by newlines)"
+                    minRows={3}
+                    maxRows={5}
+                    multiline
+                    InputProps={{ readOnly: true, disableUnderline: true }}
+                    placeholder={externalSenderAddressesPlaceholder}
+                  />
+                  <Link href="/senders" style={{ display: 'flex', textDecoration: 'none' }}>
+                    <Button color="primary" variant="outlined">
+                      Edit
+                    </Button>
+                  </Link>
+                </Box>
+              )}
               <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
             </Stack>
           </Card>

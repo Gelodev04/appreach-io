@@ -1,25 +1,25 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import Grid from '@mui/material/Unstable_Grid2';
-import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
-import * as Yup from 'yup';
-import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
+import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
+import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
+import { useTransition } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
+import { paths } from 'src/routes/paths';
 import {
   createSenderAddress,
   getSenderAddressByHostId,
   getSenderByEmail,
 } from 'src/services/db/sender-addresses';
-import { getEmailDomain } from 'src/utils';
-import { enqueueSnackbar } from 'notistack';
-import { sendSenderVerification } from 'src/services/webhook/sender-emails';
-import { useRouter } from 'next/navigation';
-import { paths } from 'src/routes/paths';
 import { getVerifiedDomain } from 'src/services/db/sender-domains';
 import { incrementSenderAddressesUsed } from 'src/services/db/user-settings';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
+import { getEmailDomain } from 'src/utils';
+import * as Yup from 'yup';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
@@ -52,7 +52,7 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
 
   const checkEmailAndHostExistence = async (email: string, hostId: string) => {
     const isSenderEmailExist = await getSenderByEmail(email);
-    const isSenderHostExist = await getSenderAddressByHostId(hostId);
+    const isSenderHostExist = await getSenderAddressByHostId(hostId, { hostId: true });
 
     if (isSenderEmailExist) {
       enqueueSnackbar(
