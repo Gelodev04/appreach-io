@@ -144,6 +144,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
     if (subscription.lookup_key === STRIPE.subscriptions.trial.key) return 'Upgrade';
 
+    if (subscription.lookup_key === STRIPE.subscriptions.custom.key) return 'Downgrade';
+
     if (!subscription.price_id) {
       throw new Error('No subscription price id');
     }

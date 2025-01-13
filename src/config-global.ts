@@ -27,7 +27,7 @@ export const STRIPE = {
       product: 'prod_RQS1wGMIZh506N',
       priceId: 'price_1QXb6yIPvbQKS9UKVczFWI34',
       price: 0,
-      order: 1,
+      order: 0,
       permission: {
         seeds: 50,
         senderProfiles: 1,
@@ -95,6 +95,7 @@ export const STRIPE = {
       name: 'Custom Plan',
       product: 'prod_R0TQY0ijWzmt5N',
       priceId: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
+      order: 3,
     },
   },
 };
