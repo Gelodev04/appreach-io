@@ -227,7 +227,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
       />
       <CheckoutElementV2
         title="Managed Service"
-        name="custom"
+        name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
         onSubmit={() => prefillMessage('I am interested in more seeds account.')}
         features={[

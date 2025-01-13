@@ -69,6 +69,6 @@ export default function useGetSubmitTitle({
     submitSubtitle,
     submitTitle,
     submitButtonVariant,
-    isCancelledButNotExpired: isPlanCancelled && !isExpired,
+    isCancelledButNotExpired: isPlanCancelled && !isExpired && !name.includes('custom'),
   };
 }

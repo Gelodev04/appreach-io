@@ -3,13 +3,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const types = [
-  'googleBusiness',
-  'googlePersonal',
-  'microsoftBusiness',
-  'microsoftPersonal',
-  'yahooPersonal',
-];
+const types = ['googleBusiness', 'googlePersonal', 'microsoftBusiness', 'microsoftPersonal'];
 
 export async function GET() {
   try {

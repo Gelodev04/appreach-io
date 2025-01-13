@@ -90,5 +90,11 @@ export const STRIPE = {
         },
       },
     },
+    custom: {
+      key: 'custom',
+      name: 'Custom Plan',
+      product: 'prod_R0TQY0ijWzmt5N',
+      priceId: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
+    },
   },
 };
