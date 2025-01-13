@@ -35,6 +35,7 @@ export function CheckoutElementV2({
       currentPlan,
       expirationDate,
     });
+  console.log({ name, submitTitle, submitSubtitle, submitButtonVariant, isCancelledButNotExpired });
 
   return (
     <Stack
