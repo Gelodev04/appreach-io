@@ -95,6 +95,7 @@ export const STRIPE = {
       name: 'Custom Plan',
       product: 'prod_R0TQY0ijWzmt5N',
       priceId: 'price_1Q8STNIPvbQKS9UKjq8eHJh2',
+      price: 0,
       order: 3,
     },
   },
