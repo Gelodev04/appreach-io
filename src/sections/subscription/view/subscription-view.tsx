@@ -144,6 +144,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
 
     if (subscription.lookup_key === STRIPE.subscriptions.trial.key) return 'Upgrade';
 
+    if (subscription.lookup_key === STRIPE.subscriptions.custom.key) return 'Downgrade';
+
     if (!subscription.price_id) {
       throw new Error('No subscription price id');
     }
@@ -207,6 +209,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Established"
@@ -224,10 +227,11 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Managed Service"
-        name="custom"
+        name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
         onSubmit={() => prefillMessage('I am interested in more seeds account.')}
         features={[

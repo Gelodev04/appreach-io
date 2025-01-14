@@ -258,6 +258,7 @@ type UserSettingsPlan {
   status              String?
   subscription_id     String?
   trial_end           DateTime? @db.Date
+  customPlan          Boolean?
 }
 
 type UserSettingsResetPassword {
