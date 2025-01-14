@@ -177,8 +177,8 @@ type HostsEngagementSettings {
   movePrimary     Int
   clickLink       Int
   replyMessage    Int
-  linksToClick    String[]
-  linksNotToClick String[]
+  linksToClick    String[] @default([])
+  linksNotToClick String[] @default([])
   filterId        String?
   replyPrompt     String
 }
