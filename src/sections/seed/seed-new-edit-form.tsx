@@ -16,12 +16,12 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
@@ -39,10 +39,12 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    hostId: Yup.object().shape({
-      label: Yup.string(),
-      value: Yup.string(),
-    }),
+    hostId: Yup.object()
+      .shape({
+        label: Yup.string().required('Sender profile label is required'),
+        value: Yup.string().required('Sender profile value is required'),
+      })
+      .required('Sender profile is required'),
     googleBusiness: Yup.number(),
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
