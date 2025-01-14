@@ -69,10 +69,10 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
         replyPrompt: data.replyPrompt ? data.replyPrompt : '',
         linksToClick: data.linksToClick
           ? data.linksToClick.split(',').map((link) => link.trim())
-          : [''],
+          : [],
         linksNotToClick: data.linksNotToClick
           ? data.linksNotToClick.split(',').map((link) => link.trim())
-          : [''],
+          : [],
       },
       userSettings: {
         timezone: data.timezone,
@@ -113,18 +113,18 @@ export const createHost = async (data: UpdateHostData) => {
         removeSpam: data.removeSpam,
         movePrimary: data.movePrimary,
         clickLink: data.clickLink,
+
         linksToClick: data.linksToClick
           ? data.linksToClick.split(',').map((link) => link.trim())
-          : [''],
+          : [],
         linksNotToClick: data.linksNotToClick
           ? data.linksNotToClick.split(',').map((link) => link.trim())
-          : [''],
+          : [],
         replyMessage: data.replyMessage,
         filterId: data.filterId ? data.filterId : '',
         replyPrompt: data.replyPrompt ? data.replyPrompt : '',
       },
     };
-
     try {
       const result = await prisma.$transaction(async (tx) => {
         // Create a new host and get the _id of the new document
@@ -132,8 +132,6 @@ export const createHost = async (data: UpdateHostData) => {
           data: normalizedData,
         });
         const newHostId = createdHost.id;
-
-        // TODO: Update the senders useCount when added a new host
 
         // Add the newHostId to the hosts array under the userSettings collection
         await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });

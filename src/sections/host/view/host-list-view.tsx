@@ -15,6 +15,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
+import { hosts } from '@prisma/client';
 import { useCallback, useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -25,7 +26,6 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { hosts } from '@prisma/client';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
 import SenderProfileUsed from '../host-sender-profile-used';
@@ -123,20 +123,9 @@ export const HostListView = ({
       disableColumnMenu: true,
       getActions: (params) => [
         <GridActionsCellItem
-          showInMenu
           icon={<Iconify icon="flowbite:edit-outline" />}
           label="Edit"
           onClick={() => handleEditRow(params.id.toString())}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          disabled
-          icon={<Iconify icon="ph:trash-bold" />}
-          label="Delete"
-          onClick={() => {
-            handleDeleteRow(params.id.toString());
-          }}
-          sx={{ color: 'error.main' }}
         />,
       ],
     },

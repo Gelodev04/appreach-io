@@ -45,7 +45,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     clickLink: Yup.number().required('This field cannot be empty.'),
     replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
-    linksNotToClick: Yup.string().required('This field cannot be empty.'),
+    linksNotToClick: Yup.string(),
     filterId: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
       is: true,
       then: (schema) => schema.required('Filter ID is required.'),
@@ -78,12 +78,12 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     replyMessage: planPermissions.planPermissionFeatures.replyMessage
       ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
       : 0,
-    linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
+    linksToClick: updatedHostItem?.engagementSettings?.linksToClick
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
-      : defaultEngagementSettings.engagementSettings.linksToClick.join(', '),
-    linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
+      : '',
+    linksNotToClick: updatedHostItem?.engagementSettings?.linksNotToClick
       ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
-      : defaultEngagementSettings.engagementSettings.linksNotToClick.join(', '),
+      : '',
     filterId: updatedHostItem?.engagementSettings?.filterId
       ? updatedHostItem.engagementSettings.filterId
       : (currentItem?.hostCrypt.split('_')[1] ?? ''),
@@ -143,9 +143,9 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     }
   );
 
-  const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
-mark@outreachmagic.io ⏎
-abdulrehman@outreachmagic.io ⏎`;
+  //   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
+  //   mark@outreachmagic.io ⏎
+  //   abdulrehman@outreachmagic.io ⏎`;
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -183,12 +183,12 @@ abdulrehman@outreachmagic.io ⏎`;
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <RHFTextField
                     name="externalSenderAddresses"
-                    label="Sender addresses (separated by newlines)"
+                    label="Sender addresses"
                     minRows={3}
                     maxRows={5}
+                    disabled
                     multiline
-                    InputProps={{ readOnly: true, disableUnderline: true }}
-                    placeholder={externalSenderAddressesPlaceholder}
+                    InputLabelProps={{ shrink: true }}
                   />
                   <Link href="/senders" style={{ display: 'flex', textDecoration: 'none' }}>
                     <Button color="primary" variant="outlined">

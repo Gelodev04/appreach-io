@@ -56,7 +56,7 @@ export type UpdateHostData = {
   filterId?: string;
   replyPrompt?: string;
   linksToClick?: string;
-  linksNotToClick: string;
+  linksNotToClick?: string;
   timezone: string;
   externalSenderAddresses?: string;
 };
