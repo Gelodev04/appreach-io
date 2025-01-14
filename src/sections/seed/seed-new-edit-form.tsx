@@ -106,6 +106,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
       enqueueSnackbar('Create success!');
       router.push(paths.seed.root);
+      router.refresh();
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });

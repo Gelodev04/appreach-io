@@ -209,6 +209,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Established"
@@ -226,6 +227,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Managed Service"
