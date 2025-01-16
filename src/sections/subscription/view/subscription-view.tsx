@@ -117,7 +117,12 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     const isCurrentPlan = subscription?.lookup_key === plan.key;
     const isSubscriptionCancelled = subscription?.status === 'canceled';
     // Handle upgrade or downgrade confirmation
-    if (subscription && !isCurrentPlan && !isSubscriptionCancelled) {
+    if (
+      subscription &&
+      !isCurrentPlan &&
+      !isSubscriptionCancelled &&
+      subscription.lookup_key !== STRIPE.subscriptions.trial.key
+    ) {
       confirmUpgradeDowngrade.setValue(true);
       setType(currentSubcription.toLowerCase() as 'downgrade' | 'upgrade');
       setNextPlan(plan);
