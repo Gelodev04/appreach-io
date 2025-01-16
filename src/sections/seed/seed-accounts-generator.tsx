@@ -6,6 +6,7 @@ import { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
 import { ISeedAccount } from 'src/types/seed';
+import { ChangeEvent } from 'react';
 import SeedAccountsAssigned from './seed-accounts-assigned';
 import SeedAccountsBatch from './seed-accounts-batch';
 
@@ -13,10 +14,14 @@ export default function SeedAccountsGenerator({
   assignedCount,
   seedAccounts,
   totalSeedAccounts,
+  onHandleTotalSeedAccounts,
+  seedAccountsGenerator,
 }: {
   assignedCount: number;
   seedAccounts: ISeedAccount[];
   totalSeedAccounts?: number;
+  seedAccountsGenerator?: number;
+  onHandleTotalSeedAccounts?: (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }) {
   return (
     <>
@@ -25,6 +30,8 @@ export default function SeedAccountsGenerator({
           <Typography variant="subtitle2">How many accounts do you want to generate?</Typography>
 
           <RHFTextField
+            onChange={onHandleTotalSeedAccounts}
+            value={seedAccountsGenerator}
             name="seedAccountsGenerator"
             size="small"
             sx={{ maxWidth: 100 }}

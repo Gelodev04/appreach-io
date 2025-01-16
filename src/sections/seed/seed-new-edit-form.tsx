@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { useEffect, useMemo } from 'react';
+import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
@@ -65,7 +65,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       googlePersonal: currentItem?.generate.esps.googlePersonal || 0,
       microsoftBusiness: currentItem?.generate.esps.microsoftBusiness || 0,
       microsoftPersonal: currentItem?.generate.esps.microsoftPersonal || 0,
-      yahooPersonal: currentItem?.generate.esps.yahooPersonal || 0,
       totalSeedAccounts: currentItem?.generate.total || 0,
       seedAccountsGenerator: 0,
     }),
@@ -119,6 +118,12 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
   const handleSalesmateOpen = () => {
     prefillMessage('I am interested in more seeds account.');
+  };
+
+  const handleTotalSeedAccounts = (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const total = parseInt(value.target.value, 10);
+    setValue('seedAccountsGenerator', total);
+    console.log({ total });
   };
 
   useEffect(() => {
@@ -194,6 +199,8 @@ export default function SeedNewEditForm({ currentItem }: Props) {
               assignedCount={assignedCount}
               seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
+              onHandleTotalSeedAccounts={handleTotalSeedAccounts}
+              seedAccountsGenerator={seedAccountsGenerator}
             />
           </Stack>
         </Card>
