@@ -238,7 +238,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         title="Managed Service"
         name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
-        onSubmit={() => prefillMessage('I am interested in more seeds account.')}
+        onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
         features={[
           'Send 500+ emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
