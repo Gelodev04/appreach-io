@@ -14,7 +14,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
+import { useGetSeedAccounts } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { useRouter } from 'src/routes/hooks';
@@ -22,22 +22,22 @@ import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
+
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
   currentItem?: ISeedForm;
   numOfSeedsAssigned: number;
+  userHosts: { label: string; value: string }[];
 };
 
-export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Props) {
+export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userHosts }: Props) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const { hosts } = useGetSeedSettings();
   const { seedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
-
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     hostId: Yup.object()
@@ -113,8 +113,6 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
-
-  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   const handleSalesmateOpen = () => {
     prefillMessage('I am interested in more seeds account.');
@@ -217,7 +215,7 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
                 name="hostId"
                 label="Choose sender profile"
                 placeholder="outreachmagic"
-                options={hostOptions}
+                options={userHosts}
               />
             </Box>
 

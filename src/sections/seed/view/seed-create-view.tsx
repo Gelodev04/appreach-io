@@ -8,9 +8,10 @@ import SeedNewEditForm from '../seed-new-edit-form';
 
 type TSeedsView = {
   numOfSeedsAssigned: number;
+  userHosts: { label: string; value: string }[];
 };
 
-export default function SeedCreateView({ numOfSeedsAssigned }: TSeedsView) {
+export default function SeedCreateView({ numOfSeedsAssigned, userHosts }: TSeedsView) {
   const settings = useSettingsContext();
 
   return (
@@ -29,7 +30,7 @@ export default function SeedCreateView({ numOfSeedsAssigned }: TSeedsView) {
         }}
       />
 
-      <SeedNewEditForm numOfSeedsAssigned={numOfSeedsAssigned} />
+      <SeedNewEditForm numOfSeedsAssigned={numOfSeedsAssigned} userHosts={userHosts} />
     </Container>
   );
 }
