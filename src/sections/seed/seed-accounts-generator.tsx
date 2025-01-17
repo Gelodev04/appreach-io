@@ -14,15 +14,18 @@ export default function SeedAccountsGenerator({
   assignedCount,
   seedAccounts,
   totalSeedAccounts,
-  onHandleTotalSeedAccounts,
-  seedAccountsGenerator,
+  onChangeTotalSeedAccounts,
+  onChangeIndividualSeedAccounts,
 }: {
   assignedCount: number;
   seedAccounts: ISeedAccount[];
   totalSeedAccounts?: number;
-  seedAccountsGenerator?: number;
-  onHandleTotalSeedAccounts?: (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChangeTotalSeedAccounts?: (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChangeIndividualSeedAccounts?: (
+    value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }) {
+  console.log({ seedAccounts });
   return (
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
@@ -30,8 +33,7 @@ export default function SeedAccountsGenerator({
           <Typography variant="subtitle2">How many accounts do you want to generate?</Typography>
 
           <RHFTextField
-            onChange={onHandleTotalSeedAccounts}
-            value={seedAccountsGenerator}
+            onChange={onChangeTotalSeedAccounts}
             name="seedAccountsGenerator"
             size="small"
             sx={{ maxWidth: 100 }}
@@ -48,7 +50,10 @@ export default function SeedAccountsGenerator({
       <Grid container spacing={2}>
         {seedAccounts.map((account) => (
           <Grid item key={account.name}>
-            <SeedAccountsBatch seed={account} />
+            <SeedAccountsBatch
+              seed={account}
+              onChangeIndividualSeedAccounts={onChangeIndividualSeedAccounts}
+            />
           </Grid>
         ))}
         <Grid item>

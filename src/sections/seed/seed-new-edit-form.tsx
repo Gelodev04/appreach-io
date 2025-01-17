@@ -49,8 +49,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
-    // yahooPersonal: Yup.number(), not needed anymore
-    totalSeedAccounts: Yup.number(),
     seedAccountsGenerator: Yup.number(),
   });
 
@@ -81,15 +79,13 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     formState: { isSubmitting },
     watch,
     setValue,
-    getValues,
   } = methods;
 
-  const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
   const googlePersonal = watch('googlePersonal');
   const microsoftBusiness = watch('microsoftBusiness');
   const microsoftPersonal = watch('microsoftPersonal');
-  const totalSeedAccounts = watch('totalSeedAccounts');
+
   // const yahooPersonal = watch('yahooPersonal'); not needed anymore
 
   useEffect(() => {
@@ -120,13 +116,68 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     prefillMessage('I am interested in more seeds account.');
   };
 
-  const handleTotalSeedAccounts = (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const total = parseInt(value.target.value, 10);
+  const handleTotalSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const total = parseInt(e.target.value, 10);
     setValue('seedAccountsGenerator', total);
-    console.log({ total });
+
+    const individualFields = [
+      'googleBusiness',
+      'googlePersonal',
+      'microsoftBusiness',
+      'microsoftPersonal',
+    ];
+    const googleBusinessMax = seedAccounts[0];
+    const count = individualFields.length;
+    // Check ko muna total if less than sa unang fields divide evenly
+    if (total < googleBusinessMax.amount) {
+      const distributedValue = Math.ceil(total / count);
+
+      individualFields.reduce((accTotal: number, field: string) => {
+        console.log({ accTotal, distributedValue });
+
+        if (accTotal < distributedValue && accTotal > 0) {
+          setValue(field as any, accTotal);
+        } else if (accTotal <= 0) {
+          setValue(field as any, 0);
+        } else {
+          setValue(field as any, distributedValue);
+        }
+        accTotal -= distributedValue;
+
+        return accTotal;
+      }, total);
+    } else {
+      individualFields.reduce((accTotal: number, field: string, index) => {
+        const fieldMax = seedAccounts.find((seed) => seed.name === field)?.amount || 0;
+        if (accTotal > fieldMax) {
+          setValue(field as any, fieldMax);
+        } else if (accTotal <= 0) {
+          setValue(field as any, 0);
+        } else {
+          const distributedValue = Math.ceil(accTotal / (count - (index + 1)));
+          if (accTotal < distributedValue && accTotal > 0) {
+            setValue(field as any, accTotal);
+          } else if (accTotal <= 0) {
+            setValue(field as any, 0);
+          } else {
+            setValue(field as any, distributedValue);
+          }
+          accTotal -= distributedValue;
+          return accTotal;
+        }
+        accTotal -= fieldMax;
+
+        return accTotal;
+      }, total);
+    }
   };
 
-  useEffect(() => {
+  const handleIndividualSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setValue(name as any, parseInt(value, 10));
+  };
+
+  /* useEffect(() => {
     const total = getValues('seedAccountsGenerator');
     const individualFields = [
       'googleBusiness',
@@ -145,23 +196,19 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       });
     }
   }, [getValues, setValue, seedAccountsGenerator]); // Watch totalInputField
+ */
 
-  useEffect(() => {
+  const totalSeedAccounts = useMemo(() => {
+    const googleBusinessCount = googleBusiness ?? 0;
+    const googlePersonalCount = googlePersonal ?? 0;
+    const microsoftBusinessCount = microsoftBusiness ?? 0;
+    const microsoftPersonalCount = microsoftPersonal ?? 0;
     const total =
-      (googleBusiness ?? 0) +
-      (googlePersonal ?? 0) +
-      (microsoftBusiness ?? 0) +
-      (microsoftPersonal ?? 0);
-    setValue('totalSeedAccounts', total);
-  }, [
-    googleBusiness,
-    googlePersonal,
-    microsoftBusiness,
-    microsoftPersonal,
-    setValue,
-    seedAccountsGenerator,
-  ]);
+      googleBusinessCount + googlePersonalCount + microsoftBusinessCount + microsoftPersonalCount;
+    return total;
+  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal]);
 
+  console.log({ totalSeedAccounts });
   const renderProperties = (
     <>
       <Grid xs={12} md={8}>
@@ -199,8 +246,8 @@ export default function SeedNewEditForm({ currentItem }: Props) {
               assignedCount={assignedCount}
               seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
-              onHandleTotalSeedAccounts={handleTotalSeedAccounts}
-              seedAccountsGenerator={seedAccountsGenerator}
+              onChangeTotalSeedAccounts={handleTotalSeedAccounts}
+              onChangeIndividualSeedAccounts={handleIndividualSeedAccounts}
             />
           </Stack>
         </Card>
