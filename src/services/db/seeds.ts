@@ -16,6 +16,9 @@ export const getSeeds = async () => {
           in: hosts,
         },
       },
+      orderBy: {
+        dateAdded: 'desc',
+      },
     });
 
     return seeds;
