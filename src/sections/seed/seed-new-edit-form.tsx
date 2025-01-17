@@ -128,13 +128,11 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     ];
     const googleBusinessMax = seedAccounts[0];
     const count = individualFields.length;
-    // Check ko muna total if less than sa unang fields divide evenly
+
     if (total < googleBusinessMax.amount) {
       const distributedValue = Math.ceil(total / count);
 
       individualFields.reduce((accTotal: number, field: string) => {
-        console.log({ accTotal, distributedValue });
-
         if (accTotal < distributedValue && accTotal > 0) {
           setValue(field as any, accTotal);
         } else if (accTotal <= 0) {
@@ -177,27 +175,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     setValue(name as any, parseInt(value, 10));
   };
 
-  /* useEffect(() => {
-    const total = getValues('seedAccountsGenerator');
-    const individualFields = [
-      'googleBusiness',
-      'googlePersonal',
-      'microsoftBusiness',
-      'microsoftPersonal',
-    ];
-    const count = individualFields.length;
-
-    if (total && total > 0) {
-      const distributedValue = Math.floor(total / count);
-      const remaining = total % count;
-
-      individualFields.forEach((field, index) => {
-        setValue(field as any, distributedValue + (index === count - 1 ? remaining : 0));
-      });
-    }
-  }, [getValues, setValue, seedAccountsGenerator]); // Watch totalInputField
- */
-
   const totalSeedAccounts = useMemo(() => {
     const googleBusinessCount = googleBusiness ?? 0;
     const googlePersonalCount = googlePersonal ?? 0;
@@ -205,10 +182,10 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     const microsoftPersonalCount = microsoftPersonal ?? 0;
     const total =
       googleBusinessCount + googlePersonalCount + microsoftBusinessCount + microsoftPersonalCount;
+    setValue('seedAccountsGenerator', total);
     return total;
-  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal]);
+  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal, setValue]);
 
-  console.log({ totalSeedAccounts });
   const renderProperties = (
     <>
       <Grid xs={12} md={8}>
