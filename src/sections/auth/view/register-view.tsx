@@ -2,7 +2,7 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, InputAdornment, MenuItem } from '@mui/material';
+import { InputAdornment, MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -27,15 +27,9 @@ export default function RegisterView({ expanded }: Props) {
   const { register } = useAuthContext();
   const [errorMsg, setErrorMsg] = useState('');
   const [successful, setSuccessful] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const email = searchParams.get('email');
-
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const shouldShowOverlay = event.currentTarget.scrollTop === 0;
-    setShowOverlay(shouldShowOverlay);
-  };
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('First name required'),
@@ -210,37 +204,9 @@ export default function RegisterView({ expanded }: Props) {
   const renderForm = (
     <Stack spacing={2.5}>
       {expanded ? (
-        <Stack
-          position="relative"
-          spacing={2.5}
-          p={1}
-          onScroll={handleScroll}
-          sx={{
-            overflowX: 'hidden',
-            overflowY: 'scroll',
-            maxHeight: { md: 440 },
-          }}
-        >
+        <Stack position="relative" spacing={2.5} p={1}>
           <RegisterCommonForm />
           {expanded && renderExpandedOptions}
-
-          {/* Blurred arrow */}
-          {expanded && showOverlay && (
-            <Box
-              position="absolute"
-              bottom={0}
-              display={{ xs: 'none', md: 'flex' }}
-              justifyContent="center"
-              alignItems="center"
-              width={1}
-              height={20}
-              sx={{
-                background: 'linear-gradient(to top, rgba(255,255,255, 1), rgba(255,255,255, 0))',
-              }}
-            >
-              <Iconify icon="mingcute:arrow-down-line" width={20} height={20} />
-            </Box>
-          )}
         </Stack>
       ) : (
         <RegisterCommonForm />

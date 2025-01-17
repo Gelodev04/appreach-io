@@ -13,6 +13,14 @@ export const getCurrentPlan = async () => {
   const { plan } = await getUserSettings({ plan: true });
   revalidatePath(paths.checkout.root);
   revalidateTag('current-subscription'); // Add this line to prevent caching
+
+  if (plan?.customPlan) {
+    return {
+      ...plan,
+      lookup_key: 'custom',
+    };
+  }
+
   return plan;
 };
 

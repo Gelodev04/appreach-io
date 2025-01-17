@@ -1,25 +1,21 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import Grid from '@mui/material/Unstable_Grid2';
-import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
-import * as Yup from 'yup';
-import { useTransition } from 'react';
 import { LoadingButton } from '@mui/lab';
-import {
-  createSenderAddress,
-  getSenderAddressByHostId,
-  getSenderByEmail,
-} from 'src/services/db/sender-addresses';
-import { getEmailDomain } from 'src/utils';
-import { enqueueSnackbar } from 'notistack';
-import { sendSenderVerification } from 'src/services/webhook/sender-emails';
+import { Box, Card, MenuItem, Stack, Typography } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
+import { useTransition } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { paths } from 'src/routes/paths';
+import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
 import { getVerifiedDomain } from 'src/services/db/sender-domains';
 import { incrementSenderAddressesUsed } from 'src/services/db/user-settings';
+import { sendSenderVerification } from 'src/services/webhook/sender-emails';
+import { getEmailDomain } from 'src/utils';
+import * as Yup from 'yup';
 import VerificationEmailMessage from '../verification-email-message';
 
 type SenderProfilesType = {
@@ -50,9 +46,8 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
     },
   });
 
-  const checkEmailAndHostExistence = async (email: string, hostId: string) => {
+  const checkEmailExistenceInSenderAddresses = async (email: string) => {
     const isSenderEmailExist = await getSenderByEmail(email);
-    const isSenderHostExist = await getSenderAddressByHostId(hostId);
 
     if (isSenderEmailExist) {
       enqueueSnackbar(
@@ -64,22 +59,13 @@ export default function CreateSendersEmailForm({ senderProfiles }: CreateSenders
       return true;
     }
 
-    if (isSenderHostExist) {
-      enqueueSnackbar(
-        <Typography width={300} p={1}>
-          Sender profile already in use with another sender email. Please contact support.
-        </Typography>,
-        { variant: 'info' }
-      );
-      return true;
-    }
     return false;
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     try {
       startTransition(async () => {
-        if (await checkEmailAndHostExistence(data.email, data.hostId)) return undefined;
+        if (await checkEmailExistenceInSenderAddresses(data.email)) return undefined;
 
         const inputEmailDomain = getEmailDomain(data.email);
         const userHostIds = senderProfiles.map((senderProfile) => senderProfile.id);

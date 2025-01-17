@@ -10,46 +10,50 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { useEffect, useMemo } from 'react';
+import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
+import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
   currentItem?: ISeedForm;
+  numOfSeedsAssigned: number;
 };
 
-export default function SeedNewEditForm({ currentItem }: Props) {
+export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Props) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const { hosts, assignedCount } = useGetSeedSettings();
+  const { hosts } = useGetSeedSettings();
   const { seedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    hostId: Yup.object().shape({
-      label: Yup.string(),
-      value: Yup.string(),
-    }),
+    hostId: Yup.object()
+      .shape({
+        label: Yup.string().required('Sender profile label is required'),
+        value: Yup.string().required('Sender profile value is required'),
+      })
+      .required('Sender profile is required'),
     googleBusiness: Yup.number(),
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
-    // yahooPersonal: Yup.number(), not needed anymore
-    totalSeedAccounts: Yup.number(),
-    seedAccountsGenerator: Yup.number(),
+    seedAccountsGenerator: Yup.number().max(
+      numOfSeedsAssigned,
+      `Exceeded Max ${numOfSeedsAssigned} accounts`
+    ),
   });
 
   const defaultValues = useMemo(
@@ -63,7 +67,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       googlePersonal: currentItem?.generate.esps.googlePersonal || 0,
       microsoftBusiness: currentItem?.generate.esps.microsoftBusiness || 0,
       microsoftPersonal: currentItem?.generate.esps.microsoftPersonal || 0,
-      yahooPersonal: currentItem?.generate.esps.yahooPersonal || 0,
       totalSeedAccounts: currentItem?.generate.total || 0,
       seedAccountsGenerator: 0,
     }),
@@ -80,15 +83,13 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     formState: { isSubmitting },
     watch,
     setValue,
-    getValues,
   } = methods;
 
-  const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
   const googlePersonal = watch('googlePersonal');
   const microsoftBusiness = watch('microsoftBusiness');
   const microsoftPersonal = watch('microsoftPersonal');
-  const totalSeedAccounts = watch('totalSeedAccounts');
+
   // const yahooPersonal = watch('yahooPersonal'); not needed anymore
 
   useEffect(() => {
@@ -106,6 +107,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
 
       enqueueSnackbar('Create success!');
       router.push(paths.seed.root);
+      router.refresh();
     } catch (error) {
       console.error(error);
       enqueueSnackbar(error.message, { variant: 'error' });
@@ -118,41 +120,75 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     prefillMessage('I am interested in more seeds account.');
   };
 
-  useEffect(() => {
-    const total = getValues('seedAccountsGenerator');
+  const handleTotalSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const total = parseInt(e.target.value, 10);
+    setValue('seedAccountsGenerator', total);
+
     const individualFields = [
       'googleBusiness',
       'googlePersonal',
       'microsoftBusiness',
       'microsoftPersonal',
     ];
+    const googleBusinessMax = seedAccounts[0];
     const count = individualFields.length;
 
-    if (total && total > 0) {
-      const distributedValue = Math.floor(total / count);
-      const remaining = total % count;
+    if (total < googleBusinessMax.amount) {
+      const distributedValue = Math.ceil(total / count);
 
-      individualFields.forEach((field, index) => {
-        setValue(field as any, distributedValue + (index === count - 1 ? remaining : 0));
-      });
+      individualFields.reduce((accTotal: number, field: string) => {
+        if (accTotal < distributedValue && accTotal > 0) {
+          setValue(field as any, accTotal);
+        } else if (accTotal <= 0) {
+          setValue(field as any, 0);
+        } else {
+          setValue(field as any, distributedValue);
+        }
+        accTotal -= distributedValue;
+
+        return accTotal;
+      }, total);
+    } else {
+      individualFields.reduce((accTotal: number, field: string, index) => {
+        const fieldMax = seedAccounts.find((seed) => seed.name === field)?.amount || 0;
+        if (accTotal > fieldMax) {
+          setValue(field as any, fieldMax);
+        } else if (accTotal <= 0) {
+          setValue(field as any, 0);
+        } else {
+          const distributedValue = Math.ceil(accTotal / (count - (index + 1)));
+          if (accTotal < distributedValue && accTotal > 0) {
+            setValue(field as any, accTotal);
+          } else if (accTotal <= 0) {
+            setValue(field as any, 0);
+          } else {
+            setValue(field as any, distributedValue);
+          }
+          accTotal -= distributedValue;
+          return accTotal;
+        }
+        accTotal -= fieldMax;
+
+        return accTotal;
+      }, total);
     }
-  }, [getValues, setValue, seedAccountsGenerator]); // Watch totalInputField
+  };
 
-  useEffect(() => {
+  const handleIndividualSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setValue(name as any, parseInt(value, 10));
+  };
+
+  const totalSeedAccounts = useMemo(() => {
+    const googleBusinessCount = googleBusiness ?? 0;
+    const googlePersonalCount = googlePersonal ?? 0;
+    const microsoftBusinessCount = microsoftBusiness ?? 0;
+    const microsoftPersonalCount = microsoftPersonal ?? 0;
     const total =
-      (googleBusiness ?? 0) +
-      (googlePersonal ?? 0) +
-      (microsoftBusiness ?? 0) +
-      (microsoftPersonal ?? 0);
-    setValue('totalSeedAccounts', total);
-  }, [
-    googleBusiness,
-    googlePersonal,
-    microsoftBusiness,
-    microsoftPersonal,
-    setValue,
-    seedAccountsGenerator,
-  ]);
+      googleBusinessCount + googlePersonalCount + microsoftBusinessCount + microsoftPersonalCount;
+    setValue('seedAccountsGenerator', total);
+    return total;
+  }, [googleBusiness, googlePersonal, microsoftBusiness, microsoftPersonal, setValue]);
 
   const renderProperties = (
     <>
@@ -188,9 +224,11 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             <Divider />
 
             <SeedAccountsGenerator
-              assignedCount={assignedCount}
+              assignedCount={numOfSeedsAssigned}
               seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
+              onChangeTotalSeedAccounts={handleTotalSeedAccounts}
+              onChangeIndividualSeedAccounts={handleIndividualSeedAccounts}
             />
           </Stack>
         </Card>
@@ -209,7 +247,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You can send to {assignedCount} email accounts each day.{' '}
+            You can send to {numOfSeedsAssigned} email accounts each day.{' '}
             <Link href={paths.checkout.root} variant="subtitle2">
               Upgrade your subscription
             </Link>

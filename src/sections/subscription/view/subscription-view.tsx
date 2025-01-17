@@ -117,7 +117,12 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     const isCurrentPlan = subscription?.lookup_key === plan.key;
     const isSubscriptionCancelled = subscription?.status === 'canceled';
     // Handle upgrade or downgrade confirmation
-    if (subscription && !isCurrentPlan && !isSubscriptionCancelled) {
+    if (
+      subscription &&
+      !isCurrentPlan &&
+      !isSubscriptionCancelled &&
+      subscription.lookup_key !== STRIPE.subscriptions.trial.key
+    ) {
       confirmUpgradeDowngrade.setValue(true);
       setType(currentSubcription.toLowerCase() as 'downgrade' | 'upgrade');
       setNextPlan(plan);
@@ -143,6 +148,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     if (!isCanceled && planKey === subscription.lookup_key) return 'Cancel plan';
 
     if (subscription.lookup_key === STRIPE.subscriptions.trial.key) return 'Upgrade';
+
+    if (subscription.lookup_key === STRIPE.subscriptions.custom.key) return 'Downgrade';
 
     if (!subscription.price_id) {
       throw new Error('No subscription price id');
@@ -207,6 +214,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Established"
@@ -224,12 +232,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
+        disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
       />
       <CheckoutElementV2
         title="Managed Service"
-        name="custom"
+        name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
-        onSubmit={() => prefillMessage('I am interested in more seeds account.')}
+        onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
         features={[
           'Send 500+ emails daily to our seed list',
           'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',

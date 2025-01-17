@@ -6,6 +6,7 @@ import { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label/label';
 import { ISeedAccount } from 'src/types/seed';
+import { ChangeEvent } from 'react';
 import SeedAccountsAssigned from './seed-accounts-assigned';
 import SeedAccountsBatch from './seed-accounts-batch';
 
@@ -13,10 +14,16 @@ export default function SeedAccountsGenerator({
   assignedCount,
   seedAccounts,
   totalSeedAccounts,
+  onChangeTotalSeedAccounts,
+  onChangeIndividualSeedAccounts,
 }: {
   assignedCount: number;
   seedAccounts: ISeedAccount[];
   totalSeedAccounts?: number;
+  onChangeTotalSeedAccounts?: (value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChangeIndividualSeedAccounts?: (
+    value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }) {
   return (
     <>
@@ -25,9 +32,10 @@ export default function SeedAccountsGenerator({
           <Typography variant="subtitle2">How many accounts do you want to generate?</Typography>
 
           <RHFTextField
+            onChange={onChangeTotalSeedAccounts}
             name="seedAccountsGenerator"
             size="small"
-            sx={{ maxWidth: 100 }}
+            sx={{ maxWidth: 180 }}
             placeholder="100"
             type="number"
           />
@@ -41,7 +49,10 @@ export default function SeedAccountsGenerator({
       <Grid container spacing={2}>
         {seedAccounts.map((account) => (
           <Grid item key={account.name}>
-            <SeedAccountsBatch seed={account} />
+            <SeedAccountsBatch
+              seed={account}
+              onChangeIndividualSeedAccounts={onChangeIndividualSeedAccounts}
+            />
           </Grid>
         ))}
         <Grid item>

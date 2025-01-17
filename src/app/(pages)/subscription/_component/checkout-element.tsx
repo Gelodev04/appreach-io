@@ -14,6 +14,7 @@ type Props = {
   currentPlan?: string | null;
   expirationDate?: Date | null;
   planStatus?: string | null;
+  disabled?: boolean;
 };
 
 export function CheckoutElementV2({
@@ -27,6 +28,7 @@ export function CheckoutElementV2({
   currentPlan,
   expirationDate,
   planStatus,
+  disabled,
 }: Props) {
   const { submitTitle, submitSubtitle, submitButtonVariant, isCancelledButNotExpired } =
     useGetSubmitTitle({
@@ -103,6 +105,7 @@ export function CheckoutElementV2({
           size="large"
           onClick={onSubmit}
           fullWidth
+          disabled={disabled}
           variant={submitButtonVariant === 'primary' ? 'contained' : 'outlined'}
           color={name === 'custom' ? 'inherit' : submitButtonVariant}
         >

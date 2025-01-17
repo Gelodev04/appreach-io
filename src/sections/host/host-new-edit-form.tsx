@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useTheme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import moment from 'moment-timezone';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
@@ -18,14 +19,16 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { createHost, updateHostData } from 'src/services/db/hosts';
+import { useSenderAddressTabStore } from 'src/store/sender-address-tab';
 import { HostProps } from 'src/types/host';
 import * as Yup from 'yup';
 import { useDefaultEngagementSettings } from './hooks';
 
-export default function HostNewEditForm({ currentItem, planPermissions }: HostProps) {
+export default function HostNewEditForm({ currentItem, planPermissions, emails }: HostProps) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
+  const setTab = useSenderAddressTabStore((state) => state.setTab);
   const updatedHostItem = useDefaultEngagementSettings(currentItem);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -42,29 +45,45 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     clickLink: Yup.number().required('This field cannot be empty.'),
     replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
-    linksNotToClick: Yup.string().required('This field cannot be empty.'),
-    filterId: Yup.string().required('Filter ID is required'),
-    replyPrompt: Yup.string().required('Reply prompt is required'),
+    linksNotToClick: Yup.string(),
+    filterId: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
+      is: true,
+      then: (schema) => schema.required('Filter ID is required.'),
+    }),
+    replyPrompt: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
+      is: true,
+      then: (schema) => schema.required('Reply prompt is required'),
+    }),
   });
 
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
-    externalSenderAddresses: Array.isArray(updatedHostItem?.userSettings?.externalSenderAddresses)
-      ? updatedHostItem.userSettings?.externalSenderAddresses.join('\n')
-      : (updatedHostItem?.userSettings?.externalSenderAddresses ?? ''),
-    scrollMessage: updatedHostItem?.engagementSettings?.scrollMessage ?? 0,
-    markImportant: updatedHostItem?.engagementSettings?.markImportant ?? 0,
-    removeSpam: updatedHostItem?.engagementSettings?.removeSpam ?? 0,
-    movePrimary: updatedHostItem?.engagementSettings?.movePrimary ?? 0,
-    clickLink: updatedHostItem?.engagementSettings?.clickLink ?? 0,
-    replyMessage: updatedHostItem?.engagementSettings?.replyMessage ?? 0,
-    linksToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksToClick)
+    externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
+    scrollMessage: planPermissions.planPermissionFeatures.scrollMessage
+      ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
+      : 0,
+    markImportant: planPermissions.planPermissionFeatures.markImportant
+      ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
+      : 0,
+    removeSpam: planPermissions.planPermissionFeatures.removeSpam
+      ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
+      : 0,
+    movePrimary: planPermissions.planPermissionFeatures.movePrimary
+      ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
+      : 0,
+    clickLink: planPermissions.planPermissionFeatures.clickLink
+      ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
+      : 0,
+    replyMessage: planPermissions.planPermissionFeatures.replyMessage
+      ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
+      : 0,
+    linksToClick: updatedHostItem?.engagementSettings?.linksToClick
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
-      : defaultEngagementSettings.engagementSettings.linksToClick.join(', '),
-    linksNotToClick: Array.isArray(updatedHostItem?.engagementSettings?.linksNotToClick)
+      : '',
+    linksNotToClick: updatedHostItem?.engagementSettings?.linksNotToClick
       ? updatedHostItem.engagementSettings?.linksNotToClick.join(', ')
-      : defaultEngagementSettings.engagementSettings.linksNotToClick.join(', '),
+      : '',
     filterId: updatedHostItem?.engagementSettings?.filterId
       ? updatedHostItem.engagementSettings.filterId
       : (currentItem?.hostCrypt.split('_')[1] ?? ''),
@@ -76,6 +95,7 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
     defaultValues,
+    context: { planPermissions },
   });
 
   const {
@@ -83,38 +103,52 @@ export default function HostNewEditForm({ currentItem, planPermissions }: HostPr
     formState: { isSubmitting },
   } = methods;
 
-  const onEdit = handleSubmit(async (data) => {
-    try {
-      if (!currentItem?.id) {
-        throw new Error('Host ID not found');
+  const onSubmit = handleSubmit(
+    async (data) => {
+      // If no validation errors, proceed
+      closeSnackbar();
+      try {
+        if (currentItem) {
+          await updateHostData(currentItem?.id, data);
+          enqueueSnackbar('Update success!');
+        } else {
+          await createHost(data);
+          enqueueSnackbar('Create success!');
+        }
+
+        router.push(paths.settings.root);
+      } catch (error) {
+        enqueueSnackbar(error.message, { variant: 'error', persist: true });
       }
-      await updateHostData(currentItem?.id, data);
+    },
+    (errors) => {
+      const errorKeys = Object.keys(errors);
+      if (errorKeys.length > 0) {
+        const firstErrorKey = errorKeys[0];
 
-      closeSnackbar();
-      enqueueSnackbar('Update success!');
-      router.push(paths.settings.root);
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error', persist: true });
+        const fieldToTabMap = {
+          host: 'sender_engagement',
+          timezone: 'sender_engagement',
+          linksToClick: 'sender_engagement',
+          linksNotToClick: 'sender_engagement',
+          filterId: 'sender_replying',
+          replyPrompt: 'sender_replying',
+        };
+
+        const tabToSwitch = fieldToTabMap[firstErrorKey as keyof typeof fieldToTabMap];
+        if (tabToSwitch) {
+          setTab(tabToSwitch); // Switch to the tab where the error is
+        }
+      }
     }
-  });
+  );
 
-  const onCreate = handleSubmit(async (data) => {
-    try {
-      await createHost(data);
-      closeSnackbar();
-      enqueueSnackbar('Create success!');
-      router.push(paths.settings.root);
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error', persist: true });
-    }
-  });
-
-  const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
-mark@outreachmagic.io ⏎
-abdulrehman@outreachmagic.io ⏎`;
+  //   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
+  //   mark@outreachmagic.io ⏎
+  //   abdulrehman@outreachmagic.io ⏎`;
 
   return (
-    <FormProvider methods={methods} onSubmit={currentItem ? onEdit : onCreate}>
+    <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <Card>
@@ -145,16 +179,24 @@ abdulrehman@outreachmagic.io ⏎`;
                   getOptionLabel={(option) => option}
                 />
               </Box>
-
-              <RHFTextField
-                name="externalSenderAddresses"
-                label="Sender addresses (separated by newlines)"
-                minRows={3}
-                maxRows={5}
-                multiline
-                placeholder={externalSenderAddressesPlaceholder}
-              />
-
+              {currentItem && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <RHFTextField
+                    name="externalSenderAddresses"
+                    label="Sender addresses"
+                    minRows={3}
+                    maxRows={5}
+                    disabled
+                    multiline
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <Link href="/senders" style={{ display: 'flex', textDecoration: 'none' }}>
+                    <Button color="primary" variant="outlined">
+                      Edit
+                    </Button>
+                  </Link>
+                </Box>
+              )}
               <SenderProfileTabs currentItem={updatedHostItem} planPermissions={planPermissions} />
             </Stack>
           </Card>

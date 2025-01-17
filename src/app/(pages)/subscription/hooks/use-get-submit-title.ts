@@ -21,10 +21,11 @@ export default function useGetSubmitTitle({
   currentPlan?: string | null;
   expirationDate?: Date | null;
 }) {
-  let submitTitle;
   let submitSubtitle;
   const isPlanCancelled = planStatus === 'canceled';
   const isExpired = expirationDate && expirationDate < new Date();
+  let submitButtonVariant: buttonVariantColor = 'primary';
+  let submitTitle = currentPlan === 'custom' && 'Downgrade';
 
   if (name === STRIPE.subscriptions.starter.key) {
     if (!currentPlan || currentPlan === STRIPE.subscriptions.trial.key) {
@@ -62,8 +63,11 @@ export default function useGetSubmitTitle({
     submitTitle = 'Contact Us';
   }
 
-  const submitButtonVariant: buttonVariantColor =
-    submitTitle === 'Upgrade' || submitTitle === 'Downgrade' ? 'primary' : 'error';
+  if (submitTitle === 'Upgrade' || submitTitle === 'Downgrade') {
+    submitButtonVariant = 'primary';
+  } else {
+    submitButtonVariant = 'error';
+  }
 
   return {
     submitSubtitle,
