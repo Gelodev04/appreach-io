@@ -49,7 +49,10 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
-    seedAccountsGenerator: Yup.number(),
+    seedAccountsGenerator: Yup.number().max(
+      assignedCount,
+      `Seed accounts generator cannot exceed Max ${assignedCount} accounts`
+    ),
   });
 
   const defaultValues = useMemo(
