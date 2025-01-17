@@ -25,7 +25,6 @@ export default function SeedAccountsGenerator({
     value: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
 }) {
-  console.log({ seedAccounts });
   return (
     <>
       <Stack direction={{ sm: 'row' }} gap={2} sx={{ width: '100%' }}>
@@ -36,7 +35,7 @@ export default function SeedAccountsGenerator({
             onChange={onChangeTotalSeedAccounts}
             name="seedAccountsGenerator"
             size="small"
-            sx={{ maxWidth: 100 }}
+            sx={{ maxWidth: 180 }}
             placeholder="100"
             type="number"
           />

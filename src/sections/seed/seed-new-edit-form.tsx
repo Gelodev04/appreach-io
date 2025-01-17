@@ -51,7 +51,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     microsoftPersonal: Yup.number(),
     seedAccountsGenerator: Yup.number().max(
       assignedCount,
-      `Seed accounts generator cannot exceed Max ${assignedCount} accounts`
+      `Exceeded Max ${assignedCount} accounts`
     ),
   });
 
