@@ -41,6 +41,24 @@ export function useNavData() {
           //   icon: <Iconify icon="entypo:email" />,
           // },
           {
+            title: 'Email Validator',
+            path: paths.emailValidator.root,
+            icon: <Iconify icon="material-symbols:mark-email-read-outline" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Attributes Upload',
+            path: paths.attributesUpload.root,
+            icon: <Iconify icon="material-symbols:upload-2-outline-rounded" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Smart Lead',
+            path: paths.smartlead.root,
+            icon: <Iconify icon="material-symbols:graph-1" />,
+            disabled: isTrialExpired,
+          },
+          {
             title: 'Subscription',
             path: paths.checkout.root,
             icon: <Iconify icon="flowbite:file-invoice-outline" />,
