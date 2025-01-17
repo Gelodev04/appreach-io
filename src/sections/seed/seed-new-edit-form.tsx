@@ -26,13 +26,14 @@ import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
   currentItem?: ISeedForm;
+  numOfSeedsAssigned: number;
 };
 
-export default function SeedNewEditForm({ currentItem }: Props) {
+export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Props) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const { hosts, assignedCount } = useGetSeedSettings();
+  const { hosts } = useGetSeedSettings();
   const { seedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
@@ -50,8 +51,8 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
     seedAccountsGenerator: Yup.number().max(
-      assignedCount,
-      `Exceeded Max ${assignedCount} accounts`
+      numOfSeedsAssigned,
+      `Exceeded Max ${numOfSeedsAssigned} accounts`
     ),
   });
 
@@ -223,7 +224,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             <Divider />
 
             <SeedAccountsGenerator
-              assignedCount={assignedCount}
+              assignedCount={numOfSeedsAssigned}
               seedAccounts={seedAccounts || []}
               totalSeedAccounts={totalSeedAccounts}
               onChangeTotalSeedAccounts={handleTotalSeedAccounts}
@@ -246,7 +247,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
             Generate new list
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You can send to {assignedCount} email accounts each day.{' '}
+            You can send to {numOfSeedsAssigned} email accounts each day.{' '}
             <Link href={paths.checkout.root} variant="subtitle2">
               Upgrade your subscription
             </Link>
