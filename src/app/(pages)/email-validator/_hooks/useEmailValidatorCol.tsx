@@ -3,9 +3,8 @@ import { GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
-import { RenderCellPublish } from 'src/sections/csv-upload/seed-table-row';
 import { fDate } from 'src/utils/format-time';
-import { EmailRevalidateButton } from '../_components/email-revalidate-button';
+import { EmailRevalidateButton, RenderCellStatus } from '../_components';
 
 export const useEmailValidatorCol = () => {
   const handleDownloadCsv = useCallback(
@@ -38,7 +37,7 @@ export const useEmailValidatorCol = () => {
     {
       field: 'status',
       headerName: 'Status',
-      renderCell: (params) => <RenderCellPublish params={params} />,
+      renderCell: (params) => <RenderCellStatus params={params} />,
     },
     {
       field: 'download.csvDownload',

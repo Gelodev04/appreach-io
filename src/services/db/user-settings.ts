@@ -203,10 +203,12 @@ export const getEmailValidatorPlanPermissions = async () => {
     const numOfCreditsUsed = planPermissionsUsed.verifyCredits;
     const numOfCreditsAssigned = planPermissionsAssigned.verifyCredits;
     const isAllCreditsUsed = numOfCreditsUsed >= numOfCreditsAssigned;
+    const remainingCredits = numOfCreditsAssigned - numOfCreditsUsed;
     return {
       numOfCreditsUsed,
       numOfCreditsAssigned,
       isAllCreditsUsed,
+      remainingCredits,
     };
   } catch (error) {
     console.log('Unable to get seeds plan permissions', error);

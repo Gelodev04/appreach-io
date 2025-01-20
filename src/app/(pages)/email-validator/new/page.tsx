@@ -1,13 +1,14 @@
 import { Container } from '@mui/material';
-import { NewEmailForm } from './_components/new-email-form';
-import { NewEmailValidatorHeader } from './_components/new-email-validator-header';
+import { getEmailValidatorPlanPermissions } from 'src/services/db/user-settings';
+import { NewEmailForm, NewEmailValidatorHeader } from './_components';
 
-export default function Page() {
+export default async function Page() {
+  const { remainingCredits } = await getEmailValidatorPlanPermissions();
   return (
     <Container maxWidth="lg">
       <NewEmailValidatorHeader />
 
-      <NewEmailForm />
+      <NewEmailForm remainingCredits={remainingCredits} />
     </Container>
   );
 }

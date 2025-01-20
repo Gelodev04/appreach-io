@@ -24,7 +24,7 @@ import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
-export const NewEmailForm = () => {
+export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
   const { prefillMessage } = useSalesmateChat();
   const mdUp = useResponsive('up', 'md');
 
@@ -111,7 +111,7 @@ export const NewEmailForm = () => {
             Upload CSV List
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You have 500 verification credits remaining.{' '}
+            You have {remainingCredits} verification credits remaining.{' '}
             <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
               Upgrade your subscription
             </Link>
