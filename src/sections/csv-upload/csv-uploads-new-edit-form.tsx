@@ -1,33 +1,33 @@
-import * as Yup from 'yup';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
 
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import Grid from '@mui/material/Unstable_Grid2';
 import CardHeader from '@mui/material/CardHeader';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Grid from '@mui/material/Unstable_Grid2';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+import { paths } from 'src/routes/paths';
 
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { useSnackbar } from 'src/components/snackbar';
-import UploadDocument from 'src/components/upload/upload-document';
 import FormProvider, {
+  RHFAutocomplete,
   RHFSelect,
   RHFSwitch,
   RHFTextField,
-  RHFAutocomplete,
 } from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
+import UploadDocument from 'src/components/upload/upload-document';
 
 import { ICsvUploadForm } from 'src/types/csv-upload';
 
@@ -161,6 +161,7 @@ export default function CsvUploadsNewEditForm({ currentItem }: Props) {
           </Stack>
         </Card>
       </Grid>
+
       <Grid xs={12} md={4}>
         <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
           <Image

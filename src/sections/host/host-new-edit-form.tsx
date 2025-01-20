@@ -3,7 +3,6 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -152,8 +151,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <Card>
-            {!mdUp && <CardHeader title="Properties" />}
-
             <Stack spacing={3} sx={{ p: 3 }}>
               <Box
                 columnGap={2}
@@ -201,6 +198,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
             </Stack>
           </Card>
         </Grid>
+
         <Grid xs={12} md={4}>
           <Stack
             alignItems={mdUp ? 'flex-start' : 'center'}

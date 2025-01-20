@@ -2,22 +2,14 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import {
-  Box,
-  Card,
-  CardHeader,
-  Divider,
-  Grid,
-  Link,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
@@ -26,11 +18,13 @@ import { paths } from 'src/routes/paths';
 import * as Yup from 'yup';
 
 export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
-  const { prefillMessage } = useSalesmateChat();
   const mdUp = useResponsive('up', 'md');
-
   const theme = useTheme();
+
   const { hosts } = useGetSeedSettings();
+  const { prefillMessage } = useSalesmateChat();
+
+  const [file, setFile] = useState<File | null>(null);
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
@@ -59,6 +53,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
+
   const {
     handleSubmit,
     formState: { isSubmitting },
@@ -68,82 +63,89 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
     console.log({ data });
   });
 
-  const renderProperties = (
-    <>
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Properties" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Box
-              columnGap={2}
-              rowGap={3}
-              display="grid"
-              gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                md: 'repeat(2, 1fr)',
-              }}
-            >
-              <RHFTextField name="name" label="List name" placeholder="Assig a name to this list" />
-
-              <RHFAutocomplete
-                name="hostId"
-                label="Choose sender profile"
-                placeholder="outreachmagic"
-                options={hostOptions}
-              />
-            </Box>
-
-            <Divider />
-          </Stack>
-        </Card>
-      </Grid>
-      <Grid xs={12} md={4}>
-        <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
-          <Image
-            src="/assets/illustrations/seeds/person.png"
-            alt="seeds"
-            width={250}
-            height={250}
-            priority
-            quality={100}
-          />
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Upload CSV List
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-            You have {remainingCredits} verification credits remaining.{' '}
-            <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
-              Upgrade your subscription
-            </Link>
-            . Or{' '}
-            <Link
-              variant="subtitle2"
-              sx={{ cursor: 'pointer' }}
-              onClick={() => prefillMessage('I have questions about the Email Validator')}
-            >
-              contact us
-            </Link>{' '}
-            if you have questions.
-          </Typography>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            color="primary"
-            loading={isSubmitting}
-            sx={{ boxShadow: theme.customShadows.primary }}
-          >
-            Generate List
-          </LoadingButton>
-        </Stack>
-      </Grid>
-    </>
-  );
+  const handleDrop = useCallback((acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
+  }, []);
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderProperties}
+        <Grid xs={12} md={8}>
+          <Card>
+            <Stack spacing={2} sx={{ p: 3 }}>
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFTextField
+                  name="name"
+                  label="List name"
+                  placeholder="Assig a name to this list"
+                />
+
+                <RHFAutocomplete
+                  name="hostId"
+                  label="Choose sender profile"
+                  placeholder="outreachmagic"
+                  options={hostOptions}
+                />
+              </Box>
+
+              <Divider />
+              <UploadDocument
+                file={file}
+                onDrop={handleDrop}
+                onDelete={() => setFile(null)}
+                accept={{ 'text/csv': [] }}
+              />
+            </Stack>
+          </Card>
+        </Grid>
+
+        <Grid xs={12} md={4}>
+          <Stack alignItems={mdUp ? 'flex-start' : 'center'}>
+            <Image
+              src="/assets/illustrations/seeds/person.png"
+              alt="seeds"
+              width={220}
+              height={220}
+              priority
+              quality={100}
+            />
+            <Typography variant="h6" sx={{ mb: 0.5 }}>
+              Upload CSV List
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+              You have {remainingCredits} verification credits remaining.{' '}
+              <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
+                Upgrade your subscription
+              </Link>
+              . Or{' '}
+              <Link
+                variant="subtitle2"
+                sx={{ cursor: 'pointer' }}
+                onClick={() => prefillMessage('I have questions about the Email Validator')}
+              >
+                contact us
+              </Link>{' '}
+              if you have questions.
+            </Typography>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              loading={isSubmitting}
+              sx={{ boxShadow: theme.customShadows.primary }}
+            >
+              Generate List
+            </LoadingButton>
+          </Stack>
+        </Grid>
       </Grid>
     </FormProvider>
   );

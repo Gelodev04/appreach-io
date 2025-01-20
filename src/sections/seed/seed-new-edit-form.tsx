@@ -76,6 +76,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
+
   const {
     reset,
     handleSubmit,
@@ -84,6 +85,8 @@ export default function SeedNewEditForm({ currentItem }: Props) {
     setValue,
     getValues,
   } = methods;
+
+  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   const seedAccountsGenerator = watch('seedAccountsGenerator');
   const googleBusiness = watch('googleBusiness');
@@ -114,8 +117,6 @@ export default function SeedNewEditForm({ currentItem }: Props) {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
-
-  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   const handleSalesmateOpen = () => {
     prefillMessage('I am interested in more seeds account.');

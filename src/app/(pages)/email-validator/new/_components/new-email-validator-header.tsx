@@ -6,7 +6,7 @@ import { paths } from 'src/routes/paths';
 export const NewEmailValidatorHeader = () => {
   return (
     <CustomBreadcrumbs
-      heading="Generate seed list"
+      heading="Upload CSV List"
       links={[
         {
           name: 'Email Validator',
