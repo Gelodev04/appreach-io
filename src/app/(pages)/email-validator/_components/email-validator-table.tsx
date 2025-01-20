@@ -1,4 +1,5 @@
 'use client';
+
 import { Card, SxProps, Theme } from '@mui/material';
 import { DataGrid, GridInitialState, GridRowsProp } from '@mui/x-data-grid';
 import { useEmailValidatorCol } from '../_hooks';

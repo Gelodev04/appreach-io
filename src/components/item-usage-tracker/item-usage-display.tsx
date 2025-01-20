@@ -1,12 +1,12 @@
 import { Box, Typography } from '@mui/material';
 
-type ItemUsageDisplay = {
+type ItemUsageDisplayProps = {
   itemName: string;
   used: number;
   limit: number;
 };
 
-export const ItemUsageDisplay = ({ itemName, used, limit }: ItemUsageDisplay) => {
+export const ItemUsageDisplay = ({ itemName, used, limit }: ItemUsageDisplayProps) => {
   return (
     <Box sx={{ paddingY: 1 }}>
       <Typography sx={{ fontWeight: 600, textAlign: 'end' }}>

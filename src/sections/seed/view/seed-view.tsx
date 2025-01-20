@@ -45,8 +45,6 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 type TSeedsView = {
   seeds: seedBatches[];
-  numOfSeedsUsed: number;
-  numOfSeedsAssigned: number;
   isAllSeedsUsed: boolean;
 };
 

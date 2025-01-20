@@ -1,4 +1,5 @@
 'use client';
+
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { paths } from 'src/routes/paths';
 

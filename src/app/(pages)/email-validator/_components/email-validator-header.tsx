@@ -1,4 +1,5 @@
 'use client';
+
 import { Button, Stack } from '@mui/material';
 import Link from 'next/link';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
