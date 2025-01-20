@@ -35,12 +35,13 @@ export const useEmailValidatorCol = () => {
     {
       field: 'status',
       headerName: 'Status',
+      minWidth: 150,
       renderCell: (params) => <RenderCellStatus params={params} />,
     },
     {
       field: 'download.csvDownload',
       headerName: 'CSV',
-      width: 120,
+      width: 150,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -64,6 +65,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.unique_emails',
       headerName: 'Emails',
       type: 'number',
+      minWidth: 130,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.unique_emails;
       },
@@ -72,6 +76,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.verified',
       headerName: 'Valid',
       type: 'number',
+      minWidth: 130,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.verified;
       },
@@ -80,6 +87,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.catch_all',
       headerName: 'Catch All',
       type: 'number',
+      minWidth: 150,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.catch_all;
       },
@@ -88,6 +98,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.invalid',
       headerName: 'Invalid',
       type: 'number',
+      minWidth: 130,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.invalid;
       },
@@ -96,6 +109,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.disposable',
       headerName: 'Disposable',
       type: 'number',
+      minWidth: 170,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.disposable;
       },
@@ -104,6 +120,9 @@ export const useEmailValidatorCol = () => {
       field: 'download.unknown',
       headerName: 'Unknown',
       type: 'number',
+      minWidth: 150,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => {
         return params.row.download.unknown;
       },

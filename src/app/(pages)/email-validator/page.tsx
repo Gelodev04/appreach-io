@@ -16,7 +16,7 @@ export default async function Page() {
   const emailValidatorPlanPermission = await getEmailValidatorPlanPermissions();
   console.log(emailValidatorPlanPermission);
   return (
-    <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <EmailValidatorHeader />
 
       <ItemUsageDisplay
