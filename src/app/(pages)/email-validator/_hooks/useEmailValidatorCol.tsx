@@ -3,9 +3,9 @@ import { GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
+import { RenderCellStatus } from 'src/components/table/render-cell-rows';
 import { fDate } from 'src/utils/format-time';
 import { EmailRevalidateButton } from '../_components/email-revalidate-button';
-import { RenderCellStatus } from '../_components/email-validator-rows';
 
 export const useEmailValidatorCol = () => {
   const handleDownloadCsv = useCallback((csvUrl?: string) => {
@@ -22,7 +22,6 @@ export const useEmailValidatorCol = () => {
       field: 'upload.listName',
       headerName: 'List Name',
       minWidth: 200,
-      hideable: false,
       renderCell: (params) => {
         return params.row.upload.listName;
       },
@@ -51,7 +50,7 @@ export const useEmailValidatorCol = () => {
           <Tooltip title="Download CSV" placement="top">
             <Button
               startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
-              onClick={() => handleDownloadCsv(params.row.results?.csvUrl)}
+              onClick={() => handleDownloadCsv(params.row.download?.csvDownload)}
               size="small"
               sx={{ zIndex: 20, px: 1 }}
             >
@@ -131,7 +130,7 @@ export const useEmailValidatorCol = () => {
       field: 'upload.dateUploaded',
       headerName: 'Uploaded',
       sortable: true,
-      minWidth: 180,
+      minWidth: 190,
       valueGetter: (params) => params.row.upload.dateUploaded,
       renderCell: (params) => {
         return <Typography>{fDate(params.row.upload.dateUploaded)}</Typography>;

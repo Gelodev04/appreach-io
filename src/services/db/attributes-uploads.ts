@@ -3,13 +3,13 @@
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { getUserSettings } from './user-settings';
 
-export const getEmailValidatorByHostIds = async () => {
+export const getAttributesUploadsByHostIds = async () => {
   try {
     const { hosts } = await getUserSettings({ hosts: true });
 
     if (!hosts) throw new Error(`Unable to get hosts`);
 
-    const emails = await prisma.emailValidator.findMany({
+    const attributes = await prisma.attributeUploads.findMany({
       where: {
         hostId: {
           in: hosts,
@@ -17,9 +17,9 @@ export const getEmailValidatorByHostIds = async () => {
       },
     });
 
-    return emails;
+    return attributes;
   } catch (error) {
-    console.error('Error on getting emails:', error); // Log the actual error
-    throw new Error(`Unable to get emails: ${error.message}`);
+    console.error('Error on getting attributes:', error); // Log the actual error
+    throw new Error(`Unable to get attributes: ${error.message}`);
   }
 };

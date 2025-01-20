@@ -188,7 +188,7 @@ export const getSeedsPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get seeds plan permissions', error);
-    throw new Error('Unable to get seeds plan permissions');
+    throw new Error(`Unable to get seeds plan permissions: ${error.message}`);
   }
 };
 
@@ -211,8 +211,33 @@ export const getEmailValidatorPlanPermissions = async () => {
       remainingCredits,
     };
   } catch (error) {
-    console.log('Unable to get seeds plan permissions', error);
-    throw new Error('Unable to get seeds plan permissions');
+    console.log('Unable to get email validator plan permissions', error);
+    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
+  }
+};
+
+export const getAttributesUploadsPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfAttributesUsed = planPermissionsUsed.attributeCredits;
+    const numOfAttributesAssigned = planPermissionsAssigned.attributeCredits;
+    const isAllAttributesUsed = numOfAttributesUsed >= numOfAttributesAssigned;
+    const remainingAttributes = numOfAttributesAssigned - numOfAttributesUsed;
+
+    return {
+      numOfAttributesUsed,
+      numOfAttributesAssigned,
+      isAllAttributesUsed,
+      remainingAttributes,
+    };
+  } catch (error) {
+    console.log('Unable to get attributes uploads plan permissions', error);
+    throw new Error(`Unable to get attributes uploads plan permissions: ${error.message}`);
   }
 };
 

@@ -89,7 +89,8 @@ export const paths = {
   },
 
   attributesUpload: {
-    root: '/attributes-upload',
+    root: '/attributes-uploads',
+    new: '/attributes-uploads/new',
   },
   smartlead: {
     root: '/smartlead',
