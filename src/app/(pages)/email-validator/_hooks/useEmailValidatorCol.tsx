@@ -4,7 +4,8 @@ import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
 import { fDate } from 'src/utils/format-time';
-import { EmailRevalidateButton, RenderCellStatus } from '../_components';
+import { EmailRevalidateButton } from '../_components/email-revalidate-button';
+import { RenderCellStatus } from '../_components/email-validator-rows';
 
 export const useEmailValidatorCol = () => {
   const handleDownloadCsv = useCallback((csvUrl?: string) => {
