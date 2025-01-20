@@ -1,11 +1,12 @@
 'use client';
 
 import { Icon } from '@iconify/react';
-import { Box, Card, Paper, Popover, Slider, Typography, useMediaQuery } from '@mui/material';
-import Link from 'next/link';
+import { Box, Card, Link, Paper, Popover, Slider, Typography, useMediaQuery } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 
 type SliderProps = {
   sliderTitle: string;
@@ -35,11 +36,14 @@ export const SliderItem = ({
 
   const maxValueAlert = (
     <Box sx={{ display: 'flex', gap: 1 }}>
-      <Typography variant="body1">
+      <Typography variant="subtitle2">
         Max engagement value of {engagementMax}% on your current plan.{' '}
       </Typography>
-      <Typography variant="body1" sx={{ color: 'primary' }}>
-        Upgrade your <Link href="/subscription">subscription</Link>
+      <Typography variant="subtitle2" sx={{ color: 'primary' }}>
+        Upgrade your{' '}
+        <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
+          subscription
+        </Link>
       </Typography>
     </Box>
   );
@@ -234,11 +238,14 @@ export const SliderItem = ({
                 padding: '1rem',
               }}
             >
-              <Typography variant="body1" sx={{ textAlign: 'center' }}>
+              <Typography variant="subtitle1" sx={{ textAlign: 'center' }}>
                 Setting not enabled
               </Typography>
-              <Typography variant="body2" sx={{ textAlign: 'center' }}>
-                Update your <Link href="/subscription">subscription</Link>
+              <Typography variant="subtitle2" sx={{ textAlign: 'center' }}>
+                Upgrade your{' '}
+                <Link component={RouterLink} href={paths.checkout.root}>
+                  subscription
+                </Link>
               </Typography>
             </Paper>
           </Box>

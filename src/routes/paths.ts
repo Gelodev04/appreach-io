@@ -85,6 +85,7 @@ export const paths = {
 
   emailValidator: {
     root: '/email-validator',
+    new: '/email-validator/new',
   },
 
   attributesUpload: {

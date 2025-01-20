@@ -35,11 +35,6 @@ export function useNavData() {
             icon: <Iconify icon="pepicons-pop:seedling" />,
             disabled: isTrialExpired,
           },
-          // {
-          //   title: 'Emails',
-          //   path: paths.dashboard.emails.root,
-          //   icon: <Iconify icon="entypo:email" />,
-          // },
           {
             title: 'Email Validator',
             path: paths.emailValidator.root,
