@@ -40,7 +40,7 @@ const Table = ({
 
   const initialState = {
     pagination: {
-      paginationModel: { pageSize: 10 },
+      paginationModel: { pageSize: 25 },
     },
   };
 

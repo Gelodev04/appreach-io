@@ -99,6 +99,7 @@ export async function POST(request: Request) {
     if (isTrial) {
       signupParams.seeds = { assignedCount: 50 };
       signupParams.plan = {
+        customPlan: false,
         lookup_key: 'trial',
         status: TRIAL_STATUS.ACTIVE, // active or canceled which is also used in stripe
         start_date: new Date(),
@@ -110,12 +111,16 @@ export async function POST(request: Request) {
         senderProfiles: 1,
         senderAddresses: 1,
         verifyCredits: 0,
+        smartLeadAccounts: 5,
+        attributeCredits: 100,
       };
       signupParams.planPermissionsUsed = {
         seeds: 0,
         senderProfiles: 0,
         senderAddresses: 0,
         verifyCredits: 0,
+        attributeCredits: 0,
+        smartLeadAccounts: 0,
       };
 
       signupParams.planPermissionFeatures = {

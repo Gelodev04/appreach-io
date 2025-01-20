@@ -212,7 +212,7 @@ export default function SeedView({ seeds }: TSeedsView) {
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10 },
+                paginationModel: { pageSize: 25 },
               },
             }}
             onRowSelectionModelChange={(newSelectionModel) => {

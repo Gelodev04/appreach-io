@@ -202,7 +202,7 @@ export const HostListView = ({
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10 },
+                paginationModel: { pageSize: 25 },
               },
             }}
             onRowSelectionModelChange={(newSelectionModel) => {

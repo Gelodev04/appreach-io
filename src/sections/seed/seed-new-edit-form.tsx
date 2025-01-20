@@ -52,7 +52,7 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
     microsoftPersonal: Yup.number(),
     seedAccountsGenerator: Yup.number().max(
       numOfSeedsAssigned,
-      `Exceeded Max ${numOfSeedsAssigned} accounts`
+      `Exceeded ${numOfSeedsAssigned} assigned accounts`
     ),
   });
 
