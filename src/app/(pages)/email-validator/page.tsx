@@ -9,6 +9,8 @@ export const metadata = {
   title: 'Email Validator | Inbox Daddy',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const rows = await getAllEmailValidator();
   const emailValidatorPlanPermission = await getEmailValidatorPlanPermissions();
