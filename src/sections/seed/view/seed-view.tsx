@@ -27,8 +27,8 @@ import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 
 import { seedBatches } from '@prisma/client';
-import PopupWarningForAllUsedSeeds from 'src/app/(pages)/seeds/_components/popup-warning-used-seeds';
 import { useRouter } from 'next/navigation';
+import PopupWarningForAllUsedSeeds from 'src/app/(pages)/seeds/_components/popup-warning-used-seeds';
 import { deleteSeedsByIds } from 'src/services/db/seeds';
 import {
   RenderCellDateAdded,
@@ -50,12 +50,7 @@ type TSeedsView = {
   isAllSeedsUsed: boolean;
 };
 
-export default function SeedView({
-  seeds,
-  isAllSeedsUsed,
-  numOfSeedsAssigned,
-  numOfSeedsUsed,
-}: TSeedsView) {
+export default function SeedView({ seeds, isAllSeedsUsed }: TSeedsView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const settings = useSettingsContext();

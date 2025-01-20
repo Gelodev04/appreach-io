@@ -410,6 +410,7 @@ model emailValidator {
   id              String                        @id @default(auto()) @map("_id") @db.ObjectId
   download        EmailValidatorDownload
   hostId          String                        @db.ObjectId
+  hostName        String
   lastUpdated     DateTime                      @db.Date
   millionverifier EmailValidatorMillionverifier
   status          String

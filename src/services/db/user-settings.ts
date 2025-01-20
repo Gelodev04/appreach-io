@@ -192,6 +192,28 @@ export const getSeedsPlanPermissions = async () => {
   }
 };
 
+export const getEmailValidatorPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfCreditsUsed = planPermissionsUsed.verifyCredits;
+    const numOfCreditsAssigned = planPermissionsAssigned.verifyCredits;
+    const isAllCreditsUsed = numOfCreditsUsed >= numOfCreditsAssigned;
+    return {
+      numOfCreditsUsed,
+      numOfCreditsAssigned,
+      isAllCreditsUsed,
+    };
+  } catch (error) {
+    console.log('Unable to get seeds plan permissions', error);
+    throw new Error('Unable to get seeds plan permissions');
+  }
+};
+
 export const incrementSenderAddressesUsed = async () => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
