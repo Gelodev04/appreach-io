@@ -110,7 +110,7 @@ export const createSenderDomain = async ({
   domain: string;
   hostId: string;
   isVerified: boolean;
-  status: 'verified' | 'ready';
+  status?: 'verified' | 'ready';
   verifiedVia?: string;
 }) => {
   try {
