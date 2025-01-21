@@ -104,10 +104,14 @@ export const createSenderDomain = async ({
   domain,
   hostId,
   isVerified,
+  status = 'ready',
+  verifiedVia,
 }: {
   domain: string;
   hostId: string;
   isVerified: boolean;
+  status: 'verified' | 'ready';
+  verifiedVia?: string;
 }) => {
   try {
     const token = randomUUID();
@@ -121,8 +125,10 @@ export const createSenderDomain = async ({
         verified: isVerified,
         txtRecord: token,
         hostId,
-        status: 'ready',
+        status,
         domain,
+        verifiedVia,
+        dateVerified: isVerified ? new Date() : null,
       },
       select: {
         id: true,

@@ -9,6 +9,7 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridColumnVisibilityModel,
+  GridFilterModel,
   GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,

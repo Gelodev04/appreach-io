@@ -448,6 +448,8 @@ model senderAddresses {
   email         String    @unique
   verified      Boolean
   archived      Boolean
+  verifiedVia   String?
+  dateVerified  DateTime? @db.Date
 }
 
 model senderDomains {
@@ -459,6 +461,7 @@ model senderDomains {
   domain       String    @unique
   verified     Boolean
   dateVerified DateTime? @db.Date
+  verifiedVia  String?
 }
 
 model userSettings {

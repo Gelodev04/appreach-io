@@ -9,6 +9,13 @@ import { headers } from 'next/headers';
 import { signupWebhook } from 'src/services/webhook/signup-hook';
 import moment from 'moment-timezone';
 import { TRIAL_STATUS } from 'src/config-global';
+import { get } from 'lodash';
+import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
+import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
+import {
+  incrementSenderAddressesUsed,
+  incrementSenderProfilesUsed,
+} from 'src/services/db/user-settings';
 
 export async function POST(request: Request) {
   try {
@@ -151,7 +158,6 @@ export async function POST(request: Request) {
 
       return hostName;
     };
-
     const baseHostName = companyName.toLowerCase().replace(/\s+/g, '');
     const defaultHostName = await generateUniqueHostName(baseHostName);
     const defaultHostCrypt = generateHostCrypt(defaultHostName);
@@ -180,6 +186,35 @@ export async function POST(request: Request) {
 
     // Update the user with the new host ObjectId
     await db.collection('userSettings').updateOne({ _id: userId }, { $set: { hosts: [hostId] } });
+
+    await incrementSenderProfilesUsed();
+
+    const domain = email.split('@')[1]; // get the domain
+    const isSenderDomainExist = await getSenderByDomain(domain);
+    const isSenderEmailExist = await getSenderByEmail(email);
+
+    if (!isSenderDomainExist) {
+      await createSenderDomain({
+        domain,
+        hostId: hostId.toString(),
+        isVerified: true,
+        status: 'verified',
+        verifiedVia: 'signup',
+      });
+    }
+
+    if (!isSenderEmailExist) {
+      const senderAddress = await createSenderAddress({
+        email,
+        hostId: hostId.toString(),
+        isVerified: true,
+        status: 'verified',
+        verifiedVia: 'signup',
+      });
+      if (senderAddress) {
+        await incrementSenderAddressesUsed();
+      }
+    }
 
     // Get the current host from the request headers
     const host = headers().get('host');
