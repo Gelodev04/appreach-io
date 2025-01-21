@@ -16,7 +16,7 @@ export const createSenderAddress = async ({
   email: string;
   hostId: string;
   isVerified: boolean;
-  status: 'ready' | 'verified' | 'pending';
+  status?: 'ready' | 'verified' | 'pending';
   verifiedVia?: string;
 }) => {
   try {
