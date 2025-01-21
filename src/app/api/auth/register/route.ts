@@ -16,6 +16,7 @@ import {
   incrementSenderAddressesUsed,
   incrementSenderProfilesUsed,
 } from 'src/services/db/user-settings';
+import prisma from 'src/auth/lib/prisma/db-prisma';
 
 export async function POST(request: Request) {
   try {
@@ -187,7 +188,20 @@ export async function POST(request: Request) {
     // Update the user with the new host ObjectId
     await db.collection('userSettings').updateOne({ _id: userId }, { $set: { hosts: [hostId] } });
 
-    await incrementSenderProfilesUsed();
+    await prisma.userSettings.update({
+      where: {
+        id: userId.toString(),
+      },
+      data: {
+        planPermissionsUsed: {
+          update: {
+            senderProfiles: {
+              increment: 1,
+            },
+          },
+        },
+      },
+    });
 
     const domain = email.split('@')[1]; // get the domain
     const isSenderDomainExist = await getSenderByDomain(domain);
@@ -212,7 +226,20 @@ export async function POST(request: Request) {
         verifiedVia: 'signup',
       });
       if (senderAddress) {
-        await incrementSenderAddressesUsed();
+        await prisma.userSettings.update({
+          where: {
+            id: userId.toString(),
+          },
+          data: {
+            planPermissionsUsed: {
+              update: {
+                senderAddresses: {
+                  increment: 1,
+                },
+              },
+            },
+          },
+        });
       }
     }
 
