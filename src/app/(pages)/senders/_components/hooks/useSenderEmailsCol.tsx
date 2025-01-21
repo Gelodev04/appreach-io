@@ -40,9 +40,10 @@ function AssignedProfileDropdownFilter(props: ExtendedGridFilterInputValueProps)
   const handleFilterChange = (e: SelectChangeEvent<any>) => {
     applyValue({ ...item, value: e.target.value });
   };
+
   return (
     <Select
-      value={item?.value}
+      value={item?.value ?? ''}
       onChange={handleFilterChange}
       style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
       MenuProps={MenuProps}
@@ -61,11 +62,14 @@ const assignedProfileDropdownFilter = (options: any) => {
     {
       label: 'Equal',
       value: 'equal',
-      getApplyFilterFn: (filterItem) => (params) => {
-        console.log({ filterItem, params });
-        if (!filterItem.value) return true;
-
-        return filterItem.value === params.value;
+      getApplyFilterFn: (filterItem) => {
+        console.log({ filterItem });
+        if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+          return null;
+        }
+        return (params) => {
+          return params.value === filterItem.value;
+        };
       },
       InputComponent: AssignedProfileDropdownFilter,
       InputComponentProps: { options },
