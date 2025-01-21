@@ -28,8 +28,8 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
-    { label: 'Apollo', value: 'apollo' },
-    { label: 'GrowMeOrganic (Linkedin)', value: 'grow_me_organic' },
+    { label: 'Apollo', value: 'Apollo' },
+    { label: 'GrowMeOrganic (Linkedin)', value: 'GrowMeOrganic (Linkedin)' },
   ];
 
   const newHostSchema = Yup.object().shape({

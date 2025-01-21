@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { hosts } from '@prisma/client';
 import moment from 'moment-timezone';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -45,10 +46,13 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
     linksNotToClick: Yup.string(),
-    filterId: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
-      is: true,
-      then: (schema) => schema.required('Filter ID is required.'),
-    }),
+    filterId: Yup.string().when(
+      ['$planPermissions.planPermissionFeatures.replyMessage', '$updatedHostItem'],
+      {
+        is: (replyMessage: boolean, updatedHostItem: hosts) => replyMessage && !!updatedHostItem,
+        then: (schema) => schema.required('Filter ID is required.'),
+      }
+    ),
     replyPrompt: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
       is: true,
       then: (schema) => schema.required('Reply prompt is required'),
@@ -60,22 +64,34 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
     externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
     scrollMessage: planPermissions.planPermissionFeatures.scrollMessage
-      ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
+        : 50
       : 0,
     markImportant: planPermissions.planPermissionFeatures.markImportant
-      ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
+        : 50
       : 0,
     removeSpam: planPermissions.planPermissionFeatures.removeSpam
-      ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
+        : 50
       : 0,
     movePrimary: planPermissions.planPermissionFeatures.movePrimary
-      ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
+        : 50
       : 0,
     clickLink: planPermissions.planPermissionFeatures.clickLink
-      ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
+        : 50
       : 0,
     replyMessage: planPermissions.planPermissionFeatures.replyMessage
-      ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
+      ? currentItem
+        ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
+        : 50
       : 0,
     linksToClick: updatedHostItem?.engagementSettings?.linksToClick
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
@@ -94,7 +110,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
     defaultValues,
-    context: { planPermissions },
+    context: { planPermissions, updatedHostItem },
   });
 
   const {

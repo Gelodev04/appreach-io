@@ -5,7 +5,7 @@ import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ planPermissions }: HostProps) => {
+export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
   const enabled = planPermissions.planPermissionFeatures.replyMessage;
   return (
     <Stack spacing={7}>
@@ -41,13 +41,15 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
             minWidth: '300px',
           }}
         >
-          <RHFTextField
-            disabled={!enabled}
-            name="filterId"
-            label="Filter ID Key"
-            tooltipContent="Assign a unique identifier to filter out AI-generated replies."
-            tooltipID="filter-id-popover"
-          />
+          {currentItem && (
+            <RHFTextField
+              disabled={!enabled}
+              name="filterId"
+              label="Filter ID Key"
+              tooltipContent="Assign a unique identifier to filter out AI-generated replies."
+              tooltipID="filter-id-popover"
+            />
+          )}
         </Box>
 
         <SliderItem

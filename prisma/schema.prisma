@@ -157,6 +157,12 @@ type HostsLookerStudio {
   hasToRegenerate Boolean?
 }
 
+type HostsSmartLead {
+  notificationAddressArray String[]
+  apiKey                   String?
+  webhook                  String?
+}
+
 type HostsUserSettings {
   autoExcludeAddresses      String[]
   autoExcludeDomains        String[]
@@ -454,6 +460,7 @@ model hosts {
   hostCrypt          String
   userSettings       HostsUserSettings?
   lookerStudio       HostsLookerStudio?
+  smartlead          HostsSmartLead?
   engagementSettings HostsEngagementSettings?
 }
 
