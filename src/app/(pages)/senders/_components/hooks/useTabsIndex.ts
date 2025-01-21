@@ -5,6 +5,7 @@ export default function useTabsIndex() {
   const router = useRouter();
   const params = useSearchParams();
   const tableIndex = params.get('tableIndex');
+  const hostId = params.get('hostId');
   let value = 0;
 
   switch (tableIndex) {
@@ -22,8 +23,8 @@ export default function useTabsIndex() {
   }
 
   useEffect(() => {
-    if (!tableIndex) router.push('?tableIndex=0');
-  }, [router, tableIndex]);
+    if (!tableIndex && !hostId) router.push('?tableIndex=0');
+  }, [hostId, router, tableIndex]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     router.push(`?tableIndex=${newValue}`);

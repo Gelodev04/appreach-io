@@ -37,12 +37,22 @@ const Table = ({
   const [isPending, startTransition] = useTransition();
   const { columns } = useSendersEmailCol({ options, isArchived });
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const hostId = params.get('hostId');
 
   const initialState = {
     pagination: {
       paginationModel: { pageSize: 25 },
     },
+    filter: {},
   };
+
+  if (hostId) {
+    initialState.filter = {
+      filterModel: { items: [{ field: 'hostId', operator: 'equal', value: hostId }] },
+    };
+  }
+
+  console.log({ initialState });
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {

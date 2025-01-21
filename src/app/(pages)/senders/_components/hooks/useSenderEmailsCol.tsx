@@ -1,5 +1,5 @@
-import { GridColDef } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
+import { GridColDef, GridFilterInputValueProps, GridFilterOperator } from '@mui/x-data-grid';
+import { Box, Menu, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 import VerifyUnverifyIcon from '../verify-unverify-icon';
 import Reverify from '../buttons/reverify';
@@ -13,8 +13,68 @@ type TableColumnsType = {
     id: string;
   }[];
   isArchived?: boolean;
+  filteredProfile?: string;
 };
 
+interface ExtendedGridFilterInputValueProps extends GridFilterInputValueProps {
+  options: {
+    profile: string;
+    id: string;
+  }[];
+}
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function AssignedProfileDropdownFilter(props: ExtendedGridFilterInputValueProps) {
+  const { item, applyValue, options } = props;
+
+  const handleFilterChange = (e: SelectChangeEvent<any>) => {
+    applyValue({ ...item, value: e.target.value });
+  };
+  return (
+    <Select
+      value={item?.value}
+      onChange={handleFilterChange}
+      style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
+      MenuProps={MenuProps}
+    >
+      {options.map((profile) => (
+        <MenuItem value={profile.id} key={`${profile.id}`}>
+          {profile.profile}
+        </MenuItem>
+      ))}
+    </Select>
+  );
+}
+
+const assignedProfileDropdownFilter = (options: any) => {
+  const assignedProfileOperator: GridFilterOperator<any, number>[] = [
+    {
+      label: 'Equal',
+      value: 'equal',
+      getApplyFilterFn: (filterItem) => (params) => {
+        console.log({ filterItem, params });
+        if (!filterItem.value) return true;
+
+        return filterItem.value === params.value;
+      },
+      InputComponent: AssignedProfileDropdownFilter,
+      InputComponentProps: { options },
+      headerLabel: 'Assigned Profile',
+    },
+  ];
+
+  return assignedProfileOperator;
+};
 export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) => {
   const columns: GridColDef[] = [
     {
@@ -27,6 +87,7 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
       headerName: 'Assigned Profile',
       flex: 1,
       sortable: false,
+      filterOperators: assignedProfileDropdownFilter(options),
       renderCell: (params) => (
         <AssignedProfileDropdown params={params} options={options} type="email" />
       ),

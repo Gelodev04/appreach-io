@@ -190,7 +190,10 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
                     multiline
                     InputLabelProps={{ shrink: true }}
                   />
-                  <Link href="/senders" style={{ display: 'flex', textDecoration: 'none' }}>
+                  <Link
+                    href={`${paths.senders.root}?hostId=${currentItem.id}`}
+                    style={{ display: 'flex', textDecoration: 'none' }}
+                  >
                     <Button color="primary" variant="outlined">
                       Edit
                     </Button>
