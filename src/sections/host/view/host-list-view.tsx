@@ -206,6 +206,7 @@ export const HostListView = ({
                 paginationModel: { pageSize: 25 },
               },
             }}
+            sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             onRowSelectionModelChange={(newSelectionModel) => {
               setSelectedRowIds(newSelectionModel);
             }}

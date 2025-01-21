@@ -51,6 +51,7 @@ const Table = ({
     '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
       outline: 'none !important',
     },
+    '& .MuiTablePagination-root': { display: 'flex' },
   };
 
   const slots = {
