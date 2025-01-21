@@ -204,6 +204,7 @@ export default function SeedView({ seeds }: TSeedsView) {
           }}
         >
           <DataGrid
+            sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             checkboxSelection
             disableRowSelectionOnClick
             rows={seeds}
