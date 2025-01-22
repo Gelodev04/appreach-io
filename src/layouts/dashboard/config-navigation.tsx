@@ -48,7 +48,7 @@ export function useNavData() {
             disabled: isTrialExpired,
           },
           {
-            title: 'Smart Lead',
+            title: 'Smartlead',
             path: paths.smartlead.root,
             icon: <Iconify icon="material-symbols:graph-1" />,
             disabled: isTrialExpired,

@@ -15,13 +15,7 @@ import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { useEmailValidatorCol } from '../_hooks/useEmailValidatorCol';
 
-export const EmailValidatorTable = ({
-  rows,
-  isAllCreditsUsed,
-}: {
-  rows: GridRowsProp;
-  isAllCreditsUsed: boolean;
-}) => {
+export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
 
   const { columns } = useEmailValidatorCol();

@@ -14,7 +14,6 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
   const rows = await getEmailValidatorByHostIds();
   const emailValidatorPlanPermission = await getEmailValidatorPlanPermissions();
-  console.log(emailValidatorPlanPermission);
   return (
     <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <EmailValidatorHeader />
@@ -24,10 +23,7 @@ export default async function Page() {
         used={emailValidatorPlanPermission.numOfCreditsUsed}
         limit={emailValidatorPlanPermission.numOfCreditsAssigned}
       />
-      <EmailValidatorTable
-        rows={rows}
-        isAllCreditsUsed={emailValidatorPlanPermission.isAllCreditsUsed}
-      />
+      <EmailValidatorTable rows={rows} />
     </Container>
   );
 }

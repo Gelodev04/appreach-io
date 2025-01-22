@@ -2,15 +2,15 @@ import { useDropzone } from 'react-dropzone';
 
 import { alpha, styled } from '@mui/material/styles';
 // @mui
-import { Box, Stack, Typography, StackProps } from '@mui/material';
+import { Box, Stack, StackProps, Typography } from '@mui/material';
 
 import { UploadIllustration } from 'src/assets/illustrations';
 
 //
 //
-import { UploadDocumentProps } from './types';
 import RejectionFiles from './errors-rejection-files';
 import SingleDocumentPreview from './preview-single-document';
+import { UploadDocumentProps } from './types';
 
 // ----------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ function Placeholder({ sx, ...other }: StackProps) {
         </Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Drop a file here or click
+          Drop a file here or click to
           <Typography
             variant="body2"
             component="span"
@@ -127,7 +127,7 @@ function Placeholder({ sx, ...other }: StackProps) {
           >
             browse
           </Typography>
-          thorough your machine
+          through your computer
         </Typography>
       </div>
     </Stack>

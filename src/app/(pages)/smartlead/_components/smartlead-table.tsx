@@ -13,12 +13,16 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
-import { useAttributesUploadsCol } from '../_hooks/useAttributesUploadsCol';
+import { useSmartleadCol } from '../_hooks/useSmartleadCol';
 
-export const AttributesUploadsTable = ({ rows }: { rows: GridRowsProp }) => {
+type OptionType = {
+  profile: string;
+  id: string;
+}[];
+
+export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options: OptionType }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
-  const { columns } = useAttributesUploadsCol();
+  const { columns } = useSmartleadCol(options);
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -33,7 +37,7 @@ export const AttributesUploadsTable = ({ rows }: { rows: GridRowsProp }) => {
       paginationModel: { pageSize: 10 },
     },
     sorting: {
-      sortModel: [{ field: 'dateUploaded', sort: 'desc' }],
+      sortModel: [{ field: 'lastUpdated', sort: 'desc' }],
     },
   };
 

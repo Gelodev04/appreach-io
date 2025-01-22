@@ -13,7 +13,6 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const rows = await getAttributesUploadsByHostIds();
-  console.log({ rows });
   const attributesUploadsPlanPermission = await getAttributesUploadsPlanPermissions();
   return (
     <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
@@ -24,10 +23,7 @@ export default async function Page() {
         used={attributesUploadsPlanPermission.numOfAttributesUsed}
         limit={attributesUploadsPlanPermission.numOfAttributesAssigned}
       />
-      <AttributesUploadsTable
-        rows={rows}
-        isAllCreditsUsed={attributesUploadsPlanPermission.isAllAttributesUsed}
-      />
+      <AttributesUploadsTable rows={rows} />
     </Container>
   );
 }

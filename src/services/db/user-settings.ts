@@ -241,6 +241,30 @@ export const getAttributesUploadsPlanPermissions = async () => {
   }
 };
 
+export const getSmartleadPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfSmartleadUsed = planPermissionsUsed.smartLeadAccounts;
+    const numOfSmartleadAssigned = planPermissionsAssigned.smartLeadAccounts;
+    const isAllSmartleadUsed = numOfSmartleadUsed >= numOfSmartleadAssigned;
+    const remainingSmartlead = numOfSmartleadAssigned - numOfSmartleadUsed;
+    return {
+      numOfSmartleadUsed,
+      numOfSmartleadAssigned,
+      isAllSmartleadUsed,
+      remainingSmartlead,
+    };
+  } catch (error) {
+    console.log('Unable to get email validator plan permissions', error);
+    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
+  }
+};
+
 export const incrementSenderAddressesUsed = async () => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });

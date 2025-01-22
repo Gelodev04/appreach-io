@@ -370,11 +370,12 @@ type WebMailSummary {
 }
 
 type UserSettingsPlanPermissions {
-  seeds            Int @default(0)
-  senderProfiles   Int @default(0)
-  senderAddresses  Int @default(0)
-  verifyCredits    Int @default(0)
-  attributeCredits Int @default(0)
+  seeds             Int @default(0)
+  senderProfiles    Int @default(0)
+  senderAddresses   Int @default(0)
+  verifyCredits     Int @default(0)
+  attributeCredits  Int @default(0)
+  smartLeadAccounts Int @default(0)
 }
 
 type UserSettingsPlanPermissionFeatures {
@@ -394,6 +395,11 @@ type EngagementFeatures {
   movePrimary   Boolean
   clickLink     Boolean
   replyMessage  Boolean
+}
+
+type SmartLead {
+  clientId Int
+  type     String
 }
 
 model emailAccounts {
@@ -462,6 +468,15 @@ model hosts {
   lookerStudio       HostsLookerStudio?
   smartlead          HostsSmartLead?
   engagementSettings HostsEngagementSettings?
+}
+
+model smartleadEmailAccounts {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  username    String
+  esp         String
+  hostId      String     @db.ObjectId
+  lastUpdated DateTime   @db.Date
+  smartlead   SmartLead?
 }
 
 model seedBatches {

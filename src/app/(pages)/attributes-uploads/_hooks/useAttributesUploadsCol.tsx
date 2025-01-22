@@ -27,6 +27,7 @@ export const useAttributesUploadsCol = () => {
       field: 'importName',
       headerName: 'Import name',
       minWidth: 250,
+      flex: 1,
     },
     {
       field: 'csvLink',
