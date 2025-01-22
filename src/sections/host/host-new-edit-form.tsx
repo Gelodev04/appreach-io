@@ -49,7 +49,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     filterId: Yup.string().when(
       ['$planPermissions.planPermissionFeatures.replyMessage', '$updatedHostItem'],
       {
-        is: (replyMessage: boolean, updatedHostItem: hosts) => replyMessage && !!updatedHostItem,
+        is: (replyMessage: boolean, item: hosts) => replyMessage && !!item,
         then: (schema) => schema.required('Filter ID is required.'),
       }
     ),
