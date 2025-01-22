@@ -59,40 +59,32 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     }),
   });
 
+  const getEngagementValue = (item: string) => {
+    if (
+      !planPermissions.planPermissionFeatures[
+        item as keyof typeof planPermissions.planPermissionFeatures
+      ]
+    )
+      return 0;
+    if (currentItem && updatedHostItem?.engagementSettings)
+      return (
+        (updatedHostItem?.engagementSettings[
+          item as keyof typeof updatedHostItem.engagementSettings
+        ] as number) ?? 0
+      );
+    return 50;
+  };
+
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
     externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
-    scrollMessage: planPermissions.planPermissionFeatures.scrollMessage
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
-        : 50
-      : 0,
-    markImportant: planPermissions.planPermissionFeatures.markImportant
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
-        : 50
-      : 0,
-    removeSpam: planPermissions.planPermissionFeatures.removeSpam
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
-        : 50
-      : 0,
-    movePrimary: planPermissions.planPermissionFeatures.movePrimary
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
-        : 50
-      : 0,
-    clickLink: planPermissions.planPermissionFeatures.clickLink
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
-        : 50
-      : 0,
-    replyMessage: planPermissions.planPermissionFeatures.replyMessage
-      ? currentItem
-        ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
-        : 50
-      : 0,
+    scrollMessage: getEngagementValue('scrollMessage'),
+    markImportant: getEngagementValue('markImportant'),
+    removeSpam: getEngagementValue('removeSpam'),
+    movePrimary: getEngagementValue('movePrimary'),
+    clickLink: getEngagementValue('clickLink'),
+    replyMessage: getEngagementValue('replyMessage'),
     linksToClick: updatedHostItem?.engagementSettings?.linksToClick
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
       : '',
