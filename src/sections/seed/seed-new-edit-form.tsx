@@ -44,7 +44,9 @@ export default function SeedNewEditForm({ currentItem }: Props) {
         label: Yup.string().required('Sender profile label is required'),
         value: Yup.string().required('Sender profile value is required'),
       })
-      .required('Sender profile is required'),
+      .required('Sender profile is required')
+      .nullable()
+      .notOneOf([null], 'Sender profile is required'),
     googleBusiness: Yup.number(),
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
@@ -57,10 +59,7 @@ export default function SeedNewEditForm({ currentItem }: Props) {
   const defaultValues = useMemo(
     () => ({
       name: currentItem?.name || format(new Date(), 'MMM do yyyy'),
-      hostId: {
-        label: '',
-        value: '',
-      },
+      hostId: null,
       googleBusiness: currentItem?.generate.esps.googleBusiness || 0,
       googlePersonal: currentItem?.generate.esps.googlePersonal || 0,
       microsoftBusiness: currentItem?.generate.esps.microsoftBusiness || 0,

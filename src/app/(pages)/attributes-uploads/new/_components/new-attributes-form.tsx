@@ -39,27 +39,26 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
         label: Yup.string().required('Sender profile label is required'),
         value: Yup.string().required('Sender profile value is required'),
       })
-      .required('Sender profile is required'),
+      .required('Sender profile is required')
+      .nullable()
+      .notOneOf([null], 'Sender profile is required'),
     importSource: Yup.object()
       .shape({
         label: Yup.string().required('Import Source label is required'),
         value: Yup.string().required('Import Source value is required'),
       })
-      .required('Import Source is required'),
+      .required('Import Source is required')
+      .nullable()
+      .notOneOf([null], 'Import Source is required'),
     updateExisting: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: format(new Date(), 'MMM do yyyy'),
-      hostId: {
-        label: '',
-        value: '',
-      },
-      importSource: {
-        label: '',
-        value: '',
-      },
+      hostId: null,
+      importSource: null,
+      updateExisting: false,
     }),
     []
   );

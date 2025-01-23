@@ -15,6 +15,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { UploadFile } from 'src/services/db/email-validator';
 import * as Yup from 'yup';
 
 export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -35,16 +36,15 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
         label: Yup.string().required('Sender profile label is required'),
         value: Yup.string().required('Sender profile value is required'),
       })
-      .required('Sender profile is required'),
+      .required('Sender profile is required')
+      .nullable()
+      .notOneOf([null], 'Sender profile is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: format(new Date(), 'MMM do yyyy'),
-      hostId: {
-        label: '',
-        value: '',
-      },
+      hostId: null,
     }),
     []
   );
@@ -60,7 +60,22 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log({ data });
+    if (!file) {
+      alert('file is required');
+      return;
+    }
+    console.log({ data, file });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await UploadFile(formData);
+
+      console.log('File uploaded successfully', res);
+    } catch (error) {
+      console.error('File upload failed', error);
+    }
   });
 
   const handleDrop = useCallback((acceptedFiles: File[]) => {
