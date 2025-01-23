@@ -36,7 +36,6 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
   const { seedAccounts, totalSeedAccounts: maxSeedAccounts } = useGetSeedAccounts();
-  console.log({ seedAccounts, maxSeedAccounts });
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
   const newHostSchema = Yup.object().shape({

@@ -52,8 +52,6 @@ const Table = ({
     };
   }
 
-  console.log({ initialState });
-
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
       outline: 'none !important',

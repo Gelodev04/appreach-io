@@ -63,7 +63,6 @@ const assignedProfileDropdownFilter = (options: any) => {
       label: 'Equal',
       value: 'equal',
       getApplyFilterFn: (filterItem) => {
-        console.log({ filterItem });
         if (!filterItem.field || !filterItem.value || !filterItem.operator) {
           return null;
         }

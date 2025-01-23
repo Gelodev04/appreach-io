@@ -11,7 +11,7 @@ export default async function HostsEditPage({ params }: { params: { hostId: stri
   const { hostId } = params;
   const host = await getHostById(hostId);
   const emails = await getVerifiedSenderAddressByHostId(hostId);
-  console.log({ emails });
+
   const planPermissions = await getUserSettings({
     planPermissionsAssigned: true,
     planPermissionFeatures: true,

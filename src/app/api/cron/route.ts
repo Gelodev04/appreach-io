@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       const [retain, ...remove] = records;
 
       const idsToRemove = remove.map((record) => record.id);
-      console.log({ idsToRemove });
+
       await prisma.senderAddresses.deleteMany({
         where: {
           id: {
