@@ -53,6 +53,8 @@ export function useGetSeedAccounts() {
         0
       )
     : 0;
+
+  console.log({ totalSeedAccounts });
   return {
     seedAccounts: (removeYahooPersonalSeedAcct as ISeedAccount[]) || [],
     seedAccountsLoading: !error && !data,

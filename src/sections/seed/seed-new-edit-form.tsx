@@ -35,7 +35,8 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const { seedAccounts } = useGetSeedAccounts();
+  const { seedAccounts, totalSeedAccounts: maxSeedAccounts } = useGetSeedAccounts();
+  console.log({ seedAccounts, maxSeedAccounts });
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
   const newHostSchema = Yup.object().shape({
@@ -119,56 +120,42 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
   };
 
   const handleTotalSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const total = parseInt(e.target.value, 10);
-    setValue('seedAccountsGenerator', total);
-
+    let accountToGenerate = parseInt(e.target.value, 10);
+    setValue('seedAccountsGenerator', accountToGenerate);
     const individualFields = [
       'googleBusiness',
       'googlePersonal',
       'microsoftBusiness',
       'microsoftPersonal',
     ];
-    const googleBusinessMax = seedAccounts[0];
-    const count = individualFields.length;
+    const sortedSeedsAccount = seedAccounts.sort((a, b) => a.amount - b.amount);
 
-    if (total < googleBusinessMax.amount) {
-      const distributedValue = Math.ceil(total / count);
-
-      individualFields.reduce((accTotal: number, field: string) => {
-        if (accTotal < distributedValue && accTotal > 0) {
-          setValue(field as any, accTotal);
-        } else if (accTotal <= 0) {
-          setValue(field as any, 0);
-        } else {
-          setValue(field as any, distributedValue);
-        }
-        accTotal -= distributedValue;
-
-        return accTotal;
-      }, total);
-    } else {
-      individualFields.reduce((accTotal: number, field: string, index) => {
+    if (maxSeedAccounts < accountToGenerate) {
+      individualFields.forEach((field) => {
         const fieldMax = seedAccounts.find((seed) => seed.name === field)?.amount || 0;
-        if (accTotal > fieldMax) {
-          setValue(field as any, fieldMax);
-        } else if (accTotal <= 0) {
-          setValue(field as any, 0);
-        } else {
-          const distributedValue = Math.ceil(accTotal / (count - (index + 1)));
-          if (accTotal < distributedValue && accTotal > 0) {
-            setValue(field as any, accTotal);
-          } else if (accTotal <= 0) {
-            setValue(field as any, 0);
-          } else {
-            setValue(field as any, distributedValue);
-          }
-          accTotal -= distributedValue;
-          return accTotal;
-        }
-        accTotal -= fieldMax;
+        setValue(field as any, fieldMax);
+      });
+    } else {
+      let remainingAccountToGenerate = accountToGenerate;
+      for (let index = 0; index < sortedSeedsAccount.length; index += 1) {
+        const currentSeedsAccount = sortedSeedsAccount[index];
+        const remainingSeedAccountsToSetValue = sortedSeedsAccount.length - index - 1;
+        accountToGenerate -= currentSeedsAccount.amount;
+        const checkDivisibleValueForRemainingAccountToSet =
+          accountToGenerate / remainingSeedAccountsToSetValue;
+        const isDistributable = checkDivisibleValueForRemainingAccountToSet > 1;
 
-        return accTotal;
-      }, total);
+        if (isDistributable) {
+          setValue(currentSeedsAccount.name as any, currentSeedsAccount.amount);
+          remainingAccountToGenerate -= currentSeedsAccount.amount;
+        } else {
+          const distributedValue = Math.ceil(
+            remainingAccountToGenerate / (remainingSeedAccountsToSetValue + 1)
+          );
+          setValue(currentSeedsAccount.name as any, distributedValue);
+          remainingAccountToGenerate -= distributedValue;
+        }
+      }
     }
   };
 
