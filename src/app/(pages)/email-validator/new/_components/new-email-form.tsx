@@ -15,7 +15,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import { UploadFile } from 'src/services/db/email-validator';
+import { uploadFile } from 'src/services/gcloud';
 import * as Yup from 'yup';
 
 export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -70,7 +70,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await UploadFile(formData);
+      const res = await uploadFile(formData);
 
       console.log('File uploaded successfully', res);
     } catch (error) {
