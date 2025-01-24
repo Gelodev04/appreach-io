@@ -9,6 +9,7 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridColumnVisibilityModel,
+  GridFilterModel,
   GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -192,9 +193,10 @@ export const HostListView = ({
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10 },
+                paginationModel: { pageSize: 25 },
               },
             }}
+            sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             onRowSelectionModelChange={(newSelectionModel) => {
               setSelectedRowIds(newSelectionModel);
             }}
