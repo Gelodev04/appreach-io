@@ -27,8 +27,8 @@ import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 
 import { seedBatches } from '@prisma/client';
+
 import { useRouter } from 'next/navigation';
-import PopupWarningForAllUsedSeeds from 'src/app/(pages)/seeds/_components/popup-warning-used-seeds';
 import { deleteSeedsByIds } from 'src/services/db/seeds';
 import {
   RenderCellDateAdded,
@@ -45,10 +45,9 @@ const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 type TSeedsView = {
   seeds: seedBatches[];
-  isAllSeedsUsed: boolean;
 };
 
-export default function SeedView({ seeds, isAllSeedsUsed }: TSeedsView) {
+export default function SeedView({ seeds }: TSeedsView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const settings = useSettingsContext();
@@ -91,19 +90,6 @@ export default function SeedView({ seeds, isAllSeedsUsed }: TSeedsView) {
   );
 
   const handleClickAddNewSeed = () => {
-    if (isAllSeedsUsed) {
-      enqueueSnackbar({
-        message: <PopupWarningForAllUsedSeeds />,
-        variant: 'warning',
-        persist: true,
-        anchorOrigin: {
-          horizontal: 'center',
-          vertical: 'top',
-        },
-      });
-
-      return null;
-    }
     router.push(paths.seed.new);
   };
 

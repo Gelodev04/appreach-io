@@ -6,7 +6,12 @@ import { useSettingsContext } from 'src/components/settings';
 import { paths } from 'src/routes/paths';
 import SeedNewEditForm from '../seed-new-edit-form';
 
-export default function SeedCreateView() {
+type TSeedsView = {
+  numOfSeedsAssigned: number;
+  userHosts: { label: string; value: string }[];
+};
+
+export default function SeedCreateView({ numOfSeedsAssigned, userHosts }: TSeedsView) {
   const settings = useSettingsContext();
 
   return (
@@ -25,7 +30,7 @@ export default function SeedCreateView() {
         }}
       />
 
-      <SeedNewEditForm />
+      <SeedNewEditForm numOfSeedsAssigned={numOfSeedsAssigned} userHosts={userHosts} />
     </Container>
   );
 }

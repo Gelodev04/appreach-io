@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material';
 import { SeedCreateView } from 'src/sections/seed/view';
+import { getUserHosts } from 'src/services/db/hosts';
 import { getSeedsPlanPermissions } from 'src/services/db/user-settings';
 
 export const metadata = {
@@ -9,11 +9,14 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function HostsCreatePage() {
+  const hosts = await getUserHosts();
   const seedsPlanPermission = await getSeedsPlanPermissions();
+  const hostOptions = hosts.map((host) => ({ label: host.host, value: host.id }));
 
-  if (seedsPlanPermission.isAllSeedsUsed) {
-    // TODO: Add upgrade plan link
-    return <Typography>Upgrade your plan to add more seeds</Typography>;
-  }
-  return <SeedCreateView />;
+  return (
+    <SeedCreateView
+      userHosts={hostOptions}
+      numOfSeedsAssigned={seedsPlanPermission.numOfSeedsAssigned}
+    />
+  );
 }
