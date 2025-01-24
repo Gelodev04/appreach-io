@@ -10,12 +10,12 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-import EmptyContent from 'src/components/empty-content';
-import { useState, useTransition } from 'react';
-import Iconify from 'src/components/iconify';
-import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 import { useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
+import { useState, useTransition } from 'react';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 
 import { decrementSenderAddressesUsed } from 'src/services/db/user-settings';
 import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';

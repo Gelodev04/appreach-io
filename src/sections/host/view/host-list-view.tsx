@@ -22,6 +22,7 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
+import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -29,7 +30,6 @@ import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
-import SenderProfileUsed from '../host-sender-profile-used';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
@@ -59,18 +59,6 @@ export const HostListView = ({
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
-
-  const handleDeleteRow = useCallback(
-    async (id: string) => {
-      try {
-        await deleteUserHost([id]);
-        enqueueSnackbar('Item deleted', { variant: 'warning' });
-      } catch (error) {
-        enqueueSnackbar('Error deleting item', { variant: 'error' });
-      }
-    },
-    [enqueueSnackbar]
-  );
 
   const handleDeleteRows = useCallback(async () => {
     try {
@@ -182,9 +170,11 @@ export const HostListView = ({
             </Stack>
           }
         />
-        <SenderProfileUsed
-          numOfProfileAssigned={numOfProfileAssigned}
-          numOfProfileUsed={numOfProfileUsed}
+
+        <ItemUsageDisplay
+          itemName="Profiles"
+          used={numOfProfileUsed}
+          limit={numOfProfileAssigned}
         />
         <Card
           sx={{

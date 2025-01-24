@@ -1,7 +1,7 @@
 import { Link, Typography } from '@mui/material';
 
-import React from 'react';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
+import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 
 const PopupWarningForAllUsedSeeds = () => {
@@ -13,7 +13,7 @@ const PopupWarningForAllUsedSeeds = () => {
   return (
     <Typography variant="body2">
       You have used all your seeds,{' '}
-      <Link href={paths.checkout.root} variant="subtitle2">
+      <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
         Upgrade your subscription{' '}
       </Link>
       or{' '}

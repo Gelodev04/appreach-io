@@ -1,10 +1,11 @@
-import { Box, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
+import { Box, Link, Stack, Typography } from '@mui/material';
 import { RHFTextField } from 'src/components/hook-form';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ planPermissions }: HostProps) => {
+export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
   const enabled = planPermissions.planPermissionFeatures.replyMessage;
   return (
     <Stack spacing={7}>
@@ -25,7 +26,9 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
         ) : (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
             <span>
-              <Link href="/subscription">Upgrade</Link>
+              <Link component={RouterLink} href={paths.checkout.root}>
+                Upgrade
+              </Link>
             </span>{' '}
             to enable this feature.
           </Typography>
@@ -38,13 +41,15 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
             minWidth: '300px',
           }}
         >
-          <RHFTextField
-            disabled={!enabled}
-            name="filterId"
-            label="Filter ID Key"
-            tooltipContent="Assign a unique identifier to filter out AI-generated replies."
-            tooltipID="filter-id-popover"
-          />
+          {currentItem && (
+            <RHFTextField
+              disabled={!enabled}
+              name="filterId"
+              label="Filter ID Key"
+              tooltipContent="Assign a unique identifier to filter out AI-generated replies."
+              tooltipID="filter-id-popover"
+            />
+          )}
         </Box>
 
         <SliderItem

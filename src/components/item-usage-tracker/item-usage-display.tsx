@@ -1,25 +1,24 @@
 import { Box, Typography } from '@mui/material';
 
-type TSenderProfileUsed = {
-  numOfProfileAssigned: number;
-  numOfProfileUsed: number;
+type ItemUsageDisplayProps = {
+  itemName: string;
+  used: number;
+  limit: number;
 };
 
-const SenderProfileUsed = ({ numOfProfileAssigned, numOfProfileUsed }: TSenderProfileUsed) => {
+export const ItemUsageDisplay = ({ itemName, used, limit }: ItemUsageDisplayProps) => {
   return (
     <Box sx={{ paddingY: 1 }}>
       <Typography sx={{ fontWeight: 600, textAlign: 'end' }}>
-        Profiles used:{' '}
+        {itemName} used:{' '}
         <Typography component="span" sx={{ fontWeight: 800 }}>
-          {numOfProfileUsed}{' '}
+          {used}{' '}
         </Typography>
         of{' '}
         <Typography component="span" sx={{ fontWeight: 800 }}>
-          {numOfProfileAssigned}
+          {limit}
         </Typography>
       </Typography>
     </Box>
   );
 };
-
-export default SenderProfileUsed;

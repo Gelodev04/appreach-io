@@ -7,18 +7,17 @@ export default function NavBottom() {
     <Stack
       sx={{
         px: 2,
-        py: 5,
         textAlign: 'center',
       }}
     >
       <Stack alignItems="center">
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', width: '170px', height: '170px' }}>
           <Image
             src="/assets/illustrations/dashboard/menu-graphic.png"
-            width={200}
-            height={200}
             alt="Envelope"
             priority
+            objectFit="cover"
+            layout="fill"
           />
         </Box>
       </Stack>
