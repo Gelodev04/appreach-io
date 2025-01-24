@@ -136,9 +136,31 @@ type EmailValidatorUpload {
   listName     String
 }
 
+type AttributeUploadsEntityResults {
+  total   Int @default(0)
+  created Int @default(0)
+  ignored Int @default(0)
+  updated Int @default(0)
+}
+
+type AttributeUploadsResults {
+  company        AttributeUploadsEntityResults
+  errors         Int                           @default(0)
+  person         AttributeUploadsEntityResults
+  columnsMapped  String
+  columnsSkipped String
+  rowErrors      String[]
+}
+
 type HostsLookerStudio {
   embedUrl        String
   hasToRegenerate Boolean?
+}
+
+type HostsSmartLead {
+  notificationAddressArray String[]
+  apiKey                   String?
+  webhook                  String?
 }
 
 type HostsUserSettings {
@@ -348,10 +370,12 @@ type WebMailSummary {
 }
 
 type UserSettingsPlanPermissions {
-  seeds           Int @default(0)
-  senderProfiles  Int @default(0)
-  senderAddresses Int @default(0)
-  verifyCredits   Int @default(0)
+  seeds             Int @default(0)
+  senderProfiles    Int @default(0)
+  senderAddresses   Int @default(0)
+  verifyCredits     Int @default(0)
+  attributeCredits  Int @default(0)
+  smartLeadAccounts Int @default(0)
 }
 
 type UserSettingsPlanPermissionFeatures {
@@ -371,6 +395,11 @@ type EngagementFeatures {
   movePrimary   Boolean
   clickLink     Boolean
   replyMessage  Boolean
+}
+
+type SmartLead {
+  clientId Int
+  type     String
 }
 
 model emailAccounts {
@@ -410,10 +439,25 @@ model emailValidator {
   id              String                        @id @default(auto()) @map("_id") @db.ObjectId
   download        EmailValidatorDownload
   hostId          String                        @db.ObjectId
+  hostName        String
   lastUpdated     DateTime                      @db.Date
   millionverifier EmailValidatorMillionverifier
   status          String
   upload          EmailValidatorUpload
+}
+
+model attributeUploads {
+  id             String                   @id @default(auto()) @map("_id") @db.ObjectId
+  csvLink        String
+  dateUploaded   DateTime                 @db.Date
+  hostId         String                   @db.ObjectId
+  hostName       String
+  importName     String
+  importSource   String
+  lastUpdated    DateTime                 @db.Date
+  results        AttributeUploadsResults?
+  status         String
+  updateExisting Boolean
 }
 
 model hosts {
@@ -422,7 +466,17 @@ model hosts {
   hostCrypt          String
   userSettings       HostsUserSettings?
   lookerStudio       HostsLookerStudio?
+  smartlead          HostsSmartLead?
   engagementSettings HostsEngagementSettings?
+}
+
+model smartleadEmailAccounts {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  username    String
+  esp         String
+  hostId      String     @db.ObjectId
+  lastUpdated DateTime   @db.Date
+  smartlead   SmartLead?
 }
 
 model seedBatches {

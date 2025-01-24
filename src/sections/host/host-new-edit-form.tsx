@@ -3,10 +3,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { hosts } from '@prisma/client';
 import moment from 'moment-timezone';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,38 +46,45 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     replyMessage: Yup.number().required('This field cannot be empty.'),
     linksToClick: Yup.string(),
     linksNotToClick: Yup.string(),
-    filterId: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
-      is: true,
-      then: (schema) => schema.required('Filter ID is required.'),
-    }),
+    filterId: Yup.string().when(
+      ['$planPermissions.planPermissionFeatures.replyMessage', '$updatedHostItem'],
+      {
+        is: (replyMessage: boolean, item: hosts) => replyMessage && !!item,
+        then: (schema) => schema.required('Filter ID is required.'),
+      }
+    ),
     replyPrompt: Yup.string().when('$planPermissions.planPermissionFeatures.replyMessage', {
       is: true,
       then: (schema) => schema.required('Reply prompt is required'),
     }),
   });
 
+  const getEngagementValue = (item: string) => {
+    if (
+      !planPermissions.planPermissionFeatures[
+        item as keyof typeof planPermissions.planPermissionFeatures
+      ]
+    )
+      return 0;
+    if (currentItem && updatedHostItem?.engagementSettings)
+      return (
+        (updatedHostItem?.engagementSettings[
+          item as keyof typeof updatedHostItem.engagementSettings
+        ] as number) ?? 0
+      );
+    return 50;
+  };
+
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
     timezone: updatedHostItem?.userSettings?.timezone ?? '',
     externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
-    scrollMessage: planPermissions.planPermissionFeatures.scrollMessage
-      ? (updatedHostItem?.engagementSettings?.scrollMessage ?? 0)
-      : 0,
-    markImportant: planPermissions.planPermissionFeatures.markImportant
-      ? (updatedHostItem?.engagementSettings?.markImportant ?? 0)
-      : 0,
-    removeSpam: planPermissions.planPermissionFeatures.removeSpam
-      ? (updatedHostItem?.engagementSettings?.removeSpam ?? 0)
-      : 0,
-    movePrimary: planPermissions.planPermissionFeatures.movePrimary
-      ? (updatedHostItem?.engagementSettings?.movePrimary ?? 0)
-      : 0,
-    clickLink: planPermissions.planPermissionFeatures.clickLink
-      ? (updatedHostItem?.engagementSettings?.clickLink ?? 0)
-      : 0,
-    replyMessage: planPermissions.planPermissionFeatures.replyMessage
-      ? (updatedHostItem?.engagementSettings?.replyMessage ?? 0)
-      : 0,
+    scrollMessage: getEngagementValue('scrollMessage'),
+    markImportant: getEngagementValue('markImportant'),
+    removeSpam: getEngagementValue('removeSpam'),
+    movePrimary: getEngagementValue('movePrimary'),
+    clickLink: getEngagementValue('clickLink'),
+    replyMessage: getEngagementValue('replyMessage'),
     linksToClick: updatedHostItem?.engagementSettings?.linksToClick
       ? updatedHostItem.engagementSettings?.linksToClick.join(', ')
       : '',
@@ -95,7 +102,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
   const methods = useForm({
     resolver: yupResolver(newHostSchema),
     defaultValues,
-    context: { planPermissions },
+    context: { planPermissions, updatedHostItem },
   });
 
   const {
@@ -152,8 +159,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <Card>
-            {!mdUp && <CardHeader title="Properties" />}
-
             <Stack spacing={3} sx={{ p: 3 }}>
               <Box
                 columnGap={2}
@@ -201,6 +206,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
             </Stack>
           </Card>
         </Grid>
+
         <Grid xs={12} md={4}>
           <Stack
             alignItems={mdUp ? 'flex-start' : 'center'}

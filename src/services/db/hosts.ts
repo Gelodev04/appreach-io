@@ -103,6 +103,9 @@ export const createHost = async (data: UpdateHostData) => {
     const normalizedData = {
       host: data.host,
       hostCrypt,
+      smartlead: {
+        webhook: `https://api.outreachmagic.io/KIs96Yu9HQSy/${hostCrypt}`,
+      },
       userSettings: {
         timezone: data.timezone,
       },
