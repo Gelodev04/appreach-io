@@ -69,8 +69,8 @@ export const useSmartleadCol = (options: OptionType) => {
       headerName: 'Actions',
       headerAlign: 'left',
       align: 'left',
-      renderCell: () => {
-        return <DeleteSmartLeadButton />;
+      renderCell: (params) => {
+        return <DeleteSmartLeadButton id={params.row.id} />;
       },
       sortable: false,
       filterable: false,
