@@ -1,10 +1,12 @@
 'use client';
 
 import { Icon } from '@iconify/react';
-import { Box, Button, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Box, Button, IconButton, Tooltip, useTheme } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { deleteSmartleadById } from 'src/services/db/smartlead';
 
 export const DeleteSmartLeadButton = ({ id }: { id: string }) => {
   const confirmDelete = useBoolean();
@@ -12,34 +14,26 @@ export const DeleteSmartLeadButton = ({ id }: { id: string }) => {
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
-    try {
-      startTransition(async () => {
-        console.log('Deleting...');
-      });
-    } catch (error) {
-      throw new Error('Error on archiving. Please contact support');
-    }
+    startTransition(async () => {
+      const res = await deleteSmartleadById(id);
+      if (res?.error) {
+        enqueueSnackbar(res.error, {
+          variant: 'error',
+        });
+      } else {
+        enqueueSnackbar('Item deleted successfully', {
+          variant: 'success',
+        });
+      }
+    });
   };
 
   return (
     <>
       <Tooltip title="Delete email" placement="top">
         <Box sx={{ p: 0.5, position: 'relative' }}>
-          {isPending && ( // Show progress only when pending
-            <CircularProgress
-              size={38} // Set size larger than the button
-              sx={{
-                color: theme.palette.grey[300],
-                position: 'absolute',
-                zIndex: 1,
-              }}
-            />
-          )}
-          <IconButton size="medium" onClick={confirmDelete.onTrue} disabled={isPending}>
-            <Icon
-              icon="material-symbols:delete"
-              color={isPending ? theme.palette.grey[300] : theme.palette.error.dark}
-            />
+          <IconButton size="medium" onClick={confirmDelete.onTrue}>
+            <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
           </IconButton>
         </Box>
       </Tooltip>
@@ -57,6 +51,7 @@ export const DeleteSmartLeadButton = ({ id }: { id: string }) => {
           <Button
             variant="contained"
             color="error"
+            disabled={isPending}
             onClick={() => {
               handleDelete();
               confirmDelete.onFalse();

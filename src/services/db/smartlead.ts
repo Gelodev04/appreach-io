@@ -1,6 +1,8 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { paths } from 'src/routes/paths';
 import { getUserSettings } from './user-settings';
 
 export const getSmartleadsByHostIds = async () => {
@@ -21,5 +23,20 @@ export const getSmartleadsByHostIds = async () => {
   } catch (error) {
     console.error('Error on getting smartlead:', error); // Log the actual error
     throw new Error(`Unable to get smartlead: ${error.message}`);
+  }
+};
+
+export const deleteSmartleadById = async (id: string) => {
+  try {
+    await prisma.smartleadEmailAccounts.delete({
+      where: { id },
+    });
+
+    revalidatePath(paths.smartlead.root);
+  } catch (error) {
+    console.log('Unable to delete', error);
+    return {
+      error: error.message,
+    };
   }
 };
