@@ -8,7 +8,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { deleteSmartleadById } from 'src/services/db/smartlead';
 
-export const DeleteSmartLeadButton = ({ id }: { id: string }) => {
+export const DeleteSmartLeadButton = ({ id, username }: { id: string; username: string }) => {
   const confirmDelete = useBoolean();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
@@ -44,7 +44,7 @@ export const DeleteSmartLeadButton = ({ id }: { id: string }) => {
         title="Delete"
         content={
           <>
-            Are you sure want to delete email: <strong> email </strong>?
+            Are you sure want to delete user: <strong> {username} </strong>?
           </>
         }
         action={

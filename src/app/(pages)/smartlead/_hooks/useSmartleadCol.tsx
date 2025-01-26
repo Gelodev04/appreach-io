@@ -70,7 +70,7 @@ export const useSmartleadCol = (options: OptionType) => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return <DeleteSmartLeadButton id={params.row.id} />;
+        return <DeleteSmartLeadButton id={params.row.id} username={params.row.username} />;
       },
       sortable: false,
       filterable: false,
