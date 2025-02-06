@@ -1,22 +1,17 @@
 import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
+import moment from 'moment-timezone';
+import { headers } from 'next/headers';
 import clientPromise from 'src/auth/lib/mongodb/db-mongo';
+import prisma from 'src/auth/lib/prisma/db-prisma';
 import { sendEmail } from 'src/auth/lib/sendgrid';
+import { TRIAL_STATUS } from 'src/config-global';
 import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
-import { headers } from 'next/headers';
-import { signupWebhook } from 'src/services/webhook/signup-hook';
-import moment from 'moment-timezone';
-import { TRIAL_STATUS } from 'src/config-global';
-import { get } from 'lodash';
-import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
-import {
-  incrementSenderAddressesUsed,
-  incrementSenderProfilesUsed,
-} from 'src/services/db/user-settings';
-import prisma from 'src/auth/lib/prisma/db-prisma';
+import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
+import { signupWebhook } from 'src/services/webhook/signup-hook';
 
 export async function POST(request: Request) {
   try {

@@ -1,11 +1,11 @@
+import { Box, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridColDef, GridFilterInputValueProps, GridFilterOperator } from '@mui/x-data-grid';
-import { Box, Menu, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import Archive from '../buttons/archived';
+import DeleteSender from '../buttons/delete';
+import Reverify from '../buttons/reverify';
+import Unarchived from '../buttons/unarchived';
 import AssignedProfileDropdown from '../tables/assigned-profile-dd';
 import VerifyUnverifyIcon from '../verify-unverify-icon';
-import Reverify from '../buttons/reverify';
-import DeleteSender from '../buttons/delete';
-import Unarchived from '../buttons/unarchived';
-import Archive from '../buttons/archived';
 
 type TableColumnsType = {
   options: {

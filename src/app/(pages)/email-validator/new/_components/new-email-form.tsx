@@ -80,7 +80,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
           );
 
           if (hasEmailColumn) {
-            console.log('Has email column: ' + hasEmailColumn);
+            console.log(`Has email column: ${hasEmailColumn}`);
             console.log('Parsed CSV result:', result);
             setFileError(null);
           } else {
