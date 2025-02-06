@@ -6,6 +6,7 @@ import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/mate
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { enqueueSnackbar } from 'notistack';
 import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -73,7 +74,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       formData.append('file', file);
 
       Papa.parse(file, {
-        complete: (result) => {
+        complete: async (result) => {
           const headers = result.meta.fields; // Get column names from the header
           const hasEmailColumn = headers?.some(
             (header) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
@@ -82,6 +83,15 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
           if (hasEmailColumn) {
             console.log(`Has email column: ${hasEmailColumn}`);
             console.log('Parsed CSV result:', result);
+
+            const res = await uploadFile(formData);
+
+            if (res?.error) {
+              enqueueSnackbar(res.error, { variant: 'error', persist: true });
+            } else {
+              enqueueSnackbar('Uploaded successfully');
+            }
+
             setFileError(null);
           } else {
             setFileError('CSV file must have an email column.');
@@ -90,9 +100,6 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
         header: true, // Ensure that the first row is treated as headers
         skipEmptyLines: true,
       });
-
-      const res = await uploadFile(formData);
-      console.log('File uploaded successfully', res);
     } catch (error) {
       console.error('File upload failed', error);
     }

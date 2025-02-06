@@ -7,10 +7,15 @@ export const uploadFile = async (form: FormData) => {
   try {
     const file = form.get('file') as File;
 
+    const jsonString = atob(env.G_SERVICE_ACCOUNT_KEY!);
+
+    // Parse JSON string into a JSON object
+    const jsonObject = JSON.parse(jsonString);
+
     const buffer = await file.arrayBuffer();
     const storage = new Storage({
       projectId: env.G_PROJECT_ID,
-      keyFilename: env.G_SERVICE_ACCOUNT_KEY,
+      keyFilename: jsonObject,
     });
 
     const bucket = storage.bucket(process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!);
@@ -24,9 +29,8 @@ export const uploadFile = async (form: FormData) => {
     const url = `https://storage.googleapis.com/${bucket.name}/${gcsFile.name}`;
 
     console.log({ url });
-    return true;
   } catch (error) {
     console.error('Error on uploading file:', error);
-    throw new Error(`Unable to upload file: ${error.message}`);
+    return { error: 'Error on uploading file.' };
   }
 };
