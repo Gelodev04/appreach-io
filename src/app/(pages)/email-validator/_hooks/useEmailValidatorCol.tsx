@@ -50,7 +50,7 @@ export const useEmailValidatorCol = () => {
           <Tooltip title="Download CSV" placement="top">
             <Button
               startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
-              onClick={() => handleDownloadCsv(params.row.download?.csvDownload)}
+              onClick={() => handleDownloadCsv(params?.row?.download?.csvDownload)}
               size="small"
               sx={{ zIndex: 20, px: 1 }}
             >
@@ -68,8 +68,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        console.log(params);
-        return params.row.download.unique_emails;
+        return params?.row?.download?.unique_emails;
       },
     },
     {
@@ -80,7 +79,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.download.verified;
+        return params?.row?.download?.verified;
       },
     },
     {
@@ -91,7 +90,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.download.catch_all;
+        return params?.row?.download?.catch_all;
       },
     },
     {
@@ -102,7 +101,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.download.invalid;
+        return params?.row?.download?.invalid;
       },
     },
     {
@@ -113,7 +112,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.download.disposable;
+        return params?.row?.download?.disposable;
       },
     },
     {
@@ -124,7 +123,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.download.unknown;
+        return params?.row?.download?.unknown;
       },
     },
     {

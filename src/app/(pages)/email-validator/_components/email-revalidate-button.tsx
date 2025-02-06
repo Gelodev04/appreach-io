@@ -2,9 +2,8 @@
 
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
-import axios from 'axios';
 import { useTransition } from 'react';
-import { env } from 'src/data/env/server';
+import { emailValidatorWebhook } from 'src/services/db/email-validator';
 
 export const EmailRevalidateButton = () => {
   const theme = useTheme();
@@ -13,7 +12,7 @@ export const EmailRevalidateButton = () => {
 
   const handleVerify = () => {
     startTransition(async () => {
-      await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
+      await emailValidatorWebhook();
     });
   };
   return (

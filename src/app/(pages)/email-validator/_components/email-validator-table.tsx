@@ -36,8 +36,6 @@ export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
     },
   };
 
-  console.log({ rows });
-
   const slots = {
     toolbar: () => (
       <GridToolbarContainer>

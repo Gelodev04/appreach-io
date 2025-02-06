@@ -4,22 +4,22 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import axios from 'axios';
 import { format } from 'date-fns';
+import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import UploadDocument from 'src/components/upload/upload-document';
-import { env } from 'src/data/env/server';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 
 import { paths } from 'src/routes/paths';
-import { createEmailValidator } from 'src/services/db/email-validator';
+import { createEmailValidator, emailValidatorWebhook } from 'src/services/db/email-validator';
 import { incrementVerifyCreditsUsed } from 'src/services/db/user-settings';
 import { uploadFile } from 'src/services/gcloud';
 import { CreateEmailValidatorPropType } from 'src/types/email-validator';
@@ -36,6 +36,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
 
+  const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
   const newHostSchema = Yup.object().shape({
@@ -103,13 +104,15 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
           return;
         }
 
-        // Trigger email validator webhook
-        await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
-        enqueueSnackbar('Uploaded successfully');
-
         // Increment verify credits used
         await incrementVerifyCreditsUsed();
 
+        // Trigger email validator webhook
+        await emailValidatorWebhook();
+        enqueueSnackbar('Uploaded successfully');
+
+        router.push(paths.emailValidator.root);
+        revalidatePath(paths.emailValidator.root);
         setFileError(null);
       } else {
         setFileError('CSV file must have an email column.');

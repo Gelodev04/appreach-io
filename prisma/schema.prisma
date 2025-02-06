@@ -98,7 +98,7 @@ type EmailAccountsWebMailError {
 
 type EmailValidatorDownload {
   catch_all     Int
-  csvDownload   String
+  csvDownload   String?
   disposable    Int
   invalid       Int
   ok            Int

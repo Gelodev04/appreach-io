@@ -1,6 +1,8 @@
 'use server';
 
+import axios from 'axios';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { env } from 'src/data/env/server';
 import { CreateEmailValidatorPropType } from 'src/types/email-validator';
 import { getUserSettings } from './user-settings';
 
@@ -40,5 +42,13 @@ export const createEmailValidator = async (data: CreateEmailValidatorPropType, f
     });
   } catch (error) {
     return { error: `Unable to create email validator: ${error.message}` };
+  }
+};
+
+export const emailValidatorWebhook = async () => {
+  try {
+    await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
+  } catch (error) {
+    throw new Error('Error on email validator webhook.');
   }
 };
