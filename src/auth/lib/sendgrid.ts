@@ -12,7 +12,7 @@ export const sendEmail = async (data: EmailData, templateId: string) => {
   const msg: sgMail.MailDataRequired = {
     from: {
       email: 'no-reply@outreachmagic.io',
-      name: 'Inbox Daddy',
+      name: 'Outreach Magic',
     },
     templateId,
     ...data,

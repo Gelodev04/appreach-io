@@ -1,7 +1,7 @@
 import SubscriptionSuccessView from 'src/sections/subscription/view/subscription-success-view';
 
 export const metadata = {
-  title: 'Thank You | Inbox Daddy',
+  title: 'Thank You | Outreach Magic',
 };
 
 export default function Page() {

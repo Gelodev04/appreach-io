@@ -207,7 +207,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         price={STRIPE.subscriptions.starter.price}
         features={[
           'Send up to 100 emails daily to our seed list',
-          'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
@@ -224,7 +224,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         price={STRIPE.subscriptions.established.price}
         features={[
           'Send up to 500 emails daily to our seed list',
-          'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
           'Includes 5 sender profile',
           'Email and live chat support included',
         ]}
@@ -241,7 +241,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
         features={[
           'Send 500+ emails daily to our seed list',
-          'Inbox Daddy unique reporting to identify what elements are hurting your deliverability​',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
           'Think of us as part of your team',
           '1-on-1 zoom calls',
         ]}

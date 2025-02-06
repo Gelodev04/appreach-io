@@ -1,6 +1,7 @@
 import 'src/global.css';
 
 import { SessionProvider } from 'next-auth/react';
+import Script from 'next/script';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import ProgressBar from 'src/components/progress-bar';
@@ -8,7 +9,6 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-import Script from 'next/script';
 
 export const viewport = {
   themeColor: '#000000',
@@ -18,7 +18,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Inbox Daddy',
+  title: 'Outreach Magic',
   description:
     'Leverage our powerful email deliverability tools to ensure your emails land directly in the primary inbox. ',
   keywords: 'react,material,kit,application,dashboard,admin,template',

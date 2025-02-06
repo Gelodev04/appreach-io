@@ -4,7 +4,7 @@ import { NewAttributesForm } from './_components/new-attributes-form';
 import { NewAttributesUploadsHeader } from './_components/new-attributes-uploads-header';
 
 export const metadata = {
-  title: 'Upload a new attribute | Inbox Daddy',
+  title: 'Upload a new attribute | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

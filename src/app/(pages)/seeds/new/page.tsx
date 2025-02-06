@@ -3,7 +3,7 @@ import { getUserHosts } from 'src/services/db/hosts';
 import { getSeedsPlanPermissions } from 'src/services/db/user-settings';
 
 export const metadata = {
-  title: 'Generate seed list | Inbox Daddy',
+  title: 'Generate seed list | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

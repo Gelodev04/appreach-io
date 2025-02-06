@@ -1,7 +1,7 @@
 import { EmailsView } from 'src/sections/emails/view';
 
 export const metadata = {
-  title: 'Email Accounts | Inbox Daddy',
+  title: 'Email Accounts | Outreach Magic',
 };
 
 export default function Page() {

@@ -6,7 +6,7 @@ import { SmartleadHeader } from './_components/smartlead-header';
 import { SmartleadTable } from './_components/smartlead-table';
 
 export const metadata = {
-  title: 'Email Validator | Inbox Daddy',
+  title: 'Email Validator | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

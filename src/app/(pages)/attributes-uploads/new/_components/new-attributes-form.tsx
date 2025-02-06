@@ -5,10 +5,8 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
-import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -18,13 +16,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import {
-  attributeUploadsWebhook,
-  createAttributeUploads,
-} from 'src/services/db/attributes-uploads';
-import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
-import { uploadFile } from 'src/services/gcloud';
-import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import * as Yup from 'yup';
 
@@ -71,7 +62,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       name: format(new Date(), 'MMM do yyyy'),
       hostId: null,
       importSource: null,
-      updateExisting: false,
+      updateExisting: true,
     }),
     []
   );
@@ -103,38 +94,40 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
         (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
       );
 
-      if (hasEmailColumn) {
-        // Upload file to Cloud Bucket
-        const gcbFile = await uploadFile(formData, 'attribute');
-        if (gcbFile?.error) {
-          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-          return;
-        }
+      console.log({ hasEmailColumn });
 
-        // Create document on database
-        const res = await createAttributeUploads(
-          data as CreateAttributeUploadsPropType,
-          gcbFile.url as string
-        );
+      // if (hasEmailColumn) {
+      //   // Upload file to Cloud Bucket
+      //   const gcbFile = await uploadFile(formData, 'attribute');
+      //   if (gcbFile?.error) {
+      //     enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
+      //     return;
+      //   }
 
-        if (res?.error) {
-          enqueueSnackbar(res.error, { variant: 'error', persist: true });
-          return;
-        }
+      //   // Create document on database
+      //   const res = await createAttributeUploads(
+      //     data as CreateAttributeUploadsPropType,
+      //     gcbFile.url as string
+      //   );
 
-        // Increment attribute credits used
-        await incrementAttributeCreditsUsed();
+      //   if (res?.error) {
+      //     enqueueSnackbar(res.error, { variant: 'error', persist: true });
+      //     return;
+      //   }
 
-        // Trigger attribute uploads webhook
-        await attributeUploadsWebhook();
-        enqueueSnackbar('Uploaded successfully');
+      //   // Increment attribute credits used
+      //   await incrementAttributeCreditsUsed();
 
-        router.push(paths.attributesUpload.root);
-        revalidatePath(paths.attributesUpload.root);
-        setFileError(null);
-      } else {
-        setFileError('CSV file must have an email column.');
-      }
+      //   // Trigger attribute uploads webhook
+      //   await attributeUploadsWebhook();
+      //   enqueueSnackbar('Uploaded successfully');
+
+      //   router.push(paths.attributesUpload.root);
+      //   revalidatePath(paths.attributesUpload.root);
+      //   setFileError(null);
+      // } else {
+      //   setFileError('CSV file must have an email column.');
+      // }
     } catch (error) {
       console.error('File upload failed', error);
     }
@@ -182,7 +175,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
               />
               <RHFSwitch
                 name="updateExisting"
-                label="Replace attributes on records with existing import name"
+                label="Replace existing attributes with new import name (recommended)"
               />
               <UploadDocument
                 file={file}

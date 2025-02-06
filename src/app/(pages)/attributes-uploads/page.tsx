@@ -6,7 +6,7 @@ import { AttributesUploadsHeader } from './_components/attributes-uploads-header
 import { AttributesUploadsTable } from './_components/attributes-uploads-table';
 
 export const metadata = {
-  title: 'Attributes Uploads | Inbox Daddy',
+  title: 'Attributes Uploads | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';
