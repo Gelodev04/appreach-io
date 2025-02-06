@@ -132,7 +132,7 @@ type EmailValidatorMillionverifier {
 
 type EmailValidatorUpload {
   csvUpload    String
-  dateUploaded DateTime @db.Date
+  dateUploaded DateTime? @default(now())
   listName     String
 }
 
@@ -436,13 +436,13 @@ model emailAccounts {
 }
 
 model emailValidator {
-  id              String                        @id @default(auto()) @map("_id") @db.ObjectId
-  download        EmailValidatorDownload
-  hostId          String                        @db.ObjectId
+  id              String                         @id @default(auto()) @map("_id") @db.ObjectId
+  download        EmailValidatorDownload?
+  hostId          String                         @db.ObjectId
   hostName        String
-  lastUpdated     DateTime                      @db.Date
-  millionverifier EmailValidatorMillionverifier
-  status          String
+  lastUpdated     DateTime?                      @default(now())
+  millionverifier EmailValidatorMillionverifier?
+  status          String?
   upload          EmailValidatorUpload
 }
 
