@@ -8,14 +8,12 @@ export const uploadFile = async (form: FormData) => {
     const file = form.get('file') as File;
 
     const jsonString = atob(env.G_SERVICE_ACCOUNT_KEY!);
-
-    // Parse JSON string into a JSON object
-    const jsonObject = JSON.parse(jsonString);
+    const credentials = JSON.parse(jsonString);
 
     const buffer = await file.arrayBuffer();
     const storage = new Storage({
       projectId: env.G_PROJECT_ID,
-      keyFilename: jsonObject,
+      credentials,
     });
 
     const bucket = storage.bucket(process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!);
