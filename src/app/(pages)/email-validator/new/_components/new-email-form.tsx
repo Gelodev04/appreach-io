@@ -74,6 +74,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       setFileError('CSV File is required.');
       return;
     }
+
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -87,7 +88,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
 
       if (hasEmailColumn) {
         // Upload file to Cloud Bucket
-        const gcbFile = await uploadFile(formData);
+        const gcbFile = await uploadFile(formData, 'email');
         if (gcbFile?.error) {
           enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
           return;

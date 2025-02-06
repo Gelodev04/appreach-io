@@ -6,6 +6,7 @@ import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -15,6 +16,10 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { createAttributeUploads } from 'src/services/db/attributes-uploads';
+import { uploadFile } from 'src/services/gcloud';
+import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
+import { parseCSVFile } from 'src/utils/csv-parse';
 import * as Yup from 'yup';
 
 export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -25,6 +30,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const { prefillMessage } = useSalesmateChat();
 
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<null | string>(null);
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
@@ -74,6 +80,40 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    if (!file) {
+      setFileError('CSV File is required.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const result = await parseCSVFile(file);
+      const headers = result.meta.fields;
+
+      const hasEmailColumn = headers?.some(
+        (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+      );
+
+      if (hasEmailColumn) {
+        // Upload file to Cloud Bucket
+        const gcbFile = await uploadFile(formData, 'attribute');
+        if (gcbFile?.error) {
+          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
+          return;
+        }
+
+        // Create document on database
+        const res = await createAttributeUploads(
+          data as CreateAttributeUploadsPropType,
+          gcbFile.url as string
+        );
+      }
+    } catch (error) {
+      console.error('File upload failed', error);
+    }
+
     console.log({ data });
   });
 
@@ -103,13 +143,19 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                 />
 
                 <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="hostId"
                   label="Choose sender profile"
                   placeholder="outreachmagic"
                   options={hostOptions}
                 />
               </Box>
-              <RHFAutocomplete name="importSource" label="Sourced from" options={sourceOptions} />
+              <RHFAutocomplete
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                name="importSource"
+                label="Sourced from"
+                options={sourceOptions}
+              />
               <RHFSwitch
                 name="updateExisting"
                 label="Replace attributes on records with existing import name"

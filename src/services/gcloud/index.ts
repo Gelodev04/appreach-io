@@ -3,7 +3,7 @@
 import { Storage } from '@google-cloud/storage';
 import { env } from 'src/data/env/server';
 
-export const uploadFile = async (form: FormData) => {
+export const uploadFile = async (form: FormData, type?: string) => {
   try {
     const file = form.get('file') as File;
 
@@ -16,7 +16,11 @@ export const uploadFile = async (form: FormData) => {
       credentials,
     });
 
-    const bucket = storage.bucket(process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!);
+    const bucket = storage.bucket(
+      type == 'email'
+        ? process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!
+        : process.env.G_BUCKET_NAME_ATTRIBUTE_UPLOADS!
+    );
     const gcsFile = bucket.file(file.name);
 
     await gcsFile.save(Buffer.from(buffer));
