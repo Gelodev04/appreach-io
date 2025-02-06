@@ -1,6 +1,6 @@
 import { DropzoneOptions } from 'react-dropzone';
 
-import { Theme, SxProps } from '@mui/material/styles';
+import { SxProps, Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -30,13 +30,13 @@ export interface UploadProps extends DropzoneOptions {
 // ---------------------------------------
 
 export interface UploadDocumentProps extends DropzoneOptions {
-  error?: boolean;
+  error?: boolean | string;
   sx?: SxProps<Theme>;
   thumbnail?: boolean;
   placeholder?: React.ReactNode;
   helperText?: React.ReactNode;
   disableMultiple?: boolean;
-  //
+  fileError?: string | null;
   file: (File | string) | null;
   onDelete?: (file: File | string) => void;
 }

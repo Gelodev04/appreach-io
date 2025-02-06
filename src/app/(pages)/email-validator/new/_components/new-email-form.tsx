@@ -6,6 +6,7 @@ import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/mate
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
@@ -14,6 +15,7 @@ import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
+
 import { paths } from 'src/routes/paths';
 import { uploadFile } from 'src/services/gcloud';
 import * as Yup from 'yup';
@@ -26,6 +28,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
   const { prefillMessage } = useSalesmateChat();
 
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<null | string>(null);
 
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
@@ -61,17 +64,34 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
 
   const onSubmit = handleSubmit(async (data) => {
     if (!file) {
-      alert('file is required');
+      setFileError('CSV File is required.');
       return;
     }
-    console.log({ data, file });
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await uploadFile(formData);
+      Papa.parse(file, {
+        complete: (result) => {
+          const headers = result.meta.fields; // Get column names from the header
+          const hasEmailColumn = headers?.some(
+            (header) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+          );
 
+          if (hasEmailColumn) {
+            console.log('Has email column: ' + hasEmailColumn);
+            console.log('Parsed CSV result:', result);
+            setFileError(null);
+          } else {
+            setFileError('CSV file must have an email column.');
+          }
+        },
+        header: true, // Ensure that the first row is treated as headers
+        skipEmptyLines: true,
+      });
+
+      const res = await uploadFile(formData);
       console.log('File uploaded successfully', res);
     } catch (error) {
       console.error('File upload failed', error);
@@ -80,6 +100,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
 
   const handleDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
+    setFileError(null);
   }, []);
 
   return (
@@ -104,6 +125,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
                 />
 
                 <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="hostId"
                   label="Choose sender profile"
                   placeholder="outreachmagic"
@@ -113,6 +135,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
 
               <Divider />
               <UploadDocument
+                fileError={fileError}
                 file={file}
                 onDrop={handleDrop}
                 onDelete={() => setFile(null)}

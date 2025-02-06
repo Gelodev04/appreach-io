@@ -2,7 +2,7 @@ import { useDropzone } from 'react-dropzone';
 
 import { alpha, styled } from '@mui/material/styles';
 // @mui
-import { Box, Stack, StackProps, Typography } from '@mui/material';
+import { Box, Paper, Stack, StackProps, Typography } from '@mui/material';
 
 import { UploadIllustration } from 'src/assets/illustrations';
 
@@ -35,7 +35,7 @@ export default function UploadDocument({
   disabled,
   error,
   helperText,
-  //
+  fileError,
   file,
   onDelete,
   sx,
@@ -81,6 +81,27 @@ export default function UploadDocument({
       {helperText && helperText}
 
       <RejectionFiles fileRejections={fileRejections} />
+
+      {fileError && (
+        <Paper
+          variant="outlined"
+          sx={{
+            py: 1,
+            px: 2,
+            mt: 3,
+            textAlign: 'left',
+            borderStyle: 'dashed',
+            borderColor: 'error.main',
+            bgcolor: (theme) => alpha(theme.palette.error.main, 0.08),
+          }}
+        >
+          <Box sx={{ my: 1 }}>
+            <Typography variant="subtitle2" noWrap>
+              {fileError}
+            </Typography>
+          </Box>
+        </Paper>
+      )}
     </Box>
   );
 }

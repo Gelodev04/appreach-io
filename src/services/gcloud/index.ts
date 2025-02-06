@@ -9,11 +9,11 @@ export const uploadFile = async (form: FormData) => {
 
     const buffer = await file.arrayBuffer();
     const storage = new Storage({
-      projectId: env.GCP_PROJECT_ID,
-      keyFilename: env.GCP_PRIVATE_KEY,
+      projectId: env.G_PROJECT_ID,
+      keyFilename: env.G_SERVICE_ACCOUNT_KEY,
     });
 
-    const bucket = storage.bucket(process.env.GCP_BUCKET_NAME_EMAIL_VALIDATOR!);
+    const bucket = storage.bucket(process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!);
     const gcsFile = bucket.file(file.name);
 
     await gcsFile.save(Buffer.from(buffer));

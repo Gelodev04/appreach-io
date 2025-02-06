@@ -11,9 +11,9 @@ const envSchema = Yup.object().shape({
   STRIPE_SECRET_KEY: Yup.string(),
   HOST_CRYPT_SECRET: Yup.string(),
   SIGNUP_WEBHOOK: Yup.string(),
-  GCP_PRIVATE_KEY: Yup.string(),
-  GCP_PROJECT_ID: Yup.string(),
-  GCP_BUCKET_NAME_EMAIL_VALIDATOR: Yup.string(),
+  G_SERVICE_ACCOUNT_KEY: Yup.string(),
+  G_PROJECT_ID: Yup.string(),
+  G_BUCKET_NAME_EMAIL_VALIDATOR: Yup.string(),
 });
 const parsedEnv = envSchema.validateSync(process.env, { abortEarly: false });
 
