@@ -7,7 +7,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -17,8 +16,8 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import { uploadFile } from 'src/services/gcloud';
 import { parseCSVFile } from 'src/utils/csv-parse';
+import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
 export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -96,16 +95,13 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
         (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
       );
 
-      console.log({ hasEmailColumn });
-
       if (hasEmailColumn) {
-        // Upload file to Cloud Bucket
-        const gcbFile = await uploadFile(formData, 'attribute');
-        console.log({ gcbFile });
-        if (gcbFile?.error) {
-          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-          // return;
-        }
+        await handleFileUpload(formData);
+
+        // if (gcbFile?.error) {
+        //   enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
+        // return;
+        // }
 
         // Create document on database
         // const res = await createAttributeUploads(
