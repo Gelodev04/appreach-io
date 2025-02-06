@@ -87,16 +87,16 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
 
       if (hasEmailColumn) {
         // Upload file to Cloud Bucket
-        const file = await uploadFile(formData);
-        if (file?.error) {
-          enqueueSnackbar(file.error, { variant: 'error', persist: true });
+        const gcbFile = await uploadFile(formData);
+        if (gcbFile?.error) {
+          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
           return;
         }
 
         // Create document on database
         const res = await createEmailValidator(
           data as CreateEmailValidatorPropType,
-          file.url as string
+          gcbFile.url as string
         );
 
         if (res?.error) {
