@@ -104,7 +104,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
         console.log({ gcbFile });
         if (gcbFile?.error) {
           enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-          return;
+          // return;
         }
 
         // Create document on database
