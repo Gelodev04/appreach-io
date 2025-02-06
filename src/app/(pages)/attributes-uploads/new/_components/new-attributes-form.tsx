@@ -7,6 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -16,6 +17,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { uploadFile } from 'src/services/gcloud';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import * as Yup from 'yup';
 
@@ -96,38 +98,39 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
       console.log({ hasEmailColumn });
 
-      // if (hasEmailColumn) {
-      //   // Upload file to Cloud Bucket
-      //   const gcbFile = await uploadFile(formData, 'attribute');
-      //   if (gcbFile?.error) {
-      //     enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-      //     return;
-      //   }
+      if (hasEmailColumn) {
+        // Upload file to Cloud Bucket
+        const gcbFile = await uploadFile(formData, 'attribute');
+        console.log({ gcbFile });
+        if (gcbFile?.error) {
+          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
+          return;
+        }
 
-      //   // Create document on database
-      //   const res = await createAttributeUploads(
-      //     data as CreateAttributeUploadsPropType,
-      //     gcbFile.url as string
-      //   );
+        // Create document on database
+        // const res = await createAttributeUploads(
+        //   data as CreateAttributeUploadsPropType,
+        //   gcbFile.url as string
+        // );
 
-      //   if (res?.error) {
-      //     enqueueSnackbar(res.error, { variant: 'error', persist: true });
-      //     return;
-      //   }
+        // if (res?.error) {
+        //   enqueueSnackbar(res.error, { variant: 'error', persist: true });
+        //   return;
+        // }
 
-      //   // Increment attribute credits used
-      //   await incrementAttributeCreditsUsed();
+        // // Increment attribute credits used
+        // await incrementAttributeCreditsUsed();
 
-      //   // Trigger attribute uploads webhook
-      //   await attributeUploadsWebhook();
-      //   enqueueSnackbar('Uploaded successfully');
+        // // Trigger attribute uploads webhook
+        // await attributeUploadsWebhook();
+        // enqueueSnackbar('Uploaded successfully');
 
-      //   router.push(paths.attributesUpload.root);
-      //   revalidatePath(paths.attributesUpload.root);
-      //   setFileError(null);
-      // } else {
-      //   setFileError('CSV file must have an email column.');
-      // }
+        // router.push(paths.attributesUpload.root);
+        // revalidatePath(paths.attributesUpload.root);
+        // setFileError(null);
+      } else {
+        setFileError('CSV file must have an email column.');
+      }
     } catch (error) {
       console.error('File upload failed', error);
     }
