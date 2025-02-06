@@ -17,7 +17,6 @@ import { useEmailValidatorCol } from '../_hooks/useEmailValidatorCol';
 
 export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const { columns } = useEmailValidatorCol();
 
   const sx: SxProps<Theme> = {
@@ -36,6 +35,8 @@ export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
       sortModel: [{ field: 'upload.dateUploaded', sort: 'desc' }],
     },
   };
+
+  console.log({ rows });
 
   const slots = {
     toolbar: () => (

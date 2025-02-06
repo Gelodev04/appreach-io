@@ -11,6 +11,7 @@ const envSchema = Yup.object().shape({
   STRIPE_SECRET_KEY: Yup.string(),
   HOST_CRYPT_SECRET: Yup.string(),
   SIGNUP_WEBHOOK: Yup.string(),
+  EMAIL_VALIDATOR_FUNCTION: Yup.string(),
   G_SERVICE_ACCOUNT_KEY: Yup.string(),
   G_PROJECT_ID: Yup.string(),
   G_BUCKET_NAME_EMAIL_VALIDATOR: Yup.string(),

@@ -26,7 +26,7 @@ export const uploadFile = async (form: FormData) => {
 
     const url = `https://storage.googleapis.com/${bucket.name}/${gcsFile.name}`;
 
-    console.log({ url });
+    return { url };
   } catch (error) {
     console.error('Error on uploading file:', error);
     return { error: 'Error on uploading file.' };

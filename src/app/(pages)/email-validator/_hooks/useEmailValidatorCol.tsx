@@ -68,6 +68,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
+        console.log(params);
         return params.row.download.unique_emails;
       },
     },

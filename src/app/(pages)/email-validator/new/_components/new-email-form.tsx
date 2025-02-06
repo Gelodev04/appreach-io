@@ -4,21 +4,26 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import axios from 'axios';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { enqueueSnackbar } from 'notistack';
-import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import UploadDocument from 'src/components/upload/upload-document';
+import { env } from 'src/data/env/server';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 
 import { paths } from 'src/routes/paths';
+import { createEmailValidator } from 'src/services/db/email-validator';
+import { incrementVerifyCreditsUsed } from 'src/services/db/user-settings';
 import { uploadFile } from 'src/services/gcloud';
+import { CreateEmailValidatorPropType } from 'src/types/email-validator';
+import { parseCSVFile } from 'src/utils/csv-parse';
 import * as Yup from 'yup';
 
 export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -68,38 +73,47 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       setFileError('CSV File is required.');
       return;
     }
-
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      Papa.parse(file, {
-        complete: async (result) => {
-          const headers = result.meta.fields; // Get column names from the header
-          const hasEmailColumn = headers?.some(
-            (header) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
-          );
+      const result = await parseCSVFile(file);
+      const headers = result.meta.fields;
 
-          if (hasEmailColumn) {
-            console.log(`Has email column: ${hasEmailColumn}`);
-            console.log('Parsed CSV result:', result);
+      const hasEmailColumn = headers?.some(
+        (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+      );
 
-            const res = await uploadFile(formData);
+      if (hasEmailColumn) {
+        // Upload file to Cloud Bucket
+        const file = await uploadFile(formData);
+        if (file?.error) {
+          enqueueSnackbar(file.error, { variant: 'error', persist: true });
+          return;
+        }
 
-            if (res?.error) {
-              enqueueSnackbar(res.error, { variant: 'error', persist: true });
-            } else {
-              enqueueSnackbar('Uploaded successfully');
-            }
+        // Create document on database
+        const res = await createEmailValidator(
+          data as CreateEmailValidatorPropType,
+          file.url as string
+        );
 
-            setFileError(null);
-          } else {
-            setFileError('CSV file must have an email column.');
-          }
-        },
-        header: true, // Ensure that the first row is treated as headers
-        skipEmptyLines: true,
-      });
+        if (res?.error) {
+          enqueueSnackbar(res.error, { variant: 'error', persist: true });
+          return;
+        }
+
+        // Trigger email validator webhook
+        await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
+        enqueueSnackbar('Uploaded successfully');
+
+        // Increment verify credits used
+        await incrementVerifyCreditsUsed();
+
+        setFileError(null);
+      } else {
+        setFileError('CSV file must have an email column.');
+      }
     } catch (error) {
       console.error('File upload failed', error);
     }
