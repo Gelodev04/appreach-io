@@ -12,7 +12,7 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(({ disabledLink = false, sx }
     <Box
       ref={ref}
       component="img"
-      src="/logo/wide_color.svg"
+      src="/logo/wide.svg"
       sx={{ width: 200, height: 40, cursor: 'pointer', ...sx }}
     />
   );

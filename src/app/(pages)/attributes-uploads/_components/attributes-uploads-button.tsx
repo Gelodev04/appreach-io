@@ -3,6 +3,7 @@
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { useTransition } from 'react';
+import { attributeUploadsWebhook } from 'src/services/db/attributes-uploads';
 
 export const AttributesUploadsButton = () => {
   const theme = useTheme();
@@ -11,7 +12,7 @@ export const AttributesUploadsButton = () => {
 
   const handleVerify = () => {
     startTransition(async () => {
-      console.log('Verifying..');
+      await attributeUploadsWebhook();
     });
   };
   return (
