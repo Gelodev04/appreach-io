@@ -330,3 +330,16 @@ export const incrementVerifyCreditsUsed = async () => {
     throw new Error('Unable to increment verify credits used');
   }
 };
+
+export const incrementAttributeCreditsUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfAttributeCreditsUsed = planPermissionsUsed.attributeCredits + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { attributeCredits: numOfAttributeCreditsUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment verify credits used');
+  }
+};

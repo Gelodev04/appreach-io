@@ -32,16 +32,26 @@ export const createAttributeUploads = async (
   file: string
 ) => {
   try {
-    console.log(data, file);
+    await prisma.attributeUploads.create({
+      data: {
+        csvLink: file,
+        hostId: data.hostId.value,
+        hostName: data.hostId.label,
+        importName: data.name,
+        importSource: data.importSource.value,
+        updateExisting: data.updateExisting,
+        status: 'ready',
+      },
+    });
   } catch (error) {
     return { error: `Unable to create email validator: ${error.message}` };
   }
 };
 
-export const emailValidatorWebhook = async () => {
+export const attributeUploadsWebhook = async () => {
   try {
-    await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
+    await axios.post(env.ATTRIBUTE_UPLOADS_FUNCTION as string);
   } catch (error) {
-    throw new Error('Error on email validator webhook.');
+    throw new Error('Error on attribute uploads webhook.');
   }
 };

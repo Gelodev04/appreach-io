@@ -5,7 +5,9 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
+import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +18,11 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import { createAttributeUploads } from 'src/services/db/attributes-uploads';
+import {
+  attributeUploadsWebhook,
+  createAttributeUploads,
+} from 'src/services/db/attributes-uploads';
+import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
 import { uploadFile } from 'src/services/gcloud';
 import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
 import { parseCSVFile } from 'src/utils/csv-parse';
@@ -32,6 +38,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
 
+  const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
     { label: 'Apollo', value: 'Apollo' },
@@ -109,16 +116,33 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
           data as CreateAttributeUploadsPropType,
           gcbFile.url as string
         );
+
+        if (res?.error) {
+          enqueueSnackbar(res.error, { variant: 'error', persist: true });
+          return;
+        }
+
+        // Increment attribute credits used
+        await incrementAttributeCreditsUsed();
+
+        // Trigger attribute uploads webhook
+        await attributeUploadsWebhook();
+        enqueueSnackbar('Uploaded successfully');
+
+        router.push(paths.attributesUpload.root);
+        revalidatePath(paths.attributesUpload.root);
+        setFileError(null);
+      } else {
+        setFileError('CSV file must have an email column.');
       }
     } catch (error) {
       console.error('File upload failed', error);
     }
-
-    console.log({ data });
   });
 
   const handleDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
+    setFileError(null);
   }, []);
 
   return (
@@ -162,6 +186,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
               />
               <UploadDocument
                 file={file}
+                fileError={fileError}
                 onDrop={handleDrop}
                 onDelete={() => setFile(null)}
                 accept={{ 'text/csv': [] }}

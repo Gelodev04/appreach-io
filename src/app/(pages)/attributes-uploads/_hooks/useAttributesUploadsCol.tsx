@@ -42,7 +42,7 @@ export const useAttributesUploadsCol = () => {
           <Tooltip title="Download CSV" placement="top">
             <Button
               startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
-              onClick={() => handleDownloadCsv(params.row.csvLink)}
+              onClick={() => handleDownloadCsv(params?.row?.csvLink)}
               size="small"
               sx={{ zIndex: 20, px: 1 }}
             >
@@ -60,7 +60,7 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.results.person.total;
+        return params?.row?.results?.person?.total;
       },
     },
     {
@@ -71,7 +71,7 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.results.company.total;
+        return params?.row?.results?.company?.total;
       },
     },
     {
@@ -82,7 +82,7 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params.row.results.errors;
+        return params?.row?.results?.errors;
       },
     },
     {
@@ -116,9 +116,9 @@ export const useAttributesUploadsCol = () => {
       headerName: 'Date Uploaded',
       sortable: true,
       minWidth: 190,
-      valueGetter: (params) => params.row.dateUploaded,
+      valueGetter: (params) => params?.row?.dateUploaded,
       renderCell: (params) => {
-        return <Typography>{fDate(params.row.dateUploaded)}</Typography>;
+        return <Typography>{fDate(params?.row?.dateUploaded)}</Typography>;
       },
       type: 'date',
     },

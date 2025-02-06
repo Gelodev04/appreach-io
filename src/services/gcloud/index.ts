@@ -17,7 +17,7 @@ export const uploadFile = async (form: FormData, type?: string) => {
     });
 
     const bucket = storage.bucket(
-      type == 'email'
+      type === 'email'
         ? process.env.G_BUCKET_NAME_EMAIL_VALIDATOR!
         : process.env.G_BUCKET_NAME_ATTRIBUTE_UPLOADS!
     );

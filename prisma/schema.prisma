@@ -144,11 +144,11 @@ type AttributeUploadsEntityResults {
 }
 
 type AttributeUploadsResults {
-  company        AttributeUploadsEntityResults
-  errors         Int                           @default(0)
-  person         AttributeUploadsEntityResults
-  columnsMapped  String
-  columnsSkipped String
+  company        AttributeUploadsEntityResults?
+  errors         Int                            @default(0)
+  person         AttributeUploadsEntityResults?
+  columnsMapped  String?
+  columnsSkipped String?
   rowErrors      String[]
 }
 
@@ -449,12 +449,12 @@ model emailValidator {
 model attributeUploads {
   id             String                   @id @default(auto()) @map("_id") @db.ObjectId
   csvLink        String
-  dateUploaded   DateTime                 @db.Date
+  dateUploaded   DateTime?                @default(now())
   hostId         String                   @db.ObjectId
   hostName       String
   importName     String
   importSource   String
-  lastUpdated    DateTime                 @db.Date
+  lastUpdated    DateTime?                @default(now())
   results        AttributeUploadsResults?
   status         String
   updateExisting Boolean
