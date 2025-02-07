@@ -12,7 +12,7 @@ const LogoSymbol = forwardRef<HTMLDivElement, LogoProps>(({ disabledLink = false
     <Box
       ref={ref}
       component="img"
-      src="/logo/symbol_color.svg"
+      src="/logo/icon.svg"
       sx={{ width: 54, height: 47, cursor: 'pointer', ...sx }}
     />
   );

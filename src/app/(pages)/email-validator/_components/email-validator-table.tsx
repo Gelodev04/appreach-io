@@ -17,7 +17,6 @@ import { useEmailValidatorCol } from '../_hooks/useEmailValidatorCol';
 
 export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-
   const { columns } = useEmailValidatorCol();
 
   const sx: SxProps<Theme> = {

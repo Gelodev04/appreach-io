@@ -2,7 +2,7 @@ import SubscriptionView from 'src/sections/subscription/view/subscription-view';
 import { getCurrentPlan } from 'src/services/stripe/subscription';
 
 export const metadata = {
-  title: 'Upgrade Plan | Inbox Daddy',
+  title: 'Upgrade Plan | Outreach Magic',
 };
 export const dynamic = 'force-dynamic';
 

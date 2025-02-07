@@ -1,7 +1,9 @@
 'use server';
 
-import { Storage } from '@google-cloud/storage';
+import axios from 'axios';
 import prisma from 'src/auth/lib/prisma/db-prisma';
+import { env } from 'src/data/env/server';
+import { CreateEmailValidatorPropType } from 'src/types/email-validator';
 import { getUserSettings } from './user-settings';
 
 export const getEmailValidatorByHostIds = async () => {
@@ -21,25 +23,32 @@ export const getEmailValidatorByHostIds = async () => {
     return emails;
   } catch (error) {
     console.error('Error on getting emails:', error); // Log the actual error
-    throw new Error(`Unable to get emails: ${error.message}`);
+    throw new Error('Unable to get emails');
   }
 };
 
-export const UploadFile = async (form: FormData) => {
+export const createEmailValidator = async (data: CreateEmailValidatorPropType, file: string) => {
   try {
-    const file = form.get('file') as File;
-
-    const buffer = await file.arrayBuffer();
-    const storage = new Storage();
-    const testFile = await storage
-      .bucket('email-validator-dev')
-      .file(file.name)
-      .save(Buffer.from(buffer));
-
-    console.log({ testFile });
-    return true;
+    await prisma.emailValidator.create({
+      data: {
+        hostId: data.hostId.value,
+        hostName: data.hostId.label,
+        upload: {
+          listName: data.name,
+          csvUpload: file,
+        },
+        status: 'ready',
+      },
+    });
   } catch (error) {
-    console.error('Error on uploading file:', error);
-    throw new Error(`Unable to upload file: ${error.message}`);
+    return { error: `Unable to create email validator: ${error.message}` };
+  }
+};
+
+export const emailValidatorWebhook = async () => {
+  try {
+    await axios.post(env.EMAIL_VALIDATOR_FUNCTION as string);
+  } catch (error) {
+    throw new Error('Error on email validator webhook.');
   }
 };

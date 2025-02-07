@@ -11,7 +11,7 @@ import {
 import SendersTabs from './_components/tabs/sender-tabs';
 
 export const metadata = {
-  title: 'Sender Addresses | Inbox Daddy',
+  title: 'Sender Addresses | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

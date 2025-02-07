@@ -6,6 +6,7 @@ import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -15,6 +16,8 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { parseCSVFile } from 'src/utils/csv-parse';
+import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
 export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -25,7 +28,9 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const { prefillMessage } = useSalesmateChat();
 
   const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<null | string>(null);
 
+  const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
     { label: 'Apollo', value: 'Apollo' },
@@ -58,7 +63,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       name: format(new Date(), 'MMM do yyyy'),
       hostId: null,
       importSource: null,
-      updateExisting: false,
+      updateExisting: true,
     }),
     []
   );
@@ -74,11 +79,62 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log({ data });
+    if (!file) {
+      setFileError('CSV File is required.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const result = await parseCSVFile(file);
+      const headers = result.meta.fields;
+
+      const hasEmailColumn = headers?.some(
+        (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+      );
+
+      if (hasEmailColumn) {
+        await handleFileUpload(formData);
+
+        // if (gcbFile?.error) {
+        //   enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
+        // return;
+        // }
+
+        // Create document on database
+        // const res = await createAttributeUploads(
+        //   data as CreateAttributeUploadsPropType,
+        //   gcbFile.url as string
+        // );
+
+        // if (res?.error) {
+        //   enqueueSnackbar(res.error, { variant: 'error', persist: true });
+        //   return;
+        // }
+
+        // // Increment attribute credits used
+        // await incrementAttributeCreditsUsed();
+
+        // // Trigger attribute uploads webhook
+        // await attributeUploadsWebhook();
+        // enqueueSnackbar('Uploaded successfully');
+
+        // router.push(paths.attributesUpload.root);
+        // revalidatePath(paths.attributesUpload.root);
+        // setFileError(null);
+      } else {
+        setFileError('CSV file must have an email column.');
+      }
+    } catch (error) {
+      console.error('File upload failed', error);
+    }
   });
 
   const handleDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
+    setFileError(null);
   }, []);
 
   return (
@@ -103,19 +159,26 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                 />
 
                 <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="hostId"
                   label="Choose sender profile"
                   placeholder="outreachmagic"
                   options={hostOptions}
                 />
               </Box>
-              <RHFAutocomplete name="importSource" label="Sourced from" options={sourceOptions} />
+              <RHFAutocomplete
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                name="importSource"
+                label="Sourced from"
+                options={sourceOptions}
+              />
               <RHFSwitch
                 name="updateExisting"
-                label="Replace attributes on records with existing import name"
+                label="Replace existing attributes with new import name (recommended)"
               />
               <UploadDocument
                 file={file}
+                fileError={fileError}
                 onDrop={handleDrop}
                 onDelete={() => setFile(null)}
                 accept={{ 'text/csv': [] }}

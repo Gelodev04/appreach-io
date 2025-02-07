@@ -6,7 +6,7 @@ import { EmailValidatorHeader } from './_components/email-validator-header';
 import { EmailValidatorTable } from './_components/email-validator-table';
 
 export const metadata = {
-  title: 'Email Validator | Inbox Daddy',
+  title: 'Email Validator | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

@@ -4,7 +4,7 @@ import { getProfilePlanPermissions, getUserSettings } from 'src/services/db/user
 import Header from '../../senders/email/_components/header';
 
 export const metadata = {
-  title: 'Register a new sender profile | Inbox Daddy',
+  title: 'Register a new sender profile | Outreach Magic',
 };
 
 export default async function HostsCreatePage() {

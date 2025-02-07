@@ -317,3 +317,29 @@ export const incrementSenderProfilesUsed = async () => {
     throw new Error('Unable to increment sender profiles used');
   }
 };
+
+export const incrementVerifyCreditsUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfVerifyCreditsUsed = planPermissionsUsed.verifyCredits + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { verifyCredits: numOfVerifyCreditsUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment verify credits used');
+  }
+};
+
+export const incrementAttributeCreditsUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfAttributeCreditsUsed = planPermissionsUsed.attributeCredits + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { attributeCredits: numOfAttributeCreditsUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment verify credits used');
+  }
+};

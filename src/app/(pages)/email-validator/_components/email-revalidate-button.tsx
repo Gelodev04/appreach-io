@@ -3,6 +3,7 @@
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { useTransition } from 'react';
+import { emailValidatorWebhook } from 'src/services/db/email-validator';
 
 export const EmailRevalidateButton = () => {
   const theme = useTheme();
@@ -11,7 +12,7 @@ export const EmailRevalidateButton = () => {
 
   const handleVerify = () => {
     startTransition(async () => {
-      console.log('Verifying..');
+      await emailValidatorWebhook();
     });
   };
   return (
