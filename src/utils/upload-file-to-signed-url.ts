@@ -16,12 +16,12 @@ const uploadFileToSignedUrl = async (file: File, signedUrl: string) => {
   }
 };
 
-export const handleFileUpload = async (form: FormData) => {
+export const handleFileUpload = async (form: FormData, type: string) => {
   try {
     const file = form.get('file') as File;
 
     // Step 1: Get signed URL
-    const signedUrl = await getSignedUrl(file.name);
+    const signedUrl = await getSignedUrl(file.name, type);
 
     // Step 2: Upload file directly to Cloud Storage
     if (!signedUrl.url) {
@@ -37,7 +37,7 @@ export const handleFileUpload = async (form: FormData) => {
       return { error: 'File upload failed.' };
     }
 
-    const permanentUrlData = await finalizeUpload(file.name);
+    const permanentUrlData = await finalizeUpload(file.name, type);
     return { url: permanentUrlData.url };
   } catch (error) {
     console.error('Error on uploading file:', error);

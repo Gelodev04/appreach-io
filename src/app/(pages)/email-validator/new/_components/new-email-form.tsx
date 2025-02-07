@@ -5,7 +5,6 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Divider, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
-import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
@@ -21,9 +20,9 @@ import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { createEmailValidator, emailValidatorWebhook } from 'src/services/db/email-validator';
 import { incrementVerifyCreditsUsed } from 'src/services/db/user-settings';
-import { uploadFile } from 'src/services/gcloud';
 import { CreateEmailValidatorPropType } from 'src/types/email-validator';
 import { parseCSVFile } from 'src/utils/csv-parse';
+import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
 export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -79,47 +78,46 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       const formData = new FormData();
       formData.append('file', file);
 
+      // Validate CSV structure
       const result = await parseCSVFile(file);
       const headers = result.meta.fields;
 
-      const hasEmailColumn = headers?.some(
-        (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+      if (!headers?.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
+        setFileError('CSV file must have an "email" column.');
+        return;
+      }
+
+      // Upload file to cloud bucket
+      const uploadResult = await handleFileUpload(formData, 'email');
+      if (uploadResult?.error) {
+        enqueueSnackbar(uploadResult.error, { variant: 'error', persist: true });
+        return;
+      }
+
+      // Create document in the database
+      const databaseResponse = await createEmailValidator(
+        data as CreateEmailValidatorPropType,
+        uploadResult.url as string
       );
 
-      if (hasEmailColumn) {
-        // Upload file to Cloud Bucket
-        const gcbFile = await uploadFile(formData, 'email');
-        if (gcbFile?.error) {
-          enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-          return;
-        }
-
-        // Create document on database
-        const res = await createEmailValidator(
-          data as CreateEmailValidatorPropType,
-          gcbFile.url as string
-        );
-
-        if (res?.error) {
-          enqueueSnackbar(res.error, { variant: 'error', persist: true });
-          return;
-        }
-
-        // Increment verify credits used
-        await incrementVerifyCreditsUsed();
-
-        // Trigger email validator webhook
-        await emailValidatorWebhook();
-        enqueueSnackbar('Uploaded successfully');
-
-        router.push(paths.emailValidator.root);
-        revalidatePath(paths.emailValidator.root);
-        setFileError(null);
-      } else {
-        setFileError('CSV file must have an email column.');
+      if (databaseResponse?.error) {
+        enqueueSnackbar(databaseResponse.error, { variant: 'error', persist: true });
+        return;
       }
+
+      // Increment attribute credits and trigger webhook
+      await Promise.all([incrementVerifyCreditsUsed(), emailValidatorWebhook()]);
+
+      enqueueSnackbar('Uploaded successfully');
+      router.push(paths.emailValidator.root);
+      router.refresh();
+      setFileError(null);
     } catch (error) {
       console.error('File upload failed', error);
+      enqueueSnackbar('An unexpected error occurred during the file upload.', {
+        variant: 'error',
+        persist: true,
+      });
     }
   });
 

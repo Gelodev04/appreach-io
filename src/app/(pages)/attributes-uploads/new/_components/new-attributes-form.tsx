@@ -105,7 +105,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       }
 
       // Upload file to cloud bucket
-      const uploadResult = await handleFileUpload(formData);
+      const uploadResult = await handleFileUpload(formData, 'attribute');
       if (uploadResult?.error) {
         enqueueSnackbar(uploadResult.error, { variant: 'error', persist: true });
         return;
