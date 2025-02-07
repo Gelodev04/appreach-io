@@ -6,7 +6,7 @@ const uploadFileToSignedUrl = async (file: File, signedUrl: string) => {
   try {
     const response = await axios.put(signedUrl, file, {
       headers: {
-        'Content-Type': file.type,
+        'Content-Type': 'application/octet-stream',
       },
     });
 
