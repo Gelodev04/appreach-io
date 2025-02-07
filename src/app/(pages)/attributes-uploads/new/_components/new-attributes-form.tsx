@@ -100,6 +100,8 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
       if (hasEmailColumn) {
         const gcbFile = await uploadFileBuffer(buffer, file.name, 'attribute');
+
+        console.log(gcbFile.url);
         // await handleFileUpload(formData);
 
         // if (gcbFile?.error) {
