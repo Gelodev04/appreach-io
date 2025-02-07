@@ -16,8 +16,8 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import { uploadFileBuffer } from 'src/services/gcloud';
 import { parseCSVFile } from 'src/utils/csv-parse';
-import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
 export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: number }) => {
@@ -88,6 +88,9 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       const formData = new FormData();
       formData.append('file', file);
 
+      const formDataFile = formData.get('file') as File;
+      const buffer = await formDataFile.arrayBuffer();
+
       const result = await parseCSVFile(file);
       const headers = result.meta.fields;
 
@@ -96,7 +99,8 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       );
 
       if (hasEmailColumn) {
-        await handleFileUpload(formData);
+        const gcbFile = await uploadFileBuffer(buffer, file.name, 'attribute');
+        // await handleFileUpload(formData);
 
         // if (gcbFile?.error) {
         //   enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
