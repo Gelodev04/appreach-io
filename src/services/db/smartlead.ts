@@ -22,7 +22,7 @@ export const getSmartleadsByHostIds = async () => {
     return smartlead;
   } catch (error) {
     console.error('Error on getting smartlead:', error); // Log the actual error
-    throw new Error(`Unable to get smartlead: ${error.message}`);
+    throw new Error(`Unable to get smartlead`);
   }
 };
 

@@ -29,7 +29,7 @@ export const getHostById = async (id: string, selectFields?: Prisma.userSettings
     return host;
   } catch (error) {
     console.error('Error on getting host:', error); // Log the actual error
-    throw new Error(`Unable to get host: ${error.message}`);
+    throw new Error(`Unable to get host`);
   }
 };
 
@@ -51,7 +51,7 @@ export const getHostByName = async (name: string) => {
     return host;
   } catch (error) {
     console.error('Error on getting host:', error); // Log the actual error
-    throw new Error(`Unable to get host: ${error.message}`);
+    throw new Error(`Unable to get host`);
   }
 };
 
@@ -87,7 +87,7 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
     return updatedHostData;
   } catch (error) {
     console.log('Unable to update sender status to ready.', error);
-    throw new Error(`Unable to update host: ${error.message}`);
+    throw new Error(`Unable to update host`);
   }
 };
 
@@ -146,7 +146,7 @@ export const createHost = async (data: UpdateHostData) => {
     }
   } catch (error) {
     console.log('Unable to create host.', error);
-    throw new Error(`Unable to create host: ${error.message}`);
+    throw new Error(`Unable to create host`);
   }
 };
 
