@@ -188,7 +188,80 @@ export const getSeedsPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get seeds plan permissions', error);
-    throw new Error('Unable to get seeds plan permissions');
+    throw new Error(`Unable to get seeds plan permissions: ${error.message}`);
+  }
+};
+
+export const getEmailValidatorPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfCreditsUsed = planPermissionsUsed.verifyCredits;
+    const numOfCreditsAssigned = planPermissionsAssigned.verifyCredits;
+    const isAllCreditsUsed = numOfCreditsUsed >= numOfCreditsAssigned;
+    const remainingCredits = numOfCreditsAssigned - numOfCreditsUsed;
+    return {
+      numOfCreditsUsed,
+      numOfCreditsAssigned,
+      isAllCreditsUsed,
+      remainingCredits,
+    };
+  } catch (error) {
+    console.log('Unable to get email validator plan permissions', error);
+    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
+  }
+};
+
+export const getAttributesUploadsPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfAttributesUsed = planPermissionsUsed.attributeCredits;
+    const numOfAttributesAssigned = planPermissionsAssigned.attributeCredits;
+    const isAllAttributesUsed = numOfAttributesUsed >= numOfAttributesAssigned;
+    const remainingAttributes = numOfAttributesAssigned - numOfAttributesUsed;
+
+    return {
+      numOfAttributesUsed,
+      numOfAttributesAssigned,
+      isAllAttributesUsed,
+      remainingAttributes,
+    };
+  } catch (error) {
+    console.log('Unable to get attributes uploads plan permissions', error);
+    throw new Error(`Unable to get attributes uploads plan permissions: ${error.message}`);
+  }
+};
+
+export const getSmartleadPlanPermissions = async () => {
+  try {
+    const { planPermissionsAssigned, planPermissionsUsed } = await getUserSettings({
+      plan: true,
+      planPermissionsAssigned: true,
+      planPermissionsUsed: true,
+    });
+
+    const numOfSmartleadUsed = planPermissionsUsed.smartLeadAccounts;
+    const numOfSmartleadAssigned = planPermissionsAssigned.smartLeadAccounts;
+    const isAllSmartleadUsed = numOfSmartleadUsed >= numOfSmartleadAssigned;
+    const remainingSmartlead = numOfSmartleadAssigned - numOfSmartleadUsed;
+    return {
+      numOfSmartleadUsed,
+      numOfSmartleadAssigned,
+      isAllSmartleadUsed,
+      remainingSmartlead,
+    };
+  } catch (error) {
+    console.log('Unable to get email validator plan permissions', error);
+    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
   }
 };
 
@@ -242,5 +315,31 @@ export const incrementSenderProfilesUsed = async () => {
     revalidatePath(paths.senders.root);
   } catch (error) {
     throw new Error('Unable to increment sender profiles used');
+  }
+};
+
+export const incrementVerifyCreditsUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfVerifyCreditsUsed = planPermissionsUsed.verifyCredits + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { verifyCredits: numOfVerifyCreditsUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment verify credits used');
+  }
+};
+
+export const incrementAttributeCreditsUsed = async () => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfAttributeCreditsUsed = planPermissionsUsed.attributeCredits + 1;
+    await updateUserSettings(
+      { planPermissionsUsed: { update: { attributeCredits: numOfAttributeCreditsUsed } } },
+      { planPermissionsUsed: true }
+    );
+  } catch (error) {
+    throw new Error('Unable to increment verify credits used');
   }
 };

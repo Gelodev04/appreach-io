@@ -1,6 +1,7 @@
 import 'src/global.css';
 
 import { SessionProvider } from 'next-auth/react';
+import Script from 'next/script';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import ProgressBar from 'src/components/progress-bar';
@@ -8,7 +9,6 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-import Script from 'next/script';
 
 export const viewport = {
   themeColor: '#000000',
@@ -18,16 +18,62 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Inbox Daddy',
+  title: 'Outreach Magic',
   description:
     'Leverage our powerful email deliverability tools to ensure your emails land directly in the primary inbox. ',
   keywords: 'react,material,kit,application,dashboard,admin,template',
   manifest: '/manifest.json',
   icons: [
-    { rel: 'icon', url: '/favicon/favicon.ico' },
-    { rel: 'icon', type: 'image/png', sizes: '16x16', url: '/favicon/favicon-16x16.png' },
-    { rel: 'icon', type: 'image/png', sizes: '32x32', url: '/favicon/favicon-32x32.png' },
-    { rel: 'apple-touch-icon', sizes: '180x180', url: '/favicon/apple-touch-icon.png' },
+    {
+      rel: 'icon',
+      media: '(prefers-color-scheme: light)',
+      url: '/favicon/light/favicon-light.ico', // Light mode favicon
+    },
+    {
+      rel: 'icon',
+      media: '(prefers-color-scheme: dark)',
+      url: '/favicon/dark/favicon-dark.ico', // Dark mode favicon
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      media: '(prefers-color-scheme: light)',
+      url: '/favicon/light/favicon-16x16-light.png', // Light mode 16x16 icon
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      media: '(prefers-color-scheme: dark)',
+      url: '/favicon/dark/favicon-16x16-dark.png', // Dark mode 16x16 icon
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      media: '(prefers-color-scheme: light)',
+      url: '/favicon/light/favicon-32x32-light.png', // Light mode 32x32 icon
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      media: '(prefers-color-scheme: dark)',
+      url: '/favicon/dark/favicon-32x32-dark.png', // Dark mode 32x32 icon
+    },
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      media: '(prefers-color-scheme: light)',
+      url: '/favicon/light/apple-touch-icon-light.png', // Light mode Apple touch icon
+    },
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      media: '(prefers-color-scheme: dark)',
+      url: '/favicon/dark/apple-touch-icon-dark.png', // Dark mode Apple touch icon
+    },
   ],
 };
 

@@ -1,8 +1,8 @@
 import { Container, Skeleton } from '@mui/material';
-import { getAddressesPlanPermissions, getSenderProfiles } from 'src/services/db/user-settings';
 import { Suspense } from 'react';
+import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
+import { getAddressesPlanPermissions, getSenderProfiles } from 'src/services/db/user-settings';
 import AddressesHeader from './_components/addresses-header';
-import SenderUsed from './_components/sender-used';
 import {
   ActiveSenderEmailsTable,
   ArchivedSenderEmailsTable,
@@ -11,7 +11,7 @@ import {
 import SendersTabs from './_components/tabs/sender-tabs';
 
 export const metadata = {
-  title: 'Sender Addresses | Inbox Daddy',
+  title: 'Sender Addresses | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';
@@ -22,7 +22,13 @@ const SendersAddressesPage = async () => {
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       <AddressesHeader isAllAddressedUsed={addressesPlanPermissions.isAllAddressesUsed} />
-      <SenderUsed {...addressesPlanPermissions} />
+
+      <ItemUsageDisplay
+        itemName="Senders"
+        used={addressesPlanPermissions.numOfAddressesUsed}
+        limit={addressesPlanPermissions.numOfAddressesAssigned}
+      />
+
       <SendersTabs
         activeSenderEmails={
           <Suspense fallback={<Skeleton height={650} />}>

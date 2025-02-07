@@ -10,12 +10,12 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-import EmptyContent from 'src/components/empty-content';
-import { useState, useTransition } from 'react';
-import Iconify from 'src/components/iconify';
-import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 import { useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
+import { useState, useTransition } from 'react';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { deleteSenderAddressById } from 'src/services/db/sender-addresses';
 
 import { decrementSenderAddressesUsed } from 'src/services/db/user-settings';
 import { useSendersEmailCol } from '../hooks/useSenderEmailsCol';
@@ -37,12 +37,20 @@ const Table = ({
   const [isPending, startTransition] = useTransition();
   const { columns } = useSendersEmailCol({ options, isArchived });
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const hostId = params.get('hostId');
 
   const initialState = {
     pagination: {
-      paginationModel: { pageSize: 10 },
+      paginationModel: { pageSize: 25 },
     },
+    filter: {},
   };
+
+  if (hostId) {
+    initialState.filter = {
+      filterModel: { items: [{ field: 'hostId', operator: 'equal', value: hostId }] },
+    };
+  }
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -51,6 +59,7 @@ const Table = ({
     '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
       outline: 'none !important',
     },
+    '& .MuiTablePagination-root': { display: 'flex' },
   };
 
   const slots = {

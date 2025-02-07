@@ -59,15 +59,17 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           currentRole: user?.role,
         }}
       />
-      <Box sx={{ flexGrow: 1 }} />
-      <NavBottom />
-      <div
-        style={{
-          margin: '1rem',
-        }}
-      >
-        <TourDialog />
-      </div>
+      <Box sx={{ height: '50px' }} />
+      <Box sx={{ marginTop: 'auto' }}>
+        <NavBottom />
+        <Box
+          sx={{
+            margin: '1rem',
+          }}
+        >
+          <TourDialog />
+        </Box>
+      </Box>
     </Scrollbar>
   );
 

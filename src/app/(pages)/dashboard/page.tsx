@@ -1,7 +1,7 @@
 import { LookerStudioView } from 'src/sections/looker-studio/view';
 
 export const metadata = {
-  title: 'Dashboard | Inbox Daddy',
+  title: 'Dashboard | Outreach Magic',
 };
 
 export default function Page() {

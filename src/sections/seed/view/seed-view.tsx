@@ -27,6 +27,7 @@ import { paths } from 'src/routes/paths';
 import { useChecklistStore } from 'src/store/checklist-store';
 
 import { seedBatches } from '@prisma/client';
+
 import { useRouter } from 'next/navigation';
 import { deleteSeedsByIds } from 'src/services/db/seeds';
 import {
@@ -204,6 +205,7 @@ export default function SeedView({ seeds }: TSeedsView) {
           }}
         >
           <DataGrid
+            sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             checkboxSelection
             disableRowSelectionOnClick
             rows={seeds}
@@ -212,7 +214,7 @@ export default function SeedView({ seeds }: TSeedsView) {
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10 },
+                paginationModel: { pageSize: 25 },
               },
             }}
             onRowSelectionModelChange={(newSelectionModel) => {

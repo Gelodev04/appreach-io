@@ -56,7 +56,6 @@ export const paths = {
   settings: {
     root: ROOTS.SETTINGS,
     new: `${ROOTS.SETTINGS}/new`,
-    // edit: (id: ObjectId) => `${ROOTS.SETTINGS}/edit/?id=${id.toString()}`,
     edit: (id: string) => `${ROOTS.SETTINGS}/edit/${id}`,
   },
 
@@ -82,5 +81,18 @@ export const paths = {
 
   profiles: {
     root: '/profiles',
+  },
+
+  emailValidator: {
+    root: '/email-validator',
+    new: '/email-validator/new',
+  },
+
+  attributesUpload: {
+    root: '/attributes-uploads',
+    new: '/attributes-uploads/new',
+  },
+  smartlead: {
+    root: '/smartlead',
   },
 };

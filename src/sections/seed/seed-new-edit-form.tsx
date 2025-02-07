@@ -14,7 +14,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { useGetSeedAccounts, useGetSeedSettings } from 'src/hooks/api/seed';
+import { useGetSeedAccounts } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { useRouter } from 'src/routes/hooks';
@@ -22,22 +22,22 @@ import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
 import { endpoints } from 'src/utils/swr';
 import * as Yup from 'yup';
+
 import SeedAccountsGenerator from './seed-accounts-generator';
 
 type Props = {
   currentItem?: ISeedForm;
   numOfSeedsAssigned: number;
+  userHosts: { label: string; value: string }[];
 };
 
-export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Props) {
+export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userHosts }: Props) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
-  const { hosts } = useGetSeedSettings();
-  const { seedAccounts } = useGetSeedAccounts();
+  const { seedAccounts, totalSeedAccounts: maxSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
   const { prefillMessage } = useSalesmateChat();
-
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     hostId: Yup.object()
@@ -45,24 +45,23 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
         label: Yup.string().required('Sender profile label is required'),
         value: Yup.string().required('Sender profile value is required'),
       })
-      .required('Sender profile is required'),
+      .required('Sender profile is required')
+      .nullable()
+      .notOneOf([null], 'Sender profile is required'),
     googleBusiness: Yup.number(),
     googlePersonal: Yup.number(),
     microsoftBusiness: Yup.number(),
     microsoftPersonal: Yup.number(),
     seedAccountsGenerator: Yup.number().max(
       numOfSeedsAssigned,
-      `Exceeded Max ${numOfSeedsAssigned} accounts`
+      `Exceeded ${numOfSeedsAssigned} assigned accounts`
     ),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: currentItem?.name || format(new Date(), 'MMM do yyyy'),
-      hostId: {
-        label: '',
-        value: '',
-      },
+      hostId: null,
       googleBusiness: currentItem?.generate.esps.googleBusiness || 0,
       googlePersonal: currentItem?.generate.esps.googlePersonal || 0,
       microsoftBusiness: currentItem?.generate.esps.microsoftBusiness || 0,
@@ -77,6 +76,7 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
+
   const {
     reset,
     handleSubmit,
@@ -114,63 +114,47 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
     }
   });
 
-  const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
-
   const handleSalesmateOpen = () => {
     prefillMessage('I am interested in more seeds account.');
   };
 
   const handleTotalSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const total = parseInt(e.target.value, 10);
-    setValue('seedAccountsGenerator', total);
-
+    let accountToGenerate = parseInt(e.target.value, 10);
+    setValue('seedAccountsGenerator', accountToGenerate);
     const individualFields = [
       'googleBusiness',
       'googlePersonal',
       'microsoftBusiness',
       'microsoftPersonal',
     ];
-    const googleBusinessMax = seedAccounts[0];
-    const count = individualFields.length;
+    const sortedSeedsAccount = seedAccounts.sort((a, b) => a.amount - b.amount);
 
-    if (total < googleBusinessMax.amount) {
-      const distributedValue = Math.ceil(total / count);
-
-      individualFields.reduce((accTotal: number, field: string) => {
-        if (accTotal < distributedValue && accTotal > 0) {
-          setValue(field as any, accTotal);
-        } else if (accTotal <= 0) {
-          setValue(field as any, 0);
-        } else {
-          setValue(field as any, distributedValue);
-        }
-        accTotal -= distributedValue;
-
-        return accTotal;
-      }, total);
-    } else {
-      individualFields.reduce((accTotal: number, field: string, index) => {
+    if (maxSeedAccounts < accountToGenerate) {
+      individualFields.forEach((field) => {
         const fieldMax = seedAccounts.find((seed) => seed.name === field)?.amount || 0;
-        if (accTotal > fieldMax) {
-          setValue(field as any, fieldMax);
-        } else if (accTotal <= 0) {
-          setValue(field as any, 0);
-        } else {
-          const distributedValue = Math.ceil(accTotal / (count - (index + 1)));
-          if (accTotal < distributedValue && accTotal > 0) {
-            setValue(field as any, accTotal);
-          } else if (accTotal <= 0) {
-            setValue(field as any, 0);
-          } else {
-            setValue(field as any, distributedValue);
-          }
-          accTotal -= distributedValue;
-          return accTotal;
-        }
-        accTotal -= fieldMax;
+        setValue(field as any, fieldMax);
+      });
+    } else {
+      let remainingAccountToGenerate = accountToGenerate;
+      for (let index = 0; index < sortedSeedsAccount.length; index += 1) {
+        const currentSeedsAccount = sortedSeedsAccount[index];
+        const remainingSeedAccountsToSetValue = sortedSeedsAccount.length - index - 1;
+        accountToGenerate -= currentSeedsAccount.amount;
+        const checkDivisibleValueForRemainingAccountToSet =
+          accountToGenerate / remainingSeedAccountsToSetValue;
+        const isDistributable = checkDivisibleValueForRemainingAccountToSet > 1;
 
-        return accTotal;
-      }, total);
+        if (isDistributable) {
+          setValue(currentSeedsAccount.name as any, currentSeedsAccount.amount);
+          remainingAccountToGenerate -= currentSeedsAccount.amount;
+        } else {
+          const distributedValue = Math.ceil(
+            remainingAccountToGenerate / (remainingSeedAccountsToSetValue + 1)
+          );
+          setValue(currentSeedsAccount.name as any, distributedValue);
+          remainingAccountToGenerate -= distributedValue;
+        }
+      }
     }
   };
 
@@ -217,7 +201,7 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned }: Pro
                 name="hostId"
                 label="Choose sender profile"
                 placeholder="outreachmagic"
-                options={hostOptions}
+                options={userHosts}
               />
             </Box>
 

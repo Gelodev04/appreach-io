@@ -10,10 +10,14 @@ export const createSenderAddress = async ({
   email,
   hostId,
   isVerified,
+  status = 'ready',
+  verifiedVia,
 }: {
   email: string;
   hostId: string;
   isVerified: boolean;
+  status?: 'ready' | 'verified' | 'pending';
+  verifiedVia?: string;
 }) => {
   try {
     const token = randomUUID();
@@ -28,8 +32,10 @@ export const createSenderAddress = async ({
         verified: isVerified,
         emailToken: token,
         hostId,
-        status: 'ready',
+        status,
         email,
+        verifiedVia,
+        dateVerified: isVerified ? new Date() : null,
       },
       select: {
         id: true,

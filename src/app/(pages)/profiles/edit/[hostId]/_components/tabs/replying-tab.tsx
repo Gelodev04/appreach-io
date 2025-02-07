@@ -1,10 +1,11 @@
-import { Box, Stack, Typography } from '@mui/material';
-import Link from 'next/link';
+import { Box, Link, Stack, Typography } from '@mui/material';
 import { RHFTextField } from 'src/components/hook-form';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
-export const ReplyingTab = ({ planPermissions }: HostProps) => {
+export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
   const enabled = planPermissions.planPermissionFeatures.replyMessage;
   return (
     <Stack spacing={7}>
@@ -16,7 +17,7 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
         }}
       >
         <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          New feature! Maximize your cold email campaigns by replying to actually campaign emails.
+          Maximize engagement by replying to emails using AI.
         </Typography>
         {enabled ? (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
@@ -25,7 +26,9 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
         ) : (
           <Typography variant="body2" sx={{ textAlign: 'center' }}>
             <span>
-              <Link href="/subscription">Upgrade</Link>
+              <Link component={RouterLink} href={paths.checkout.root}>
+                Upgrade
+              </Link>
             </span>{' '}
             to enable this feature.
           </Typography>
@@ -38,13 +41,15 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
             minWidth: '300px',
           }}
         >
-          <RHFTextField
-            disabled={!enabled}
-            name="filterId"
-            label="Filter ID Key"
-            tooltipContent="Assign a unique identifier to filter out AI-generated replies."
-            tooltipID="filter-id-popover"
-          />
+          {currentItem && (
+            <RHFTextField
+              disabled={!enabled}
+              name="filterId"
+              label="Filter ID Key"
+              tooltipContent="Assign a unique identifier to filter out AI-generated replies."
+              tooltipID="filter-id-popover"
+            />
+          )}
         </Box>
 
         <SliderItem
@@ -54,7 +59,7 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
           sliderName="replyMessage"
           engagementMax={planPermissions.planPermissionFeatures.engagementMax}
           icon="mdi:robot"
-          description="We will reply to {value} out of {max_value} to primary"
+          description="We will reply to {value} out of {max_value} to emails"
           tooltipContent="Generate automated, human-like replies to emails to improve engagement and simulate realistic interactions."
         />
       </Box>
@@ -80,7 +85,7 @@ export const ReplyingTab = ({ planPermissions }: HostProps) => {
           multiline
           minRows={1}
           label="AI Prompt"
-          tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand voice and objectives. Use {email_content} to insert the email content."
+          tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand."
           tooltipID="ai-prompt-popover"
         />
       </Box>

@@ -4,14 +4,13 @@ import { getVerifiedSenderAddressByHostId } from 'src/services/db/sender-address
 import { getUserSettings } from 'src/services/db/user-settings';
 
 export const metadata = {
-  title: 'Edit sender profile | Inbox Daddy',
+  title: 'Edit sender profile | Outreach Magic',
 };
 
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
   const { hostId } = params;
   const host = await getHostById(hostId);
   const emails = await getVerifiedSenderAddressByHostId(hostId);
-  console.log({ emails });
   const planPermissions = await getUserSettings({
     planPermissionsAssigned: true,
     planPermissionFeatures: true,
