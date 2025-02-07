@@ -188,7 +188,7 @@ export const getSeedsPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get seeds plan permissions', error);
-    throw new Error(`Unable to get seeds plan permissions: ${error.message}`);
+    throw new Error(`Unable to get seeds plan permissions`);
   }
 };
 
@@ -212,7 +212,7 @@ export const getEmailValidatorPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get email validator plan permissions', error);
-    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
+    throw new Error(`Unable to get email validator plan permissions`);
   }
 };
 
@@ -237,7 +237,7 @@ export const getAttributesUploadsPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get attributes uploads plan permissions', error);
-    throw new Error(`Unable to get attributes uploads plan permissions: ${error.message}`);
+    throw new Error(`Unable to get attributes uploads plan permissions`);
   }
 };
 
@@ -261,7 +261,7 @@ export const getSmartleadPlanPermissions = async () => {
     };
   } catch (error) {
     console.log('Unable to get email validator plan permissions', error);
-    throw new Error(`Unable to get email validator plan permissions: ${error.message}`);
+    throw new Error(`Unable to get email validator plan permissions`);
   }
 };
 

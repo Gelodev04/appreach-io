@@ -23,7 +23,7 @@ export const getAttributesUploadsByHostIds = async () => {
     return attributes;
   } catch (error) {
     console.error('Error on getting attributes:', error); // Log the actual error
-    throw new Error(`Unable to get attributes: ${error.message}`);
+    throw new Error(`Unable to get attributes`);
   }
 };
 

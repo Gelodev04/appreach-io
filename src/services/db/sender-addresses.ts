@@ -257,6 +257,6 @@ export const getVerifiedSenderAddressByHostId = async (hostId: string) => {
     return hostSenderAddress;
   } catch (error) {
     console.log('Unable to get sender address by hostId.', error);
-    throw new Error(`Unable to get host: ${error.message}`);
+    throw new Error(`Unable to get host`);
   }
 };
