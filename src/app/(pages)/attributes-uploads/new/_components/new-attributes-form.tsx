@@ -7,6 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
@@ -16,6 +17,12 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import {
+  attributeUploadsWebhook,
+  createAttributeUploads,
+} from 'src/services/db/attributes-uploads';
+import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
+import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
@@ -88,47 +95,46 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       const formData = new FormData();
       formData.append('file', file);
 
+      // Validate CSV structure
       const result = await parseCSVFile(file);
       const headers = result.meta.fields;
 
-      const hasEmailColumn = headers?.some(
-        (header: string) => header.toLowerCase() === 'email' || header.toLowerCase() === 'emails'
+      if (!headers?.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
+        setFileError('CSV file must have an "email" column.');
+        return;
+      }
+
+      // Upload file to cloud bucket
+      const uploadResult = await handleFileUpload(formData);
+      if (uploadResult?.error) {
+        enqueueSnackbar(uploadResult.error, { variant: 'error', persist: true });
+        return;
+      }
+
+      // Create document in the database
+      const databaseResponse = await createAttributeUploads(
+        data as CreateAttributeUploadsPropType,
+        uploadResult.url as string
       );
 
-      if (hasEmailColumn) {
-        await handleFileUpload(formData);
-
-        // if (gcbFile?.error) {
-        //   enqueueSnackbar(gcbFile.error, { variant: 'error', persist: true });
-        // return;
-        // }
-
-        // Create document on database
-        // const res = await createAttributeUploads(
-        //   data as CreateAttributeUploadsPropType,
-        //   gcbFile.url as string
-        // );
-
-        // if (res?.error) {
-        //   enqueueSnackbar(res.error, { variant: 'error', persist: true });
-        //   return;
-        // }
-
-        // // Increment attribute credits used
-        // await incrementAttributeCreditsUsed();
-
-        // // Trigger attribute uploads webhook
-        // await attributeUploadsWebhook();
-        // enqueueSnackbar('Uploaded successfully');
-
-        // router.push(paths.attributesUpload.root);
-        // revalidatePath(paths.attributesUpload.root);
-        // setFileError(null);
-      } else {
-        setFileError('CSV file must have an email column.');
+      if (databaseResponse?.error) {
+        enqueueSnackbar(databaseResponse.error, { variant: 'error', persist: true });
+        return;
       }
+
+      // Increment attribute credits and trigger webhook
+      await Promise.all([incrementAttributeCreditsUsed(), attributeUploadsWebhook()]);
+
+      enqueueSnackbar('Uploaded successfully');
+      router.push(paths.attributesUpload.root);
+      router.refresh();
+      setFileError(null);
     } catch (error) {
       console.error('File upload failed', error);
+      enqueueSnackbar('An unexpected error occurred during the file upload.', {
+        variant: 'error',
+        persist: true,
+      });
     }
   });
 
