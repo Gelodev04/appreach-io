@@ -398,7 +398,7 @@ type EngagementFeatures {
 }
 
 type SmartLead {
-  clientId Int
+  clientId Int?
   type     String
 }
 

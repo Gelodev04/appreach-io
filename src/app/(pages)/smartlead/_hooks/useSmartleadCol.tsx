@@ -26,7 +26,7 @@ export const useSmartleadCol = (options: OptionType) => {
       align: 'left',
       minWidth: 180,
       renderCell: (params) => {
-        return params.row.smartlead.clientId;
+        return params?.row?.smartlead?.clientId;
       },
     },
     {
@@ -34,7 +34,7 @@ export const useSmartleadCol = (options: OptionType) => {
       headerName: 'SL Type',
       minWidth: 180,
       renderCell: (params) => {
-        return params.row.smartlead.type;
+        return params?.row?.smartlead?.type;
       },
     },
     {
@@ -58,7 +58,7 @@ export const useSmartleadCol = (options: OptionType) => {
       headerName: 'Last Updated',
       sortable: true,
       minWidth: 190,
-      valueGetter: (params) => params.row.lastUpdated,
+      valueGetter: (params) => params?.row?.lastUpdated,
       renderCell: (params) => {
         return <Typography>{fDate(params.row.lastUpdated)}</Typography>;
       },
@@ -70,7 +70,7 @@ export const useSmartleadCol = (options: OptionType) => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return <DeleteSmartLeadButton id={params.row.id} username={params.row.username} />;
+        return <DeleteSmartLeadButton id={params?.row?.id} username={params?.row?.username} />;
       },
       sortable: false,
       filterable: false,
