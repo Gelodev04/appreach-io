@@ -16,20 +16,6 @@ export default async function Page() {
   const smartleadPlanPermission = await getSmartleadPlanPermissions();
   const senderProfiles = await getSenderProfiles();
 
-  // const testRows = [
-  //   {
-  //     id: '65ede25f269452173560ccee',
-  //     username: 'mary@inboxfans.com',
-  //     smartlead: {
-  //       clientId: 6899,
-  //       type: 'OUTLOOK',
-  //     },
-  //     hostId: '65bb995771808f8f946228b7',
-  //     esp: 'microsoft business',
-  //     lastUpdated: new Date(),
-  //   },
-  // ];
-
   return (
     <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <SmartleadHeader />
