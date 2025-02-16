@@ -19,14 +19,14 @@ export const useSmartleadCol = (options: OptionType) => {
       flex: 1,
     },
     {
-      field: 'smartlead.clientId',
+      field: 'smartlead.client_id',
       headerName: 'SL Client ID',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       minWidth: 180,
       renderCell: (params) => {
-        return params?.row?.smartlead?.clientId;
+        return params?.row?.smartlead?.client_id;
       },
     },
     {
