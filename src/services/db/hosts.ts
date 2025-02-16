@@ -9,7 +9,7 @@ import { paths } from 'src/routes/paths';
 import { UpdateHostData } from 'src/types/host';
 import { getUserSettings, incrementSenderProfilesUsed, updateUserSettings } from './user-settings';
 
-export const getHostById = async (id: string, selectFields?: Prisma.userSettingsSelect) => {
+export const getHostById = async (id: string, selectFields?: Prisma.hostsSelect) => {
   try {
     if (!id) {
       throw new Error('Access denied.');
@@ -57,37 +57,59 @@ export const getHostByName = async (name: string) => {
 
 export const updateHostData = async (id: string, data: UpdateHostData) => {
   try {
-    const normalizedData = {
-      engagementSettings: {
-        scrollMessage: data.scrollMessage,
-        markImportant: data.markImportant,
-        removeSpam: data.removeSpam,
-        movePrimary: data.movePrimary,
-        clickLink: data.clickLink,
-        replyMessage: data.replyMessage,
-        filterId: data.filterId ? data.filterId : '',
-        replyPrompt: data.replyPrompt ? data.replyPrompt : '',
-        linksToClick: data.linksToClick
-          ? data.linksToClick.split(',').map((link) => link.trim())
-          : [],
-        linksNotToClick: data.linksNotToClick
-          ? data.linksNotToClick.split(',').map((link) => link.trim())
-          : [],
-      },
-      userSettings: {
-        timezone: data.timezone,
-      },
+    // Fetch current host data
+    const existingHost = await prisma.hosts.findUnique({
+      where: { id },
+      select: { userSettings: true }, // Only fetch userSettings
+    });
+
+    if (!existingHost) {
+      throw new Error('Host not found');
+    }
+    const updatedUserSettings = {
+      ...existingHost.userSettings, // Retain existing fields
+
+      // Ensure all array fields are always arrays
+      autoExcludeAddresses: existingHost.userSettings?.autoExcludeAddresses ?? [],
+      autoExcludeDomains: existingHost.userSettings?.autoExcludeDomains ?? [],
+      autoExcludeUsernames: existingHost.userSettings?.autoExcludeUsernames ?? [],
+      ccAddressArray: existingHost.userSettings?.ccAddressArray ?? [],
+      externalSenderAddresses: existingHost.userSettings?.externalSenderAddresses ?? [],
+      leadCategories: existingHost.userSettings?.leadCategories ?? [],
+      notificationAddressArray: existingHost.userSettings?.notificationAddressArray ?? [],
+      warmupTags: existingHost.userSettings?.warmupTags ?? [],
+
+      // Keep timezone update
+      timezone: data.timezone,
     };
 
     const updatedHostData = await prisma.hosts.update({
       where: { id },
-      data: normalizedData,
+      data: {
+        engagementSettings: {
+          scrollMessage: data.scrollMessage,
+          markImportant: data.markImportant,
+          removeSpam: data.removeSpam,
+          movePrimary: data.movePrimary,
+          clickLink: data.clickLink,
+          replyMessage: data.replyMessage,
+          filterId: data.filterId ?? '',
+          replyPrompt: data.replyPrompt ?? '',
+          linksToClick: data.linksToClick
+            ? data.linksToClick.split(',').map((link) => link.trim())
+            : [],
+          linksNotToClick: data.linksNotToClick
+            ? data.linksNotToClick.split(',').map((link) => link.trim())
+            : [],
+        },
+        userSettings: updatedUserSettings, // Update with merged settings
+      },
     });
 
     return updatedHostData;
   } catch (error) {
-    console.log('Unable to update sender status to ready.', error);
-    throw new Error(`Unable to update host`);
+    console.error('Unable to update host data.', error);
+    throw new Error('Unable to update host');
   }
 };
 

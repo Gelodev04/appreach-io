@@ -40,7 +40,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
-    { label: 'Apollo', value: 'Apollo' },
+    { label: 'Apollo', value: 'apollo' },
     { label: 'GrowMeOrganic (Linkedin)', value: 'GrowMeOrganic (Linkedin)' },
   ];
 
