@@ -13,6 +13,15 @@ import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-ad
 import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
 import { signupWebhook } from 'src/services/webhook/signup-hook';
 
+interface Plan {
+  customPlan: boolean;
+  lookup_key?: string;
+  status?: string;
+  start_date?: Date;
+  current_period_end?: Date;
+  trial_end?: Date;
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
@@ -93,7 +102,9 @@ export async function POST(request: Request) {
       created: new Date(),
       lastUpdated: new Date(),
       seeds: {},
-      plan: {},
+      plan: {
+        customPlan: false,
+      },
       planPermissionsUsed: {},
       planPermissionsAssigned: {},
       planPermissionFeatures: {},
@@ -102,13 +113,12 @@ export async function POST(request: Request) {
     if (isTrial) {
       signupParams.seeds = { assignedCount: 50 };
       signupParams.plan = {
-        customPlan: false,
         lookup_key: 'trial',
         status: TRIAL_STATUS.ACTIVE, // active or canceled which is also used in stripe
         start_date: new Date(),
         current_period_end: new Date(moment().add(10, 'days').toDate()),
         trial_end: new Date(moment().add(10, 'days').toDate()),
-      };
+      } as Plan;
       signupParams.planPermissionsAssigned = {
         seeds: 50,
         senderProfiles: 1,

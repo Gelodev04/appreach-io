@@ -150,10 +150,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     }
   );
 
-  //   const externalSenderAddressesPlaceholder = `carlos@outreachmagic.io ⏎
-  //   mark@outreachmagic.io ⏎
-  //   abdulrehman@outreachmagic.io ⏎`;
-
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
