@@ -44,7 +44,7 @@ export const SmartleadHeader = ({ options }: { options: OptionType }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="body1">Choose a host</Typography>
                 <Typography variant="body2" color="GrayText">
-                  This host's API key will be used
+                  This host&apos;s API key will be used
                 </Typography>
                 <SmartleadSyncDropdown options={options} />
               </Box>
