@@ -15,7 +15,6 @@ export const useSmartleadCol = (options: OptionType) => {
     {
       field: 'username',
       headerName: 'Email',
-      minWidth: 250,
       flex: 1,
     },
     {
@@ -24,45 +23,45 @@ export const useSmartleadCol = (options: OptionType) => {
       type: 'number',
       headerAlign: 'left',
       align: 'left',
-      minWidth: 180,
       renderCell: (params) => {
         return params?.row?.smartlead?.client_id;
       },
+      flex: 1,
     },
     {
       field: 'smartlead.type',
       headerName: 'SL Type',
-      minWidth: 180,
       renderCell: (params) => {
         return params?.row?.smartlead?.type;
       },
+      flex: 1,
     },
     {
       field: 'hostId',
       headerName: 'Host',
-      minWidth: 200,
       renderCell: (params) => {
         return <HostDropdown params={params} options={options} />;
       },
+      flex: 1,
     },
     {
       field: 'esp',
       headerName: 'ESP',
-      minWidth: 300,
       renderCell: (params) => {
         return <EspDropdown params={params} />;
       },
+      flex: 1,
     },
     {
       field: 'lastUpdated',
       headerName: 'Last Updated',
       sortable: true,
-      minWidth: 190,
       valueGetter: (params) => params?.row?.lastUpdated,
       renderCell: (params) => {
         return <Typography>{fDate(params.row.lastUpdated)}</Typography>;
       },
       type: 'date',
+      flex: 1,
     },
     {
       field: 'actions',
@@ -76,6 +75,7 @@ export const useSmartleadCol = (options: OptionType) => {
       filterable: false,
       disableColumnMenu: true,
       hideable: false,
+      flex: 1,
     },
   ];
 

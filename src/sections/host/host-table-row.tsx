@@ -1,5 +1,4 @@
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -7,8 +6,6 @@ import { GridCellParams } from '@mui/x-data-grid';
 import Iconify from 'src/components/iconify/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
-import { RouterLink } from 'src/routes/components';
-import { paths } from 'src/routes/paths';
 import { generateLookerStudioUrl } from './utils';
 
 // ----------------------------------------------------------------------
@@ -18,14 +15,7 @@ type ParamsProps = {
 };
 
 export function RenderHostName({ params }: ParamsProps) {
-  const { id } = params;
-  const href = paths.settings.seeds(id.toString());
-
-  return (
-    <Link component={RouterLink} href={href} color="inherit">
-      <Typography sx={{ my: 2 }}>{params.row.host}</Typography>
-    </Link>
-  );
+  return <Typography sx={{ my: 2 }}>{params.row.host}</Typography>;
 }
 
 export function RenderHostCrypt({ params }: ParamsProps) {

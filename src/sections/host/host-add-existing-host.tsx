@@ -13,7 +13,7 @@ export default function HostAddExistingHost({
   const { addExistingHost, submitting, hostName, setHostName, open } = useAddExistingHost();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleClickAddExistingSenderProfile = () => {
+  const handleClickAddExistingAccountProfile = () => {
     if (isAllSenderProfilesUsed) {
       enqueueSnackbar({
         message: <PopupWarningForAllUsedProfiles />,
@@ -35,9 +35,9 @@ export default function HostAddExistingHost({
       <Button
         variant="contained"
         startIcon={<Iconify icon="mingcute:add-line" />}
-        onClick={handleClickAddExistingSenderProfile}
+        onClick={handleClickAddExistingAccountProfile}
       >
-        Add an existing sender profile
+        Add an existing account profile
       </Button>
       <ConfirmDialog
         title="Add an existing sender profile"

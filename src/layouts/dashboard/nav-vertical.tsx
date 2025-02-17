@@ -1,6 +1,9 @@
+import { Typography, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
+import { alpha } from '@mui/material/styles';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Logo from 'src/components/logo';
@@ -26,8 +29,10 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { user } = useMockedUser();
   const router = useRouter();
   const pathname = usePathname();
+  const { data } = useSession();
   const lgUp = useResponsive('up', 'lg');
   const navData = useNavData();
+  const theme = useTheme();
   const isTrialExpired = useIsTrialExpired();
 
   if (isTrialExpired && !pathname.includes('subscription')) {
@@ -62,11 +67,34 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       <Box sx={{ height: '50px' }} />
       <Box sx={{ marginTop: 'auto' }}>
         <NavBottom />
+
         <Box
           sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5,
             margin: '1rem',
           }}
         >
+          <Box
+            sx={{
+              borderRadius: '8px',
+              background: alpha(theme.palette.primary.main, 0.04),
+              borderBottom: '1px solid',
+              borderColor: alpha(theme.palette.primary.main, 0.1),
+              display: 'flex',
+              flexDirection: 'row',
+              padding: 1,
+              color: '#637381',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box sx={{ display: 'flex', gap: 0.2, flexDirection: 'column' }}>
+              <Typography variant="body2">Signed in as</Typography>
+              <Typography variant="subtitle1">{data?.user?.email}</Typography>
+            </Box>
+          </Box>
           <TourDialog />
         </Box>
       </Box>

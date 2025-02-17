@@ -78,34 +78,27 @@ export const HostListView = ({
   const columns: GridColDef[] = [
     {
       field: 'host',
-      headerName: 'Infrastructure',
-      flex: 1,
-      minWidth: 220,
+      headerName: 'Host',
       hideable: false,
       renderCell: (params) => <RenderHostName params={params} />,
-    },
-    {
-      field: 'hostCrypt',
-      headerName: 'Crypt',
-      width: 220,
-      renderCell: (params) => <RenderHostCrypt params={params} />,
+      flex: 1,
     },
     {
       field: 'lookerStudio',
-      headerName: 'Reporting URL',
-      width: 160,
+      headerName: 'Reporting',
       type: 'singleSelect',
-      headerAlign: 'center',
-      align: 'center',
       renderCell: (params) => <RenderLookerStudioUrl params={params} />,
+      flex: 1,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
     },
     {
       type: 'actions',
       field: 'actions',
-      headerName: ' ',
-      align: 'right',
-      headerAlign: 'right',
-      width: 80,
+      headerName: 'Seeds',
+      align: 'left',
+      headerAlign: 'left',
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -116,6 +109,49 @@ export const HostListView = ({
           onClick={() => handleEditRow(params.id.toString())}
         />,
       ],
+      flex: 1,
+    },
+    {
+      type: 'actions',
+      field: 'attributes',
+      headerName: 'Attributes',
+      align: 'left',
+      headerAlign: 'left',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Iconify icon="flowbite:edit-outline" />}
+          label="Edit"
+          onClick={() => router.push(paths.attributesUpload.root)}
+        />,
+      ],
+      flex: 1,
+    },
+    {
+      type: 'actions',
+      field: 'smartlead',
+      headerName: 'Smartlead',
+      align: 'left',
+      headerAlign: 'left',
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Iconify icon="flowbite:edit-outline" />}
+          label="Edit"
+          onClick={() => handleEditRow(params.id.toString())}
+        />,
+      ],
+      flex: 1,
+    },
+    {
+      field: 'hostCrypt',
+      headerName: 'Crypt',
+      renderCell: (params) => <RenderHostCrypt params={params} />,
+      flex: 1,
     },
   ];
 
@@ -124,7 +160,7 @@ export const HostListView = ({
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
       .map((column) => column.field);
 
-  const handleClickAddNewSenderProfile = () => {
+  const handleClickAddNewAccountProfile = () => {
     if (isAllProfileUsed) {
       enqueueSnackbar({
         message: <PopupWarningForAllUsedProfiles />,
@@ -144,7 +180,7 @@ export const HostListView = ({
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'lg'}
+        maxWidth={false}
         sx={{
           flexGrow: 1,
           display: 'flex',
@@ -152,19 +188,19 @@ export const HostListView = ({
         }}
       >
         <CustomBreadcrumbs
-          heading="Sender Profiles"
-          links={[{ name: 'Sender Profiles' }]}
+          heading="Account Profiles"
+          links={[{ name: 'Account Profiles' }]}
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost isAllSenderProfilesUsed={isAllProfileUsed} />
 
               <Button
-                onClick={handleClickAddNewSenderProfile}
+                onClick={handleClickAddNewAccountProfile}
                 variant="contained"
                 color="primary"
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
-                Add new sender profile
+                Add new account profile
               </Button>
             </Stack>
           }
