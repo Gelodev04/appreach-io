@@ -11,7 +11,7 @@ import moment from 'moment-timezone';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SenderProfileTabs } from 'src/app/(pages)/profiles/edit/[hostId]/_components';
+import { SenderProfileTabs } from 'src/app/(pages)/profiles/seeds/[hostId]/_components';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { defaultEngagementSettings } from 'src/constants';
@@ -226,7 +226,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
               priority
             />
             <Typography variant="h6" sx={{ mb: 0.5 }}>
-              {currentItem ? 'Edit sender profile' : 'Add sender profile'}
+              {currentItem ? 'Edit seed settings' : 'Add sender profile'}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
               Edit your sender profile engagement settings.

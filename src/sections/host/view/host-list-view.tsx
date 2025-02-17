@@ -70,7 +70,7 @@ export const HostListView = ({
 
   const handleEditRow = useCallback(
     (id: string) => {
-      router.push(paths.settings.edit(id.toString()));
+      router.push(paths.settings.seeds(id.toString()));
     },
     [router]
   );

@@ -30,7 +30,7 @@ export const endpoints = {
     details: (hostId: string) => `/api/host/details/?hostId=${hostId}`,
     addExistingHost: '/api/host/add-existing-host/',
     create: '/api/host/create/',
-    edit: '/api/host/edit/',
+    seeds: '/api/host/seeds/',
     delete: '/api/host/delete/',
   },
   seed: {

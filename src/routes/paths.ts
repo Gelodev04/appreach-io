@@ -56,7 +56,7 @@ export const paths = {
   settings: {
     root: ROOTS.SETTINGS,
     new: `${ROOTS.SETTINGS}/new`,
-    edit: (id: string) => `${ROOTS.SETTINGS}/edit/${id}`,
+    seeds: (id: string) => `${ROOTS.SETTINGS}/seeds/${id}`,
   },
 
   // SEEDS

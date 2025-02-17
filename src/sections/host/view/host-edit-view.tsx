@@ -10,13 +10,13 @@ export const HostEditView = ({ currentItem, planPermissions, emails }: HostProps
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
-        heading="Edit sender profile"
+        heading="Edit seed settings"
         links={[
           {
             name: 'Sender Profiles',
             href: paths.settings.root,
           },
-          { name: 'Edit sender profile' },
+          { name: 'Edit seed settings' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
