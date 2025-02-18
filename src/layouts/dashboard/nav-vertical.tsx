@@ -32,7 +32,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { data } = useSession();
   const lgUp = useResponsive('up', 'lg');
   const navData = useNavData();
-  const theme = useTheme();
+  const muiTheme = useTheme();
   const isTrialExpired = useIsTrialExpired();
 
   if (isTrialExpired && !pathname.includes('subscription')) {
@@ -79,9 +79,9 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           <Box
             sx={{
               borderRadius: '8px',
-              background: alpha(theme.palette.primary.main, 0.04),
+              background: alpha(muiTheme.palette.primary.main, 0.04),
               borderBottom: '1px solid',
-              borderColor: alpha(theme.palette.primary.main, 0.1),
+              borderColor: alpha(muiTheme.palette.primary.main, 0.1),
               display: 'flex',
               flexDirection: 'row',
               padding: 1,
