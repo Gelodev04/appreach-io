@@ -158,9 +158,9 @@ type HostsLookerStudio {
 }
 
 type HostsSmartLead {
-  notificationAddressArray String[]
-  apiKey                   String?
-  webhook                  String?
+  notificationAddresses String[]
+  apiKey                String?
+  webhook               String?
 }
 
 type HostsUserSettings {

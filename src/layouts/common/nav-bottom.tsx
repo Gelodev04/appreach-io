@@ -16,8 +16,9 @@ export default function NavBottom() {
             src="/assets/illustrations/dashboard/menu-graphic.png"
             alt="Envelope"
             priority
-            objectFit="cover"
-            layout="fill"
+            style={{ objectFit: 'cover' }}
+            fill
+            sizes="(max-width: 768px) 100px, (max-width: 1200px) 150px, 170px"
           />
         </Box>
       </Stack>

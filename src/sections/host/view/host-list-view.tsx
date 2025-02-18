@@ -22,7 +22,6 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
-import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
@@ -54,7 +53,6 @@ export const HostListView = ({
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const router = useRouter();
-  const settings = useSettingsContext();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
@@ -68,9 +66,16 @@ export const HostListView = ({
     }
   }, [enqueueSnackbar, selectedRowIds]);
 
-  const handleEditRow = useCallback(
+  const handleEditSeedsRow = useCallback(
     (id: string) => {
       router.push(paths.settings.seeds(id.toString()));
+    },
+    [router]
+  );
+
+  const handleEditSmartleadRow = useCallback(
+    (id: string) => {
+      router.push(paths.settings.smartlead(id.toString()));
     },
     [router]
   );
@@ -106,7 +111,7 @@ export const HostListView = ({
         <GridActionsCellItem
           icon={<Iconify icon="flowbite:edit-outline" />}
           label="Edit"
-          onClick={() => handleEditRow(params.id.toString())}
+          onClick={() => handleEditSeedsRow(params.id.toString())}
         />,
       ],
       flex: 1,
@@ -142,7 +147,7 @@ export const HostListView = ({
         <GridActionsCellItem
           icon={<Iconify icon="flowbite:edit-outline" />}
           label="Edit"
-          onClick={() => handleEditRow(params.id.toString())}
+          onClick={() => handleEditSmartleadRow(params.id.toString())}
         />,
       ],
       flex: 1,
