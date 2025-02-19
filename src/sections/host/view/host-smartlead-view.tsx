@@ -1,33 +1,29 @@
 'use client';
 
 import { Container } from '@mui/material';
+import { hosts } from '@prisma/client';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { paths } from 'src/routes/paths';
-import HostNewEditForm from 'src/sections/host/host-new-edit-form';
-import { HostProps } from 'src/types/host';
+import HostSmartleadForm from '../host-smartlead-form';
 
-export const HostEditView = ({ currentItem, planPermissions, emails }: HostProps) => {
+export const HostSmartleadView = ({ currentItem }: { currentItem: hosts }) => {
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
-        heading="Edit seed settings"
+        heading="Edit smartlead settings"
         links={[
           {
             name: 'Sender Profiles',
             href: paths.settings.root,
           },
-          { name: 'Edit seed settings' },
+          { name: 'Edit smartlead settings' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <HostNewEditForm
-        currentItem={currentItem}
-        planPermissions={planPermissions}
-        emails={emails}
-      />
+      <HostSmartleadForm currentItem={currentItem} />
     </Container>
   );
 };

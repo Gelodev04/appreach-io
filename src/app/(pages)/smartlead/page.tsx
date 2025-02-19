@@ -17,7 +17,7 @@ export default async function Page() {
   const senderProfiles = await getSenderProfiles();
 
   return (
-    <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <SmartleadHeader options={senderProfiles} />
 
       <ItemUsageDisplay

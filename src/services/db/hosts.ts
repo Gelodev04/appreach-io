@@ -6,7 +6,7 @@ import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/ut
 
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
-import { UpdateHostData } from 'src/types/host';
+import { UpdateHostData, UpdateSmartLead } from 'src/types/host';
 import { getUserSettings, incrementSenderProfilesUsed, updateUserSettings } from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.hostsSelect) => {
@@ -169,6 +169,26 @@ export const createHost = async (data: UpdateHostData) => {
   } catch (error) {
     console.log('Unable to create host.', error);
     throw new Error(`Unable to create host`);
+  }
+};
+
+export const updateHostSmartlead = async (id: string, data: UpdateSmartLead) => {
+  try {
+    await prisma.hosts.update({
+      where: { id },
+      data: {
+        smartlead: {
+          apiKey: data.apiKey,
+          notificationAddresses: data.notificationAddresses.split('\n').map((item) => item.trim()),
+        },
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating host smartlead:', error);
+
+    return { success: false, message: 'Failed to update smartlead. Please try again later.' };
   }
 };
 

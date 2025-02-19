@@ -21,26 +21,25 @@ export const useEmailValidatorCol = () => {
     {
       field: 'upload.listName',
       headerName: 'List Name',
-      minWidth: 200,
       renderCell: (params) => {
         return params.row.upload.listName;
       },
+      flex: 1,
     },
     {
       field: 'hostName',
       headerName: 'Assigned Profile',
-      minWidth: 200,
+      flex: 1,
     },
     {
       field: 'status',
       headerName: 'Status',
-      minWidth: 150,
       renderCell: (params) => <RenderCellStatus params={params} />,
+      flex: 1,
     },
     {
       field: 'download.csvDownload',
       headerName: 'CSV',
-      width: 150,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -59,83 +58,84 @@ export const useEmailValidatorCol = () => {
           </Tooltip>
         </Stack>
       ),
+      flex: 1,
     },
     {
       field: 'download.unique_emails',
       headerName: 'Emails',
       type: 'number',
-      minWidth: 130,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.unique_emails;
       },
+      flex: 1,
     },
     {
       field: 'download.verified',
       headerName: 'Valid',
       type: 'number',
-      minWidth: 130,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.verified;
       },
+      flex: 1,
     },
     {
       field: 'download.catch_all',
       headerName: 'Catch All',
       type: 'number',
-      minWidth: 150,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.catch_all;
       },
+      flex: 1,
     },
     {
       field: 'download.invalid',
       headerName: 'Invalid',
       type: 'number',
-      minWidth: 130,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.invalid;
       },
+      flex: 1,
     },
     {
       field: 'download.disposable',
       headerName: 'Disposable',
       type: 'number',
-      minWidth: 170,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.disposable;
       },
+      flex: 1,
     },
     {
       field: 'download.unknown',
       headerName: 'Unknown',
       type: 'number',
-      minWidth: 150,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.download?.unknown;
       },
+      flex: 1,
     },
     {
       field: 'upload.dateUploaded',
       headerName: 'Uploaded',
       sortable: true,
-      minWidth: 190,
       valueGetter: (params) => params.row.upload.dateUploaded,
       renderCell: (params) => {
         return <Typography>{fDate(params.row.upload.dateUploaded)}</Typography>;
       },
       type: 'date',
+      flex: 1,
     },
     {
       field: 'archived',
@@ -145,6 +145,7 @@ export const useEmailValidatorCol = () => {
       filterable: false,
       disableColumnMenu: true,
       hideable: false,
+      flex: 1,
     },
   ];
 

@@ -1,10 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { endpoints, revalidateData } from 'src/utils/swr';
 
 import { useSnackbar } from 'src/components/snackbar';
+import { incrementSenderProfilesUsed } from 'src/services/db/user-settings';
 
 // --------------------------------------------------------
 
@@ -27,6 +28,7 @@ export const useAddExistingHost = () => {
       if (!res.ok) {
         throw new Error((await res.json()).error);
       }
+      await incrementSenderProfilesUsed();
       await revalidateData(endpoints.host.list);
       enqueueSnackbar('Host added successfully', { variant: 'success' });
     } catch (error) {

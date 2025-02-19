@@ -4,7 +4,7 @@ import { getVerifiedSenderAddressByHostId } from 'src/services/db/sender-address
 import { getUserSettings } from 'src/services/db/user-settings';
 
 export const metadata = {
-  title: 'Edit sender profile | Outreach Magic',
+  title: 'Edit seed settings | Outreach Magic',
 };
 
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {

@@ -24,7 +24,7 @@ export function useNavData() {
             disabled: isTrialExpired,
           },
           {
-            title: 'Sender Profiles',
+            title: 'Account Profiles',
             path: paths.settings.root,
             icon: <Iconify icon="bx:server" />,
             disabled: isTrialExpired,

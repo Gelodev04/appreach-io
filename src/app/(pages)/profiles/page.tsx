@@ -3,7 +3,7 @@ import { getUserHosts } from 'src/services/db/hosts';
 import { getProfilePlanPermissions } from 'src/services/db/user-settings';
 
 export const metadata = {
-  title: 'Sender Profiles | Outreach Magic',
+  title: 'Account Profiles | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';
