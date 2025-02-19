@@ -56,7 +56,8 @@ export const paths = {
   settings: {
     root: ROOTS.SETTINGS,
     new: `${ROOTS.SETTINGS}/new`,
-    edit: (id: string) => `${ROOTS.SETTINGS}/edit/${id}`,
+    smartlead: (id: string) => `${ROOTS.SETTINGS}/smartlead/${id}`,
+    seeds: (id: string) => `${ROOTS.SETTINGS}/seeds/${id}`,
   },
 
   // SEEDS
@@ -92,6 +93,7 @@ export const paths = {
     root: '/attributes-uploads',
     new: '/attributes-uploads/new',
   },
+
   smartlead: {
     root: '/smartlead',
   },

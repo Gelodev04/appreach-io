@@ -15,7 +15,7 @@ export default async function Page() {
   const rows = await getAttributesUploadsByHostIds();
   const attributesUploadsPlanPermission = await getAttributesUploadsPlanPermissions();
   return (
-    <Container maxWidth="lg" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <AttributesUploadsHeader />
 
       <ItemUsageDisplay

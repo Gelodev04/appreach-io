@@ -21,18 +21,16 @@ export const useAttributesUploadsCol = () => {
     {
       field: 'hostName',
       headerName: 'Host',
-      minWidth: 130,
+      flex: 1,
     },
     {
       field: 'importName',
       headerName: 'Import name',
-      minWidth: 250,
       flex: 1,
     },
     {
       field: 'csvLink',
       headerName: 'CSV',
-      width: 150,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -51,55 +49,56 @@ export const useAttributesUploadsCol = () => {
           </Tooltip>
         </Stack>
       ),
+      flex: 1,
     },
     {
       field: 'results.person.total',
       headerName: 'Person Attributes',
       type: 'number',
-      minWidth: 220,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.results?.person?.total;
       },
+      flex: 1,
     },
     {
       field: 'results.company.total',
       headerName: 'Company Attributes',
       type: 'number',
-      minWidth: 220,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.results?.company?.total;
       },
+      flex: 1,
     },
     {
       field: 'results.errors',
       headerName: 'Errors',
       type: 'number',
-      minWidth: 140,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return params?.row?.results?.errors;
       },
+      flex: 1,
     },
     {
       field: 'importSource',
       headerName: 'Import Source',
-      minWidth: 140,
       headerAlign: 'left',
       align: 'left',
+      flex: 1,
     },
     {
       field: 'status',
       headerName: 'Status',
       type: 'number',
-      minWidth: 150,
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => <RenderCellStatus params={params} />,
+      flex: 1,
     },
     {
       field: 'actions',
@@ -109,18 +108,19 @@ export const useAttributesUploadsCol = () => {
       filterable: false,
       disableColumnMenu: true,
       hideable: false,
+      flex: 1,
     },
 
     {
       field: 'dateUploaded',
       headerName: 'Date Uploaded',
       sortable: true,
-      minWidth: 190,
       valueGetter: (params) => params?.row?.dateUploaded,
       renderCell: (params) => {
         return <Typography>{fDate(params?.row?.dateUploaded)}</Typography>;
       },
       type: 'date',
+      flex: 1,
     },
   ];
 

@@ -61,6 +61,11 @@ export type UpdateHostData = {
   externalSenderAddresses?: string;
 };
 
+export type UpdateSmartLead = {
+  notificationAddresses: string;
+  apiKey: string;
+};
+
 export interface IHost {
   _id: ObjectId;
   host: string;

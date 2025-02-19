@@ -98,15 +98,14 @@ export default function SeedView({ seeds }: TSeedsView) {
       field: 'name',
       headerName: 'List name',
       flex: 1,
-      minWidth: 200,
       hideable: false,
       renderCell: (params) => <RenderCellImportName params={params} />,
     },
     {
       field: 'download',
       headerName: 'CSV',
-      width: 120,
       type: 'singleSelect',
+      flex: 1,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -133,8 +132,8 @@ export default function SeedView({ seeds }: TSeedsView) {
     {
       field: 'results.total',
       headerName: 'List size',
-      width: 160,
       type: 'singleSelect',
+      flex: 1,
       renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
     // {
@@ -146,15 +145,14 @@ export default function SeedView({ seeds }: TSeedsView) {
     {
       field: 'status',
       headerName: 'Status',
-      width: 80,
       type: 'singleSelect',
+      flex: 1,
       renderCell: (params) => <RenderCellPublish params={params} />,
     },
     {
       field: 'dateAdded',
       headerName: 'Created on',
       flex: 1,
-      minWidth: 160,
       hideable: false,
       renderCell: (params) => <RenderCellDateAdded params={params} />,
     },
@@ -167,7 +165,7 @@ export default function SeedView({ seeds }: TSeedsView) {
   return (
     <>
       <Container
-        maxWidth={settings.themeStretch ? false : 'lg'}
+        maxWidth={false}
         sx={{
           flexGrow: 1,
           display: 'flex',
