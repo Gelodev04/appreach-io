@@ -83,7 +83,7 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
         disableRowSelectionOnClick
         initialState={initialState}
         getRowHeight={() => 'auto'}
-        pageSizeOptions={[5, 10, 25]}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         onRowSelectionModelChange={setSelectedRowIds}
       />
     </Card>

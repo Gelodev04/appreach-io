@@ -209,7 +209,7 @@ export default function SeedView({ seeds }: TSeedsView) {
             rows={seeds}
             columns={columns}
             getRowHeight={() => 'auto'}
-            pageSizeOptions={[5, 10, 25]}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
             initialState={{
               pagination: {
                 paginationModel: { pageSize: 25 },
