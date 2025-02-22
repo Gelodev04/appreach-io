@@ -26,6 +26,15 @@ export const useAttributesUploadsCol = () => {
     {
       field: 'importName',
       headerName: 'Import name',
+      renderCell: (params) => {
+        return (
+          <div title={params.row.importName} style={{ overflow: 'hidden' }}>
+            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
+              {params.row.importName}
+            </Typography>
+          </div>
+        );
+      },
       flex: 1,
     },
     {
@@ -50,6 +59,7 @@ export const useAttributesUploadsCol = () => {
         </Stack>
       ),
       flex: 1,
+      minWidth: 120,
     },
     {
       field: 'results.person.total',
@@ -99,6 +109,7 @@ export const useAttributesUploadsCol = () => {
       align: 'left',
       renderCell: (params) => <RenderCellStatus params={params} />,
       flex: 1,
+      minWidth: 80,
     },
     {
       field: 'actions',

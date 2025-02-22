@@ -1,10 +1,10 @@
 import { Container } from '@mui/material';
 import { getSenderProfiles } from 'src/services/db/user-settings';
-import Header from './header';
 import CreateSendersEmailForm from './form/new-email-form';
+import Header from './header';
 
 export default async function AddSenderEmailPage() {
-  const senderProfiles = await getSenderProfiles();
+  const { allHosts: senderProfiles } = await getSenderProfiles();
 
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

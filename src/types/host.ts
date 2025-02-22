@@ -62,8 +62,9 @@ export type UpdateHostData = {
 };
 
 export type UpdateSmartLead = {
-  notificationAddresses: string;
-  apiKey: string;
+  notificationAddresses?: string;
+  useWithSeeds: boolean;
+  apiKey?: string;
 };
 
 export interface IHost {

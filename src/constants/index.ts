@@ -14,3 +14,26 @@ export const defaultEngagementSettings = {
       'Write an engaging reply, express interest, show appreciation, and ask a thoughtful follow-up question. Don’t always use the most natural words and provide personal examples.',
   },
 };
+
+export const espData = {
+  'google business': {
+    esp: 'google business',
+    espCamelCase: 'googleBusiness',
+    server: 'google',
+  },
+  'microsoft business': {
+    esp: 'microsoft business',
+    espCamelCase: 'microsoftBusiness',
+    server: 'microsoft',
+  },
+  'google personal': {
+    esp: 'google personal',
+    espCamelCase: 'googlePersonal',
+    server: 'google',
+  },
+  'microsoft personal': {
+    esp: 'microsoft personal',
+    espCamelCase: 'microsoftPersonal',
+    server: 'microsoft',
+  },
+};

@@ -55,10 +55,11 @@ export const updateUserSettings = async (
     throw new Error('Error updating user settings.');
   }
 };
+
 export const getSenderProfiles = async () => {
   const { hosts: hostsIds } = await getUserSettings({ hosts: true });
   try {
-    if (!hostsIds?.length) return [];
+    if (!hostsIds?.length) return { hostsWithApiKey: [], allHosts: [] };
 
     const hosts = await prisma.hosts.findMany({
       where: {
@@ -71,13 +72,24 @@ export const getSenderProfiles = async () => {
       },
     });
 
-    return hosts.map((host) => ({
+    const filteredHosts = hosts.filter(
+      (host) => host.smartlead?.apiKey && host.smartlead.apiKey.trim() !== ''
+    );
+
+    const hostsWithApiKey = filteredHosts.map((host) => ({
       profile: host.host,
       id: host.id,
     }));
+
+    const allHosts = hosts.map((host) => ({
+      profile: host.host,
+      id: host.id,
+    }));
+
+    return { hostsWithApiKey, allHosts };
   } catch (error) {
     console.log('Error unable to get the sender profiles', error);
-    return [];
+    return { hostsWithApiKey: [], allHosts: [] };
   }
 };
 

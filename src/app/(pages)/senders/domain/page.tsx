@@ -1,10 +1,10 @@
 import { Container, Typography } from '@mui/material';
 import { getAddressesPlanPermissions, getSenderProfiles } from 'src/services/db/user-settings';
-import DomainHeader from './_components/header';
 import CreateDomainForm from './_components/form/new-domain-form';
+import DomainHeader from './_components/header';
 
 export default async function DomainPage() {
-  const senderProfiles = await getSenderProfiles();
+  const { allHosts: senderProfiles } = await getSenderProfiles();
   const addressesPlanPermissions = await getAddressesPlanPermissions();
 
   if (addressesPlanPermissions.isAllAddressesUsed) {

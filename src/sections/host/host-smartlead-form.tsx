@@ -9,7 +9,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { hosts } from '@prisma/client';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
@@ -25,13 +25,14 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
-    notificationAddresses: Yup.string().required('Notification address is required'),
-    apiKey: Yup.string().required('API key is required'),
+    notificationAddresses: Yup.string(),
+    apiKey: Yup.string(),
     webhook: Yup.string().required('required'),
+    useWithSeeds: Yup.boolean().required(),
   });
 
   const defaultValues = {
@@ -41,6 +42,7 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
       : '',
     apiKey: currentItem.smartlead?.apiKey ?? '',
     webhook: currentItem.smartlead?.webhook ?? '',
+    useWithSeeds: currentItem.smartlead?.useWithSeeds ?? false,
   };
 
   const methods = useForm({
@@ -91,6 +93,11 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
                   InputLabelProps={{ shrink: true }}
                 />
               </Box>
+
+              <RHFSwitch
+                name="useWithSeeds"
+                label="Do you plan to use Outreach Magic Seeds with this smartlead profile? "
+              />
 
               <Divider sx={{ my: 1 }} />
 

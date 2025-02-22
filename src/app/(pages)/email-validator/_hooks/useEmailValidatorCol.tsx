@@ -22,7 +22,13 @@ export const useEmailValidatorCol = () => {
       field: 'upload.listName',
       headerName: 'List Name',
       renderCell: (params) => {
-        return params.row.upload.listName;
+        return (
+          <div title={params.row.upload.listName} style={{ overflow: 'hidden' }}>
+            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
+              {params.row.upload.listName}
+            </Typography>
+          </div>
+        );
       },
       flex: 1,
     },
@@ -36,6 +42,7 @@ export const useEmailValidatorCol = () => {
       headerName: 'Status',
       renderCell: (params) => <RenderCellStatus params={params} />,
       flex: 1,
+      minWidth: 80,
     },
     {
       field: 'download.csvDownload',
@@ -59,6 +66,7 @@ export const useEmailValidatorCol = () => {
         </Stack>
       ),
       flex: 1,
+      minWidth: 120,
     },
     {
       field: 'download.unique_emails',

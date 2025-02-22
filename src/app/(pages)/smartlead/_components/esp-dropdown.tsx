@@ -1,6 +1,9 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
+import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
+import { espData } from 'src/constants';
+import { updateSmartleadEsp } from 'src/services/db/smartlead';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,15 +28,15 @@ export const EspDropdown = ({ params }: { params: GridCellParams }) => {
 
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
-      // try {
-      //   if (!tableIndex) return undefined;
+      const selectedEsp = espData[e.target.value as keyof typeof espData];
 
-      //   await updateSenderProfiles(params.id as string, e.target.value, tableIndex);
-      // } catch (error) {
-      //   throw new Error('Unable to update the assigned profile. Please contact support.');
-      // }
+      const response = await updateSmartleadEsp(params.id as string, selectedEsp);
 
-      console.log('Submitting...');
+      if (!response.success) {
+        enqueueSnackbar(response.message, { variant: 'error', persist: true });
+      } else {
+        enqueueSnackbar('Update success!');
+      }
     });
   };
 
