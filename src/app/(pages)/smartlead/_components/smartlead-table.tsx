@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { useSmartleadCol } from '../_hooks/useSmartleadCol';
+import { EditMultipleItems } from './edit-multiple-item';
 
 type OptionType = {
   profile: string;
@@ -52,6 +53,9 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
           alignItems="center"
           justifyContent="flex-end"
         >
+          {!!selectedRowIds.length && (
+            <EditMultipleItems selectedRowIds={selectedRowIds} options={options} />
+          )}
           <GridToolbarColumnsButton />
           <GridToolbarFilterButton />
         </Stack>
@@ -75,10 +79,11 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
         rows={rows}
         slots={slots}
         columns={columns}
+        checkboxSelection
         disableRowSelectionOnClick
         initialState={initialState}
         getRowHeight={() => 'auto'}
-        pageSizeOptions={[5, 10, 25]}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         onRowSelectionModelChange={setSelectedRowIds}
       />
     </Card>

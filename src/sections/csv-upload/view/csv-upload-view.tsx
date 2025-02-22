@@ -1,34 +1,34 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import {
   DataGrid,
   GridColDef,
-  GridToolbarContainer,
-  GridRowSelectionModel,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridToolbarColumnsButton,
   GridColumnVisibilityModel,
+  GridRowSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 
-import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 
-import { useBoolean } from 'src/hooks/use-boolean';
 import { useGetCsvUploads } from 'src/hooks/api/csv-upload';
+import { useBoolean } from 'src/hooks/use-boolean';
 
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
-import EmptyContent from 'src/components/empty-content';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import EmptyContent from 'src/components/empty-content';
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+import { useSnackbar } from 'src/components/snackbar';
 
 import { ICsvUpload } from 'src/types/csv-upload';
 
@@ -242,7 +242,7 @@ export default function CsvUploadView() {
             loading={csvUploadLoading}
             getRowHeight={() => 'auto'}
             getRowId={(row) => row._id}
-            pageSizeOptions={[5, 10, 25]}
+            pageSizeOptions={[5, 10, 25, 50, 100]}
             initialState={{
               pagination: {
                 paginationModel: { pageSize: 10 },

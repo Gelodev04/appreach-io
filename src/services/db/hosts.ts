@@ -174,13 +174,31 @@ export const createHost = async (data: UpdateHostData) => {
 
 export const updateHostSmartlead = async (id: string, data: UpdateSmartLead) => {
   try {
+    const existingHost = await prisma.hosts.findUnique({
+      where: { id },
+      select: { smartlead: true },
+    });
+
+    if (!existingHost) {
+      return { success: false, message: 'Host not found' };
+    }
+
+    const updatedHostSmartlead = {
+      ...existingHost.smartlead, // Retain existing fields
+      apiKey: data.apiKey,
+      useWithSeeds: data.useWithSeeds,
+      notificationAddresses: data.notificationAddresses
+        ? data.notificationAddresses
+            .split('\n')
+            .map((item) => item.trim())
+            .filter((item) => item !== '')
+        : [],
+    };
+
     await prisma.hosts.update({
       where: { id },
       data: {
-        smartlead: {
-          apiKey: data.apiKey,
-          notificationAddresses: data.notificationAddresses.split('\n').map((item) => item.trim()),
-        },
+        smartlead: updatedHostSmartlead,
       },
     });
 
@@ -188,7 +206,10 @@ export const updateHostSmartlead = async (id: string, data: UpdateSmartLead) => 
   } catch (error) {
     console.error('Error updating host smartlead:', error);
 
-    return { success: false, message: 'Failed to update smartlead. Please try again later.' };
+    return {
+      success: false,
+      message: 'Failed to update smartlead. Please try again later.',
+    };
   }
 };
 

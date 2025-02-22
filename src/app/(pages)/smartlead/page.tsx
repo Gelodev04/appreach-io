@@ -14,11 +14,12 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
   const rows = await getSmartleadsByHostIds();
   const smartleadPlanPermission = await getSmartleadPlanPermissions();
-  const senderProfiles = await getSenderProfiles();
+  const { allHosts: senderProfiles, hostsWithApiKey: senderProfilesWithApiKey } =
+    await getSenderProfiles();
 
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-      <SmartleadHeader options={senderProfiles} />
+      <SmartleadHeader options={senderProfilesWithApiKey} />
 
       <ItemUsageDisplay
         itemName="Accounts"

@@ -7,5 +7,5 @@ export function generateLookerStudioUrl(hostCrypts: string[], baseUrl?: string):
   if (!effectiveBaseUrl) throw new Error('Looker url is not defined');
 
   const idsString = hostCrypts.join(',');
-  return effectiveBaseUrl.replace('{}', idsString);
+  return effectiveBaseUrl.replaceAll('{}', idsString);
 }
