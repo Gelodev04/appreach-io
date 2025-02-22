@@ -32,7 +32,13 @@ export const useSmartleadCol = (options: OptionType) => {
       field: 'smartlead.type',
       headerName: 'SL Type',
       renderCell: (params) => {
-        return params?.row?.smartlead?.type;
+        return (
+          <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
+            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
+              {params?.row?.smartlead?.type}
+            </Typography>
+          </div>
+        );
       },
       flex: 1,
     },
@@ -43,6 +49,7 @@ export const useSmartleadCol = (options: OptionType) => {
         return <HostDropdown params={params} options={options} />;
       },
       flex: 1,
+      minWidth: 150,
     },
     {
       field: 'esp',
@@ -51,6 +58,7 @@ export const useSmartleadCol = (options: OptionType) => {
         return <EspDropdown params={params} />;
       },
       flex: 1,
+      minWidth: 150,
     },
     {
       field: 'lastUpdated',

@@ -17,7 +17,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 const SendersAddressesPage = async () => {
-  const senderProfiles = await getSenderProfiles();
+  const { allHosts: senderProfiles } = await getSenderProfiles();
   const addressesPlanPermissions = await getAddressesPlanPermissions();
   return (
     <Container maxWidth={false} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

@@ -18,15 +18,15 @@ export function useNavData() {
             disabled: isTrialExpired,
           },
           {
-            title: 'Sender Addresses',
-            path: paths.senders.root,
-            icon: <Iconify icon="hugeicons:address-book" />,
-            disabled: isTrialExpired,
-          },
-          {
             title: 'Account Profiles',
             path: paths.settings.root,
             icon: <Iconify icon="bx:server" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Sender Addresses',
+            path: paths.senders.root,
+            icon: <Iconify icon="hugeicons:address-book" />,
             disabled: isTrialExpired,
           },
           {

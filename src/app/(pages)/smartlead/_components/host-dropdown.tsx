@@ -1,6 +1,8 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
+import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
+import { updateSmartleadHost } from 'src/services/db/smartlead';
 
 type HostDropdownType = {
   params: GridCellParams;
@@ -26,15 +28,19 @@ export const HostDropdown = ({ params, options }: HostDropdownType) => {
 
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
-      // try {
-      //   if (!tableIndex) return undefined;
+      const selectedHost = options.find((host) => host.id === e.target.value);
 
-      //   await updateSenderProfiles(params.id as string, e.target.value, tableIndex);
-      // } catch (error) {
-      //   throw new Error('Unable to update the assigned profile. Please contact support.');
-      // }
+      const response = await updateSmartleadHost(
+        params.id as string,
+        e.target.value,
+        selectedHost!.profile
+      );
 
-      console.log('Submitting...');
+      if (!response.success) {
+        enqueueSnackbar(response.message, { variant: 'error', persist: true });
+      } else {
+        enqueueSnackbar('Update success!');
+      }
     });
   };
 

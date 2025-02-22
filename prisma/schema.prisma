@@ -159,6 +159,7 @@ type HostsLookerStudio {
 
 type HostsSmartLead {
   notificationAddresses String[]
+  useWithSeeds          Boolean?
   apiKey                String?
   webhook               String?
 }
@@ -471,12 +472,15 @@ model hosts {
 }
 
 model smartleadEmailAccounts {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  username    String
-  esp         String
-  hostId      String     @db.ObjectId
-  lastUpdated DateTime   @db.Date
-  smartlead   SmartLead?
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  username     String
+  esp          String
+  espCamelCase String
+  hostId       String     @db.ObjectId
+  hostName     String
+  lastUpdated  DateTime   @db.Date
+  server       String
+  smartlead    SmartLead?
 }
 
 model seedBatches {
