@@ -222,10 +222,10 @@ type SeedBatchesGenerate {
 }
 
 type SeedBatchesGenerateEsps {
-  googleBusiness    Int
-  googlePersonal    Int
-  microsoftBusiness Int
-  microsoftPersonal Int
+  googleBusiness    Int?
+  googlePersonal    Int?
+  microsoftBusiness Int?
+  microsoftPersonal Int?
 }
 
 type SeedBatchesResults {

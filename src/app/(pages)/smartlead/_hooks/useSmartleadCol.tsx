@@ -23,7 +23,9 @@ export const useSmartleadCol = (options: OptionType) => {
       type: 'number',
       headerAlign: 'left',
       align: 'left',
+      valueGetter: (params) => params?.row?.smartlead?.client_id,
       renderCell: (params) => {
+        console.log(params);
         return params?.row?.smartlead?.client_id;
       },
       flex: 1,
@@ -31,6 +33,7 @@ export const useSmartleadCol = (options: OptionType) => {
     {
       field: 'smartlead.type',
       headerName: 'SL Type',
+      valueGetter: (params) => params?.row?.smartlead?.type,
       renderCell: (params) => {
         return (
           <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
