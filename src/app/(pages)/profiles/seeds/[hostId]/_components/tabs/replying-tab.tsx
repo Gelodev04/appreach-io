@@ -1,5 +1,5 @@
 import { Box, Link, Stack, Typography } from '@mui/material';
-import { RHFTextField } from 'src/components/hook-form';
+import { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { HostProps } from 'src/types/host';
@@ -35,23 +35,6 @@ export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
         )}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Box
-          sx={{
-            alignSelf: 'center',
-            minWidth: '300px',
-          }}
-        >
-          {currentItem && (
-            <RHFTextField
-              disabled={!enabled}
-              name="filterId"
-              label="Filter ID Key"
-              tooltipContent="Assign a unique identifier to filter out AI-generated replies."
-              tooltipID="filter-id-popover"
-            />
-          )}
-        </Box>
-
         <SliderItem
           maxVal={planPermissions.seeds}
           disabled={!enabled}
@@ -88,6 +71,30 @@ export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
           tooltipContent="Tailor the AI’s behavior and tone by customizing the prompt to ensure replies align with your brand."
           tooltipID="ai-prompt-popover"
         />
+      </Box>
+
+      <Box
+        sx={{
+          alignSelf: 'center',
+          minWidth: '300px',
+        }}
+      >
+        {currentItem && (
+          <Box>
+            <RHFTextField
+              disabled={!enabled}
+              name="filterId"
+              label="Filter ID Key"
+              tooltipContent="Assign a unique identifier to filter out AI-generated replies."
+              tooltipID="filter-id-popover"
+            />
+
+            <RHFSwitch
+              name="disableFilterId"
+              label="Do you want to disable the filter id in the seed account replies?"
+            />
+          </Box>
+        )}
       </Box>
     </Stack>
   );

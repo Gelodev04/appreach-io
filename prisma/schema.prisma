@@ -203,6 +203,7 @@ type HostsEngagementSettings {
   linksToClick    String[] @default([])
   linksNotToClick String[] @default([])
   filterId        String?
+  disableFilterId Boolean?
   replyPrompt     String
 }
 
@@ -221,10 +222,10 @@ type SeedBatchesGenerate {
 }
 
 type SeedBatchesGenerateEsps {
-  googleBusiness    Int
-  googlePersonal    Int
-  microsoftBusiness Int
-  microsoftPersonal Int
+  googleBusiness    Int?
+  googlePersonal    Int?
+  microsoftBusiness Int?
+  microsoftPersonal Int?
 }
 
 type SeedBatchesResults {
@@ -469,6 +470,8 @@ model hosts {
   lookerStudio       HostsLookerStudio?
   smartlead          HostsSmartLead?
   engagementSettings HostsEngagementSettings?
+  ownerId            String?                  @db.ObjectId
+  ownerName          String?
 }
 
 model smartleadEmailAccounts {

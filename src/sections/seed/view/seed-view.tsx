@@ -134,6 +134,7 @@ export default function SeedView({ seeds }: TSeedsView) {
       headerName: 'List size',
       type: 'singleSelect',
       flex: 1,
+      valueGetter: (params) => params.row.results?.total,
       renderCell: (params) => <RenderCellResultsTotal params={params} />,
     },
     // {

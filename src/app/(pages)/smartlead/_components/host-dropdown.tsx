@@ -30,11 +30,10 @@ export const HostDropdown = ({ params, options }: HostDropdownType) => {
     startTransition(async () => {
       const selectedHost = options.find((host) => host.id === e.target.value);
 
-      const response = await updateSmartleadHost(
-        params.id as string,
-        e.target.value,
-        selectedHost!.profile
-      );
+      const response = await updateSmartleadHost(params.id as string, {
+        hostId: e.target.value,
+        hostName: selectedHost!.profile,
+      });
 
       if (!response.success) {
         enqueueSnackbar(response.message, { variant: 'error', persist: true });

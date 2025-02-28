@@ -2,9 +2,10 @@
 
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import Label from 'src/components/label';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { smartleadAccountsWebhook } from 'src/services/db/smartlead';
 import { useSmartleadSyncStore } from 'src/store/smartlead';
@@ -19,6 +20,7 @@ export const SmartleadHeader = ({ options }: { options: OptionType }) => {
   const syncAccounts = useBoolean();
   const { smartlead } = useSmartleadSyncStore();
   const [isPending, startTransition] = useTransition();
+  const [data, setData] = useState<Record<string, any>>({});
 
   const handleSyncAccounts = async () => {
     if (!smartlead) {
@@ -28,11 +30,11 @@ export const SmartleadHeader = ({ options }: { options: OptionType }) => {
 
     startTransition(async () => {
       const response = await smartleadAccountsWebhook(smartlead);
-
       if (!response.success) {
         enqueueSnackbar(response.message, { variant: 'error', persist: false });
       } else {
-        enqueueSnackbar('Syncing successful!');
+        enqueueSnackbar('Sync successful');
+        setData(response.data);
       }
     });
   };
@@ -59,6 +61,12 @@ export const SmartleadHeader = ({ options }: { options: OptionType }) => {
                   This host&apos;s API key will be used
                 </Typography>
                 <SmartleadSyncDropdown options={options} />
+
+                {Object.keys(data).length > 0 && (
+                  <Label variant="soft" color="success">
+                    {data.added} accounts added | {data.updated} accounts updated.
+                  </Label>
+                )}
               </Box>
             }
             action={
@@ -68,7 +76,7 @@ export const SmartleadHeader = ({ options }: { options: OptionType }) => {
                 onClick={handleSyncAccounts}
                 disabled={isPending}
               >
-                Sync Account
+                {isPending ? 'Syncing Accounts...' : 'Sync Account'}
               </Button>
             }
           />

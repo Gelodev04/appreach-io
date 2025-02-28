@@ -4,7 +4,7 @@ export type UpdateSmartleadEsp = {
   server: string;
 };
 
-export type UpdateSmartlead = {
+export type UpdateSmartleadHost = {
   hostId: string;
   hostName: string;
-} & UpdateSmartleadEsp;
+};

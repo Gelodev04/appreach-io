@@ -94,6 +94,7 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
           clickLink: data.clickLink,
           replyMessage: data.replyMessage,
           filterId: data.filterId ?? '',
+          disableFilterId: data.disableFilterId,
           replyPrompt: data.replyPrompt ?? '',
           linksToClick: data.linksToClick
             ? data.linksToClick.split(',').map((link) => link.trim())

@@ -54,6 +54,7 @@ export type UpdateHostData = {
   clickLink: number;
   replyMessage: number;
   filterId?: string;
+  disableFilterId?: boolean;
   replyPrompt?: string;
   linksToClick?: string;
   linksNotToClick?: string;
