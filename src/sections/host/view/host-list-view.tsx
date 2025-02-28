@@ -66,6 +66,8 @@ export const HostListView = ({
     }
   }, [enqueueSnackbar, selectedRowIds]);
 
+  console.log({ userHosts });
+
   const handleEditSeedsRow = useCallback(
     (id: string) => {
       router.push(paths.settings.seeds(id.toString()));
@@ -83,7 +85,7 @@ export const HostListView = ({
   const columns: GridColDef[] = [
     {
       field: 'host',
-      headerName: 'Host',
+      headerName: 'Name',
       hideable: false,
       renderCell: (params) => <RenderHostName params={params} />,
       flex: 1,
@@ -150,6 +152,11 @@ export const HostListView = ({
           onClick={() => handleEditSmartleadRow(params.id.toString())}
         />,
       ],
+      flex: 1,
+    },
+    {
+      field: 'ownerName',
+      headerName: 'Owner',
       flex: 1,
     },
     {

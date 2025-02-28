@@ -203,6 +203,7 @@ type HostsEngagementSettings {
   linksToClick    String[] @default([])
   linksNotToClick String[] @default([])
   filterId        String?
+  disableFilterId Boolean?
   replyPrompt     String
 }
 
@@ -469,6 +470,8 @@ model hosts {
   lookerStudio       HostsLookerStudio?
   smartlead          HostsSmartLead?
   engagementSettings HostsEngagementSettings?
+  ownerId            String?                  @db.ObjectId
+  ownerName          String?
 }
 
 model smartleadEmailAccounts {

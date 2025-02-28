@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Stack, SxProps, Theme } from '@mui/material';
+import { Box, Card, Stack, SxProps, Theme } from '@mui/material';
 import {
   DataGrid,
   GridInitialState,
@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { useSmartleadCol } from '../_hooks/useSmartleadCol';
-import { EditMultipleItems } from './edit-multiple-item';
+import { MultipleHostEdit } from './multiple-host-edit';
 
 type OptionType = {
   profile: string;
@@ -32,6 +32,7 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
     '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
       outline: 'none !important',
     },
+    '& .MuiTablePagination-root': { display: 'flex' },
   };
   const initialState: GridInitialState = {
     pagination: {
@@ -54,7 +55,9 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
           justifyContent="flex-end"
         >
           {!!selectedRowIds.length && (
-            <EditMultipleItems selectedRowIds={selectedRowIds} options={options} />
+            <Box>
+              <MultipleHostEdit selectedRowIds={selectedRowIds} options={options} />
+            </Box>
           )}
           <GridToolbarColumnsButton />
           <GridToolbarFilterButton />

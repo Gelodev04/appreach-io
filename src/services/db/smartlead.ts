@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { env } from 'src/data/env/server';
 import { paths } from 'src/routes/paths';
-import { UpdateSmartlead, UpdateSmartleadEsp } from 'src/types/smartlead';
+import { UpdateSmartleadEsp, UpdateSmartleadHost } from 'src/types/smartlead';
 import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
@@ -62,9 +62,8 @@ export const syncSmartleadAccounts = async (id: string) => {
 export const smartleadAccountsWebhook = async (id: string) => {
   try {
     const url = `${env.SMARTLEAD_ACCOUNTS_FUNCTION}${id}`;
-    await axios.post(url);
-
-    return { success: true };
+    const response = await axios.post(url);
+    return { success: true, data: response.data };
   } catch (error) {
     console.error('Error on Smartlead Account Function:', error);
 
@@ -75,15 +74,15 @@ export const smartleadAccountsWebhook = async (id: string) => {
   }
 };
 
-export const updateSmartleadHost = async (id: string, hostId: string, hostName: string) => {
+export const updateSmartleadHost = async (id: string, host: UpdateSmartleadHost) => {
   try {
     const data = {
       where: {
         id,
       },
       data: {
-        hostId,
-        hostName,
+        hostId: host.hostId,
+        hostName: host.hostName,
         lastUpdated: new Date(),
       },
     };
@@ -128,7 +127,10 @@ export const updateSmartleadEsp = async (id: string, esp: UpdateSmartleadEsp) =>
   }
 };
 
-export const updateMultipleSmartlead = async (ids: string[], data: UpdateSmartlead) => {
+export const updateMultipleSmartlead = async (
+  ids: string[],
+  data: UpdateSmartleadHost | UpdateSmartleadEsp
+) => {
   try {
     await prisma.smartleadEmailAccounts.updateMany({
       where: {
