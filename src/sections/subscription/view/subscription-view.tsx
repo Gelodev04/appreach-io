@@ -205,12 +205,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         subtitle="100 Seed Accounts"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
         price={STRIPE.subscriptions.starter.price}
-        features={[
-          'Send up to 100 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Includes 1 sender profile',
-          'Email and live chat support included',
-        ]}
+        features={['Send up to 100 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability​', 'Includes 1 sender profile', 'Email and live chat support included']}
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
@@ -222,12 +217,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         subtitle="500 Seed Accounts*"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
-        features={[
-          'Send up to 500 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Includes 5 sender profile',
-          'Email and live chat support included',
-        ]}
+        features={['Send up to 500 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability​', 'Includes 5 sender profile', 'Email and live chat support included']}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
@@ -239,12 +229,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
         onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
-        features={[
-          'Send 500+ emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Think of us as part of your team',
-          '1-on-1 zoom calls',
-        ]}
+        features={['Send 500+ emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability​', 'Think of us as part of your team', '1-on-1 zoom calls']}
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
