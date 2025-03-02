@@ -4,7 +4,6 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { GridCellParams } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
 import Iconify from 'src/components/iconify/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
@@ -69,13 +68,13 @@ export function RenderLookerStudioUrl({ params }: ParamsProps) {
 
 export const SeedActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
-  const handleEditSeedsRow = useCallback(() => {
+  const handleEditSeedsRow = () => {
     router.push(paths.settings.seeds(params.id.toString()));
-  }, [router]);
+  };
 
-  const handleEditSenderRow = useCallback(() => {
+  const handleEditSenderRow = () => {
     router.push(paths.senders.filter(params.id.toString()));
-  }, [router]);
+  };
 
   return (
     <Stack direction="row">
@@ -103,10 +102,9 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
 
 export const AttributeActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     router.push(paths.attributesUpload.root);
-  }, [router]);
-
+  };
   return (
     <Stack direction="row">
       <Tooltip title="Open attributes list" placement="top">
@@ -124,13 +122,13 @@ export const AttributeActionCells = ({ params }: ParamsProps) => {
 
 export const SmartleadActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
-  const handleEditSmartleadRow = useCallback(() => {
+  const handleEditSmartleadRow = () => {
     router.push(paths.settings.smartlead(params.id.toString()));
-  }, [router]);
+  };
 
-  const handleOpenSmartlead = useCallback(() => {
+  const handleOpenSmartlead = () => {
     router.push(paths.smartlead.root);
-  }, [router]);
+  };
 
   return (
     <Stack direction="row">

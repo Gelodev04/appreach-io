@@ -285,8 +285,8 @@ export const addNewProfile = async (host: string) => {
 
     const createdHost = await prisma.hosts.create({
       data: {
-        host: host,
-        hostCrypt: hostCrypt,
+        host,
+        hostCrypt,
         ownerId: id,
         ownerName: appLogin.username,
         userSettings: {

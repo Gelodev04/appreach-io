@@ -24,7 +24,6 @@ import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-d
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
@@ -36,7 +35,6 @@ import {
   SeedActionCells,
   SmartleadActionCells,
 } from '../host-table-row';
-import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -144,23 +142,6 @@ export const HostListView = ({
     columns
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
       .map((column) => column.field);
-
-  const handleClickAddNewAccountProfile = () => {
-    if (isAllProfileUsed) {
-      enqueueSnackbar({
-        message: <PopupWarningForAllUsedProfiles />,
-        variant: 'warning',
-        persist: true,
-        anchorOrigin: {
-          horizontal: 'center',
-          vertical: 'top',
-        },
-      });
-
-      return null;
-    }
-    router.push(paths.settings.new);
-  };
 
   return (
     <>
