@@ -215,8 +215,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
         disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
-      />
-      <CheckoutElementV2
+      /> */}
+      {/* <CheckoutElementV2
         title="Established"
         name={STRIPE.subscriptions.established.key}
         subtitle="500 Seed Accounts*"
@@ -233,8 +233,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
         disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
-      />
-      <CheckoutElementV2
+      /> */}
+      {/* <CheckoutElementV2
         title="Managed Service"
         name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
