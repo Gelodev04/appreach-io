@@ -59,12 +59,12 @@ export function useNavData() {
             icon: <Iconify icon="flowbite:file-invoice-outline" />,
             disabled: false,
           },
-          {
-            title: 'Logout',
-            path: paths.auth.logout,
-            icon: <Iconify icon="hugeicons:logout-04" />,
-            disabled: false,
-          },
+          // {
+          //   title: 'Logout',
+          //   path: paths.auth.logout,
+          //   icon: <Iconify icon="hugeicons:logout-04" />,
+          //   disabled: false,
+          // },
         ],
       },
     ],
