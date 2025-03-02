@@ -174,21 +174,14 @@ export async function POST(request: Request) {
     const { insertedId: hostId } = await db.collection('hosts').insertOne({
       host: defaultHostName,
       hostCrypt: defaultHostCrypt,
+      ownerId: userId,
+      ownerName: email,
       userSettings: {
         timezone: '',
         externalSenderAddresses: [],
         notificationAddressArray: [],
       },
       lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
-      inboxEngagement: {
-        markImportant: true,
-        removeSpam: true,
-        replyMessage: false,
-        clickLink: true,
-        downloadMessage: true,
-        movePrimary: true,
-        scrollMessage: true,
-      },
     });
 
     // Update the user with the new host ObjectId

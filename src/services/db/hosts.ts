@@ -64,7 +64,7 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
     });
 
     if (!existingHost) {
-      throw new Error('Host not found');
+      return { success: false, message: 'Host not found' };
     }
     const updatedUserSettings = {
       ...existingHost.userSettings, // Retain existing fields
@@ -83,7 +83,7 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
       timezone: data.timezone,
     };
 
-    const updatedHostData = await prisma.hosts.update({
+    await prisma.hosts.update({
       where: { id },
       data: {
         engagementSettings: {
@@ -107,10 +107,11 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
       },
     });
 
-    return updatedHostData;
+    return { success: true };
   } catch (error) {
     console.error('Unable to update host data.', error);
-    throw new Error('Unable to update host');
+
+    return { success: false, message: 'Unable to update host' };
   }
 };
 
@@ -118,7 +119,9 @@ export const createHost = async (data: UpdateHostData) => {
   try {
     // Check if a host with the same name already exists
     const existingHost = await getHostByName(data.host);
-    if (existingHost) throw new Error('Cannot create, profile name already in use');
+    if (existingHost) {
+      return { success: false, message: 'Cannot create, profile name already in use' };
+    }
 
     const hostCrypt = generateHostCrypt(data.host);
     const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
@@ -151,8 +154,9 @@ export const createHost = async (data: UpdateHostData) => {
         replyPrompt: data.replyPrompt ? data.replyPrompt : '',
       },
     };
+
     try {
-      const result = await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx) => {
         // Create a new host and get the _id of the new document
         const createdHost = await tx.hosts.create({
           data: normalizedData,
@@ -163,13 +167,15 @@ export const createHost = async (data: UpdateHostData) => {
         await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
         await incrementSenderProfilesUsed();
       });
-      return result;
+
+      return { success: true };
     } catch (error) {
-      throw new Error(error.message);
+      console.error('Unable to insert new host to user settings.', error);
+      return { success: false, message: 'Unable to insert new host to user settings.' };
     }
   } catch (error) {
-    console.log('Unable to create host.', error);
-    throw new Error(`Unable to create host`);
+    console.error('Unable to create host.', error);
+    return { success: false, message: 'Unable to create host' };
   }
 };
 
@@ -259,5 +265,47 @@ export const deleteUserHost = async (ids: string[]) => {
   } catch (error) {
     console.error('Error deleting host:', error);
     throw new Error('Error deleting host.');
+  }
+};
+
+export const addNewProfile = async (host: string) => {
+  try {
+    const { id, appLogin } = await getUserSettings({
+      id: true,
+      appLogin: { select: { username: true } },
+    });
+    const existingHost = await getHostByName(host);
+
+    if (existingHost) {
+      return { success: false, message: 'Cannot create, profile name already in use' };
+    }
+
+    const hostCrypt = generateHostCrypt(host);
+    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
+
+    const createdHost = await prisma.hosts.create({
+      data: {
+        host: host,
+        hostCrypt: hostCrypt,
+        ownerId: id,
+        ownerName: appLogin.username,
+        userSettings: {
+          timezone: '',
+          externalSenderAddresses: [],
+          notificationAddressArray: [],
+        },
+        lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
+      },
+    });
+    const newHostId = createdHost.id;
+
+    // Add the newHostId to the hosts array under the userSettings collection
+    await updateUserSettings({ hosts: { push: newHostId } }, { appLogin: false, id: true });
+    await incrementSenderProfilesUsed();
+
+    return { success: true };
+  } catch (error) {
+    console.error('Unable to create host.', error);
+    return { success: false, message: 'Unable to create host' };
   }
 };

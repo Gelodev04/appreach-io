@@ -28,6 +28,7 @@ import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
+import { HostNewAccountProfile } from '../host-new-account-profile';
 import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
 import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
 
@@ -205,7 +206,7 @@ export const HostListView = ({
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost isAllSenderProfilesUsed={isAllProfileUsed} />
-
+              {/* 
               <Button
                 onClick={handleClickAddNewAccountProfile}
                 variant="contained"
@@ -213,7 +214,8 @@ export const HostListView = ({
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
                 Add new account profile
-              </Button>
+              </Button> */}
+              <HostNewAccountProfile isAllProfileUsed={isAllProfileUsed} />
             </Stack>
           }
         />
