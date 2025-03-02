@@ -62,6 +62,8 @@ export const syncSmartleadAccounts = async (id: string) => {
 export const smartleadAccountsWebhook = async (id: string) => {
   try {
     const url = `${env.SMARTLEAD_ACCOUNTS_FUNCTION}${id}`;
+
+    console.log({ url });
     const response = await axios.post(url);
     return { success: true, data: response.data };
   } catch (error) {

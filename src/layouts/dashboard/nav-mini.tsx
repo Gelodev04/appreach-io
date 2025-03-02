@@ -1,8 +1,12 @@
+import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import { useRouter } from 'next/navigation';
+import Iconify from 'src/components/iconify';
 import { LogoSymbol } from 'src/components/logo';
 import { NavSectionMini } from 'src/components/nav-section';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
+import { paths } from 'src/routes/paths';
 import { hideScroll } from 'src/theme/css';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
@@ -11,6 +15,7 @@ import { useNavData } from './config-navigation';
 export default function NavMini() {
   const { user } = useMockedUser();
   const navData = useNavData();
+  const router = useRouter();
 
   return (
     <Box
@@ -46,6 +51,11 @@ export default function NavMini() {
             currentRole: user?.role,
           }}
         />
+        <Box sx={{ marginTop: 'auto', display: 'flex', justifyContent: 'center' }}>
+          <IconButton onClick={() => router.push(paths.auth.logout)} color="primary" size="large">
+            <Iconify icon="hugeicons:logout-04" />
+          </IconButton>
+        </Box>
       </Stack>
     </Box>
   );

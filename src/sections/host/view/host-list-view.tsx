@@ -6,7 +6,6 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridActionsCellItem,
   GridColDef,
   GridColumnVisibilityModel,
   GridRowSelectionModel,
@@ -25,11 +24,17 @@ import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-d
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
-import { RenderHostCrypt, RenderHostName, RenderLookerStudioUrl } from '../host-table-row';
-import PopupWarningForAllUsedProfiles from '../warning-sender-used-all-profiles';
+import { HostNewAccountProfile } from '../host-new-account-profile';
+import {
+  AttributeActionCells,
+  RenderHostCrypt,
+  RenderHostName,
+  RenderLookerStudioUrl,
+  SeedActionCells,
+  SmartleadActionCells,
+} from '../host-table-row';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -66,22 +71,6 @@ export const HostListView = ({
     }
   }, [enqueueSnackbar, selectedRowIds]);
 
-  console.log({ userHosts });
-
-  const handleEditSeedsRow = useCallback(
-    (id: string) => {
-      router.push(paths.settings.seeds(id.toString()));
-    },
-    [router]
-  );
-
-  const handleEditSmartleadRow = useCallback(
-    (id: string) => {
-      router.push(paths.settings.smartlead(id.toString()));
-    },
-    [router]
-  );
-
   const columns: GridColDef[] = [
     {
       field: 'host',
@@ -109,13 +98,7 @@ export const HostListView = ({
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<Iconify icon="flowbite:edit-outline" />}
-          label="Edit"
-          onClick={() => handleEditSeedsRow(params.id.toString())}
-        />,
-      ],
+      renderCell: (params) => <SeedActionCells params={params} />,
       flex: 1,
     },
     {
@@ -127,13 +110,7 @@ export const HostListView = ({
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<Iconify icon="flowbite:edit-outline" />}
-          label="Edit"
-          onClick={() => router.push(paths.attributesUpload.root)}
-        />,
-      ],
+      renderCell: (params) => <AttributeActionCells params={params} />,
       flex: 1,
     },
     {
@@ -145,13 +122,7 @@ export const HostListView = ({
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<Iconify icon="flowbite:edit-outline" />}
-          label="Edit"
-          onClick={() => handleEditSmartleadRow(params.id.toString())}
-        />,
-      ],
+      renderCell: (params) => <SmartleadActionCells params={params} />,
       flex: 1,
     },
     {
@@ -172,23 +143,6 @@ export const HostListView = ({
       .filter((column) => !HIDE_COLUMNS_TOGGLABLE.includes(column.field))
       .map((column) => column.field);
 
-  const handleClickAddNewAccountProfile = () => {
-    if (isAllProfileUsed) {
-      enqueueSnackbar({
-        message: <PopupWarningForAllUsedProfiles />,
-        variant: 'warning',
-        persist: true,
-        anchorOrigin: {
-          horizontal: 'center',
-          vertical: 'top',
-        },
-      });
-
-      return null;
-    }
-    router.push(paths.settings.new);
-  };
-
   return (
     <>
       <Container
@@ -205,7 +159,7 @@ export const HostListView = ({
           action={
             <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
               <HostAddExistingHost isAllSenderProfilesUsed={isAllProfileUsed} />
-
+              {/* 
               <Button
                 onClick={handleClickAddNewAccountProfile}
                 variant="contained"
@@ -213,7 +167,8 @@ export const HostListView = ({
                 startIcon={<Iconify icon="mingcute:add-line" />}
               >
                 Add new account profile
-              </Button>
+              </Button> */}
+              <HostNewAccountProfile isAllProfileUsed={isAllProfileUsed} />
             </Stack>
           }
         />

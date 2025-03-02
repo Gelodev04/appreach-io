@@ -20,7 +20,6 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
-import { useSettingsContext } from 'src/components/settings';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { paths } from 'src/routes/paths';
@@ -50,7 +49,6 @@ type TSeedsView = {
 export default function SeedView({ seeds }: TSeedsView) {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
-  const settings = useSettingsContext();
   const { setStepStatus } = useChecklistStore((state) => state);
   const router = useRouter();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);

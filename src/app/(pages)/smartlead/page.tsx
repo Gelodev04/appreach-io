@@ -19,7 +19,7 @@ export default async function Page() {
 
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-      <SmartleadHeader options={senderProfilesWithApiKey} />
+      <SmartleadHeader allHosts={senderProfiles} options={senderProfilesWithApiKey} />
 
       <ItemUsageDisplay
         itemName="Accounts"

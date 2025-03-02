@@ -118,14 +118,22 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       closeSnackbar();
       try {
         if (currentItem) {
-          await updateHostData(currentItem?.id, data);
-          enqueueSnackbar('Update success!');
+          const response = await updateHostData(currentItem?.id, data);
+          if (!response.success) {
+            enqueueSnackbar(response.message, { variant: 'error', persist: true });
+          } else {
+            enqueueSnackbar('Update success!');
+            router.push(paths.settings.root);
+          }
         } else {
-          await createHost(data);
-          enqueueSnackbar('Create success!');
+          const response = await createHost(data);
+          if (!response.success) {
+            enqueueSnackbar(response.message, { variant: 'error', persist: true });
+          } else {
+            enqueueSnackbar('Create success!');
+            router.push(paths.settings.root);
+          }
         }
-
-        router.push(paths.settings.root);
       } catch (error) {
         enqueueSnackbar(error.message, { variant: 'error', persist: true });
       }

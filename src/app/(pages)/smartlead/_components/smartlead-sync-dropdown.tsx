@@ -1,13 +1,10 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useTransition } from 'react';
-import { useSmartleadSyncStore } from 'src/store/smartlead';
 
 type HostDropdownType = {
-  options: {
-    profile: string;
-    id: string;
-  }[];
-};
+  profile: string;
+  id: string;
+}[];
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -20,20 +17,27 @@ const MenuProps = {
   },
 };
 
-export const SmartleadSyncDropdown = ({ options }: HostDropdownType) => {
+export const SmartleadSyncDropdown = ({
+  options,
+  item,
+  setItem,
+}: {
+  options: HostDropdownType;
+  item: string;
+  setItem: (smartleadSync: string) => void;
+}) => {
   const [isPending, startTransition] = useTransition();
-  const { smartlead, setSmartlead } = useSmartleadSyncStore(); // Access Zustand store
 
   const handleChange = (e: SelectChangeEvent<any>) => {
     const newValue = e.target.value;
     startTransition(() => {
-      setSmartlead(newValue);
+      setItem(newValue);
     });
   };
 
   return (
     <Select
-      value={smartlead}
+      value={item}
       disabled={isPending}
       onChange={handleChange}
       style={{ width: '100%' }}

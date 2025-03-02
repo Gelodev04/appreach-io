@@ -7,7 +7,6 @@ import { UserSettingsPlan } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { CheckoutElementV2 } from 'src/app/(pages)/subscription/_component/checkout-element';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Logo from 'src/components/logo';
 import { useSnackbar } from 'src/components/snackbar';
@@ -169,7 +168,8 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       {lgUp && <Logo />}
       <Typography variant="h4" color="text.primary">
-        Upgrade Or Downgrade Anytime
+        Subscriptions page is under construction, please send us a message to make changes to your
+        subscription
       </Typography>
     </Stack>
   );
@@ -199,18 +199,13 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         alignItems: 'center',
       }}
     >
-      <CheckoutElementV2
+      {/* <CheckoutElementV2
         name={STRIPE.subscriptions.starter.key}
         title="Starter"
         subtitle="100 Seed Accounts"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
         price={STRIPE.subscriptions.starter.price}
-        features={[
-          'Send up to 100 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Includes 1 sender profile',
-          'Email and live chat support included',
-        ]}
+        features={['Send up to 100 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Includes 1 sender profile', 'Email and live chat support included']}
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
@@ -222,12 +217,7 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         subtitle="500 Seed Accounts*"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
-        features={[
-          'Send up to 500 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Includes 5 sender profile',
-          'Email and live chat support included',
-        ]}
+        features={['Send up to 500 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Includes 5 sender profile', 'Email and live chat support included']}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
@@ -239,16 +229,18 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         name={STRIPE.subscriptions.custom.key}
         subtitle="Contact Us"
         onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
-        features={[
-          'Send 500+ emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability​',
-          'Think of us as part of your team',
-          '1-on-1 zoom calls',
-        ]}
+        features={['Send 500+ emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Think of us as part of your team', '1-on-1 zoom calls']}
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
-      />
+      /> */}
+      <Button
+        onClick={() => prefillMessage('I have questions about my subscription.')}
+        variant="contained"
+        color="primary"
+      >
+        Contact Us
+      </Button>
     </Box>
   );
 

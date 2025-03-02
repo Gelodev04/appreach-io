@@ -1,4 +1,4 @@
-import { Typography, useTheme } from '@mui/material';
+import { Button, Typography, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
@@ -6,10 +6,10 @@ import { alpha } from '@mui/material/styles';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
-import { TourDialog } from 'src/components/tour';
 import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -95,7 +95,15 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
               <Typography variant="subtitle1">{data?.user?.email}</Typography>
             </Box>
           </Box>
-          <TourDialog />
+          {/* <TourDialog /> */}
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => router.push(paths.auth.logout)}
+            startIcon={<Iconify icon="hugeicons:logout-04" />}
+          >
+            Logout
+          </Button>
         </Box>
       </Box>
     </Scrollbar>

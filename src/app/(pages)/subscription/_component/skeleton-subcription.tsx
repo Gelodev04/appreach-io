@@ -22,7 +22,8 @@ function SkeletonSubscription() {
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       <Logo />
       <Typography variant="h4" color="text.primary">
-        Upgrade Or Downgrade Anytime
+        Subscriptions page is under construction, please send us a message to make changes to your
+        subscription
       </Typography>
     </Stack>
   );

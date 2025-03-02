@@ -78,6 +78,7 @@ export const paths = {
     root: '/senders',
     email: '/senders/email',
     domain: '/senders/domain',
+    filter: (id: string) => `/senders/?hostId=${id}`,
   },
 
   profiles: {
