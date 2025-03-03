@@ -1,0 +1,53 @@
+'use client';
+
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { useBoolean } from 'src/hooks/use-boolean';
+import { HubspotOAuthDropdown } from './hubspot-oauth-dropdown';
+
+type OptionType = {
+  profile: string;
+  id: string;
+}[];
+
+export const HubspotHeader = ({ allHosts }: { allHosts: OptionType }) => {
+  const hubspotOAuth = useBoolean();
+  const [item, setItem] = useState('');
+
+  return (
+    <CustomBreadcrumbs
+      heading="Hubspot Campaigns"
+      links={[{ name: 'Hubspot Campaigns' }]}
+      action={
+        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+          <Button variant="contained">Settings</Button>
+          <Button variant="contained" color="primary" onClick={hubspotOAuth.onTrue}>
+            oAuth Setup
+          </Button>
+
+          <ConfirmDialog
+            open={hubspotOAuth.value}
+            onClose={hubspotOAuth.onFalse}
+            title="Setup Hubspot oAuth"
+            content={
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body1">Choose a host</Typography>
+                <Typography variant="body2" color="GrayText">
+                  The oAuth will be saved this profile
+                </Typography>
+                <HubspotOAuthDropdown options={allHosts} item={item} setItem={setItem} />
+              </Box>
+            }
+            action={
+              <Button variant="contained" color="primary">
+                Submit
+              </Button>
+            }
+          />
+        </Stack>
+      }
+    />
+  );
+};

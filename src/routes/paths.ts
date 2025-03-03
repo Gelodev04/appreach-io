@@ -98,4 +98,8 @@ export const paths = {
   smartlead: {
     root: '/smartlead',
   },
+
+  hubspot: {
+    root: '/hubspot',
+  },
 };

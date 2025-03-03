@@ -7,7 +7,12 @@ import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/ut
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
 import { UpdateHostData, UpdateSmartLead } from 'src/types/host';
-import { getUserSettings, incrementSenderProfilesUsed, updateUserSettings } from './user-settings';
+import {
+  decrementSenderProfilesUsed,
+  getUserSettings,
+  incrementSenderProfilesUsed,
+  updateUserSettings,
+} from './user-settings';
 
 export const getHostById = async (id: string, selectFields?: Prisma.hostsSelect) => {
   try {
@@ -307,5 +312,31 @@ export const addNewProfile = async (host: string) => {
   } catch (error) {
     console.error('Unable to create host.', error);
     return { success: false, message: 'Unable to create host' };
+  }
+};
+
+export const deleteHostFromUser = async (hostIdToRemove: string) => {
+  try {
+    const { hosts } = await getUserSettings({ hosts: true });
+
+    if (!hosts) {
+      return { success: false, message: 'User settings not found.' };
+    }
+
+    // Filter out the hostId to remove
+    const updatedHosts = hosts.filter((id) => id !== hostIdToRemove);
+
+    await updateUserSettings({ hosts: updatedHosts }, { appLogin: false, id: true });
+    const response = await decrementSenderProfilesUsed();
+
+    if (!response.success) {
+      return { success: false, message: response.message };
+    }
+
+    revalidatePath(paths.profiles.root);
+    return { success: true, message: 'Host deleted successfully.' };
+  } catch (error) {
+    console.error('Error removing host:', error);
+    return { success: false, message: 'Error removing host.' };
   }
 };

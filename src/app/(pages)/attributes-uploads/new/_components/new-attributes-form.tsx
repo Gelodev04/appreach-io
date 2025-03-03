@@ -161,7 +161,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                 <RHFTextField
                   name="name"
                   label="List name"
-                  placeholder="Assig a name to this list"
+                  placeholder="Assign a name to this list"
                 />
 
                 <RHFAutocomplete

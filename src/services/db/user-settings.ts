@@ -316,6 +316,28 @@ export const decrementSenderAddressesUsed = async (value: number = 1) => {
   }
 };
 
+export const decrementSenderProfilesUsed = async (value: number = 1) => {
+  try {
+    const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });
+    const numOfProfilesUsed = planPermissionsUsed.senderProfiles - value;
+    await updateUserSettings(
+      {
+        planPermissionsUsed: {
+          update: {
+            senderProfiles: numOfProfilesUsed,
+          },
+        },
+      },
+      { planPermissionsUsed: true }
+    );
+
+    return { success: true, message: 'Sender profiles updated.' };
+  } catch (error) {
+    console.error('Unable to decrement sender profiles used:', error);
+    return { success: false, message: 'Unable to update sender profiles.' };
+  }
+};
+
 export const incrementSenderProfilesUsed = async () => {
   try {
     const { planPermissionsUsed } = await getUserSettings({ planPermissionsUsed: true });

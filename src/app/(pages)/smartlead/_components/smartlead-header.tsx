@@ -51,8 +51,8 @@ export const SmartleadHeader = ({
 
   return (
     <CustomBreadcrumbs
-      heading="SmartLead Accounts"
-      links={[{ name: 'SmartLead Setup' }]}
+      heading="Smartlead Accounts"
+      links={[{ name: 'Smartlead Setup' }]}
       action={
         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
           <Button variant="contained" onClick={settings.onTrue}>
