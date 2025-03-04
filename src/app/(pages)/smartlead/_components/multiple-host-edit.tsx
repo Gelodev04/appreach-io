@@ -45,30 +45,6 @@ export const MultipleHostEdit = ({
     setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSave = () => {
-    const selectedHost = options.find((host) => host.id === value.host);
-    const selectedEsp = espData[value.esp as keyof typeof espData];
-
-    const data = {
-      hostId: value.host,
-      hostName: selectedHost!.profile,
-      esp: selectedEsp.esp,
-      espCamelCase: selectedEsp.espCamelCase,
-      server: selectedEsp.server,
-      lastUpdated: new Date(),
-    };
-
-    startTransition(async () => {
-      const response = await updateMultipleSmartlead(selectedRowIds as string[], data);
-
-      if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
-      } else {
-        enqueueSnackbar('Update success!');
-      }
-    });
-  };
-
   const handleSaveHost = () => {
     const selectedHost = options.find((host) => host.id === value.host);
     if (!selectedHost) {
