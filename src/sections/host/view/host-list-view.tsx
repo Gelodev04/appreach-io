@@ -16,6 +16,7 @@ import {
 } from '@mui/x-data-grid';
 import { hosts } from '@prisma/client';
 import { useCallback, useState } from 'react';
+import { DeleteProfileButton } from 'src/app/(pages)/profiles/_components/delete-profile-button';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
@@ -23,7 +24,6 @@ import Iconify from 'src/components/iconify';
 import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { useSnackbar } from 'src/components/snackbar';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { useRouter } from 'src/routes/hooks';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
@@ -57,7 +57,6 @@ export const HostListView = ({
 }: THostListView) => {
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
-  const router = useRouter();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
@@ -91,7 +90,7 @@ export const HostListView = ({
     },
     {
       type: 'actions',
-      field: 'actions',
+      field: 'seeds',
       headerName: 'Seeds',
       align: 'left',
       headerAlign: 'left',
@@ -134,6 +133,20 @@ export const HostListView = ({
       field: 'hostCrypt',
       headerName: 'Crypt',
       renderCell: (params) => <RenderHostCrypt params={params} />,
+      flex: 1,
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      headerAlign: 'left',
+      align: 'left',
+      renderCell: (params) => {
+        return <DeleteProfileButton id={params?.row?.id} name={params?.row?.host} />;
+      },
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      hideable: false,
       flex: 1,
     },
   ];

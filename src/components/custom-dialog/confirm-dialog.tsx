@@ -15,6 +15,7 @@ export default function ConfirmDialog({
   open,
   onClose,
   hideCancelButton,
+  hideActions,
   ...other
 }: ConfirmDialogProps) {
   return (
@@ -23,15 +24,16 @@ export default function ConfirmDialog({
 
       {content && <DialogContent sx={{ typography: 'body2' }}> {content} </DialogContent>}
 
-      <DialogActions>
-        {action}
-
-        {!hideCancelButton && (
-          <Button variant="outlined" color="inherit" onClick={onClose}>
-            Cancel
-          </Button>
-        )}
-      </DialogActions>
+      {!hideActions && (
+        <DialogActions>
+          {!hideCancelButton && (
+            <Button variant="outlined" color="inherit" onClick={onClose}>
+              Cancel
+            </Button>
+          )}
+          {action}
+        </DialogActions>
+      )}
     </Dialog>
   );
 }
