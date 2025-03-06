@@ -34,7 +34,7 @@ export const SmartleadHeader = ({
 
   const handleSyncAccounts = async () => {
     if (!smartleadSync) {
-      console.log('No host selected.');
+      enqueueSnackbar('Please select a host before proceeding.', { variant: 'error' });
       return;
     }
 

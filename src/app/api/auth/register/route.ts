@@ -181,6 +181,9 @@ export async function POST(request: Request) {
         externalSenderAddresses: [],
         notificationAddressArray: [],
       },
+      smartlead: {
+        webhook: `https://api.outreachmagic.io/KIs96Yu9HQSy/${defaultHostCrypt}`,
+      },
       lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
     });
 
