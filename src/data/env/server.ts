@@ -17,6 +17,9 @@ const envSchema = Yup.object().shape({
   G_SERVICE_ACCOUNT_KEY: Yup.string(),
   G_PROJECT_ID: Yup.string(),
   G_BUCKET_NAME_EMAIL_VALIDATOR: Yup.string(),
+  HUBSPOT_CLIENT_ID: Yup.string(),
+  HUBSPOT_REDIRECT_URI: Yup.string(),
+  HUBSPOT_OAUTH_FUNCTION: Yup.string(),
 });
 const parsedEnv = envSchema.validateSync(process.env, { abortEarly: false });
 

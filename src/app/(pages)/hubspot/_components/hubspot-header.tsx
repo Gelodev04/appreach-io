@@ -1,10 +1,12 @@
 'use client';
 
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { getHubspotAuthUrl } from 'src/services/db/hubspot';
 import { HubspotOAuthDropdown } from './hubspot-oauth-dropdown';
 
 type OptionType = {
@@ -15,6 +17,25 @@ type OptionType = {
 export const HubspotHeader = ({ allHosts }: { allHosts: OptionType }) => {
   const hubspotOAuth = useBoolean();
   const [item, setItem] = useState('');
+
+  const handleHubspotAuth = async () => {
+    if (!item) {
+      enqueueSnackbar('Please select a host before proceeding.', { variant: 'error' });
+      return;
+    }
+
+    try {
+      const authUrl = await getHubspotAuthUrl();
+
+      // Add `state` to preserve host selection
+      const stateParam = encodeURIComponent(JSON.stringify({ host: item }));
+      const authUrlWithState = `${authUrl}&state=${stateParam}`;
+
+      window.location.href = authUrlWithState;
+    } catch (error) {
+      enqueueSnackbar(`Error: ${error.message}`, { variant: 'error' });
+    }
+  };
 
   return (
     <CustomBreadcrumbs
@@ -41,7 +62,7 @@ export const HubspotHeader = ({ allHosts }: { allHosts: OptionType }) => {
               </Box>
             }
             action={
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={handleHubspotAuth}>
                 Submit
               </Button>
             }
