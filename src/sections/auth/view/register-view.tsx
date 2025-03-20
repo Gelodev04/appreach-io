@@ -167,7 +167,8 @@ export default function RegisterView({ expanded }: Props) {
       {expanded && (
         <Stack spacing={2}>
           <Typography variant="body2" color="text.secondary">
-            {`You will receive a trial plan that allows you to test our software for 10 days. We highly recommend checking the box below to make the most of your trial.`}
+            You will receive a trial plan that allows you to test our software for 10 days. We
+            highly recommend checking the box below to make the most of your trial.
           </Typography>
         </Stack>
       )}
