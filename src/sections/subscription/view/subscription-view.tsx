@@ -246,7 +246,7 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
         }}
       >
         <Typography variant="h3">Your Subscription Plan</Typography>
-        {subscription?.lookup_key != 'trial' ? (
+        {subscription?.lookup_key !== 'trial' ? (
           <Typography
             variant="subtitle1"
             sx={{
