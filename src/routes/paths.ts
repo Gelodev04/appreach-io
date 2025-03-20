@@ -10,6 +10,7 @@ const ROOTS = {
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
   INBOX_DADDY: 'https://inboxdaddy.com',
+  OUTREACH_MAGIC: 'https://outreachmagic.io',
 };
 
 // ----------------------------------------------------------------------
@@ -20,8 +21,8 @@ export const paths = {
   },
   website: {
     root: ROOTS.MAIN_WEBSITE,
-    terms: `${ROOTS.INBOX_DADDY}/terms-of-use/`,
-    privacy: `${ROOTS.INBOX_DADDY}/privacy-policy/`,
+    terms: `${ROOTS.OUTREACH_MAGIC}/terms-of-use/`,
+    privacy: `${ROOTS.OUTREACH_MAGIC}/privacy-policy/`,
     contactUs: `${ROOTS.INBOX_DADDY}/contact-us`,
   },
   // AUTH
@@ -72,6 +73,8 @@ export const paths = {
     success: '/subscription/success',
     trial1: '/trial/1',
     trial2: '/trial/2',
+    billingPortal: (email: string) =>
+      `https://clients.outreachmagic.io/order/OM/portal?email=${email}`,
   },
 
   senders: {

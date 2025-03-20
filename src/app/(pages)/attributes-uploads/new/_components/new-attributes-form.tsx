@@ -40,8 +40,10 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
   const sourceOptions = [
-    { label: 'Apollo', value: 'apollo' },
-    { label: 'GrowMeOrganic (Linkedin)', value: 'GrowMeOrganic (Linkedin)' },
+    { label: 'GrowMeOrganic LinkedIn', value: 'growmeorganic_linkedin' },
+    { label: 'Apollo Default', value: 'apollo' },
+    { label: 'Apollo Apify', value: 'apollo_apify' },
+    { label: 'Apollo Enriched', value: 'apollo_enriched' },
   ];
 
   const newHostSchema = Yup.object().shape({

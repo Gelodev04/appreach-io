@@ -74,11 +74,7 @@ export default function LoginView() {
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2">New user?</Typography>
 
-        <Link
-          component={RouterLink}
-          href="https://inboxdaddy.com/pricing/#free-trial"
-          variant="subtitle2"
-        >
+        <Link component={RouterLink} href={paths.checkout.trial2} variant="subtitle2">
           Signup for a free trial
         </Link>
       </Stack>
