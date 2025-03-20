@@ -53,12 +53,12 @@ export function useNavData() {
             icon: <Iconify icon="material-symbols:graph-1" />,
             disabled: isTrialExpired,
           },
-          {
-            title: 'Hubspot',
-            path: paths.hubspot.root,
-            icon: <Iconify icon="simple-icons:hubspot" />,
-            disabled: isTrialExpired,
-          },
+          // {
+          //   title: 'Hubspot',
+          //   path: paths.hubspot.root,
+          //   icon: <Iconify icon="simple-icons:hubspot" />,
+          //   disabled: isTrialExpired,
+          // },
           {
             title: 'Subscription',
             path: paths.checkout.root,

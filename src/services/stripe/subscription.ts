@@ -2,9 +2,9 @@
 
 import { env } from 'src/data/env/server';
 
-import Stripe from 'stripe';
-import { paths } from 'src/routes/paths';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { paths } from 'src/routes/paths';
+import Stripe from 'stripe';
 import { getUserSettings } from '../db/user-settings';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || '');

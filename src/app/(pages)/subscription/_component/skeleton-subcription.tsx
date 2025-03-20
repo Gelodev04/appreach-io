@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Container, Skeleton, Stack } from '@mui/material';
 import Logo from 'src/components/logo';
 
 function SkeletonSubscription() {
@@ -13,18 +13,12 @@ function SkeletonSubscription() {
         flexWrap: 'wrap',
       }}
     >
-      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
-      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
-      <Skeleton sx={{ minWidth: 320, minHeight: 480 }} />
+      <Skeleton sx={{ minWidth: 880, minHeight: 320 }} />
     </Box>
   );
   const renderHead = (
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       <Logo />
-      <Typography variant="h4" color="text.primary">
-        Subscriptions page is under construction, please send us a message to make changes to your
-        subscription
-      </Typography>
     </Stack>
   );
 
@@ -39,7 +33,6 @@ function SkeletonSubscription() {
         spacing={4}
         sx={{ padding: 4, margin: '0 auto' }}
       >
-        {renderHead}
         {renderSkeleton}
       </Stack>
     </Container>

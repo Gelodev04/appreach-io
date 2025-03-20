@@ -27,6 +27,11 @@ const testRows = [
 export default async function Page() {
   const { allHosts: senderProfiles } = await getSenderProfiles();
 
+  const temp = true;
+  if (temp) {
+    return <div>Temporarily disabled</div>;
+  }
+
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <HubspotHeader allHosts={senderProfiles} />

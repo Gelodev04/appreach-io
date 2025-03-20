@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Container, Link, Stack, Typography } from '@mui/material';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 
 import { UserSettingsPlan } from '@prisma/client';
@@ -21,8 +21,11 @@ import {
   redirectToCheckout,
 } from 'src/utils/stripe';
 
+import Image from 'next/image';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import { calculateRemainingDays } from 'src/utils';
 import { UpgradeDowngradeConfirmDialogV2 } from '../upgrade-downgrade-confirm-dialog-v2';
 
@@ -31,12 +34,14 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 type SubscriptionviewType = {
   subscription: UserSettingsPlan | null;
+  username: string;
 };
 
-export default function SubscriptionView({ subscription }: SubscriptionviewType) {
+export default function SubscriptionView({ subscription, username }: SubscriptionviewType) {
   // Snackbar for notifications
   const { enqueueSnackbar } = useSnackbar();
   const lgUp = useResponsive('up', 'lg');
+  const mdUp = useResponsive('up', 'md');
 
   // Prefill message for 'Contact Us'
   const { prefillMessage } = useSalesmateChat();
@@ -167,10 +172,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
   const renderHead = (
     <Stack justifyContent="center" alignItems="center" textAlign="center" spacing={1}>
       {lgUp && <Logo />}
-      <Typography variant="h4" color="text.primary">
-        Subscriptions page is under construction, please send us a message to make changes to your
-        subscription
-      </Typography>
     </Stack>
   );
 
@@ -193,10 +194,10 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
     <Box
       sx={{
         display: 'flex',
-        gap: 4,
-        flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: mdUp ? 'row' : 'column',
+        gap: 4,
       }}
     >
       {/* <CheckoutElementV2
@@ -205,7 +206,12 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         subtitle="100 Seed Accounts"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.starter)}
         price={STRIPE.subscriptions.starter.price}
-        features={['Send up to 100 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Includes 1 sender profile', 'Email and live chat support included']}
+        features={[
+          'Send up to 100 emails daily to our seed list',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability',
+          'Includes 1 sender profile',
+          'Email and live chat support included',
+        ]}
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
@@ -217,30 +223,79 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
         subtitle="500 Seed Accounts*"
         onSubmit={() => handlePlanSelection(STRIPE.subscriptions.established)}
         price={STRIPE.subscriptions.established.price}
-        features={['Send up to 500 emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Includes 5 sender profile', 'Email and live chat support included']}
+        features={[
+          'Send up to 500 emails daily to our seed list',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability',
+          'Includes 5 sender profile',
+          'Email and live chat support included',
+        ]}
         comment="*Additional senders and seed accounts available. Contact us about your specific use case."
         currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
         disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
-      />
-      <CheckoutElementV2
-        title="Managed Service"
-        name={STRIPE.subscriptions.custom.key}
-        subtitle="Contact Us"
-        onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
-        features={['Send 500+ emails daily to our seed list', 'Outreach Magic unique reporting to identify what elements are hurting your deliverability', 'Think of us as part of your team', '1-on-1 zoom calls']}
-        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
-        planStatus={subscription?.status}
-        expirationDate={subscription?.current_period_end}
       /> */}
-      <Button
-        onClick={() => prefillMessage('I have questions about my subscription.')}
-        variant="contained"
-        color="primary"
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: mdUp ? 'start' : 'center',
+          flexDirection: 'column',
+          gap: 4,
+        }}
       >
-        Contact Us
-      </Button>
+        <Typography variant="h3">Your Subscription Plan</Typography>
+        {subscription?.lookup_key != 'trial' ? (
+          <Typography
+            variant="subtitle1"
+            sx={{
+              textAlign: mdUp ? 'left' : 'center',
+              maxWidth: '500px',
+            }}
+          >
+            You have an active subscription.{' '}
+            <span>
+              <Link component={RouterLink} href={paths.checkout.billingPortal(username)}>
+                Make changes in our billing portal
+              </Link>
+            </span>
+            . Send us a message if you have any questions.
+          </Typography>
+        ) : (
+          <Typography
+            variant="subtitle1"
+            sx={{
+              textAlign: mdUp ? 'left' : 'center',
+              maxWidth: '500px',
+            }}
+          >
+            You do not have an active subscription.{' '}
+            <span>
+              <Link component={RouterLink} href={paths.checkout.billingPortal(username)}>
+                Select a package in our billing portal
+              </Link>
+            </span>
+            . Send us a message if you have any questions.
+          </Typography>
+        )}
+
+        <Button
+          onClick={() => prefillMessage('I have questions about my subscription.')}
+          variant="contained"
+          color="primary"
+        >
+          Contact Us
+        </Button>
+      </Box>
+      <Image
+        src="/assets/illustrations/characters/subscription-graphic.png"
+        alt="seeds"
+        width={300}
+        height={300}
+        priority
+        quality={100}
+      />
     </Box>
   );
 
@@ -265,7 +320,6 @@ export default function SubscriptionView({ subscription }: SubscriptionviewType)
           spacing={4}
           sx={{ padding: 0, margin: '0 auto' }}
         >
-          {renderHead}
           {renderOptions}
         </Stack>
       </Container>
