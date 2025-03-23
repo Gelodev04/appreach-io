@@ -42,7 +42,7 @@ export const createAttributeUploads = async (
         importSource: data.importSource.value,
         updateExisting: data.updateExisting,
         status: 'ready',
-        columnMappings: columnMappings,
+        columnMappings,
       },
     });
   } catch (error) {

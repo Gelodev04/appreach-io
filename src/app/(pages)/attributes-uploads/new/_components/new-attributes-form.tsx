@@ -283,7 +283,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                       <RHFAutocomplete
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         name={`mapping.${header}`}
-                        label={`Set column name`}
+                        label="Set column name"
                         value={columnOptions.find((opt) => opt.value === mappedCols[index]) || null} // Assign value
                         onChange={(_, newValue) => handleColumnChange(newValue, index)}
                         options={columnOptions.filter(
