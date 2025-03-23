@@ -460,6 +460,7 @@ model attributeUploads {
   results        AttributeUploadsResults?
   status         String
   updateExisting Boolean
+  columnMappings String[]
 }
 
 model hosts {

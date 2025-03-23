@@ -29,7 +29,8 @@ export const getAttributesUploadsByHostIds = async () => {
 
 export const createAttributeUploads = async (
   data: CreateAttributeUploadsPropType,
-  file: string
+  file: string,
+  columnMappings: string[]
 ) => {
   try {
     await prisma.attributeUploads.create({
@@ -41,6 +42,7 @@ export const createAttributeUploads = async (
         importSource: data.importSource.value,
         updateExisting: data.updateExisting,
         status: 'ready',
+        columnMappings,
       },
     });
   } catch (error) {

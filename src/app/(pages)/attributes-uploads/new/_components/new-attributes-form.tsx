@@ -12,6 +12,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import UploadDocument from 'src/components/upload/upload-document';
+import { columnOptions, headerMapping, normalizeHeader, sourceOptions } from 'src/constants';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
@@ -36,15 +37,12 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [mappedCols, setMappedCols] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
-  const sourceOptions = [
-    { label: 'GrowMeOrganic LinkedIn', value: 'growmeorganic_linkedin' },
-    { label: 'Apollo Default', value: 'apollo' },
-    { label: 'Apollo Apify', value: 'apollo_apify' },
-    { label: 'Apollo Enriched', value: 'apollo_enriched' },
-  ];
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('List name is required'),
@@ -97,15 +95,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       const formData = new FormData();
       formData.append('file', file);
 
-      // Validate CSV structure
-      const result = await parseCSVFile(file);
-      const headers = result.meta.fields;
-
-      if (!headers?.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
-        setFileError('CSV file must have an "email" column.');
-        return;
-      }
-
       // Upload file to cloud bucket
       const uploadResult = await handleFileUpload(formData, 'attribute');
       if (uploadResult?.error) {
@@ -116,7 +105,8 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       // Create document in the database
       const databaseResponse = await createAttributeUploads(
         data as CreateAttributeUploadsPropType,
-        uploadResult.url as string
+        uploadResult.url as string,
+        mappedCols
       );
 
       if (databaseResponse?.error) {
@@ -130,6 +120,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       enqueueSnackbar('Uploaded successfully');
       router.push(paths.attributesUpload.root);
       router.refresh();
+
       setFileError(null);
     } catch (error) {
       console.error('File upload failed', error);
@@ -140,10 +131,90 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
     }
   });
 
-  const handleDrop = useCallback((acceptedFiles: File[]) => {
-    setFile(acceptedFiles[0]);
+  const handleDrop = useCallback(async (acceptedFiles: File[]) => {
+    const uploadedFile = acceptedFiles[0];
+
+    if (!uploadedFile) return;
+
+    setFile(uploadedFile);
     setFileError(null);
+
+    try {
+      // Parse CSV file
+      const result = await parseCSVFile(uploadedFile);
+      const headers = result.meta.fields || [];
+
+      // Validate CSV structure
+      if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
+        setFileError('CSV file must have an "email" column.');
+        return;
+      }
+
+      // Update state to open form
+      setCsvHeaders(headers);
+
+      // Prefill mappedCols based on predefined mappings, ensuring unique assignments
+      const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
+
+      const initialMappedCols = headers.map((header: string) => {
+        const normalizedHeader = normalizeHeader(header);
+        const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
+
+        if (mappedValue && !usedMappings[mappedValue]) {
+          usedMappings[mappedValue] = true; // Mark this value as used
+          return mappedValue;
+        }
+
+        return ''; // If already assigned, leave empty
+      });
+
+      // Pre-populate selectedValues with unique prefilled mappings
+      const prefilledValues = Object.keys(usedMappings);
+
+      setMappedCols(initialMappedCols);
+      setSelectedValues(prefilledValues);
+    } catch (error) {
+      console.error('CSV Parsing Error', error);
+      setFileError('Error parsing CSV file. Please check the format.');
+    }
   }, []);
+
+  const handleRemoveFile = () => {
+    setFile(null);
+    setCsvHeaders([]);
+    setMappedCols([]);
+    setSelectedValues([]);
+  };
+
+  const handleColumnChange = (newValue: any, index: number) => {
+    setMappedCols((prev) => {
+      const updated = [...prev];
+      const oldValue = updated[index];
+
+      if (newValue && typeof newValue === 'object' && 'value' in newValue) {
+        updated[index] = newValue.value;
+      } else {
+        updated[index] = ''; // Default fallback
+      }
+
+      setSelectedValues((prevSelected) => {
+        const newSelected = [...prevSelected];
+
+        // Remove old value if it exists
+        if (oldValue) {
+          const oldIndex = newSelected.indexOf(oldValue);
+          if (oldIndex !== -1) newSelected.splice(oldIndex, 1);
+        }
+
+        // Add new value if it's valid
+        if (newValue?.value) newSelected.push(newValue.value);
+
+        return newSelected;
+      });
+
+      return updated;
+    });
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -188,10 +259,43 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                 file={file}
                 fileError={fileError}
                 onDrop={handleDrop}
-                onDelete={() => setFile(null)}
+                onDelete={handleRemoveFile}
                 accept={{ 'text/csv': [] }}
               />
             </Stack>
+            {csvHeaders.length > 0 && (
+              <Stack spacing={2} sx={{ mt: 2, overflowY: 'auto', maxHeight: '700px' }}>
+                <Box
+                  columnGap={2}
+                  rowGap={3}
+                  display="grid"
+                  gridTemplateColumns={{
+                    xs: 'repeat(1, 1fr)',
+                    sm: 'repeat(2, 1fr)',
+                  }}
+                  sx={{ padding: 3 }}
+                >
+                  {csvHeaders.map((header, index) => (
+                    <Box key={header} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography>{header}</Typography>
+                      </Box>
+                      <RHFAutocomplete
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        name={`mapping.${header}`}
+                        label="Set column name"
+                        value={columnOptions.find((opt) => opt.value === mappedCols[index]) || null} // Assign value
+                        onChange={(_, newValue) => handleColumnChange(newValue, index)}
+                        options={columnOptions.filter(
+                          (opt) =>
+                            !selectedValues.includes(opt.value) || mappedCols[index] === opt.value
+                        )}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              </Stack>
+            )}
           </Card>
         </Grid>
 
