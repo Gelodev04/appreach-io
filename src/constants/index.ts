@@ -38,3 +38,154 @@ export const espData = {
     server: 'microsoft',
   },
 };
+
+export const sourceOptions = [
+  { label: 'GrowMeOrganic LinkedIn', value: 'growmeorganic_linkedin' },
+  { label: 'Apollo Default', value: 'apollo' },
+  { label: 'Apollo Apify', value: 'apollo_apify' },
+  { label: 'Apollo Enriched', value: 'apollo_enriched' },
+];
+
+export const columnOptions = [
+  {
+    label: 'First Name',
+    value: '{{person}}.firstName',
+  },
+  {
+    label: 'Last Name',
+    value: '{{person}}.lastName',
+  },
+  {
+    label: 'Title',
+    value: '{{person}}.title',
+  },
+  {
+    label: 'Email',
+    value: '{{person}}.email',
+  },
+  {
+    label: 'Person Phone',
+    value: '{{person}}.phone',
+  },
+  {
+    label: 'Person City',
+    value: '{{person}}.city',
+  },
+  {
+    label: 'Person State',
+    value: '{{person}}.state',
+  },
+  {
+    label: 'Person Country',
+    value: '{{person}}.country',
+  },
+  {
+    label: 'Company Name',
+    value: '{{company}}.name',
+  },
+  {
+    label: 'Pretty Company Name',
+    value: '{{company}}.prettyCompanyName',
+  },
+  {
+    label: 'Employees',
+    value: '{{company}}.employeeCount',
+  },
+  {
+    label: 'Industry',
+    value: '{{company}}.industry',
+  },
+  {
+    label: 'Keywords',
+    value: '{{company}}.keywords',
+  },
+  {
+    label: 'Person Linkedin Url',
+    value: '{{person}}.linkedinUrl',
+  },
+  {
+    label: 'Website',
+    value: '{{company}}.website',
+  },
+  {
+    label: 'Company Linkedin Url',
+    value: '{{company}}.linkedinUrl',
+  },
+  {
+    label: 'Facebook Url',
+    value: '{{company}}.facebookUrl',
+  },
+  {
+    label: 'Twitter Url',
+    value: '{{company}}.twitterUrl',
+  },
+  {
+    label: 'Company Address',
+    value: '{{company}}.address',
+  },
+  {
+    label: 'Company Phone',
+    value: '{{company}}.phone',
+  },
+  {
+    label: 'Company Description',
+    value: '{{company}}.description',
+  },
+  {
+    label: 'Annual Revenue',
+    value: '{{company}}.annualRevenue',
+  },
+  {
+    label: 'Total Funding',
+    value: '{{company}}.totalFunding',
+  },
+  {
+    label: 'Latest Funding',
+    value: '{{company}}.latestFunding',
+  },
+  {
+    label: 'Last Raised At',
+    value: '{{company}}.lastRaisedAt',
+  },
+];
+
+export const headerMapping = {
+  'first name': '{{person}}.firstName',
+  'last name': '{{person}}.lastName',
+  title: '{{person}}.title',
+  job: '{{person}}.title',
+  position: '{{person}}.title',
+  email: '{{person}}.email',
+  'email address': '{{person}}.email',
+  'first phone': '{{person}}.phone',
+  phone: '{{person}}.phone',
+  city: '{{person}}.city',
+  state: '{{person}}.state',
+  country: '{{person}}.country',
+  company: '{{company}}.name',
+  'company name': '{{company}}.name',
+  'company name for emails': '{{company}}.prettyCompanyName',
+  employees: '{{company}}.employeeCount',
+  industry: '{{company}}.industry',
+  keywords: '{{company}}.keywords',
+  'person linkedin url': '{{person}}.linkedinUrl',
+  website: '{{company}}.website',
+  'company linkedin url': '{{company}}.linkedinUrl',
+  'facebook url': '{{company}}.facebookUrl',
+  'twitter url': '{{company}}.twitterUrl',
+  'company address': '{{company}}.address',
+  'company phone': '{{company}}.phone',
+  'seo description': '{{company}}.description',
+  'annual revenue': '{{company}}.annualRevenue',
+  'total funding': '{{company}}.totalFunding',
+  'latest funding': '{{company}}.latestFunding',
+  'last raised at': '{{company}}.lastRaisedAt',
+};
+
+export const normalizeHeader = (header: string) => {
+  return header
+    .replace(/_/g, ' ') // Replace underscores with spaces first
+    .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters like {{ }}
+    .trim()
+    .toLowerCase();
+};
