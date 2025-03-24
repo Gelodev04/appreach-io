@@ -60,7 +60,7 @@ export const columnOptions = [
     value: '{{person}}.title',
   },
   {
-    label: 'Email',
+    label: 'Primary Email',
     value: '{{person}}.email',
   },
   {
@@ -147,6 +147,38 @@ export const columnOptions = [
     label: 'Last Raised At',
     value: '{{company}}.lastRaisedAt',
   },
+  {
+    label: 'personal_emails/0',
+    value: '{{person}}.personalEmails.[0]',
+  },
+  {
+    label: 'personal_emails/1',
+    value: '{{person}}.personalEmails.[1]',
+  },
+  {
+    label: 'personal_emails/2',
+    value: '{{person}}.personalEmails.[2]',
+  },
+  {
+    label: 'personal_emails/3',
+    value: '{{person}}.personalEmails.[3]',
+  },
+  {
+    label: 'personal_emails/4',
+    value: '{{person}}.personalEmails.[4]',
+  },
+  {
+    label: 'personal_emails/5',
+    value: '{{person}}.personalEmails.[5]',
+  },
+  {
+    label: 'personal_emails/6',
+    value: '{{person}}.personalEmails.[6]',
+  },
+  {
+    label: 'personal_emails/7',
+    value: '{{person}}.personalEmails.[7]',
+  },
 ];
 
 export const headerMapping = {
@@ -164,13 +196,17 @@ export const headerMapping = {
   country: '{{person}}.country',
   company: '{{company}}.name',
   'company name': '{{company}}.name',
+  'organization name': '{{company}}.name',
   'company name for emails': '{{company}}.prettyCompanyName',
   employees: '{{company}}.employeeCount',
+  'estimated num employees': '{{company}}.employeeCount',
   industry: '{{company}}.industry',
   keywords: '{{company}}.keywords',
   'person linkedin url': '{{person}}.linkedinUrl',
   website: '{{company}}.website',
+  'organization website url': '{{company}}.website',
   'company linkedin url': '{{company}}.linkedinUrl',
+  'organization linkedin url': '{{company}}.linkedinUrl',
   'facebook url': '{{company}}.facebookUrl',
   'twitter url': '{{company}}.twitterUrl',
   'company address': '{{company}}.address',
