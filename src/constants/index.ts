@@ -216,6 +216,14 @@ export const headerMapping = {
   'total funding': '{{company}}.totalFunding',
   'latest funding': '{{company}}.latestFunding',
   'last raised at': '{{company}}.lastRaisedAt',
+  'personal emails0': '{{person}}.personalEmails.[0]',
+  'personal emails1': '{{person}}.personalEmails.[1]',
+  'personal emails2': '{{person}}.personalEmails.[2]',
+  'personal emails3': '{{person}}.personalEmails.[3]',
+  'personal emails4': '{{person}}.personalEmails.[4]',
+  'personal emails5': '{{person}}.personalEmails.[5]',
+  'personal emails6': '{{person}}.personalEmails.[6]',
+  'personal emails7': '{{person}}.personalEmails.[7]',
 };
 
 export const normalizeHeader = (header: string) => {
