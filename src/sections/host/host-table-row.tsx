@@ -20,10 +20,6 @@ export function RenderHostName({ params }: ParamsProps) {
   return <Typography sx={{ my: 2 }}>{params.row.host}</Typography>;
 }
 
-export function RenderHostCrypt({ params }: ParamsProps) {
-  return <Typography>{params.row.hostCrypt}</Typography>;
-}
-
 export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();

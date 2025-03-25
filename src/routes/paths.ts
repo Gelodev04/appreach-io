@@ -7,6 +7,7 @@ const ROOTS = {
   DASHBOARD: '/dashboard',
   SETTINGS: '/profiles',
   SEEDS: '/seeds',
+  SENDERS: '/senders',
   MAIN_WEBSITE: 'https://outreachmagic.io',
   FLASK_APP: 'https://app.outreachmagic.io',
   INBOX_DADDY: 'https://inboxdaddy.com',
@@ -78,10 +79,16 @@ export const paths = {
   },
 
   senders: {
-    root: '/senders',
-    email: '/senders/email',
-    domain: '/senders/domain',
-    filter: (id: string) => `/senders/?hostId=${id}`,
+    root: ROOTS.SENDERS,
+    nonAPI: `${ROOTS.SENDERS}/non-api`,
+    smartlead: `${ROOTS.SENDERS}/smartlead`,
+    instantly: `${ROOTS.SENDERS}/instantly`,
+    emailBison: `${ROOTS.SENDERS}/email-bison`,
+    prosp: `${ROOTS.SENDERS}/prosp`,
+    heyReach: `${ROOTS.SENDERS}/heyreach`,
+    email: `${ROOTS.SENDERS}/email`,
+    domain: `${ROOTS.SENDERS}/domain`,
+    filter: (id: string) => `${ROOTS.SENDERS}/?hostId=${id}`,
   },
 
   profiles: {
@@ -104,5 +111,9 @@ export const paths = {
 
   hubspot: {
     root: '/hubspot',
+  },
+
+  webhooks: {
+    root: '/webhooks',
   },
 };

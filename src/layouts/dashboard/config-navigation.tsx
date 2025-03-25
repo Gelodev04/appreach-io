@@ -23,12 +23,7 @@ export function useNavData() {
             icon: <Iconify icon="bx:server" />,
             disabled: isTrialExpired,
           },
-          {
-            title: 'Sender Addresses',
-            path: paths.senders.root,
-            icon: <Iconify icon="hugeicons:address-book" />,
-            disabled: isTrialExpired,
-          },
+
           {
             title: 'Seeds',
             path: paths.seed.root,
@@ -47,10 +42,11 @@ export function useNavData() {
             icon: <Iconify icon="material-symbols:upload-2-outline-rounded" />,
             disabled: isTrialExpired,
           },
+
           {
-            title: 'Smartlead',
-            path: paths.smartlead.root,
-            icon: <Iconify icon="material-symbols:graph-1" />,
+            title: 'Webhooks',
+            path: paths.webhooks.root,
+            icon: <Iconify icon="material-symbols:webhook-rounded" />,
             disabled: isTrialExpired,
           },
           // {
@@ -71,6 +67,47 @@ export function useNavData() {
           //   icon: <Iconify icon="hugeicons:logout-04" />,
           //   disabled: false,
           // },
+        ],
+      },
+      {
+        subheader: 'Senders',
+        items: [
+          {
+            title: 'Non-API',
+            path: paths.senders.nonAPI,
+            icon: <Iconify icon="hugeicons:address-book" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Smartlead',
+            path: paths.senders.smartlead,
+            icon: <Iconify icon="material-symbols:graph-1" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Instantly',
+            path: paths.senders.instantly,
+            icon: <Iconify icon="material-symbols:bolt-outline-rounded" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Email Bison',
+            path: paths.senders.emailBison,
+            icon: <Iconify icon="material-symbols:outgoing-mail-outline-rounded" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Prosp',
+            path: paths.senders.prosp,
+            icon: <Iconify icon="uil:robot" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'HeyReach',
+            path: paths.senders.heyReach,
+            icon: <Iconify icon="material-symbols:waving-hand-outline-rounded" />,
+            disabled: isTrialExpired,
+          },
         ],
       },
     ],
