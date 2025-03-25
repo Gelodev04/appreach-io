@@ -29,7 +29,6 @@ import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
 import {
   AttributeActionCells,
-  RenderHostCrypt,
   RenderHostName,
   RenderLookerStudioUrl,
   SeedActionCells,
@@ -77,6 +76,7 @@ export const HostListView = ({
       hideable: false,
       renderCell: (params) => <RenderHostName params={params} />,
       flex: 1,
+      minWidth: 120,
     },
     {
       field: 'lookerStudio',
@@ -87,6 +87,7 @@ export const HostListView = ({
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
+      minWidth: 160,
     },
     {
       type: 'actions',
@@ -99,6 +100,7 @@ export const HostListView = ({
       disableColumnMenu: true,
       renderCell: (params) => <SeedActionCells params={params} />,
       flex: 1,
+      minWidth: 200,
     },
     {
       type: 'actions',
@@ -111,6 +113,7 @@ export const HostListView = ({
       disableColumnMenu: true,
       renderCell: (params) => <AttributeActionCells params={params} />,
       flex: 1,
+      minWidth: 120,
     },
     {
       type: 'actions',
@@ -123,17 +126,19 @@ export const HostListView = ({
       disableColumnMenu: true,
       renderCell: (params) => <SmartleadActionCells params={params} />,
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'ownerName',
       headerName: 'Owner',
       flex: 1,
+      minWidth: 120,
     },
     {
       field: 'hostCrypt',
       headerName: 'Crypt',
-      renderCell: (params) => <RenderHostCrypt params={params} />,
       flex: 1,
+      minWidth: 120,
     },
     {
       field: 'actions',
@@ -148,6 +153,7 @@ export const HostListView = ({
       disableColumnMenu: true,
       hideable: false,
       flex: 1,
+      minWidth: 120,
     },
   ];
 

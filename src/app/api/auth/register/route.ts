@@ -9,6 +9,7 @@ import { sendEmail } from 'src/auth/lib/sendgrid';
 import { TRIAL_STATUS } from 'src/config-global';
 import { paths } from 'src/routes/paths';
 import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateTokenFromObjectId } from 'src/sections/host/utils/generate-userId-token';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
 import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
 import { signupWebhook } from 'src/services/webhook/signup-hook';
@@ -151,6 +152,8 @@ export async function POST(request: Request) {
     // Create user
     const { insertedId: userId } = await db.collection('userSettings').insertOne(signupParams);
 
+    const userIdToken = generateTokenFromObjectId(userId.toString());
+
     // Generate a unique host name
     const generateUniqueHostName = async (
       baseHostName: string,
@@ -201,6 +204,9 @@ export async function POST(request: Request) {
               increment: 1,
             },
           },
+        },
+        webhook: {
+          token: userIdToken,
         },
       },
     });

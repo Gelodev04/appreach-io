@@ -390,6 +390,10 @@ type UserSettingsPlanPermissionFeatures {
   replyMessage  Boolean
 }
 
+type UserSettingsWebhook {
+  token String?
+}
+
 type EngagementFeatures {
   scrollMessage Boolean
   markImportant Boolean
@@ -546,6 +550,7 @@ model userSettings {
   planPermissionsAssigned UserSettingsPlanPermissions
   planPermissionsUsed     UserSettingsPlanPermissions
   planPermissionFeatures  UserSettingsPlanPermissionFeatures
+  webhook                 UserSettingsWebhook?
 }
 
 model webMail {
