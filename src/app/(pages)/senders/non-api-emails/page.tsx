@@ -2,13 +2,13 @@ import { Container, Skeleton } from '@mui/material';
 import { Suspense } from 'react';
 import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { getAddressesPlanPermissions, getSenderProfiles } from 'src/services/db/user-settings';
-import AddressesHeader from '../_components/addresses-header';
+import AddressesHeader from './_components/addresses-header';
 import {
   ActiveSenderEmailsTable,
   ArchivedSenderEmailsTable,
   VerifiedDomains,
-} from '../_components/tables';
-import SendersTabs from '../_components/tabs/sender-tabs';
+} from './_components/tables';
+import SendersTabs from './_components/tabs/sender-tabs';
 
 export const metadata = {
   title: 'Sender Addresses | Outreach Magic',

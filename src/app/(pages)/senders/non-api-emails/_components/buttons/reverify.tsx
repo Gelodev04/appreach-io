@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import React, { useTransition } from 'react';
+import { useTransition } from 'react';
+import { updateSenderToReadyStatus } from 'src/services/db/sender-addresses';
 import { updateDomainToReadyStatus } from 'src/services/db/sender-domains';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
-import { updateSenderToReadyStatus } from 'src/services/db/sender-addresses';
-import VerificationEmailMessage from '../../email/_components/verification-email-message';
+import VerificationEmailMessage from '../../../email/_components/verification-email-message';
 
 export default function Reverify({
   tooltipText,

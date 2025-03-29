@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Typography, useTheme } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -15,7 +14,6 @@ import PopupWarningForAllUsedProfiles from './warning-sender-used-all-profiles';
 
 export const HostNewAccountProfile = ({ isAllProfileUsed }: { isAllProfileUsed: boolean }) => {
   const dialog = useBoolean();
-  const router = useRouter();
   const theme = useTheme();
 
   const newHostSchema = Yup.object().shape({

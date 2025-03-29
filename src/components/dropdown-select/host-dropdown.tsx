@@ -2,14 +2,19 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
-import { updateSmartleadHost } from 'src/services/db/smartlead';
 
-type HostDropdownType = {
+type OptionType = {
+  profile: string;
+  id: string;
+};
+
+type HostDropdownProps = {
   params: GridCellParams;
-  options: {
-    profile: string;
-    id: string;
-  }[];
+  options: OptionType[];
+  onUpdate: (
+    rowId: string,
+    selectedOption: { hostId: string; hostName: string }
+  ) => Promise<{ success: boolean; message?: string }>;
 };
 
 const ITEM_HEIGHT = 48;
@@ -23,20 +28,21 @@ const MenuProps = {
   },
 };
 
-export const HostDropdown = ({ params, options }: HostDropdownType) => {
+export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) => {
   const [isPending, startTransition] = useTransition();
 
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
-      const selectedHost = options.find((host) => host.id === e.target.value);
+      const selectedOption = options.find((opt) => opt.id === e.target.value);
+      if (!selectedOption) return;
 
-      const response = await updateSmartleadHost(params.id as string, {
-        hostId: e.target.value,
-        hostName: selectedHost!.profile,
+      const response = await onUpdate(params.id as string, {
+        hostId: selectedOption.id,
+        hostName: selectedOption.profile,
       });
 
       if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
+        enqueueSnackbar(response.message || 'Update failed', { variant: 'error', persist: true });
       } else {
         enqueueSnackbar('Update success!');
       }

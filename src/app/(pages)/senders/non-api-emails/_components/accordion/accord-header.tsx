@@ -1,11 +1,11 @@
+import { LoadingButton } from '@mui/lab';
 import { Box, Typography } from '@mui/material';
-import React, { useTransition } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { useTransition } from 'react';
 import { updateDomainToReadyStatus } from 'src/services/db/sender-domains';
 import { sendSenderVerification } from 'src/services/webhook/sender-emails';
-import { enqueueSnackbar } from 'notistack';
-import { LoadingButton } from '@mui/lab';
+import VerificationEmailMessage from '../../../email/_components/verification-email-message';
 import VerifyUnverifyIcon from '../verify-unverify-icon';
-import VerificationEmailMessage from '../../email/_components/verification-email-message';
 
 type AccordHeaderType = {
   domain: string;

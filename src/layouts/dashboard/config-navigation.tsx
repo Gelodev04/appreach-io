@@ -73,9 +73,15 @@ export function useNavData() {
         subheader: 'Senders',
         items: [
           {
-            title: 'Non-API',
-            path: paths.senders.nonAPI,
+            title: 'Non-API Emails',
+            path: paths.senders.nonApiEmails,
             icon: <Iconify icon="hugeicons:address-book" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Non-API Linkedins',
+            path: paths.senders.nonApiLinkedins,
+            icon: <Iconify icon="bxl:linkedin" />,
             disabled: isTrialExpired,
           },
           {
