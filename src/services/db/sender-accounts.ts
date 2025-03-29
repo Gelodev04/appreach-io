@@ -122,7 +122,7 @@ export const updateSenderAccountHost = async (
   host: { hostId: string; hostName: string }
 ) => {
   try {
-    //Get Existing data
+    // Get Existing data
     const senderItem = await getSenderAccountById(id, { metadata: true });
 
     if (!senderItem) {
