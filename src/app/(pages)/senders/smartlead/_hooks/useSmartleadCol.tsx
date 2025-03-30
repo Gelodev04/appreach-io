@@ -1,9 +1,10 @@
 import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { HostDropdown } from 'src/components/dropdown-select/host-dropdown';
+import { updateSmartleadHost } from 'src/services/db/smartlead';
 import { fDate } from 'src/utils/format-time';
 import { DeleteSmartLeadButton } from '../_components/delete-smart-lead-button';
 import { EspDropdown } from '../_components/esp-dropdown';
-import { HostDropdown } from '../_components/host-dropdown';
 
 type OptionType = {
   profile: string;
@@ -49,7 +50,7 @@ export const useSmartleadCol = (options: OptionType) => {
       field: 'hostId',
       headerName: 'Host',
       renderCell: (params) => {
-        return <HostDropdown params={params} options={options} />;
+        return <HostDropdown params={params} options={options} onUpdate={updateSmartleadHost} />;
       },
       flex: 1,
       minWidth: 150,
