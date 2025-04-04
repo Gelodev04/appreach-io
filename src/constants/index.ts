@@ -148,47 +148,43 @@ export const columnOptions = [
     value: '{{company}}.last_raised_at',
   },
   {
-    label: 'personal_emails/0',
+    label: 'Personal Emails [0]',
     value: '{{person}}.personal_emails.[0]',
   },
   {
-    label: 'personal_emails/1',
+    label: 'Personal Emails [1]',
     value: '{{person}}.personal_emails.[1]',
   },
   {
-    label: 'personal_emails/2',
+    label: 'Personal Emails [2]',
     value: '{{person}}.personal_emails.[2]',
   },
   {
-    label: 'personal_emails/3',
+    label: 'Personal Emails [3]',
     value: '{{person}}.personal_emails.[3]',
   },
   {
-    label: 'personal_emails/4',
+    label: 'Personal Emails [4]',
     value: '{{person}}.personal_emails.[4]',
   },
   {
-    label: 'personal_emails/5',
+    label: 'Personal Emails [5]',
     value: '{{person}}.personal_emails.[5]',
   },
   {
-    label: 'personal_emails/6',
+    label: 'Personal Emails [6]',
     value: '{{person}}.personal_emails.[6]',
   },
   {
-    label: 'personal_emails/7',
+    label: 'Personal Emails [7]',
     value: '{{person}}.personal_emails.[7]',
   },
   {
-    label: 'customer_id',
+    label: 'customer Id',
     value: '{{custom}}.customer_id',
   },
   {
-    label: 'import_name',
-    value: '{{custom}}.import_name',
-  },
-  {
-    label: 'lifetime_value',
+    label: 'Lifetime Value',
     value: '{{custom}}.lifetime_value',
   },
 ];
