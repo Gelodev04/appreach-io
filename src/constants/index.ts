@@ -49,15 +49,15 @@ export const sourceOptions = [
 export const columnOptions = [
   {
     label: 'First Name',
-    value: '{{person}}.firstName',
+    value: '{{person}}.first_name',
   },
   {
     label: 'Last Name',
-    value: '{{person}}.lastName',
+    value: '{{person}}.last_name',
   },
   {
     label: 'Title',
-    value: '{{person}}.title',
+    value: '{{person}}.linkedin_job_title',
   },
   {
     label: 'Primary Email',
@@ -81,15 +81,15 @@ export const columnOptions = [
   },
   {
     label: 'Company Name',
-    value: '{{company}}.name',
+    value: '{{company}}.company',
   },
   {
     label: 'Pretty Company Name',
-    value: '{{company}}.prettyCompanyName',
+    value: '{{company}}.pretty_company_name',
   },
   {
     label: 'Employees',
-    value: '{{company}}.employeeCount',
+    value: '{{company}}.employee_count',
   },
   {
     label: 'Industry',
@@ -101,7 +101,7 @@ export const columnOptions = [
   },
   {
     label: 'Person Linkedin Url',
-    value: '{{person}}.linkedinUrl',
+    value: '{{person}}.linkedin_url',
   },
   {
     label: 'Website',
@@ -109,15 +109,15 @@ export const columnOptions = [
   },
   {
     label: 'Company Linkedin Url',
-    value: '{{company}}.linkedinUrl',
+    value: '{{company}}.linkedin_url',
   },
   {
     label: 'Facebook Url',
-    value: '{{company}}.facebookUrl',
+    value: '{{company}}.facebook_url',
   },
   {
     label: 'Twitter Url',
-    value: '{{company}}.twitterUrl',
+    value: '{{company}}.x_url',
   },
   {
     label: 'Company Address',
@@ -133,60 +133,72 @@ export const columnOptions = [
   },
   {
     label: 'Annual Revenue',
-    value: '{{company}}.annualRevenue',
+    value: '{{company}}.annual_revenue',
   },
   {
     label: 'Total Funding',
-    value: '{{company}}.totalFunding',
+    value: '{{company}}.total_funding',
   },
   {
     label: 'Latest Funding',
-    value: '{{company}}.latestFunding',
+    value: '{{company}}.latest_funding',
   },
   {
     label: 'Last Raised At',
-    value: '{{company}}.lastRaisedAt',
+    value: '{{company}}.last_raised_at',
   },
   {
     label: 'personal_emails/0',
-    value: '{{person}}.personalEmails.[0]',
+    value: '{{person}}.personal_emails.[0]',
   },
   {
     label: 'personal_emails/1',
-    value: '{{person}}.personalEmails.[1]',
+    value: '{{person}}.personal_emails.[1]',
   },
   {
     label: 'personal_emails/2',
-    value: '{{person}}.personalEmails.[2]',
+    value: '{{person}}.personal_emails.[2]',
   },
   {
     label: 'personal_emails/3',
-    value: '{{person}}.personalEmails.[3]',
+    value: '{{person}}.personal_emails.[3]',
   },
   {
     label: 'personal_emails/4',
-    value: '{{person}}.personalEmails.[4]',
+    value: '{{person}}.personal_emails.[4]',
   },
   {
     label: 'personal_emails/5',
-    value: '{{person}}.personalEmails.[5]',
+    value: '{{person}}.personal_emails.[5]',
   },
   {
     label: 'personal_emails/6',
-    value: '{{person}}.personalEmails.[6]',
+    value: '{{person}}.personal_emails.[6]',
   },
   {
     label: 'personal_emails/7',
-    value: '{{person}}.personalEmails.[7]',
+    value: '{{person}}.personal_emails.[7]',
+  },
+  {
+    label: 'customer_id',
+    value: '{{custom}}.customer_id',
+  },
+  {
+    label: 'import_name',
+    value: '{{custom}}.import_name',
+  },
+  {
+    label: 'lifetime_value',
+    value: '{{custom}}.lifetime_value',
   },
 ];
 
 export const headerMapping = {
-  'first name': '{{person}}.firstName',
-  'last name': '{{person}}.lastName',
-  title: '{{person}}.title',
-  job: '{{person}}.title',
-  position: '{{person}}.title',
+  'first name': '{{person}}.first_name',
+  'last name': '{{person}}.last_name',
+  title: '{{person}}.linkedin_job_title',
+  job: '{{person}}.linkedin_job_title',
+  position: '{{person}}.linkedin_job_title',
   email: '{{person}}.email',
   'email address': '{{person}}.email',
   'first phone': '{{person}}.phone',
@@ -195,35 +207,35 @@ export const headerMapping = {
   state: '{{person}}.state',
   country: '{{person}}.country',
   company: '{{company}}.name',
-  'company name': '{{company}}.name',
-  'organization name': '{{company}}.name',
-  'company name for emails': '{{company}}.prettyCompanyName',
-  employees: '{{company}}.employeeCount',
-  'estimated num employees': '{{company}}.employeeCount',
+  'company name': '{{company}}.company',
+  'organization name': '{{company}}.company',
+  'company name for emails': '{{company}}.pretty_company_name',
+  employees: '{{company}}.employee_count',
+  'estimated num employees': '{{company}}.employee_count',
   industry: '{{company}}.industry',
   keywords: '{{company}}.keywords',
-  'person linkedin url': '{{person}}.linkedinUrl',
+  'person linkedin url': '{{person}}.linkedin_url',
   website: '{{company}}.website',
   'organization website url': '{{company}}.website',
-  'company linkedin url': '{{company}}.linkedinUrl',
-  'organization linkedin url': '{{company}}.linkedinUrl',
-  'facebook url': '{{company}}.facebookUrl',
-  'twitter url': '{{company}}.twitterUrl',
+  'company linkedin url': '{{company}}.linkedin_url',
+  'organization linkedin url': '{{company}}.linkedin_url',
+  'facebook url': '{{company}}.facebook_url',
+  'twitter url': '{{company}}.x_url',
   'company address': '{{company}}.address',
   'company phone': '{{company}}.phone',
   'seo description': '{{company}}.description',
-  'annual revenue': '{{company}}.annualRevenue',
-  'total funding': '{{company}}.totalFunding',
-  'latest funding': '{{company}}.latestFunding',
-  'last raised at': '{{company}}.lastRaisedAt',
-  'personal emails0': '{{person}}.personalEmails.[0]',
-  'personal emails1': '{{person}}.personalEmails.[1]',
-  'personal emails2': '{{person}}.personalEmails.[2]',
-  'personal emails3': '{{person}}.personalEmails.[3]',
-  'personal emails4': '{{person}}.personalEmails.[4]',
-  'personal emails5': '{{person}}.personalEmails.[5]',
-  'personal emails6': '{{person}}.personalEmails.[6]',
-  'personal emails7': '{{person}}.personalEmails.[7]',
+  'annual revenue': '{{company}}.annual_revenue',
+  'total funding': '{{company}}.total_funding',
+  'latest funding': '{{company}}.latest_funding',
+  'last raised at': '{{company}}.last_raised_at',
+  'personal emails0': '{{person}}.personal_emails.[0]',
+  'personal emails1': '{{person}}.personal_emails.[1]',
+  'personal emails2': '{{person}}.personal_emails.[2]',
+  'personal emails3': '{{person}}.personal_emails.[3]',
+  'personal emails4': '{{person}}.personal_emails.[4]',
+  'personal emails5': '{{person}}.personal_emails.[5]',
+  'personal emails6': '{{person}}.personal_emails.[6]',
+  'personal emails7': '{{person}}.personal_emails.[7]',
 };
 
 export const normalizeHeader = (header: string) => {
