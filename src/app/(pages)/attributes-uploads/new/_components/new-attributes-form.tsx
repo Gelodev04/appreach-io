@@ -38,7 +38,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
-  const [mappedCols, setMappedCols] = useState<string[]>([]);
+  const [mappedCols, setMappedCols] = useState<Record<string, string>>({});
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const router = useRouter();
@@ -120,6 +120,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       enqueueSnackbar('Uploaded successfully');
       router.push(paths.attributesUpload.root);
       router.refresh();
+      console.log({ mappedCols });
 
       setFileError(null);
     } catch (error) {
@@ -156,17 +157,22 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       // Prefill mappedCols based on predefined mappings, ensuring unique assignments
       const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
 
-      const initialMappedCols = headers.map((header: string) => {
-        const normalizedHeader = normalizeHeader(header);
-        const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
+      const initialMappedCols = headers.reduce(
+        (acc: Record<string, string>, header: string) => {
+          const normalizedHeader = normalizeHeader(header);
+          const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
 
-        if (mappedValue && !usedMappings[mappedValue]) {
-          usedMappings[mappedValue] = true; // Mark this value as used
-          return mappedValue;
-        }
+          if (mappedValue && !usedMappings[mappedValue]) {
+            usedMappings[mappedValue] = true; // Mark this value as used
+            acc[header] = mappedValue; // Assign the mapped value to the header
+          } else {
+            acc[header] = ''; // If already assigned, leave empty
+          }
 
-        return ''; // If already assigned, leave empty
-      });
+          return acc;
+        },
+        {} as Record<string, string>
+      );
 
       // Pre-populate selectedValues with unique prefilled mappings
       const prefilledValues = Object.keys(usedMappings);
@@ -182,38 +188,23 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const handleRemoveFile = () => {
     setFile(null);
     setCsvHeaders([]);
-    setMappedCols([]);
+    setMappedCols({});
     setSelectedValues([]);
   };
 
-  const handleColumnChange = (newValue: any, index: number) => {
-    setMappedCols((prev) => {
-      const updated = [...prev];
-      const oldValue = updated[index];
+  const handleColumnChange = (newValue: any, header: string) => {
+    const newMappedCols = {
+      ...mappedCols,
+      [header]: newValue ? newValue.value : '', // Use header as the key
+    };
 
-      if (newValue && typeof newValue === 'object' && 'value' in newValue) {
-        updated[index] = newValue.value;
-      } else {
-        updated[index] = ''; // Default fallback
-      }
+    // Update selectedValues to remove the previously selected value
+    const updatedSelectedValues = newValue
+      ? [...selectedValues.filter((value) => value !== newValue.value), newValue.value]
+      : selectedValues.filter((value) => value !== mappedCols[header]);
 
-      setSelectedValues((prevSelected) => {
-        const newSelected = [...prevSelected];
-
-        // Remove old value if it exists
-        if (oldValue) {
-          const oldIndex = newSelected.indexOf(oldValue);
-          if (oldIndex !== -1) newSelected.splice(oldIndex, 1);
-        }
-
-        // Add new value if it's valid
-        if (newValue?.value) newSelected.push(newValue.value);
-
-        return newSelected;
-      });
-
-      return updated;
-    });
+    setMappedCols(newMappedCols);
+    setSelectedValues(updatedSelectedValues);
   };
 
   return (
@@ -275,7 +266,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                   }}
                   sx={{ padding: 3 }}
                 >
-                  {csvHeaders.map((header, index) => (
+                  {csvHeaders.map((header) => (
                     <Box key={header} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography>{header}</Typography>
@@ -284,11 +275,13 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         name={`mapping.${header}`}
                         label="Set column name"
-                        value={columnOptions.find((opt) => opt.value === mappedCols[index]) || null} // Assign value
-                        onChange={(_, newValue) => handleColumnChange(newValue, index)}
+                        value={
+                          columnOptions.find((opt) => opt.value === mappedCols[header]) || null
+                        }
+                        onChange={(_, newValue) => handleColumnChange(newValue, header)}
                         options={columnOptions.filter(
                           (opt) =>
-                            !selectedValues.includes(opt.value) || mappedCols[index] === opt.value
+                            !selectedValues.includes(opt.value) || mappedCols[header] === opt.value
                         )}
                       />
                     </Box>

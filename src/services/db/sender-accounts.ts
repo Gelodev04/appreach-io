@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { paths } from 'src/routes/paths';
 import { CreateSenderAccountData } from 'src/types/sender-account';
+import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
 export const getSenderAccountByHostIds = async () => {
@@ -18,6 +19,8 @@ export const getSenderAccountByHostIds = async () => {
         host_id: {
           in: hosts,
         },
+        platform: 'non-api',
+        type: 'linkedin',
       },
     });
 
@@ -75,6 +78,8 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       id: true,
     });
 
+    const { hostCrypt } = await getHostById(data.hostId!.value, { hostCrypt: true });
+
     const normalizedLinkedInUrl = data.linkedinUrl
       .replace(/^https:\/\/www\./, '') // Remove "https://www.linkedin.com/"
       .replace(/\/$/, ''); // Remove trailing "/"
@@ -94,6 +99,7 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       user_id,
       host_id: data.hostId!.value,
       host_name: data.hostId!.label,
+      host_crypt: hostCrypt,
       platform: 'non-api',
       sender: normalizedLinkedInUrl,
       type: 'linkedin',

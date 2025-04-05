@@ -470,7 +470,7 @@ model attributeUploads {
   results        AttributeUploadsResults?
   status         String
   updateExisting Boolean
-  columnMappings String[]
+  columnMappings Json?
 }
 
 model hosts {
@@ -574,6 +574,7 @@ model sender_accounts {
   user_id      String                 @db.ObjectId
   host_id      String                 @db.ObjectId
   host_name    String
+  host_crypt   String?
   platform     String
   sender       String
   type         String
