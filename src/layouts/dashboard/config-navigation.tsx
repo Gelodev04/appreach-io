@@ -23,7 +23,12 @@ export function useNavData() {
             icon: <Iconify icon="bx:server" />,
             disabled: isTrialExpired,
           },
-
+          {
+            title: 'Set Lead Status',
+            path: paths.leadStatus.root,
+            icon: <Iconify icon="material-symbols:view-timeline-outline-rounded" />,
+            disabled: isTrialExpired,
+          },
           {
             title: 'Seeds',
             path: paths.seed.root,

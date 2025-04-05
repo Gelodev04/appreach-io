@@ -96,6 +96,10 @@ export const paths = {
     root: '/profiles',
   },
 
+  leadStatus: {
+    root: '/lead-status',
+  },
+
   emailValidator: {
     root: '/email-validator',
     new: '/email-validator/new',

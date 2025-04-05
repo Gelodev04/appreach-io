@@ -414,6 +414,37 @@ type SenderAccountsMetadata {
   updated_at     DateTime  @db.Date
 }
 
+type EventContent {
+  body String?
+}
+
+type EventLeadCategory {
+  name      String
+  sentiment String
+}
+
+type EventMetadata {
+  bigquery_sync_status String
+  created_at           DateTime @db.Date
+  updated_at           DateTime @db.Date
+}
+
+type EventRecipient {
+  email        String?
+  linkedin_url String?
+}
+
+type EventSender {
+  linkedin_profile String?
+  email            String?
+}
+
+type EventUpdateHistory {
+  source     String
+  host_id    String?  @db.ObjectId
+  updated_at DateTime @db.Date
+}
+
 model emailAccounts {
   id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
   accessToken         String?
@@ -580,4 +611,21 @@ model sender_accounts {
   type         String
   sender_label String
   metadata     SenderAccountsMetadata
+}
+
+model events {
+  id              String               @id @default(auto()) @map("_id") @db.ObjectId
+  event_timestamp DateTime             @db.Date
+  event_type      String
+  platform        String
+  content         EventContent?
+  host_id         String?              @db.ObjectId
+  host_name       String?
+  host_crypt      String?
+  lead_category   EventLeadCategory?
+  metadata        EventMetadata?
+  recipient       EventRecipient?
+  sender          EventSender?
+  update_history  EventUpdateHistory[]
+  user_id         String               @db.ObjectId
 }
