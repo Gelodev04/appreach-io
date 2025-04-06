@@ -53,7 +53,8 @@ export const ReplyingTab = ({ planPermissions, currentItem }: HostProps) => {
           gap: 2,
           flexDirection: 'column',
           alignSelf: 'center',
-          minWidth: '500px',
+          maxWidth: '500px',
+          width: '100%',
         }}
       >
         <Typography

@@ -10,7 +10,7 @@ export default function Header() {
       links={[
         {
           name: 'Sender Addresses',
-          href: paths.senders.root,
+          href: paths.senders.nonApiEmails,
         },
         { name: 'Verify new email' },
       ]}

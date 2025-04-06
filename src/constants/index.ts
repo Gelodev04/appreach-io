@@ -233,11 +233,3 @@ export const headerMapping = {
   'personal emails6': '{{person}}.personal_emails.[6]',
   'personal emails7': '{{person}}.personal_emails.[7]',
 };
-
-export const normalizeHeader = (header: string) => {
-  return header
-    .replace(/_/g, ' ') // Replace underscores with spaces first
-    .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters like {{ }}
-    .trim()
-    .toLowerCase();
-};

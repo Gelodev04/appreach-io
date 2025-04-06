@@ -87,7 +87,7 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
         <Button
           onClick={handleEditSenderRow}
           sx={{ zIndex: 20, color: '#637381' }}
-          startIcon={<Iconify icon="material-symbols:settings-account-box-outline-sharp" />}
+          startIcon={<Iconify icon="hugeicons:address-book" />}
         >
           Senders
         </Button>

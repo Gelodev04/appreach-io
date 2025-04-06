@@ -36,7 +36,7 @@ export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options:
   };
   const initialState: GridInitialState = {
     pagination: {
-      paginationModel: { pageSize: 10 },
+      paginationModel: { pageSize: 25 },
     },
     sorting: {
       sortModel: [{ field: 'lastUpdated', sort: 'desc' }],

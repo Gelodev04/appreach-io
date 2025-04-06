@@ -13,11 +13,11 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
-import { useEmailValidatorCol } from '../_hooks/useEmailValidatorCol';
+import { useLeadStatusCol } from '../_hooks/useLeadStatusCol';
 
-export const EmailValidatorTable = ({ rows }: { rows: GridRowsProp }) => {
+export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useEmailValidatorCol();
+  const { columns } = useLeadStatusCol();
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {

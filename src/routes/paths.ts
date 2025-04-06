@@ -89,11 +89,16 @@ export const paths = {
     heyReach: `${ROOTS.SENDERS}/heyreach`,
     email: `${ROOTS.SENDERS}/email`,
     domain: `${ROOTS.SENDERS}/domain`,
-    filter: (id: string) => `${ROOTS.SENDERS}/?hostId=${id}`,
+    filter: (id: string) => `${ROOTS.SENDERS}/non-api-emails/?hostId=${id}`,
   },
 
   profiles: {
     root: '/profiles',
+  },
+
+  leadStatus: {
+    root: '/lead-status',
+    update: '/lead-status/update',
   },
 
   emailValidator: {

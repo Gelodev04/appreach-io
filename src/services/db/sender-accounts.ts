@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { paths } from 'src/routes/paths';
 import { CreateSenderAccountData } from 'src/types/sender-account';
+import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
 export const getSenderAccountByHostIds = async () => {
@@ -18,12 +19,33 @@ export const getSenderAccountByHostIds = async () => {
         host_id: {
           in: hosts,
         },
+        platform: 'non-api',
+        type: 'linkedin',
       },
     });
 
     return senders;
   } catch (error) {
-    console.error('Error on getting senders:', error); // Log the actual error
+    console.error('Error on getting senders:', error);
+    throw new Error(`Unable to get senders`);
+  }
+};
+
+export const getSenderAccountsByHostId = async (
+  hostId: string,
+  selectFields?: Prisma.sender_accountsSelect
+) => {
+  try {
+    const senders = await prisma.sender_accounts.findMany({
+      where: {
+        host_id: hostId,
+      },
+      select: selectFields,
+    });
+
+    return senders;
+  } catch (error) {
+    console.error('Error on getting senders:', error);
     throw new Error(`Unable to get senders`);
   }
 };
@@ -45,7 +67,7 @@ export const getSenderAccountBySender = async (sender: string) => {
 
     return senderItem;
   } catch (error) {
-    console.error('Error on getting sender:', error); // Log the actual error
+    console.error('Error on getting sender:', error);
     throw new Error(`Unable to get sender`);
   }
 };
@@ -64,7 +86,7 @@ export const getSenderAccountById = async (
 
     return senderItem;
   } catch (error) {
-    console.error('Error on getting sender:', error); // Log the actual error
+    console.error('Error on getting sender:', error);
     throw new Error(`Unable to get sender`);
   }
 };
@@ -74,6 +96,8 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
     const { id: user_id } = await getUserSettings({
       id: true,
     });
+
+    const { hostCrypt } = await getHostById(data.hostId!.value, { hostCrypt: true });
 
     const normalizedLinkedInUrl = data.linkedinUrl
       .replace(/^https:\/\/www\./, '') // Remove "https://www.linkedin.com/"
@@ -94,6 +118,7 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       user_id,
       host_id: data.hostId!.value,
       host_name: data.hostId!.label,
+      host_crypt: hostCrypt,
       platform: 'non-api',
       sender: normalizedLinkedInUrl,
       type: 'linkedin',

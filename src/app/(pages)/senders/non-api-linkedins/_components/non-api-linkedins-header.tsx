@@ -24,8 +24,8 @@ export const NonApiLinkedinsHeader = () => {
   const newHostSchema = Yup.object().shape({
     linkedinUrl: Yup.string()
       .matches(
-        /^https:\/\/www\.linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/,
-        'Invalid LinkedIn URL format. Use: https://www.linkedin.com/in/yourusername/'
+        /^(https:\/\/www\.|http:\/\/)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/,
+        'Invalid LinkedIn URL format. Use: linkedin.com/in/yourusername/'
       )
       .required('Linkedin URL is required'),
     senderName: Yup.string().required('Sender Name is required'),
@@ -67,8 +67,8 @@ export const NonApiLinkedinsHeader = () => {
       enqueueSnackbar('Uploaded successfully');
       dialog.onFalse();
     } catch (error) {
-      console.error('File upload failed', error);
-      enqueueSnackbar('An unexpected error occurred during the file upload.', {
+      console.error('Sender account creation failed', error);
+      enqueueSnackbar('An unexpected error occurred.', {
         variant: 'error',
         persist: true,
       });
