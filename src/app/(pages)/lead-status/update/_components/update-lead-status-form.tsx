@@ -6,6 +6,7 @@ import { Box, Card, Stack, Typography, useTheme } from '@mui/material';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,6 +15,7 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import { RHFDatePicker } from 'src/components/hook-form/rhf-date-picker';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { paths } from 'src/routes/paths';
 import { createLeadStatus } from 'src/services/db/lead-status';
 import { getSenderAccountsByHostId } from 'src/services/db/sender-accounts';
 import { LeadStatusOption, PlatformOption } from 'src/types/lead-status';
@@ -27,6 +29,7 @@ type FormType = {
 export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: FormType) => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
+  const router = useRouter();
   const { hosts } = useGetSeedSettings();
   const [isPending, startTransition] = useTransition();
 
@@ -156,6 +159,8 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
       }
 
       enqueueSnackbar('Lead Status Updated successfully');
+      router.push(paths.leadStatus.root);
+      router.refresh();
     } catch (error) {
       console.error('File upload failed', error);
       enqueueSnackbar('An unexpected error occurred during the file upload.', {

@@ -5,7 +5,7 @@ import { UpdateLeadStatusHeader } from './_components/update-lead-status-header'
 
 export const dynamic = 'force-dynamic';
 
-export const UpdateLeadStatusPage = async () => {
+export default async function Page() {
   const platformOptions = await getPlatformOptions();
   const leadStatusOptions = await getLeadStatusOptions();
 
@@ -19,6 +19,4 @@ export const UpdateLeadStatusPage = async () => {
       />
     </Container>
   );
-};
-
-export default UpdateLeadStatusPage;
+}
