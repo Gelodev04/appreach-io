@@ -56,7 +56,7 @@ export const createLeadStatus = async (data: LeadStatusData) => {
 
       return {
         event_timestamp: data.event_timestamp,
-        event_type: 'lead_category_updated',
+        event_type: 'lead_status_updated',
         platform: data.platform,
         content: {
           body: data.content.body,
@@ -64,9 +64,9 @@ export const createLeadStatus = async (data: LeadStatusData) => {
         host_id: data.host_id,
         host_name: data.host_name,
         host_crypt: hostCrypt,
-        lead_category: {
-          name: data.lead_category.name,
-          sentiment: data.lead_category.sentiment,
+        lead_status: {
+          name: data.lead_status.name,
+          sentiment: data.lead_status.sentiment,
         },
         metadata: {
           bigquery_sync_status: 'pending',
