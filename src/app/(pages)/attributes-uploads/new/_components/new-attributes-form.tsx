@@ -12,7 +12,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import UploadDocument from 'src/components/upload/upload-document';
-import { columnOptions, headerMapping, normalizeHeader, sourceOptions } from 'src/constants';
+import { columnOptions, headerMapping, sourceOptions } from 'src/constants';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
@@ -24,6 +24,7 @@ import {
 } from 'src/services/db/attributes-uploads';
 import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
 import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
+import { normalizeHeader } from 'src/utils';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';

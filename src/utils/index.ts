@@ -11,3 +11,11 @@ export const calculateRemainingDays = (inputDate: Date) => {
   const timeDiff = expirationDate.getTime() - currentDate.getTime();
   return Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days
 };
+
+export const normalizeHeader = (header: string) => {
+  return header
+    .replace(/_/g, ' ') // Replace underscores with spaces first
+    .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters like {{ }}
+    .trim()
+    .toLowerCase();
+};

@@ -10,7 +10,7 @@ export const useLeadStatusCol = () => {
       sortable: true,
       valueGetter: (params) => params.row.event_timestamp,
       renderCell: (params) => {
-        return <Typography>{fDate(params.row.event_timestamp)}</Typography>;
+        return <Typography sx={{ my: 2 }}>{fDate(params.row.event_timestamp)}</Typography>;
       },
       type: 'date',
       flex: 1,
@@ -23,6 +23,7 @@ export const useLeadStatusCol = () => {
     {
       field: 'recipient',
       headerName: 'Recipient',
+      valueGetter: (params) => params.row.recipient.email || params.row.recipient.linkedin_url,
       renderCell: (params) => {
         const { recipient } = params.row;
         const displayValue = recipient?.email || recipient?.linkedin_url || 'N/A';
@@ -41,6 +42,7 @@ export const useLeadStatusCol = () => {
     {
       field: 'sender',
       headerName: 'Sender',
+      valueGetter: (params) => params.row.recipient.email || params.row.recipient.linkedin_url,
       renderCell: (params) => {
         const { sender } = params.row;
         const displayValue = sender?.email || sender?.linkedin_profile || 'N/A';

@@ -26,7 +26,26 @@ export const getSenderAccountByHostIds = async () => {
 
     return senders;
   } catch (error) {
-    console.error('Error on getting senders:', error); // Log the actual error
+    console.error('Error on getting senders:', error);
+    throw new Error(`Unable to get senders`);
+  }
+};
+
+export const getSenderAccountsByHostId = async (
+  hostId: string,
+  selectFields?: Prisma.sender_accountsSelect
+) => {
+  try {
+    const senders = await prisma.sender_accounts.findMany({
+      where: {
+        host_id: hostId,
+      },
+      select: selectFields,
+    });
+
+    return senders;
+  } catch (error) {
+    console.error('Error on getting senders:', error);
     throw new Error(`Unable to get senders`);
   }
 };
@@ -48,7 +67,7 @@ export const getSenderAccountBySender = async (sender: string) => {
 
     return senderItem;
   } catch (error) {
-    console.error('Error on getting sender:', error); // Log the actual error
+    console.error('Error on getting sender:', error);
     throw new Error(`Unable to get sender`);
   }
 };
@@ -67,7 +86,7 @@ export const getSenderAccountById = async (
 
     return senderItem;
   } catch (error) {
-    console.error('Error on getting sender:', error); // Log the actual error
+    console.error('Error on getting sender:', error);
     throw new Error(`Unable to get sender`);
   }
 };
