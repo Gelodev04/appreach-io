@@ -67,8 +67,8 @@ export const NonApiLinkedinsHeader = () => {
       enqueueSnackbar('Uploaded successfully');
       dialog.onFalse();
     } catch (error) {
-      console.error('File upload failed', error);
-      enqueueSnackbar('An unexpected error occurred during the file upload.', {
+      console.error('Sender account creation failed', error);
+      enqueueSnackbar('An unexpected error occurred.', {
         variant: 'error',
         persist: true,
       });

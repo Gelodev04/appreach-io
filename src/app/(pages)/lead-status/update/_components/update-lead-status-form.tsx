@@ -162,8 +162,8 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
       router.push(paths.leadStatus.root);
       router.refresh();
     } catch (error) {
-      console.error('File upload failed', error);
-      enqueueSnackbar('An unexpected error occurred during the file upload.', {
+      console.error('Updating lead status failed', error);
+      enqueueSnackbar('An unexpected error occurred. Lead status update failed.', {
         variant: 'error',
         persist: true,
       });
