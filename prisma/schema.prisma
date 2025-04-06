@@ -418,9 +418,9 @@ type EventContent {
   body String?
 }
 
-type EventLeadCategory {
-  name      String
-  sentiment String
+type EventLeadStatus {
+  name      String?
+  sentiment String?
 }
 
 type EventMetadata {
@@ -622,7 +622,7 @@ model events {
   host_id         String?              @db.ObjectId
   host_name       String?
   host_crypt      String?
-  lead_category   EventLeadCategory?
+  lead_status     EventLeadStatus?
   metadata        EventMetadata?
   recipient       EventRecipient?
   sender          EventSender?

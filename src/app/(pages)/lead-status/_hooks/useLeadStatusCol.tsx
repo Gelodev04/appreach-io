@@ -29,7 +29,7 @@ export const useLeadStatusCol = () => {
         const displayValue = recipient?.email || recipient?.linkedin_url || 'N/A';
 
         return (
-          <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
+          <div title={displayValue} style={{ overflow: 'hidden' }}>
             <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
               {displayValue}
             </Typography>
@@ -48,7 +48,7 @@ export const useLeadStatusCol = () => {
         const displayValue = sender?.email || sender?.linkedin_profile || 'N/A';
 
         return (
-          <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
+          <div title={displayValue} style={{ overflow: 'hidden' }}>
             <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
               {displayValue}
             </Typography>
@@ -64,16 +64,16 @@ export const useLeadStatusCol = () => {
       flex: 1,
     },
     {
-      field: 'lead_category.name',
+      field: 'lead_status.name',
       headerName: 'Status',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return (
-          <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
+          <div title={params?.row?.lead_status?.name} style={{ overflow: 'hidden' }}>
             <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params?.row?.lead_category?.name}
+              {params?.row?.lead_status?.name}
             </Typography>
           </div>
         );
@@ -81,16 +81,16 @@ export const useLeadStatusCol = () => {
       flex: 1,
     },
     {
-      field: 'lead_category.sentiment',
+      field: 'lead_status.sentiment',
       headerName: 'Sentiment',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return (
-          <div title={params?.row?.smartlead?.type} style={{ overflow: 'hidden' }}>
+          <div title={params?.row?.lead_status?.sentiment} style={{ overflow: 'hidden' }}>
             <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params?.row?.lead_category?.sentiment}
+              {params?.row?.lead_status?.sentiment}
             </Typography>
           </div>
         );

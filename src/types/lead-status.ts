@@ -19,7 +19,7 @@ export type LeadStatusData = {
   };
   host_id: string;
   host_name: string;
-  lead_category: {
+  lead_status: {
     name: string;
     sentiment: string;
   };

@@ -140,7 +140,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
         },
         host_id: data.hostId!.value,
         host_name: data.hostId!.label,
-        lead_category: {
+        lead_status: {
           name: data.leadStatus!.value.leadStatusValue,
           sentiment: data.leadStatus!.value.sentiment,
         },

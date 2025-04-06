@@ -33,7 +33,7 @@ export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
       paginationModel: { pageSize: 25 },
     },
     sorting: {
-      sortModel: [{ field: 'upload.dateUploaded', sort: 'desc' }],
+      sortModel: [{ field: 'event_timestamp', sort: 'desc' }],
     },
   };
 
