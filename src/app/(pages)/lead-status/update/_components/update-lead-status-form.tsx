@@ -288,7 +288,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
                 name="content"
                 multiline
                 InputLabelProps={{ shrink: true }}
-                placeholder={`e.g. All replied positively after step 2 sequence.`}
+                placeholder="e.g. All replied positively after step 2 sequence."
                 minRows={3}
                 label="Optional Notes"
               />
@@ -305,7 +305,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
             }}
           >
             <Image
-              src={'/assets/illustrations/hosts/server.png'}
+              src="/assets/illustrations/hosts/server.png"
               alt="host"
               width={250}
               height={250}

@@ -10,7 +10,7 @@ export const UpdateLeadStatusPage = async () => {
   const leadStatusOptions = await getLeadStatusOptions();
 
   return (
-    <Container maxWidth={'lg'}>
+    <Container maxWidth="lg">
       <UpdateLeadStatusHeader />
 
       <UpdateLeadStatusForm

@@ -40,21 +40,21 @@ export const createLeadStatus = async (data: LeadStatusData) => {
         .replace(/\/$/, ''); // Remove trailing "/"
     });
 
-    const eventsToCreate = [];
-
-    for (const email of normalizedLeads) {
+    const eventsToCreate = normalizedLeads.map((email) => {
       const recipient = email.includes('linkedin')
-        ? { linkedin_url: email } // If "email" contains "linkedin", set recipient as { linkedin: email }
-        : { email: email }; // Otherwise, set recipient as { email: email }
+        ? { linkedin_url: email } // If "email" contains "linkedin", set recipient as { linkedin_url: email }
+        : { email }; // Otherwise, set recipient as { email: email }
 
-      const sender =
-        data.senders === 'n/a'
-          ? {}
-          : data.senders.includes('linkedin')
-            ? { linkedin_profile: data.senders }
-            : { email: data.senders };
+      let sender;
+      if (data.senders === 'n/a') {
+        sender = {};
+      } else if (data.senders.includes('linkedin')) {
+        sender = { linkedin_profile: data.senders };
+      } else {
+        sender = { email: data.senders };
+      }
 
-      const eventData = {
+      return {
         event_timestamp: data.event_timestamp,
         event_type: 'lead_category_updated',
         platform: data.platform,
@@ -84,9 +84,7 @@ export const createLeadStatus = async (data: LeadStatusData) => {
         ],
         user_id: id,
       };
-
-      eventsToCreate.push(eventData);
-    }
+    });
 
     // Insert all events in a single call (better performance)
     await prisma.events.createMany({
