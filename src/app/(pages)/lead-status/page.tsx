@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const rows = await getLeadStatusByHostIds();
-
+  console.log({ rows });
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <LeadStatusHeader />
