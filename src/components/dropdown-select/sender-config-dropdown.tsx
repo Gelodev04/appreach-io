@@ -4,7 +4,7 @@ import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
 import { PlatformOptionsType } from 'src/types/dropdown-types';
 
-type SenderConfigDropdown = {
+type SenderConfigDropdownProps = {
   params: GridCellParams;
   options: PlatformOptionsType;
   onUpdate: (
@@ -26,7 +26,12 @@ const MenuProps = {
   },
 };
 
-export const SenderConfigDropdown = ({ params, options, onUpdate, path }: SenderConfigDropdown) => {
+export const SenderConfigDropdown = ({
+  params,
+  options,
+  onUpdate,
+  path,
+}: SenderConfigDropdownProps) => {
   const [isPending, startTransition] = useTransition();
   const currentValue = params.value ? String(params.value) : '';
   const handleChange = (e: SelectChangeEvent<any>) => {
