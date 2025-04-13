@@ -2,15 +2,17 @@ import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
-import { HostOptionsType } from 'src/types/dropdown-types';
+import { PlatformOptionsType } from 'src/types/dropdown-types';
 
-type HostDropdownProps = {
+type SenderConfigDropdownProps = {
   params: GridCellParams;
-  options: HostOptionsType;
+  options: PlatformOptionsType;
   onUpdate: (
     rowId: string,
-    selectedOption: { hostId: string; hostName: string }
+    selectedOption: { label: string; value: string },
+    path: string
   ) => Promise<{ success: boolean; message?: string }>;
+  path: string;
 };
 
 const ITEM_HEIGHT = 48;
@@ -24,18 +26,27 @@ const MenuProps = {
   },
 };
 
-export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) => {
+export const SenderConfigDropdown = ({
+  params,
+  options,
+  onUpdate,
+  path,
+}: SenderConfigDropdownProps) => {
   const [isPending, startTransition] = useTransition();
-
+  const currentValue = params.value ? String(params.value) : '';
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
-      const selectedOption = options.find((opt) => opt.id === e.target.value);
+      const selectedOption = options.find((opt) => opt.value === e.target.value);
       if (!selectedOption) return;
 
-      const response = await onUpdate(params.id as string, {
-        hostId: selectedOption.id,
-        hostName: selectedOption.profile,
-      });
+      const response = await onUpdate(
+        params.id as string,
+        {
+          label: selectedOption.label,
+          value: selectedOption.value,
+        },
+        path
+      );
 
       if (!response.success) {
         enqueueSnackbar(response.message || 'Update failed', { variant: 'error', persist: true });
@@ -45,17 +56,25 @@ export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) =
     });
   };
 
+  // Check if current value exists in the options
+  const selectedInOptions = options.some((opt) => opt.value === currentValue);
+
   return (
     <Select
-      value={params.value}
+      value={currentValue}
       disabled={isPending}
       onChange={handleChange}
       style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
       MenuProps={MenuProps}
     >
-      {options.map((profile) => (
-        <MenuItem value={profile.id} key={`${profile.id}-${params.id}`}>
-          {profile.profile}
+      {!selectedInOptions && currentValue && (
+        <MenuItem value={currentValue} disabled>
+          {currentValue}
+        </MenuItem>
+      )}
+      {options.map((opt) => (
+        <MenuItem value={opt.value} key={`${opt.value}-${params.id}`}>
+          {opt.label}
         </MenuItem>
       ))}
     </Select>

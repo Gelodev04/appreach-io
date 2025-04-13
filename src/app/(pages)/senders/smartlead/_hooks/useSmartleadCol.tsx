@@ -2,16 +2,12 @@ import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { HostDropdown } from 'src/components/dropdown-select/host-dropdown';
 import { updateSmartleadHost } from 'src/services/db/smartlead';
+import { HostOptionsType } from 'src/types/dropdown-types';
 import { fDate } from 'src/utils/format-time';
 import { DeleteSmartLeadButton } from '../_components/delete-smart-lead-button';
 import { EspDropdown } from '../_components/esp-dropdown';
 
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
-
-export const useSmartleadCol = (options: OptionType) => {
+export const useSmartleadCol = (options: HostOptionsType) => {
   const columns: GridColDef[] = [
     {
       field: 'username',

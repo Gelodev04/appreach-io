@@ -13,23 +13,21 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
-import { useNonApiLinkedinsCol } from 'src/hooks/tables/tables';
-import { EditMutipleHost } from './edit-multiple-host';
+import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
+import { useLinkedinCol } from '../_hooks/useLinkedinCol';
+import { EditMutipleSenders } from './edit-multiple-senders';
 
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
-
-export const NonApiLinkedinsTable = ({
+export const LinkedinTable = ({
   rows,
-  options,
+  hostOptions,
+  platFormOptions,
 }: {
   rows: GridRowsProp;
-  options: OptionType;
+  hostOptions: HostOptionsType;
+  platFormOptions: PlatformOptionsType;
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useNonApiLinkedinsCol(options);
+  const { columns } = useLinkedinCol(hostOptions, platFormOptions);
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -62,7 +60,11 @@ export const NonApiLinkedinsTable = ({
         >
           {!!selectedRowIds.length && (
             <Box>
-              <EditMutipleHost selectedRowIds={selectedRowIds} options={options} />
+              <EditMutipleSenders
+                selectedRowIds={selectedRowIds}
+                hostOptions={hostOptions}
+                platformOptions={platFormOptions}
+              />
             </Box>
           )}
           <GridToolbarColumnsButton />

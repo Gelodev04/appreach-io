@@ -12,9 +12,9 @@ export const getAttributesUploadsByHostIds = async () => {
 
     if (!hosts) throw new Error(`Unable to get hosts`);
 
-    const attributes = await prisma.attributeUploads.findMany({
+    const attributes = await prisma.attribute_uploads.findMany({
       where: {
-        hostId: {
+        host_id: {
           in: hosts,
         },
       },
@@ -33,16 +33,21 @@ export const createAttributeUploads = async (
   columnMappings: Record<string, string>
 ) => {
   try {
-    await prisma.attributeUploads.create({
+    const { id } = await getUserSettings({ id: true });
+
+    await prisma.attribute_uploads.create({
       data: {
-        csvLink: file,
-        hostId: data.hostId.value,
-        hostName: data.hostId.label,
-        importName: data.name,
-        importSource: data.importSource.value,
-        updateExisting: data.updateExisting,
-        status: 'ready',
-        columnMappings,
+        csv_link: file,
+        host_id: data.host_id.value,
+        host_name: data.host_id.label,
+        import_name: data.name,
+        import_source: data.import_source.value,
+        update_existing: data.update_existing,
+        metadata: {
+          processing_status: 'ready',
+        },
+        column_mappings: columnMappings,
+        user_id: id,
       },
     });
   } catch (error) {

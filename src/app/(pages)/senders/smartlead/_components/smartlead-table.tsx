@@ -13,15 +13,17 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
+import { HostOptionsType } from 'src/types/dropdown-types';
 import { useSmartleadCol } from '../_hooks/useSmartleadCol';
 import { MultipleHostEdit } from './multiple-host-edit';
 
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
-
-export const SmartleadTable = ({ rows, options }: { rows: GridRowsProp; options: OptionType }) => {
+export const SmartleadTable = ({
+  rows,
+  options,
+}: {
+  rows: GridRowsProp;
+  options: HostOptionsType;
+}) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const { columns } = useSmartleadCol(options);
 

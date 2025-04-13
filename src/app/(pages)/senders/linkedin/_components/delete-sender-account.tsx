@@ -1,21 +1,29 @@
 'use client';
 
 import { Icon } from '@iconify/react';
-import { Box, Button, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Button, IconButton, Tooltip, useTheme } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { deleteSenderAccountById } from 'src/services/db/sender-accounts';
 
-export const DeleteSenderAccount = ({ id, username }: { id: string; username: string }) => {
+export const SenderAccountsActions = ({
+  id,
+  username,
+  path,
+}: {
+  id: string;
+  username: string;
+  path: string;
+}) => {
   const confirmDelete = useBoolean();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(async () => {
-      const res = await deleteSenderAccountById(id);
+      const res = await deleteSenderAccountById(id, path);
       if (res?.error) {
         enqueueSnackbar(res.error, {
           variant: 'error',
@@ -28,14 +36,34 @@ export const DeleteSenderAccount = ({ id, username }: { id: string; username: st
     });
   };
 
+  const handleReprocess = () => {
+    startTransition(async () => {
+      enqueueSnackbar('Item reprocessed!', {
+        variant: 'success',
+      });
+    });
+  };
+
   return (
     <>
+      <Tooltip title="Reprocess all" placement="top">
+        <IconButton size="medium" onClick={handleReprocess}>
+          <Icon
+            icon="material-symbols:refresh"
+            style={{ pointerEvents: 'none' }}
+            color={isPending ? theme.palette.grey[300] : theme.palette.primary.lighter}
+          />
+        </IconButton>
+      </Tooltip>
+
       <Tooltip title="Delete LinkedIn User" placement="top">
-        <Box sx={{ p: 0.5, position: 'relative' }}>
-          <IconButton size="medium" onClick={confirmDelete.onTrue}>
-            <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
-          </IconButton>
-        </Box>
+        <IconButton size="medium" onClick={confirmDelete.onTrue}>
+          <Icon
+            style={{ pointerEvents: 'none' }}
+            icon="material-symbols:delete"
+            color={theme.palette.error.dark}
+          />
+        </IconButton>
       </Tooltip>
 
       <ConfirmDialog
@@ -44,7 +72,7 @@ export const DeleteSenderAccount = ({ id, username }: { id: string; username: st
         title="Delete"
         content={
           <>
-            Are you sure want to delete LinkedIn user: <strong> {username} </strong>?
+            Are you sure want to delete user: <strong> {username} </strong>?
           </>
         }
         action={

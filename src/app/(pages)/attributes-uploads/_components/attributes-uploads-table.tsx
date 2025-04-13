@@ -34,7 +34,7 @@ export const AttributesUploadsTable = ({ rows }: { rows: GridRowsProp }) => {
       paginationModel: { pageSize: 25 },
     },
     sorting: {
-      sortModel: [{ field: 'dateUploaded', sort: 'desc' }],
+      sortModel: [{ field: 'date_uploaded', sort: 'desc' }],
     },
   };
 

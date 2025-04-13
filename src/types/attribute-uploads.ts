@@ -1,12 +1,12 @@
 export type CreateAttributeUploadsPropType = {
-  hostId: {
+  host_id: {
     label: string;
     value: string;
   };
-  importSource: {
+  import_source: {
     label: string;
     value: string;
   };
   name: string;
-  updateExisting: boolean;
+  update_existing: boolean;
 };

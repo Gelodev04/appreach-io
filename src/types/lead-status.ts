@@ -1,10 +1,3 @@
-export type PlatformOption = {
-  display: string;
-  value: string;
-  signup_url: string;
-  description: string;
-};
-
 export type LeadStatusOption = {
   display: string;
   value: string;

@@ -57,7 +57,7 @@ export const columnOptions = [
   },
   {
     label: 'Title',
-    value: '{{person}}.linkedin_job_title',
+    value: '{{person}}.job_title',
   },
   {
     label: 'Primary Email',
@@ -81,11 +81,11 @@ export const columnOptions = [
   },
   {
     label: 'Company Name',
-    value: '{{company}}.company',
+    value: '{{company}}.name',
   },
   {
     label: 'Pretty Company Name',
-    value: '{{company}}.pretty_company_name',
+    value: '{{company}}.pretty_name',
   },
   {
     label: 'Employees',
@@ -192,9 +192,9 @@ export const columnOptions = [
 export const headerMapping = {
   'first name': '{{person}}.first_name',
   'last name': '{{person}}.last_name',
-  title: '{{person}}.linkedin_job_title',
-  job: '{{person}}.linkedin_job_title',
-  position: '{{person}}.linkedin_job_title',
+  title: '{{person}}.job_title',
+  job: '{{person}}.job_title',
+  position: '{{person}}.job_title',
   email: '{{person}}.email',
   'email address': '{{person}}.email',
   'first phone': '{{person}}.phone',
@@ -203,9 +203,9 @@ export const headerMapping = {
   state: '{{person}}.state',
   country: '{{person}}.country',
   company: '{{company}}.name',
-  'company name': '{{company}}.company',
-  'organization name': '{{company}}.company',
-  'company name for emails': '{{company}}.pretty_company_name',
+  'company name': '{{company}}.name',
+  'organization name': '{{company}}.name',
+  'company name for emails': '{{company}}.pretty_name',
   employees: '{{company}}.employee_count',
   'estimated num employees': '{{company}}.employee_count',
   industry: '{{company}}.industry',

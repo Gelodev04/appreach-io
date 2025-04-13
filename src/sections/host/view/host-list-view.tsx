@@ -146,7 +146,13 @@ export const HostListView = ({
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return <DeleteProfileButton id={params?.row?.id} name={params?.row?.host} />;
+        return (
+          <DeleteProfileButton
+            id={params?.row?.id}
+            name={params?.row?.host}
+            isOwner={params.row.isOwner}
+          />
+        );
       },
       sortable: false,
       filterable: false,

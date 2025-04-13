@@ -9,8 +9,8 @@ type ParamsProps = {
 export const ProductLink = ({ params }: ParamsProps) => {
   return (
     <Typography sx={{ my: 2 }}>
-      <Link component={RouterLink} href={params.row.product_link}>
-        {params.row.product}
+      <Link component={RouterLink} href={params.row.signup_url}>
+        {params.row.display}
       </Link>
     </Typography>
   );

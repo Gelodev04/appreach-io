@@ -14,6 +14,7 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
   const rows = await getAttributesUploadsByHostIds();
   const attributesUploadsPlanPermission = await getAttributesUploadsPlanPermissions();
+
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <AttributesUploadsHeader />

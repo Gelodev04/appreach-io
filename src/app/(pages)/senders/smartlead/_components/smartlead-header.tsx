@@ -11,19 +11,15 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { paths } from 'src/routes/paths';
 import { smartleadAccountsWebhook } from 'src/services/db/smartlead';
 import { useSmartleadStore } from 'src/store/smartlead';
+import { HostOptionsType } from 'src/types/dropdown-types';
 import { SmartleadSyncDropdown } from './smartlead-sync-dropdown';
-
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
 
 export const SmartleadHeader = ({
   allHosts,
   options,
 }: {
-  allHosts: OptionType;
-  options: OptionType;
+  allHosts: HostOptionsType;
+  options: HostOptionsType;
 }) => {
   const syncAccounts = useBoolean();
   const settings = useBoolean();

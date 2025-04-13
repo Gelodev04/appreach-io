@@ -14,7 +14,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { createSenderAccount } from 'src/services/db/sender-accounts';
 import * as Yup from 'yup';
 
-export const NonApiLinkedinsHeader = () => {
+export const LinkedinHeader = () => {
   const dialog = useBoolean();
 
   const { hosts } = useGetSeedSettings();

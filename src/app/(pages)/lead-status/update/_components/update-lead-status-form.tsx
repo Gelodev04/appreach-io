@@ -18,11 +18,12 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { paths } from 'src/routes/paths';
 import { createLeadStatus } from 'src/services/db/lead-status';
 import { getSenderAccountsByHostId } from 'src/services/db/sender-accounts';
-import { LeadStatusOption, PlatformOption } from 'src/types/lead-status';
+import { ConfigDropdownOptions } from 'src/types/dropdown-types';
+import { LeadStatusOption } from 'src/types/lead-status';
 import * as Yup from 'yup';
 
 type FormType = {
-  platformOptions: PlatformOption[] | undefined;
+  platformOptions: ConfigDropdownOptions[] | undefined;
   leadStatusOptions: LeadStatusOption[] | undefined;
 };
 

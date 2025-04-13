@@ -227,7 +227,7 @@ export const updateHostSmartlead = async (id: string, data: UpdateSmartLead) => 
 
 export const getUserHosts = async () => {
   try {
-    const { hosts } = await getUserSettings({ hosts: true });
+    const { hosts, ownerHostId } = await getUserSettings({ hosts: true, ownerHostId: true });
     const userHosts = await prisma.hosts.findMany({
       where: {
         id: {
@@ -235,7 +235,13 @@ export const getUserHosts = async () => {
         },
       },
     });
-    return userHosts;
+    const userHostWithOwner = userHosts.map((host) => {
+      return {
+        ...host,
+        isOwner: host.id === ownerHostId,
+      };
+    });
+    return userHostWithOwner;
   } catch (error) {
     throw new Error("Couldn't fetch user's hosts.");
   }

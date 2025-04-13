@@ -208,6 +208,7 @@ export async function POST(request: Request) {
         webhook: {
           token: userIdToken,
         },
+        ownerHostId: hostId.toString(),
       },
     });
 

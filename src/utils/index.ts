@@ -19,3 +19,12 @@ export const normalizeHeader = (header: string) => {
     .trim()
     .toLowerCase();
 };
+
+export const mapDisplayValueToLabelValue = <T extends { display: string; value: string }>(
+  options: T[]
+) => {
+  return options.map((option) => ({
+    label: option.display,
+    value: option.value,
+  }));
+};
