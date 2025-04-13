@@ -37,7 +37,6 @@ export const EmailEventsTable = ({
     emailServerOptions,
     emailResellerOptions
   );
-  console.log('rerender');
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
