@@ -8,12 +8,24 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { deleteHostFromUser } from 'src/services/db/hosts';
 
-export const DeleteProfileButton = ({ id, name }: { id: string; name: string }) => {
+export const DeleteProfileButton = ({
+  id,
+  name,
+  isOwner,
+}: {
+  id: string;
+  name: string;
+  isOwner: boolean;
+}) => {
   const confirmDelete = useBoolean();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
+    if (isOwner) {
+      enqueueSnackbar('Can not delete owner host.', { variant: 'error' });
+      return;
+    }
     startTransition(async () => {
       const response = await deleteHostFromUser(id);
       if (!response.success) {
@@ -25,11 +37,19 @@ export const DeleteProfileButton = ({ id, name }: { id: string; name: string }) 
     });
   };
 
+  const handleOpenDialog = () => {
+    if (isOwner) {
+      enqueueSnackbar('Can not delete owner host.', { variant: 'error' });
+      return;
+    }
+    confirmDelete.onTrue();
+  };
+
   return (
     <>
       <Tooltip title="Delete email" placement="top">
         <Box sx={{ p: 0.5, position: 'relative' }}>
-          <IconButton size="medium" onClick={confirmDelete.onTrue}>
+          <IconButton size="medium" onClick={handleOpenDialog}>
             <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
           </IconButton>
         </Box>

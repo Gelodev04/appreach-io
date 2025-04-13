@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Stack, SxProps, Theme } from '@mui/material';
+import { Box, Card, Stack, SxProps, Theme } from '@mui/material';
 import {
   DataGrid,
   GridInitialState,
@@ -13,11 +13,31 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
-import { useWebhooksCol } from '../_hooks/useWebhooksCol';
+import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
+import { useEmailEventsCol } from '../_hooks/useEmailEventsCol';
+import { EditMultipleEmailEvents } from './edit-multiple-email-events';
 
-export const WebhooksTable = ({ rows, token }: { rows: GridRowsProp; token?: string | null }) => {
+export const EmailEventsTable = ({
+  rows,
+  hostOptions,
+  platFormOptions,
+  emailServerOptions,
+  emailResellerOptions,
+}: {
+  rows: GridRowsProp;
+  hostOptions: HostOptionsType;
+  platFormOptions: PlatformOptionsType;
+  emailServerOptions: PlatformOptionsType;
+  emailResellerOptions: PlatformOptionsType;
+}) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useWebhooksCol(token);
+  const { columns } = useEmailEventsCol(
+    hostOptions,
+    platFormOptions,
+    emailServerOptions,
+    emailResellerOptions
+  );
+  console.log('rerender');
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -30,10 +50,7 @@ export const WebhooksTable = ({ rows, token }: { rows: GridRowsProp; token?: str
   };
   const initialState: GridInitialState = {
     pagination: {
-      paginationModel: { pageSize: 10 },
-    },
-    sorting: {
-      sortModel: [{ field: 'upload.dateUploaded', sort: 'desc' }],
+      paginationModel: { pageSize: 25 },
     },
   };
 
@@ -48,6 +65,17 @@ export const WebhooksTable = ({ rows, token }: { rows: GridRowsProp; token?: str
           alignItems="center"
           justifyContent="flex-end"
         >
+          {!!selectedRowIds.length && (
+            <Box>
+              <EditMultipleEmailEvents
+                selectedRowIds={selectedRowIds}
+                hostOptions={hostOptions}
+                platformOptions={platFormOptions}
+                emailServerOptions={emailServerOptions}
+                emailResellerOptions={emailResellerOptions}
+              />
+            </Box>
+          )}
           <GridToolbarColumnsButton />
           <GridToolbarFilterButton />
         </Stack>
@@ -71,10 +99,10 @@ export const WebhooksTable = ({ rows, token }: { rows: GridRowsProp; token?: str
         rows={rows}
         slots={slots}
         columns={columns}
+        checkboxSelection
         disableRowSelectionOnClick
         initialState={initialState}
         getRowHeight={() => 'auto'}
-        getRowId={(row) => row.value}
         pageSizeOptions={[5, 10, 25, 50, 100]}
         onRowSelectionModelChange={setSelectedRowIds}
       />

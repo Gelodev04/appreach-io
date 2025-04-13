@@ -137,19 +137,25 @@ type EmailValidatorUpload {
 }
 
 type AttributeUploadsEntityResults {
-  total   Int @default(0)
+  matched Int @default(0)
   created Int @default(0)
-  ignored Int @default(0)
   updated Int @default(0)
 }
 
-type AttributeUploadsResults {
-  company        AttributeUploadsEntityResults?
+type AttributeUploadsProcessingResults {
+  persons        AttributeUploadsEntityResults?
+  companies      AttributeUploadsEntityResults?
+  custom         AttributeUploadsEntityResults?
   errors         Int                            @default(0)
-  person         AttributeUploadsEntityResults?
-  columnsMapped  String?
   columnsSkipped String?
+  columnsMapped  String?
   rowErrors      String[]
+}
+
+type AttributeUploadsMetadata {
+  processing_status  String
+  updated_at         DateTime?                          @db.Date
+  processing_results AttributeUploadsProcessingResults?
 }
 
 type HostsLookerStudio {
@@ -409,9 +415,9 @@ type SmartLead {
 }
 
 type SenderAccountsMetadata {
-  last_synced_at DateTime? @db.Date
-  created_at     DateTime? @db.Date
-  updated_at     DateTime  @db.Date
+  created_at           DateTime? @db.Date
+  updated_at           DateTime  @db.Date
+  bigquery_sync_status String?
 }
 
 type EventContent {
@@ -489,19 +495,20 @@ model emailValidator {
   upload          EmailValidatorUpload
 }
 
-model attributeUploads {
-  id             String                   @id @default(auto()) @map("_id") @db.ObjectId
-  csvLink        String
-  dateUploaded   DateTime?                @default(now())
-  hostId         String                   @db.ObjectId
-  hostName       String
-  importName     String
-  importSource   String
-  lastUpdated    DateTime?                @default(now())
-  results        AttributeUploadsResults?
-  status         String
-  updateExisting Boolean
-  columnMappings Json?
+model attribute_uploads {
+  id              String                    @id @default(auto()) @map("_id") @db.ObjectId
+  user_id         String                    @db.ObjectId
+  csv_link        String
+  date_uploaded   DateTime?                 @default(now())
+  host_id         String                    @db.ObjectId
+  host_name       String
+  import_name     String
+  import_source   String
+  last_updated    DateTime?                 @default(now())
+  status          String?
+  update_existing Boolean
+  column_mappings Json?
+  metadata        AttributeUploadsMetadata?
 }
 
 model hosts {
@@ -588,6 +595,7 @@ model userSettings {
   planPermissionsUsed     UserSettingsPlanPermissions
   planPermissionFeatures  UserSettingsPlanPermissionFeatures
   webhook                 UserSettingsWebhook?
+  ownerHostId             String                             @db.ObjectId
 }
 
 model webMail {
@@ -601,16 +609,18 @@ model webMail {
 }
 
 model sender_accounts {
-  id           String                 @id @default(auto()) @map("_id") @db.ObjectId
-  user_id      String                 @db.ObjectId
-  host_id      String                 @db.ObjectId
-  host_name    String
-  host_crypt   String?
-  platform     String
-  sender       String
-  type         String
-  sender_label String
-  metadata     SenderAccountsMetadata
+  id             String                 @id @default(auto()) @map("_id") @db.ObjectId
+  user_id        String                 @db.ObjectId
+  host_id        String                 @db.ObjectId
+  host_name      String
+  host_crypt     String?
+  sender         String
+  sender_name    String?
+  email_server   String?
+  email_reseller String?
+  platform       String
+  type           String
+  metadata       SenderAccountsMetadata
 }
 
 model events {

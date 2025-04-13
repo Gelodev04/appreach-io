@@ -1,4 +1,5 @@
 import { Container } from '@mui/material';
+import { getConfigDropdownOptions } from 'src/services/db/config';
 import { getUserSettings } from 'src/services/db/user-settings';
 import { WebhooksHeader } from './_components/webhooks-header';
 import { WebhooksTable } from './_components/webhooks-table';
@@ -49,7 +50,9 @@ const rows = [
 
 export default async function Page() {
   const { webhook } = await getUserSettings({ webhook: { select: { token: true } } });
-  console.log(webhook);
+  const platformOptions = await getConfigDropdownOptions({ key: 'platform_options' });
+  const rows = platformOptions.filter((option) => !!option.signup_url);
+
   return (
     <Container
       maxWidth={false}

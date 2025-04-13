@@ -81,7 +81,8 @@ export const paths = {
   senders: {
     root: ROOTS.SENDERS,
     nonApiEmails: `${ROOTS.SENDERS}/non-api-emails`,
-    nonApiLinkedins: `${ROOTS.SENDERS}/non-api-linkedins`,
+    linkedin: `${ROOTS.SENDERS}/linkedin`,
+    emailEvents: `${ROOTS.SENDERS}/email-events`,
     smartlead: `${ROOTS.SENDERS}/smartlead`,
     instantly: `${ROOTS.SENDERS}/instantly`,
     emailBison: `${ROOTS.SENDERS}/email-bison`,

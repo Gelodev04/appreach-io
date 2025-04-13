@@ -13,26 +13,25 @@ export const useWebhooksCol = (token?: string | null) => {
       enqueueSnackbar({ variant: 'warning', message: 'You do not have a token' });
       return;
     }
-
-    const webhookUrl = params.row.events_webhook.replace('{tokenHash}', token);
+    const webhookUrl = `webhooks.outreachmagic.io/${params.row.value}?token=${token}`;
     copy(webhookUrl);
     enqueueSnackbar('Copied to clipboard');
   };
 
   const columns: GridColDef[] = [
     {
-      field: 'product',
+      field: 'display',
       headerName: 'Product',
       renderCell: (params) => <ProductLink params={params} />,
       flex: 1,
     },
     {
-      field: 'about',
+      field: 'description',
       headerName: 'About',
       flex: 1,
     },
     {
-      field: 'events_webhook',
+      field: 'value',
       headerName: 'Events Webhook',
       renderCell: (params) => (
         <Stack direction="row">

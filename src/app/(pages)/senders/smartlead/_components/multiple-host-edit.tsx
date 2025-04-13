@@ -15,11 +15,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import { espData } from 'src/constants';
 import { updateMultipleSmartlead } from 'src/services/db/smartlead';
-
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
+import { HostOptionsType } from 'src/types/dropdown-types';
 
 const espOptions = [
   'google business',
@@ -32,7 +28,7 @@ export const MultipleHostEdit = ({
   selectedRowIds,
   options,
 }: {
-  options: OptionType;
+  options: HostOptionsType;
   selectedRowIds: GridRowSelectionModel;
 }) => {
   const [isPending, startTransition] = useTransition();

@@ -7,14 +7,10 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { getHubspotAuthUrl } from 'src/services/db/hubspot';
+import { HostOptionsType } from 'src/types/dropdown-types';
 import { HubspotOAuthDropdown } from './hubspot-oauth-dropdown';
 
-type OptionType = {
-  profile: string;
-  id: string;
-}[];
-
-export const HubspotHeader = ({ allHosts }: { allHosts: OptionType }) => {
+export const HubspotHeader = ({ allHosts }: { allHosts: HostOptionsType }) => {
   const hubspotOAuth = useBoolean();
   const [item, setItem] = useState('');
 

@@ -3,7 +3,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
-import { RenderCellStatus } from 'src/components/table/render-cell-rows';
+import Label from 'src/components/label';
 import { fDate } from 'src/utils/format-time';
 import { AttributesUploadsButton } from '../_components/attributes-uploads-button';
 
@@ -19,18 +19,18 @@ export const useAttributesUploadsCol = () => {
 
   const columns: GridColDef[] = [
     {
-      field: 'hostName',
+      field: 'host_name',
       headerName: 'Host',
       flex: 1,
     },
     {
-      field: 'importName',
+      field: 'import_name',
       headerName: 'Import name',
       renderCell: (params) => {
         return (
-          <div title={params.row.importName} style={{ overflow: 'hidden' }}>
+          <div title={params.row.import_name} style={{ overflow: 'hidden' }}>
             <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params.row.importName}
+              {params.row.import_name}
             </Typography>
           </div>
         );
@@ -38,7 +38,7 @@ export const useAttributesUploadsCol = () => {
       flex: 1,
     },
     {
-      field: 'csvLink',
+      field: 'csv_link',
       headerName: 'CSV',
       sortable: false,
       filterable: false,
@@ -49,7 +49,7 @@ export const useAttributesUploadsCol = () => {
           <Tooltip title="Download CSV" placement="top">
             <Button
               startIcon={<Iconify icon="eos-icons:csv-file" width={18} />}
-              onClick={() => handleDownloadCsv(params?.row?.csvLink)}
+              onClick={() => handleDownloadCsv(params?.row?.csv_link)}
               size="small"
               sx={{ zIndex: 20, px: 1 }}
             >
@@ -62,52 +62,72 @@ export const useAttributesUploadsCol = () => {
       minWidth: 120,
     },
     {
-      field: 'results.person.total',
+      field: 'metadata.processing_results.persons.matched',
       headerName: 'Person Attributes',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.results?.person?.total;
+        return params?.row?.metadata?.processing_results?.persons?.matched;
       },
       flex: 1,
     },
     {
-      field: 'results.company.total',
+      field: 'metadata.processing_results.companies.matched',
       headerName: 'Company Attributes',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.results?.company?.total;
+        return params?.row?.metadata?.processing_results?.companies?.matched;
       },
       flex: 1,
     },
     {
-      field: 'results.errors',
+      field: 'metadata.processing_results.custom.matched',
+      headerName: 'Custom Attributes',
+      type: 'number',
+      headerAlign: 'left',
+      align: 'left',
+      renderCell: (params) => {
+        return params?.row?.metadata?.processing_results?.custom?.matched;
+      },
+      flex: 1,
+    },
+    {
+      field: 'metadata.processing_results.errors',
       headerName: 'Errors',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.results?.errors;
+        return params?.row?.metadata?.processing_results?.errors;
       },
       flex: 1,
     },
     {
-      field: 'importSource',
+      field: 'import_source',
       headerName: 'Import Source',
       headerAlign: 'left',
       align: 'left',
       flex: 1,
     },
     {
-      field: 'status',
+      field: 'metadata.processing_status',
       headerName: 'Status',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
-      renderCell: (params) => <RenderCellStatus params={params} />,
+      renderCell: (params) => {
+        return (
+          <Label
+            variant="soft"
+            color={(params.row.metadata?.processing_status === 'success' && 'success') || 'error'}
+          >
+            {params.row.metadata?.processing_status}
+          </Label>
+        );
+      },
       flex: 1,
       minWidth: 80,
     },
@@ -123,12 +143,12 @@ export const useAttributesUploadsCol = () => {
     },
 
     {
-      field: 'dateUploaded',
+      field: 'date_uploaded',
       headerName: 'Date Uploaded',
       sortable: true,
-      valueGetter: (params) => params?.row?.dateUploaded,
+      valueGetter: (params) => params?.row?.date_uploaded,
       renderCell: (params) => {
-        return <Typography>{fDate(params?.row?.dateUploaded)}</Typography>;
+        return <Typography>{fDate(params?.row?.date_uploaded)}</Typography>;
       },
       type: 'date',
       flex: 1,

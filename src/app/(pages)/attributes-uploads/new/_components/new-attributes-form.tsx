@@ -47,7 +47,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('List name is required'),
-    hostId: Yup.object()
+    host_id: Yup.object()
       .shape({
         label: Yup.string().required('Sender profile label is required'),
         value: Yup.string().required('Sender profile value is required'),
@@ -55,7 +55,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       .required('Sender profile is required')
       .nullable()
       .notOneOf([null], 'Sender profile is required'),
-    importSource: Yup.object()
+    import_source: Yup.object()
       .shape({
         label: Yup.string().required('Import Source label is required'),
         value: Yup.string().required('Import Source value is required'),
@@ -63,15 +63,15 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       .required('Import Source is required')
       .nullable()
       .notOneOf([null], 'Import Source is required'),
-    updateExisting: Yup.boolean(),
+    update_existing: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: format(new Date(), 'MMM do yyyy'),
-      hostId: null,
-      importSource: null,
-      updateExisting: true,
+      host_id: null,
+      import_source: null,
+      update_existing: true,
     }),
     []
   );
@@ -121,7 +121,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       enqueueSnackbar('Uploaded successfully');
       router.push(paths.attributesUpload.root);
       router.refresh();
-      console.log({ mappedCols });
 
       setFileError(null);
     } catch (error) {
@@ -166,8 +165,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
           if (mappedValue && !usedMappings[mappedValue]) {
             usedMappings[mappedValue] = true; // Mark this value as used
             acc[header] = mappedValue; // Assign the mapped value to the header
-          } else {
-            acc[header] = ''; // If already assigned, leave empty
           }
 
           return acc;
@@ -177,7 +174,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
       // Pre-populate selectedValues with unique prefilled mappings
       const prefilledValues = Object.keys(usedMappings);
-
       setMappedCols(initialMappedCols);
       setSelectedValues(prefilledValues);
     } catch (error) {
@@ -231,7 +227,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
 
                 <RHFAutocomplete
                   isOptionEqualToValue={(option, value) => option.value === value.value}
-                  name="hostId"
+                  name="host_id"
                   label="Choose sender profile"
                   placeholder="outreachmagic"
                   options={hostOptions}
@@ -239,12 +235,12 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
               </Box>
               <RHFAutocomplete
                 isOptionEqualToValue={(option, value) => option.value === value.value}
-                name="importSource"
+                name="import_source"
                 label="Sourced from"
                 options={sourceOptions}
               />
               <RHFSwitch
-                name="updateExisting"
+                name="update_existing"
                 label="Replace existing attributes with new import name (recommended)"
               />
               <UploadDocument
