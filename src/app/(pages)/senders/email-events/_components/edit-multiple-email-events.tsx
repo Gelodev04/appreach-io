@@ -13,6 +13,7 @@ import { enqueueSnackbar } from 'notistack';
 import { useState, useTransition } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { EditPopover } from 'src/components/custom-popover/dropdown-edit-popover';
 import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { paths } from 'src/routes/paths';
@@ -50,8 +51,8 @@ export const EditMultipleEmailEvents = ({
     emailReseller: '',
   });
 
-  const emailServer = usePopover();
-  const emailReseller = usePopover();
+  const emailServerPopover = usePopover();
+  const emailResellerPopover = usePopover();
   const platformPopover = usePopover();
   const hostPopover = usePopover();
   const confirmDelete = useBoolean();
@@ -78,7 +79,7 @@ export const EditMultipleEmailEvents = ({
         enqueueSnackbar(response.message, { variant: 'error', persist: true });
       } else {
         enqueueSnackbar('Platform update success!');
-        emailServer.onClose();
+        emailServerPopover.onClose();
       }
     });
   };
@@ -103,7 +104,7 @@ export const EditMultipleEmailEvents = ({
         enqueueSnackbar(response.message, { variant: 'error', persist: true });
       } else {
         enqueueSnackbar('Platform update success!');
-        emailReseller.onClose();
+        emailResellerPopover.onClose();
       }
     });
   };
@@ -168,7 +169,7 @@ export const EditMultipleEmailEvents = ({
         size="medium"
         color="primary"
         disabled={isEmailServerUpdating}
-        onClick={emailServer.onOpen}
+        onClick={emailServerPopover.onOpen}
         startIcon={<Iconify icon="flowbite:edit-outline" />}
       >
         Edit Email Server [{selectedRowIds.length}]
@@ -178,7 +179,7 @@ export const EditMultipleEmailEvents = ({
         size="medium"
         color="primary"
         disabled={isEmailResellerUpdating}
-        onClick={emailReseller.onOpen}
+        onClick={emailServerPopover.onOpen}
         startIcon={<Iconify icon="flowbite:edit-outline" />}
       >
         Edit Email Reseller [{selectedRowIds.length}]
@@ -187,11 +188,11 @@ export const EditMultipleEmailEvents = ({
       <Button
         size="medium"
         color="primary"
-        disabled={isHostUpdating}
-        onClick={hostPopover.onOpen}
+        disabled={isPlatformUpdating}
+        onClick={platformPopover.onOpen}
         startIcon={<Iconify icon="flowbite:edit-outline" />}
       >
-        Edit Assigned Profile [{selectedRowIds.length}]
+        Edit Platform [{selectedRowIds.length}]
       </Button>
 
       <Button
@@ -231,137 +232,41 @@ export const EditMultipleEmailEvents = ({
         }
       />
 
-      <CustomPopover arrow="top-center" open={emailServer.open} sx={{ width: 500, p: 0 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6" noWrap>
-              Edit Email Server
-            </Typography>
-            <IconButton onClick={emailServer.onClose} aria-label="close">
-              <Iconify icon="material-symbols:close" />
-            </IconButton>
-          </Box>
-          <Divider />
+      <EditPopover
+        open={emailServerPopover.open}
+        onClose={emailServerPopover.onClose}
+        label="Email Server"
+        value={value.emailServer}
+        options={emailServerOptions}
+        loading={isEmailServerUpdating}
+        onChange={handleChange}
+        onSave={handleSaveEmailServer}
+        name="emailServer"
+      />
 
-          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="subtitle2" color="GrayText">
-              Email Server
-            </Typography>
-            <Select
-              sx={{
-                width: '100%',
-              }}
-              name="emailServer"
-              value={value.emailServer}
-              disabled={isEmailServerUpdating}
-              onChange={handleChange}
-            >
-              {emailServerOptions.map((server) => (
-                <MenuItem value={server.value} key={server.value}>
-                  {server.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
+      <EditPopover
+        open={emailResellerPopover.open}
+        onClose={emailResellerPopover.onClose}
+        label="Email Reseller"
+        value={value.emailReseller}
+        options={emailResellerOptions}
+        loading={isEmailResellerUpdating}
+        onChange={handleChange}
+        onSave={handleSaveEmailReseller}
+        name="emailReseller"
+      />
 
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={isEmailServerUpdating}
-            onClick={handleSaveEmailServer}
-          >
-            Save changes
-          </Button>
-        </Box>
-      </CustomPopover>
-
-      <CustomPopover arrow="top-center" open={emailReseller.open} sx={{ width: 500, p: 0 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6" noWrap>
-              Edit Email Reseller
-            </Typography>
-            <IconButton onClick={emailReseller.onClose} aria-label="close">
-              <Iconify icon="material-symbols:close" />
-            </IconButton>
-          </Box>
-          <Divider />
-
-          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="subtitle2" color="GrayText">
-              Email Reseller
-            </Typography>
-            <Select
-              sx={{
-                width: '100%',
-              }}
-              name="emailReseller"
-              value={value.emailReseller}
-              disabled={isEmailResellerUpdating}
-              onChange={handleChange}
-            >
-              {emailResellerOptions.map((reseller) => (
-                <MenuItem value={reseller.value} key={reseller.value}>
-                  {reseller.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={isEmailResellerUpdating}
-            onClick={handleSaveEmailReseller}
-          >
-            Save changes
-          </Button>
-        </Box>
-      </CustomPopover>
-
-      <CustomPopover arrow="top-center" open={platformPopover.open} sx={{ width: 500, p: 0 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h6" noWrap>
-              Edit Platform
-            </Typography>
-            <IconButton onClick={platformPopover.onClose} aria-label="close">
-              <Iconify icon="material-symbols:close" />
-            </IconButton>
-          </Box>
-          <Divider />
-
-          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="subtitle2" color="GrayText">
-              Platform
-            </Typography>
-            <Select
-              sx={{
-                width: '100%',
-              }}
-              name="platform"
-              value={value.platform}
-              disabled={isPlatformUpdating}
-              onChange={handleChange}
-            >
-              {platformOptions.map((platform) => (
-                <MenuItem value={platform.value} key={platform.value}>
-                  {platform.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={isPlatformUpdating}
-            onClick={handleSavePlatform}
-          >
-            Save changes
-          </Button>
-        </Box>
-      </CustomPopover>
+      <EditPopover
+        open={platformPopover.open}
+        onClose={platformPopover.onClose}
+        label="Platform"
+        value={value.platform}
+        options={platformOptions}
+        loading={isPlatformUpdating}
+        onChange={handleChange}
+        onSave={handleSavePlatform}
+        name="platform"
+      />
 
       <CustomPopover arrow="top-center" open={hostPopover.open} sx={{ width: 500, p: 0 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
