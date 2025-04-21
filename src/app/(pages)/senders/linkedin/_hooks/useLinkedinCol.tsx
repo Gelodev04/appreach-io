@@ -1,3 +1,5 @@
+import { Icon } from '@iconify/react';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { HostDropdown } from 'src/components/dropdown-select/host-dropdown';
 import { SenderConfigDropdown } from 'src/components/dropdown-select/sender-config-dropdown';
@@ -22,6 +24,21 @@ export const useLinkedinCol = (
     {
       field: 'sender_name',
       headerName: 'Sender Name',
+      renderCell: (params) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <span>{params?.row?.sender_name}</span>
+            <Tooltip title="Edit Sender Name" placement="top">
+              <IconButton size="medium">
+                <Icon
+                  style={{ pointerEvents: 'none' }}
+                  icon="material-symbols:edit-outline-rounded"
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        );
+      },
       flex: 1,
     },
     {

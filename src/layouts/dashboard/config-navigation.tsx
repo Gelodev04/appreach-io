@@ -9,18 +9,12 @@ export function useNavData() {
   const data = useMemo(
     () => [
       {
-        subheader: 'Settings',
+        subheader: 'Unified Reporting',
         items: [
           {
             title: 'Dashboard',
             path: paths.dashboard.root,
             icon: <Iconify icon="codicon:graph" />,
-            disabled: isTrialExpired,
-          },
-          {
-            title: 'Account Profiles',
-            path: paths.settings.root,
-            icon: <Iconify icon="bx:server" />,
             disabled: isTrialExpired,
           },
           {
@@ -30,42 +24,31 @@ export function useNavData() {
             disabled: isTrialExpired,
           },
           {
-            title: 'Seeds',
-            path: paths.seed.root,
-            icon: <Iconify icon="pepicons-pop:seedling" />,
-            disabled: isTrialExpired,
-          },
-          {
-            title: 'Email Validator',
-            path: paths.emailValidator.root,
-            icon: <Iconify icon="material-symbols:mark-email-read-outline" />,
-            disabled: isTrialExpired,
-          },
-          {
             title: 'Attributes Upload',
             path: paths.attributesUpload.root,
             icon: <Iconify icon="material-symbols:upload-2-outline-rounded" />,
             disabled: isTrialExpired,
           },
-
           {
-            title: 'Webhooks',
-            path: paths.webhooks.root,
-            icon: <Iconify icon="material-symbols:webhook-rounded" />,
+            title: 'Event Senders',
+            path: paths.eventSenders.root,
+            icon: <Iconify icon="mdi:email-arrow-right-outline" />,
             disabled: isTrialExpired,
           },
+          {
+            title: 'LinkedIn Events',
+            path: paths.senders.linkedin,
+            icon: <Iconify icon="bxl:linkedin" />,
+            disabled: isTrialExpired,
+          },
+
           // {
           //   title: 'Hubspot',
           //   path: paths.hubspot.root,
           //   icon: <Iconify icon="simple-icons:hubspot" />,
           //   disabled: isTrialExpired,
           // },
-          {
-            title: 'Subscription',
-            path: paths.checkout.root,
-            icon: <Iconify icon="flowbite:file-invoice-outline" />,
-            disabled: false,
-          },
+
           // {
           //   title: 'Logout',
           //   path: paths.auth.logout,
@@ -75,32 +58,52 @@ export function useNavData() {
         ],
       },
       {
-        subheader: 'Senders',
+        subheader: 'Seed Accounts',
         items: [
           {
-            title: 'Non-API Emails',
-            path: paths.senders.nonApiEmails,
+            title: 'Seed List',
+            path: paths.seed.root,
+            icon: <Iconify icon="pepicons-pop:seedling" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Verified Senders',
+            path: paths.senders.verifiedSenders,
             icon: <Iconify icon="hugeicons:address-book" />,
             disabled: isTrialExpired,
           },
+        ],
+      },
+      {
+        subheader: 'Settings',
+        items: [
           {
-            title: 'LinkedIn Events',
-            path: paths.senders.linkedin,
-            icon: <Iconify icon="bxl:linkedin" />,
+            title: 'Account Profiles',
+            path: paths.settings.root,
+            icon: <Iconify icon="bx:server" />,
             disabled: isTrialExpired,
           },
+
+          {
+            title: 'Webhooks',
+            path: paths.webhooks.root,
+            icon: <Iconify icon="material-symbols:webhook-rounded" />,
+            disabled: isTrialExpired,
+          },
+          {
+            title: 'Billing',
+            path: paths.checkout.root,
+            icon: <Iconify icon="flowbite:file-invoice-outline" />,
+            disabled: false,
+          },
+
           // {
           //   title: 'Smartlead',
           //   path: paths.senders.smartlead,
           //   icon: <Iconify icon="material-symbols:graph-1" />,
           //   disabled: isTrialExpired,
           // },
-          {
-            title: 'Email Events',
-            path: paths.senders.emailEvents,
-            icon: <Iconify icon="mdi:email-arrow-right-outline" />,
-            disabled: isTrialExpired,
-          },
+
           // {
           //   title: 'Instantly',
           //   path: paths.senders.instantly,
@@ -125,6 +128,17 @@ export function useNavData() {
           //   icon: <Iconify icon="material-symbols:waving-hand-outline-rounded" />,
           //   disabled: isTrialExpired,
           // },
+        ],
+      },
+      {
+        subheader: 'Other Tools',
+        items: [
+          {
+            title: 'Email Validator',
+            path: paths.emailValidator.root,
+            icon: <Iconify icon="material-symbols:mark-email-read-outline" />,
+            disabled: isTrialExpired,
+          },
         ],
       },
     ],

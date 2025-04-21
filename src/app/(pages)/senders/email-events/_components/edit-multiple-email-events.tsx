@@ -179,7 +179,7 @@ export const EditMultipleEmailEvents = ({
         size="medium"
         color="primary"
         disabled={isEmailResellerUpdating}
-        onClick={emailServerPopover.onOpen}
+        onClick={emailResellerPopover.onOpen}
         startIcon={<Iconify icon="flowbite:edit-outline" />}
       >
         Edit Email Reseller [{selectedRowIds.length}]

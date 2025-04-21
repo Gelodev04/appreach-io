@@ -13,7 +13,7 @@ export const useWebhooksCol = (token?: string | null) => {
       enqueueSnackbar({ variant: 'warning', message: 'You do not have a token' });
       return;
     }
-    const webhookUrl = `webhooks.outreachmagic.io/${params.row.value}?token=${token}`;
+    const webhookUrl = `https://webhooks.outreachmagic.io/${params.row.value}?token=${token}`;
     copy(webhookUrl);
     enqueueSnackbar('Copied to clipboard');
   };

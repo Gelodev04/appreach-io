@@ -10,7 +10,7 @@ function DomainHeader() {
       links={[
         {
           name: 'Domain Name',
-          href: paths.senders.nonApiEmails,
+          href: paths.senders.verifiedSenders,
         },
         { name: 'Verify new domain' },
       ]}
