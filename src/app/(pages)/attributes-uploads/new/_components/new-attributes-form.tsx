@@ -279,13 +279,16 @@ export const NewAttributesForm = ({
                             flexDirection: 'column',
                           }}
                         >
-                          {csvData.map((data, i) => {
+                          {csvData.slice(0, 3).map((data, i) => {
                             return (
                               <Box
                                 sx={{
                                   borderLeft: '1px solid lightgray',
                                   borderRight: '1px solid lightgray',
                                   borderBottom: '1px solid lightgray',
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'break-word',
+                                  whiteSpace: 'normal',
                                   // Only add top border to the first item:
                                   ...(i === 0 && { borderTop: '1px solid lightgray' }),
                                   padding: 1,
@@ -293,7 +296,7 @@ export const NewAttributesForm = ({
                                 }}
                                 key={`${data[header]}-${i}`}
                               >
-                                {data[header] ? data[header] : 'No Value'}
+                                {data[header] ? `${i + 1}. ${data[header]}` : `${i + 1}. No Value`}
                               </Box>
                             );
                           })}
