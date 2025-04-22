@@ -32,6 +32,24 @@ export const getConfigDropdownOptions = async ({
   }
 };
 
+export const getConfigHeaderMapping = async ({ key }: { key: string }) => {
+  try {
+    const headerMapping = await prisma.config.findFirst({
+      where: {
+        key,
+      },
+      select: {
+        value: true,
+      },
+    });
+
+    return headerMapping;
+  } catch (error) {
+    console.error('Error fetching platform options:', error);
+    throw new Error('Failed to fetch platform options');
+  }
+};
+
 export const getEmailServerOptions = async (): Promise<ConfigDropdownOptions[]> => {
   try {
     const emailServerOptions = await prisma.config.findFirst({

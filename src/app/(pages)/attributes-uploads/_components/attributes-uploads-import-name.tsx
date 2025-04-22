@@ -2,9 +2,9 @@ import { Box, Button, Typography } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
 import { useState } from 'react';
 
-export const LeadStatusMessage = ({ params }: { params: GridCellParams }) => {
-  const msg = params?.row?.content?.body || '';
-  const previewLimit = 100;
+export const AttributesUploadsImportName = ({ params }: { params: GridCellParams }) => {
+  const msg = params.row?.import_name || '';
+  const previewLimit = 50;
 
   const [expanded, setExpanded] = useState(false);
   const isLong = msg.length > previewLimit;

@@ -500,8 +500,8 @@ model attribute_uploads {
   date_uploaded   DateTime?                 @default(now())
   host_id         String                    @db.ObjectId
   host_name       String
+  host_crypt      String?
   import_name     String
-  import_source   String
   last_updated    DateTime?                 @default(now())
   status          String?
   update_existing Boolean

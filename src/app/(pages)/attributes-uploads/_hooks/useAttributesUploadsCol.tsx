@@ -6,6 +6,7 @@ import Iconify from 'src/components/iconify';
 import { RenderCellStatus, RenderCellText } from 'src/components/table/render-cell-rows';
 import { fDate } from 'src/utils/format-time';
 import { AttributesUploadsButton } from '../_components/attributes-uploads-button';
+import { AttributesUploadsImportName } from '../_components/attributes-uploads-import-name';
 
 export const useAttributesUploadsCol = () => {
   const handleDownloadCsv = useCallback((csvUrl?: string) => {
@@ -30,7 +31,7 @@ export const useAttributesUploadsCol = () => {
       field: 'import_name',
       headerName: 'Import name',
       renderCell: (params) => {
-        return <RenderCellText displayValue={params.row?.import_name} />;
+        return <AttributesUploadsImportName params={params} />;
       },
       flex: 1,
     },
@@ -111,16 +112,6 @@ export const useAttributesUploadsCol = () => {
       align: 'left',
       renderCell: (params) => {
         return <RenderCellText displayValue={params?.row?.metadata?.processing_results?.errors} />;
-      },
-      flex: 1,
-    },
-    {
-      field: 'import_source',
-      headerName: 'Import Source',
-      headerAlign: 'left',
-      align: 'left',
-      renderCell: (params) => {
-        return <RenderCellText displayValue={params?.row?.import_source} />;
       },
       flex: 1,
     },
