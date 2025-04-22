@@ -1,6 +1,8 @@
+'use client';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Button, Divider, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -9,18 +11,15 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { hosts } from '@prisma/client';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import FormProvider, { RHFSwitch, RHFTextField } from 'src/components/hook-form';
-import Iconify from 'src/components/iconify';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
-import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
-import { updateHostSmartlead } from 'src/services/db/hosts';
+import { updateHostNotification } from 'src/services/db/hosts';
 import * as Yup from 'yup';
 
-export default function HostSmartleadForm({ currentItem }: { currentItem: hosts }) {
-  const { copy } = useCopyToClipboard();
+export default function NotificationForm({ currentItem }: { currentItem: hosts }) {
   const router = useRouter();
   const theme = useTheme();
   const mdUp = useResponsive('up', 'md');
@@ -30,19 +29,15 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
     notificationAddresses: Yup.string(),
-    apiKey: Yup.string(),
-    webhook: Yup.string().required('required'),
-    useWithSeeds: Yup.boolean().required(),
+    slackChannelId: Yup.string(),
   });
 
   const defaultValues = {
     host: currentItem?.host ?? '',
-    notificationAddresses: currentItem.smartlead?.notificationAddresses
-      ? currentItem.smartlead?.notificationAddresses?.map((item) => item).join('\n')
+    notificationAddresses: currentItem.notifications?.emailAddressArray
+      ? currentItem.notifications?.emailAddressArray?.map((item) => item).join('\n')
       : '',
-    apiKey: currentItem.smartlead?.apiKey ?? '',
-    webhook: currentItem.smartlead?.webhook ?? '',
-    useWithSeeds: currentItem.smartlead?.useWithSeeds ?? false,
+    slackChannelId: currentItem.notifications?.slackChannel ?? '',
   };
 
   const methods = useForm({
@@ -56,8 +51,7 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await updateHostSmartlead(currentItem.id, data);
-
+    const response = await updateHostNotification(currentItem.id, data);
     if (!response.success) {
       enqueueSnackbar(response.message, { variant: 'error', persist: true });
     } else {
@@ -65,15 +59,6 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
       router.push(paths.settings.root);
     }
   });
-
-  const handleCopyWebhook = () => {
-    if (!currentItem.smartlead?.webhook) {
-      enqueueSnackbar('Webhook is empty', { variant: 'error', autoHideDuration: 1500 });
-      return;
-    }
-    copy(currentItem.smartlead?.webhook);
-    enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
-  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -94,27 +79,12 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
                 />
               </Box>
 
-              <RHFSwitch
-                name="useWithSeeds"
-                label="Do you plan to use Outreach Magic Seeds with this smartlead profile? "
+              <RHFTextField
+                name="slackChannelId"
+                label="Slack Channel ID"
+                minRows={3}
+                maxRows={5}
               />
-
-              <Divider sx={{ my: 1 }} />
-
-              <RHFTextField name="apiKey" label="Smartlead API Key" minRows={3} maxRows={5} />
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <RHFTextField
-                  name="webhook"
-                  label="Smartlead Webhook"
-                  minRows={3}
-                  maxRows={5}
-                  disabled
-                />
-
-                <Button color="primary" variant="outlined" onClick={handleCopyWebhook}>
-                  <Iconify icon="uil:copy" />
-                </Button>
-              </Box>
             </Stack>
           </Card>
         </Grid>
@@ -139,10 +109,10 @@ export default function HostSmartleadForm({ currentItem }: { currentItem: hosts 
               priority
             />
             <Typography variant="h6" sx={{ mb: 0.5 }}>
-              Edit smartlead settings
+              Edit notifications settings
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              Edit your smartlead settings.
+              Edit your notifications settings.
             </Typography>
             <LoadingButton
               type="submit"

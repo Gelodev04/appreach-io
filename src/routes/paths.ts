@@ -60,6 +60,7 @@ export const paths = {
     new: `${ROOTS.SETTINGS}/new`,
     smartlead: (id: string) => `${ROOTS.SETTINGS}/smartlead/${id}`,
     seeds: (id: string) => `${ROOTS.SETTINGS}/seeds/${id}`,
+    notifications: (id: string) => `${ROOTS.SETTINGS}/notifications/${id}`,
   },
 
   // SEEDS
@@ -70,8 +71,8 @@ export const paths = {
   },
 
   checkout: {
-    root: '/subscription',
-    success: '/subscription/success',
+    root: '/billing',
+    success: '/billing/success',
     trial1: '/trial/1',
     trial2: '/trial/2',
     billingPortal: (email: string) =>
@@ -80,7 +81,7 @@ export const paths = {
 
   senders: {
     root: ROOTS.SENDERS,
-    nonApiEmails: `${ROOTS.SENDERS}/non-api-emails`,
+    verifiedSenders: `${ROOTS.SENDERS}/verified-senders`,
     linkedin: `${ROOTS.SENDERS}/linkedin`,
     emailEvents: `${ROOTS.SENDERS}/email-events`,
     smartlead: `${ROOTS.SENDERS}/smartlead`,
@@ -90,7 +91,7 @@ export const paths = {
     heyReach: `${ROOTS.SENDERS}/heyreach`,
     email: `${ROOTS.SENDERS}/email`,
     domain: `${ROOTS.SENDERS}/domain`,
-    filter: (id: string) => `${ROOTS.SENDERS}/non-api-emails/?hostId=${id}`,
+    filter: (id: string) => `${ROOTS.SENDERS}/verified-senders/?hostId=${id}`,
   },
 
   profiles: {
@@ -122,5 +123,9 @@ export const paths = {
 
   webhooks: {
     root: '/webhooks',
+  },
+
+  eventSenders: {
+    root: '/event-senders',
   },
 };

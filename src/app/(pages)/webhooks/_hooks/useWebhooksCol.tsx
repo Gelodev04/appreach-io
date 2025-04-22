@@ -2,6 +2,7 @@ import { Button, Stack, Tooltip } from '@mui/material';
 import { GridCellParams, GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import Iconify from 'src/components/iconify';
+import { RenderCellText } from 'src/components/table/render-cell-rows';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import { ProductLink } from '../_components/product-link';
 
@@ -13,7 +14,7 @@ export const useWebhooksCol = (token?: string | null) => {
       enqueueSnackbar({ variant: 'warning', message: 'You do not have a token' });
       return;
     }
-    const webhookUrl = `webhooks.outreachmagic.io/${params.row.value}?token=${token}`;
+    const webhookUrl = `https://webhooks.outreachmagic.io/${params.row.value}?token=${token}`;
     copy(webhookUrl);
     enqueueSnackbar('Copied to clipboard');
   };
@@ -28,6 +29,9 @@ export const useWebhooksCol = (token?: string | null) => {
     {
       field: 'description',
       headerName: 'About',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.description} />;
+      },
       flex: 1,
     },
     {

@@ -3,7 +3,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
-import { RenderCellStatus } from 'src/components/table/render-cell-rows';
+import { RenderCellStatus, RenderCellText } from 'src/components/table/render-cell-rows';
 import { fDate } from 'src/utils/format-time';
 import { EmailRevalidateButton } from '../_components/email-revalidate-button';
 
@@ -35,12 +35,15 @@ export const useEmailValidatorCol = () => {
     {
       field: 'hostName',
       headerName: 'Assigned Profile',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.hostName} />;
+      },
       flex: 1,
     },
     {
       field: 'status',
       headerName: 'Status',
-      renderCell: (params) => <RenderCellStatus params={params} />,
+      renderCell: (params) => <RenderCellStatus status={params.row.status} />,
       flex: 1,
       minWidth: 80,
     },
@@ -75,7 +78,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.unique_emails;
+        return <RenderCellText displayValue={params?.row?.download?.unique_emails} />;
       },
       flex: 1,
     },
@@ -86,7 +89,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.verified;
+        return <RenderCellText displayValue={params?.row?.download?.verified} />;
       },
       flex: 1,
     },
@@ -97,7 +100,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.catch_all;
+        return <RenderCellText displayValue={params?.row?.download?.catch_all} />;
       },
       flex: 1,
     },
@@ -108,7 +111,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.invalid;
+        return <RenderCellText displayValue={params?.row?.download?.invalid} />;
       },
       flex: 1,
     },
@@ -119,7 +122,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.disposable;
+        return <RenderCellText displayValue={params?.row?.download?.disposable} />;
       },
       flex: 1,
     },
@@ -130,7 +133,7 @@ export const useEmailValidatorCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.download?.unknown;
+        return <RenderCellText displayValue={params?.row?.download?.unknown} />;
       },
       flex: 1,
     },

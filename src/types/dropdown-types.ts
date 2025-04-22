@@ -11,6 +11,6 @@ export type PlatformOptionsType = {
 export type ConfigDropdownOptions = {
   display: string;
   value: string;
-  signup_url: string;
-  description: string;
+  signup_url?: string;
+  description?: string;
 };

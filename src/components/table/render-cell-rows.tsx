@@ -1,14 +1,20 @@
-import { GridCellParams } from '@mui/x-data-grid';
+import { Typography } from '@mui/material';
 import Label from 'src/components/label';
 
-type ParamsProps = {
-  params: GridCellParams;
+export const RenderCellStatus = ({ status }: { status: string }) => {
+  return (
+    <Label variant="soft" color={(status === 'success' && 'success') || 'error'}>
+      {status}
+    </Label>
+  );
 };
 
-export const RenderCellStatus = ({ params }: ParamsProps) => {
+export const RenderCellText = ({ displayValue }: { displayValue: string }) => {
   return (
-    <Label variant="soft" color={(params.row.status === 'success' && 'success') || 'error'}>
-      {params.row.status}
-    </Label>
+    <div title={displayValue} style={{ overflow: 'hidden' }}>
+      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap', my: 2 }}>
+        {displayValue}
+      </Typography>
+    </div>
   );
 };

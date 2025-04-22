@@ -163,11 +163,9 @@ type HostsLookerStudio {
   hasToRegenerate Boolean?
 }
 
-type HostsSmartLead {
-  notificationAddresses String[]
-  useWithSeeds          Boolean?
-  apiKey                String?
-  webhook               String?
+type HostsNotifications {
+  emailAddressArray String[]
+  slackChannel      String?
 }
 
 type HostsUserSettings {
@@ -502,8 +500,8 @@ model attribute_uploads {
   date_uploaded   DateTime?                 @default(now())
   host_id         String                    @db.ObjectId
   host_name       String
+  host_crypt      String?
   import_name     String
-  import_source   String
   last_updated    DateTime?                 @default(now())
   status          String?
   update_existing Boolean
@@ -517,7 +515,7 @@ model hosts {
   hostCrypt          String
   userSettings       HostsUserSettings?
   lookerStudio       HostsLookerStudio?
-  smartlead          HostsSmartLead?
+  notifications      HostsNotifications?
   engagementSettings HostsEngagementSettings?
   ownerId            String?                  @db.ObjectId
   ownerName          String?
@@ -615,7 +613,7 @@ model sender_accounts {
   host_name      String
   host_crypt     String?
   sender         String
-  sender_name    String?
+  sender_label   String?
   email_server   String?
   email_reseller String?
   platform       String

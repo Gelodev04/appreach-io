@@ -3,9 +3,10 @@ import { GridColDef } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import Iconify from 'src/components/iconify';
-import Label from 'src/components/label';
+import { RenderCellStatus, RenderCellText } from 'src/components/table/render-cell-rows';
 import { fDate } from 'src/utils/format-time';
 import { AttributesUploadsButton } from '../_components/attributes-uploads-button';
+import { AttributesUploadsImportName } from '../_components/attributes-uploads-import-name';
 
 export const useAttributesUploadsCol = () => {
   const handleDownloadCsv = useCallback((csvUrl?: string) => {
@@ -21,19 +22,16 @@ export const useAttributesUploadsCol = () => {
     {
       field: 'host_name',
       headerName: 'Host',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.host_name} />;
+      },
       flex: 1,
     },
     {
       field: 'import_name',
       headerName: 'Import name',
       renderCell: (params) => {
-        return (
-          <div title={params.row.import_name} style={{ overflow: 'hidden' }}>
-            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params.row.import_name}
-            </Typography>
-          </div>
-        );
+        return <AttributesUploadsImportName params={params} />;
       },
       flex: 1,
     },
@@ -68,7 +66,11 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.metadata?.processing_results?.persons?.matched;
+        return (
+          <RenderCellText
+            displayValue={params?.row?.metadata?.processing_results?.persons?.matched}
+          />
+        );
       },
       flex: 1,
     },
@@ -79,7 +81,11 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.metadata?.processing_results?.companies?.matched;
+        return (
+          <RenderCellText
+            displayValue={params?.row?.metadata?.processing_results?.companies?.matched}
+          />
+        );
       },
       flex: 1,
     },
@@ -90,7 +96,11 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.metadata?.processing_results?.custom?.matched;
+        return (
+          <RenderCellText
+            displayValue={params?.row?.metadata?.processing_results?.custom?.matched}
+          />
+        );
       },
       flex: 1,
     },
@@ -101,15 +111,8 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.metadata?.processing_results?.errors;
+        return <RenderCellText displayValue={params?.row?.metadata?.processing_results?.errors} />;
       },
-      flex: 1,
-    },
-    {
-      field: 'import_source',
-      headerName: 'Import Source',
-      headerAlign: 'left',
-      align: 'left',
       flex: 1,
     },
     {
@@ -119,14 +122,7 @@ export const useAttributesUploadsCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return (
-          <Label
-            variant="soft"
-            color={(params.row.metadata?.processing_status === 'success' && 'success') || 'error'}
-          >
-            {params.row.metadata?.processing_status}
-          </Label>
-        );
+        return <RenderCellStatus status={params.row.metadata.processing_status} />;
       },
       flex: 1,
       minWidth: 80,

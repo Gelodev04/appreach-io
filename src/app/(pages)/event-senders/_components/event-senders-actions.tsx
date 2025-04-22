@@ -8,22 +8,14 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { deleteSenderAccountById } from 'src/services/db/sender-accounts';
 
-export const SenderAccountsActions = ({
-  id,
-  username,
-  path,
-}: {
-  id: string;
-  username: string;
-  path: string;
-}) => {
+export const EventSendersActions = ({ id, username }: { id: string; username: string }) => {
   const confirmDelete = useBoolean();
   const theme = useTheme();
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(async () => {
-      const res = await deleteSenderAccountById(id, path);
+      const res = await deleteSenderAccountById(id);
       if (res?.error) {
         enqueueSnackbar(res.error, {
           variant: 'error',

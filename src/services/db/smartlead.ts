@@ -6,7 +6,6 @@ import prisma from 'src/auth/lib/prisma/db-prisma';
 import { env } from 'src/data/env/server';
 import { paths } from 'src/routes/paths';
 import { UpdateSmartleadEsp, UpdateSmartleadHost } from 'src/types/smartlead';
-import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
 export const getSmartleadsByHostIds = async () => {
@@ -43,20 +42,6 @@ export const deleteSmartleadById = async (id: string) => {
       error: error.message,
     };
   }
-};
-
-export const syncSmartleadAccounts = async (id: string) => {
-  const { smartlead } = await getHostById(id, { smartlead: true });
-
-  if (!smartlead?.apiKey) {
-    throw new Error('API key is missing');
-  }
-
-  const response = await axios.get(
-    `https://server.smartlead.ai/api/v1/email-accounts/?api_key=${smartlead.apiKey}&offset=0&limit=10`
-  );
-
-  console.log(response.data);
 };
 
 export const smartleadAccountsWebhook = async (id: string) => {

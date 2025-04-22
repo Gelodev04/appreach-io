@@ -62,10 +62,9 @@ export type UpdateHostData = {
   externalSenderAddresses?: string;
 };
 
-export type UpdateSmartLead = {
+export type UpdateHostNotification = {
   notificationAddresses?: string;
-  useWithSeeds: boolean;
-  apiKey?: string;
+  slackChannelId?: string;
 };
 
 export interface IHost {

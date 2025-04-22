@@ -3,22 +3,20 @@
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { paths } from 'src/routes/paths';
 
-function DomainHeader() {
+export const NotificationsHeader = () => {
   return (
     <CustomBreadcrumbs
-      heading="Verify a new domain name"
+      heading="Edit notification settings"
       links={[
         {
-          name: 'Domain Name',
-          href: paths.senders.verifiedSenders,
+          name: 'Sender Profiles',
+          href: paths.settings.root,
         },
-        { name: 'Verify new domain' },
+        { name: 'Edit notification settings' },
       ]}
       sx={{
         mb: { xs: 3, md: 5 },
       }}
     />
   );
-}
-
-export default DomainHeader;
+};

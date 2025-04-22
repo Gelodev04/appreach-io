@@ -8,7 +8,7 @@ import { CreateSenderAccountData } from 'src/types/sender-account';
 import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
-export const getSenderAccountByHostIdsAndType = async ({ type }: { type: string }) => {
+export const getSenderAccountByHostIdsAndType = async ({ type }: { type?: string }) => {
   try {
     const { hosts } = await getUserSettings({ hosts: true });
 
@@ -119,7 +119,7 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       host_name: data.hostId!.label,
       host_crypt: hostCrypt,
       sender: normalizedLinkedInUrl,
-      sender_name: data.senderName,
+      sender_label: data.senderLabel,
       platform: 'non-api',
       type: 'linkedin',
       metadata: {
@@ -133,11 +133,52 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       data: normalizedData,
     });
 
-    revalidatePath(paths.senders.linkedin);
+    revalidatePath(paths.eventSenders.root);
     return { success: true };
   } catch (error) {
     console.error('Unable to create host.', error);
     return { success: false, message: 'Unable to create sender account.' };
+  }
+};
+
+export const updateSenderAccountLabel = async ({
+  id,
+  sender_label,
+}: {
+  id: string;
+  sender_label: string;
+}) => {
+  try {
+    const senderItem = await getSenderAccountById(id, { metadata: true });
+
+    if (!senderItem) {
+      throw new Error('Sender account not found');
+    }
+
+    const { metadata } = senderItem;
+
+    await prisma.sender_accounts.update({
+      where: {
+        id,
+      },
+      data: {
+        sender_label,
+        metadata: {
+          ...metadata, // Retain existing fields
+          updated_at: new Date(),
+          bigquery_sync_status: 'pending',
+        },
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error on Sender Account Host Update:', error);
+
+    return {
+      success: false,
+      message: 'Failed to update sender account host. Please try again later.',
+    };
   }
 };
 
@@ -148,6 +189,7 @@ export const updateSenderAccountHost = async (
   try {
     // Get Existing data
     const senderItem = await getSenderAccountById(id, { metadata: true });
+    const { hostCrypt } = await getHostById(host.hostId, { hostCrypt: true });
 
     if (!senderItem) {
       throw new Error('Sender account not found');
@@ -161,16 +203,18 @@ export const updateSenderAccountHost = async (
       },
       data: {
         host_id: host.hostId,
+        host_crypt: hostCrypt,
         host_name: host.hostName,
         metadata: {
           ...metadata, // Retain existing fields
           updated_at: new Date(),
+          bigquery_sync_status: 'pending',
         },
       },
     };
 
     await prisma.sender_accounts.update(data);
-    revalidatePath(paths.senders.linkedin);
+    revalidatePath(paths.eventSenders.root);
 
     return { success: true };
   } catch (error) {
@@ -185,8 +229,7 @@ export const updateSenderAccountHost = async (
 
 export const updateSenderAccountPlatform = async (
   id: string,
-  platform: { label: string; value: string },
-  path: string
+  platform: { label: string; value: string }
 ) => {
   try {
     // Get Existing data
@@ -213,7 +256,7 @@ export const updateSenderAccountPlatform = async (
     };
 
     await prisma.sender_accounts.update(data);
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
 
     return { success: true };
   } catch (error) {
@@ -228,8 +271,7 @@ export const updateSenderAccountPlatform = async (
 
 export const updateSenderAccountEmailServer = async (
   id: string,
-  emailServer: { label: string; value: string },
-  path: string
+  emailServer: { label: string; value: string }
 ) => {
   try {
     // Get Existing data
@@ -249,13 +291,14 @@ export const updateSenderAccountEmailServer = async (
         email_server: emailServer.value,
         metadata: {
           ...metadata, // Retain existing fields
+          updated_at: new Date(),
           bigquery_sync_status: 'pending',
         },
       },
     };
 
     await prisma.sender_accounts.update(data);
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
 
     return { success: true };
   } catch (error) {
@@ -270,8 +313,7 @@ export const updateSenderAccountEmailServer = async (
 
 export const updateSenderAccountEmailReseller = async (
   id: string,
-  emailReseller: { label: string; value: string },
-  path: string
+  emailReseller: { label: string; value: string }
 ) => {
   try {
     // Get Existing data
@@ -291,13 +333,14 @@ export const updateSenderAccountEmailReseller = async (
         email_reseller: emailReseller.value,
         metadata: {
           ...metadata, // Retain existing fields
+          updated_at: new Date(),
           bigquery_sync_status: 'pending',
         },
       },
     };
 
     await prisma.sender_accounts.update(data);
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
 
     return { success: true };
   } catch (error) {
@@ -310,13 +353,55 @@ export const updateSenderAccountEmailReseller = async (
   }
 };
 
-export const deleteSenderAccountById = async (id: string, path: string) => {
+export const updateSenderAccountType = async (
+  id: string,
+  type: { label: string; value: string }
+) => {
+  try {
+    // Get Existing data
+    const senderItem = await getSenderAccountById(id, { metadata: true });
+
+    if (!senderItem) {
+      throw new Error('Sender account not found');
+    }
+
+    const { metadata } = senderItem;
+
+    const data = {
+      where: {
+        id,
+      },
+      data: {
+        type: type.value,
+        metadata: {
+          ...metadata, // Retain existing fields
+          updated_at: new Date(),
+          bigquery_sync_status: 'pending',
+        },
+      },
+    };
+
+    await prisma.sender_accounts.update(data);
+    revalidatePath(paths.eventSenders.root);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error on Sender Account Email Reseller Update:', error);
+
+    return {
+      success: false,
+      message: 'Failed to update sender account email reseller. Please try again later.',
+    };
+  }
+};
+
+export const deleteSenderAccountById = async (id: string) => {
   try {
     await prisma.sender_accounts.delete({
       where: { id },
     });
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
   } catch (error) {
     console.log('Unable to delete', error);
     return {
@@ -325,13 +410,13 @@ export const deleteSenderAccountById = async (id: string, path: string) => {
   }
 };
 
-export const deleteMultipleSenderAccountsById = async (ids: string[], path: string) => {
+export const deleteMultipleSenderAccountsById = async (ids: string[]) => {
   try {
     await prisma.sender_accounts.deleteMany({
       where: { id: { in: ids } },
     });
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
 
     return { success: true };
   } catch (error) {
@@ -340,11 +425,7 @@ export const deleteMultipleSenderAccountsById = async (ids: string[], path: stri
   }
 };
 
-export const updateMultipleSenderAccountsServer = async (
-  ids: string[],
-  value: string,
-  path: string
-) => {
+export const updateMultipleSenderAccountsServer = async (ids: string[], value: string) => {
   try {
     // Fetch existing sender accounts metadata
     const senderAccounts = await prisma.sender_accounts.findMany({
@@ -370,7 +451,7 @@ export const updateMultipleSenderAccountsServer = async (
     // Execute all updates concurrently
     await Promise.all(updatePromises);
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
     return { success: true };
   } catch (error) {
     console.error('Error updating sender account records:', error);
@@ -381,11 +462,7 @@ export const updateMultipleSenderAccountsServer = async (
   }
 };
 
-export const updateMultipleSenderAccountsReseller = async (
-  ids: string[],
-  value: string,
-  path: string
-) => {
+export const updateMultipleSenderAccountsReseller = async (ids: string[], value: string) => {
   try {
     // Fetch existing sender accounts metadata
     const senderAccounts = await prisma.sender_accounts.findMany({
@@ -411,7 +488,7 @@ export const updateMultipleSenderAccountsReseller = async (
     // Execute all updates concurrently
     await Promise.all(updatePromises);
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
     return { success: true };
   } catch (error) {
     console.error('Error updating sender account records:', error);
@@ -422,11 +499,44 @@ export const updateMultipleSenderAccountsReseller = async (
   }
 };
 
-export const updateMultipleSenderAccountsPlatform = async (
-  ids: string[],
-  value: string,
-  path: string
-) => {
+export const updateMultipleSenderAccountsType = async (ids: string[], value: string) => {
+  try {
+    // Fetch existing sender accounts metadata
+    const senderAccounts = await prisma.sender_accounts.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, metadata: true },
+    });
+
+    // Prepare bulk update payload
+    const updatePromises = senderAccounts.map((account) =>
+      prisma.sender_accounts.update({
+        where: { id: account.id },
+        data: {
+          type: value,
+          metadata: {
+            ...account.metadata, // Retain existing metadata fields
+            updated_at: new Date(),
+            bigquery_sync_status: 'pending',
+          },
+        },
+      })
+    );
+
+    // Execute all updates concurrently
+    await Promise.all(updatePromises);
+
+    revalidatePath(paths.eventSenders.root);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating sender account records:', error);
+    return {
+      success: false,
+      message: 'Failed to update sender account records. Please try again later.',
+    };
+  }
+};
+
+export const updateMultipleSenderAccountsPlatform = async (ids: string[], value: string) => {
   try {
     // Fetch existing sender accounts metadata
     const senderAccounts = await prisma.sender_accounts.findMany({
@@ -452,7 +562,7 @@ export const updateMultipleSenderAccountsPlatform = async (
     // Execute all updates concurrently
     await Promise.all(updatePromises);
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
     return { success: true };
   } catch (error) {
     console.error('Error updating sender account records:', error);
@@ -466,8 +576,7 @@ export const updateMultipleSenderAccountsPlatform = async (
 export const updateMultipleSenderAccountsHost = async (
   ids: string[],
   host_id: string,
-  host_name: string,
-  path: string
+  host_name: string
 ) => {
   try {
     // Fetch existing sender accounts metadata
@@ -475,6 +584,7 @@ export const updateMultipleSenderAccountsHost = async (
       where: { id: { in: ids } },
       select: { id: true, metadata: true },
     });
+    const { hostCrypt } = await getHostById(host_id, { hostCrypt: true });
 
     // Prepare bulk update payload
     const updatePromises = senderAccounts.map((account) =>
@@ -482,6 +592,7 @@ export const updateMultipleSenderAccountsHost = async (
         where: { id: account.id },
         data: {
           host_id,
+          host_crypt: hostCrypt,
           host_name,
           metadata: {
             ...account.metadata, // Retain existing metadata fields
@@ -495,7 +606,7 @@ export const updateMultipleSenderAccountsHost = async (
     // Execute all updates concurrently
     await Promise.all(updatePromises);
 
-    revalidatePath(path);
+    revalidatePath(paths.eventSenders.root);
     return { success: true };
   } catch (error) {
     console.error('Error updating sender account records:', error);

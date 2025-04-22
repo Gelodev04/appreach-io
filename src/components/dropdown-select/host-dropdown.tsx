@@ -26,7 +26,6 @@ const MenuProps = {
 
 export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) => {
   const [isPending, startTransition] = useTransition();
-
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
       const selectedOption = options.find((opt) => opt.id === e.target.value);
@@ -47,7 +46,7 @@ export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) =
 
   return (
     <Select
-      value={params.value}
+      value={params.row.host_id}
       disabled={isPending}
       onChange={handleChange}
       style={{ width: '70%', marginTop: 10, marginBottom: 10 }}

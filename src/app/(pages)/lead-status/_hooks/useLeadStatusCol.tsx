@@ -1,6 +1,8 @@
 import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { fDate } from 'src/utils/format-time';
+import { RenderCellText } from 'src/components/table/render-cell-rows';
+import { fDateTime } from 'src/utils/format-time';
+import { LeadStatusMessage } from '../_components/lead-status-message';
 
 export const useLeadStatusCol = () => {
   const columns: GridColDef[] = [
@@ -10,15 +12,20 @@ export const useLeadStatusCol = () => {
       sortable: true,
       valueGetter: (params) => params.row.event_timestamp,
       renderCell: (params) => {
-        return <Typography sx={{ my: 2 }}>{fDate(params.row.event_timestamp)}</Typography>;
+        return <Typography sx={{ my: 2 }}>{fDateTime(params.row.event_timestamp)}</Typography>;
       },
       type: 'date',
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'host_name',
       headerName: 'Profile',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.host_name} />;
+      },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'recipient',
@@ -28,16 +35,10 @@ export const useLeadStatusCol = () => {
         const { recipient } = params.row;
         const displayValue = recipient?.email || recipient?.linkedin_url || 'N/A';
 
-        return (
-          <div title={displayValue} style={{ overflow: 'hidden' }}>
-            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {displayValue}
-            </Typography>
-          </div>
-        );
+        return <RenderCellText displayValue={displayValue} />;
       },
       flex: 1,
-      minWidth: 80,
+      minWidth: 200,
     },
     {
       field: 'sender',
@@ -47,21 +48,19 @@ export const useLeadStatusCol = () => {
         const { sender } = params.row;
         const displayValue = sender?.email || sender?.linkedin_profile || 'N/A';
 
-        return (
-          <div title={displayValue} style={{ overflow: 'hidden' }}>
-            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {displayValue}
-            </Typography>
-          </div>
-        );
+        return <RenderCellText displayValue={displayValue} />;
       },
       flex: 1,
-      minWidth: 80,
+      minWidth: 200,
     },
     {
       field: 'platform',
       headerName: 'Platform',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.platform} />;
+      },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'lead_status.name',
@@ -70,15 +69,10 @@ export const useLeadStatusCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return (
-          <div title={params?.row?.lead_status?.name} style={{ overflow: 'hidden' }}>
-            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params?.row?.lead_status?.name}
-            </Typography>
-          </div>
-        );
+        return <RenderCellText displayValue={params.row?.lead_status?.name} />;
       },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'lead_status.sentiment',
@@ -87,15 +81,10 @@ export const useLeadStatusCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return (
-          <div title={params?.row?.lead_status?.sentiment} style={{ overflow: 'hidden' }}>
-            <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap' }}>
-              {params?.row?.lead_status?.sentiment}
-            </Typography>
-          </div>
-        );
+        return <RenderCellText displayValue={params.row?.lead_status?.sentiment} />;
       },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'content.body',
@@ -104,9 +93,10 @@ export const useLeadStatusCol = () => {
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return params?.row?.content?.body;
+        return <LeadStatusMessage params={params} />;
       },
       flex: 1,
+      minWidth: 200,
     },
   ];
 

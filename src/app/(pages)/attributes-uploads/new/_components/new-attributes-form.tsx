@@ -12,7 +12,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import UploadDocument from 'src/components/upload/upload-document';
-import { columnOptions, headerMapping, sourceOptions } from 'src/constants';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
@@ -24,15 +23,24 @@ import {
 } from 'src/services/db/attributes-uploads';
 import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
 import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
+import { PlatformOptionsType } from 'src/types/dropdown-types';
 import { normalizeHeader } from 'src/utils';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
-export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: number }) => {
+export const NewAttributesForm = ({
+  remainingCredits,
+  columnOptions,
+  headerMapping,
+}: {
+  remainingCredits: number;
+  columnOptions: PlatformOptionsType;
+  headerMapping: Record<string, string>;
+}) => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
-
+  console.log({ headerMapping, columnOptions });
   const { hosts } = useGetSeedSettings();
   const { prefillMessage } = useSalesmateChat();
 
@@ -41,6 +49,7 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
   const [mappedCols, setMappedCols] = useState<Record<string, string>>({});
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [csvData, setCsvData] = useState([]);
 
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
@@ -55,14 +64,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
       .required('Sender profile is required')
       .nullable()
       .notOneOf([null], 'Sender profile is required'),
-    import_source: Yup.object()
-      .shape({
-        label: Yup.string().required('Import Source label is required'),
-        value: Yup.string().required('Import Source value is required'),
-      })
-      .required('Import Source is required')
-      .nullable()
-      .notOneOf([null], 'Import Source is required'),
     update_existing: Yup.boolean(),
   });
 
@@ -70,7 +71,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
     () => ({
       name: format(new Date(), 'MMM do yyyy'),
       host_id: null,
-      import_source: null,
       update_existing: true,
     }),
     []
@@ -132,55 +132,59 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
     }
   });
 
-  const handleDrop = useCallback(async (acceptedFiles: File[]) => {
-    const uploadedFile = acceptedFiles[0];
+  const handleDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const uploadedFile = acceptedFiles[0];
 
-    if (!uploadedFile) return;
+      if (!uploadedFile) return;
 
-    setFile(uploadedFile);
-    setFileError(null);
+      setFile(uploadedFile);
+      setFileError(null);
 
-    try {
-      // Parse CSV file
-      const result = await parseCSVFile(uploadedFile);
-      const headers = result.meta.fields || [];
+      try {
+        // Parse CSV file
+        const result = await parseCSVFile(uploadedFile);
+        const headers = result.meta.fields || [];
+        const data = result.data;
+        // Validate CSV structure
+        if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
+          setFileError('CSV file must have an "email" column.');
+          return;
+        }
 
-      // Validate CSV structure
-      if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
-        setFileError('CSV file must have an "email" column.');
-        return;
+        // Update state to open form
+        setCsvHeaders(headers);
+        setCsvData(data);
+
+        // Prefill mappedCols based on predefined mappings, ensuring unique assignments
+        const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
+
+        const initialMappedCols = headers.reduce(
+          (acc: Record<string, string>, header: string) => {
+            const normalizedHeader = normalizeHeader(header);
+            const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
+
+            if (mappedValue && !usedMappings[mappedValue]) {
+              usedMappings[mappedValue] = true; // Mark this value as used
+              acc[header] = mappedValue; // Assign the mapped value to the header
+            }
+
+            return acc;
+          },
+          {} as Record<string, string>
+        );
+
+        // Pre-populate selectedValues with unique prefilled mappings
+        const prefilledValues = Object.keys(usedMappings);
+        setMappedCols(initialMappedCols);
+        setSelectedValues(prefilledValues);
+      } catch (error) {
+        console.error('CSV Parsing Error', error);
+        setFileError('Error parsing CSV file. Please check the format.');
       }
-
-      // Update state to open form
-      setCsvHeaders(headers);
-
-      // Prefill mappedCols based on predefined mappings, ensuring unique assignments
-      const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
-
-      const initialMappedCols = headers.reduce(
-        (acc: Record<string, string>, header: string) => {
-          const normalizedHeader = normalizeHeader(header);
-          const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
-
-          if (mappedValue && !usedMappings[mappedValue]) {
-            usedMappings[mappedValue] = true; // Mark this value as used
-            acc[header] = mappedValue; // Assign the mapped value to the header
-          }
-
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-
-      // Pre-populate selectedValues with unique prefilled mappings
-      const prefilledValues = Object.keys(usedMappings);
-      setMappedCols(initialMappedCols);
-      setSelectedValues(prefilledValues);
-    } catch (error) {
-      console.error('CSV Parsing Error', error);
-      setFileError('Error parsing CSV file. Please check the format.');
-    }
-  }, []);
+    },
+    [headerMapping]
+  );
 
   const handleRemoveFile = () => {
     setFile(null);
@@ -233,12 +237,6 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
                   options={hostOptions}
                 />
               </Box>
-              <RHFAutocomplete
-                isOptionEqualToValue={(option, value) => option.value === value.value}
-                name="import_source"
-                label="Sourced from"
-                options={sourceOptions}
-              />
               <RHFSwitch
                 name="update_existing"
                 label="Replace existing attributes with new import name (recommended)"
@@ -253,34 +251,84 @@ export const NewAttributesForm = ({ remainingCredits }: { remainingCredits: numb
             </Stack>
             {csvHeaders.length > 0 && (
               <Stack spacing={2} sx={{ mt: 2, overflowY: 'auto', maxHeight: '700px' }}>
-                <Box
-                  columnGap={2}
-                  rowGap={3}
-                  display="grid"
-                  gridTemplateColumns={{
-                    xs: 'repeat(1, 1fr)',
-                    sm: 'repeat(2, 1fr)',
-                  }}
-                  sx={{ padding: 3 }}
-                >
+                <Box sx={{ padding: 3 }}>
                   {csvHeaders.map((header) => (
-                    <Box key={header} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography>{header}</Typography>
+                    <Box
+                      key={header}
+                      columnGap={2}
+                      rowGap={3}
+                      display="grid"
+                      gridTemplateColumns={{
+                        xs: 'repeat(1, 1fr)',
+                        sm: 'repeat(2, 1fr)',
+                      }}
+                      sx={{ padding: 3 }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                        }}
+                      >
+                        <Typography variant="subtitle1">{header}</Typography>
+
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                          }}
+                        >
+                          {csvData.slice(0, 3).map((data, i) => {
+                            return (
+                              <Box
+                                sx={{
+                                  borderLeft: '1px solid lightgray',
+                                  borderRight: '1px solid lightgray',
+                                  borderBottom: '1px solid lightgray',
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'break-word',
+                                  whiteSpace: 'normal',
+                                  // Only add top border to the first item:
+                                  ...(i === 0 && { borderTop: '1px solid lightgray' }),
+                                  padding: 1,
+                                  color: 'gray',
+                                }}
+                                key={`${data[header]}-${i}`}
+                              >
+                                {data[header] ? `${i + 1}. ${data[header]}` : `${i + 1}. No Value`}
+                              </Box>
+                            );
+                          })}
+                        </Box>
                       </Box>
-                      <RHFAutocomplete
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
-                        name={`mapping.${header}`}
-                        label="Set column name"
-                        value={
-                          columnOptions.find((opt) => opt.value === mappedCols[header]) || null
-                        }
-                        onChange={(_, newValue) => handleColumnChange(newValue, header)}
-                        options={columnOptions.filter(
-                          (opt) =>
-                            !selectedValues.includes(opt.value) || mappedCols[header] === opt.value
-                        )}
-                      />
+
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2,
+                        }}
+                      >
+                        <Typography variant="subtitle1" sx={{ visibility: 'hidden' }}>
+                          Belongs to
+                        </Typography>
+
+                        <RHFAutocomplete
+                          isOptionEqualToValue={(option, value) => option.value === value.value}
+                          name={`mapping.${header}`}
+                          label="Set column name"
+                          value={
+                            columnOptions.find((opt) => opt.value === mappedCols[header]) || null
+                          }
+                          onChange={(_, newValue) => handleColumnChange(newValue, header)}
+                          options={columnOptions.filter(
+                            (opt) =>
+                              !selectedValues.includes(opt.value) ||
+                              mappedCols[header] === opt.value
+                          )}
+                        />
+                      </Box>
                     </Box>
                   ))}
                 </Box>

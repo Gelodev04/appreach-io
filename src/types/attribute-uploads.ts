@@ -3,10 +3,7 @@ export type CreateAttributeUploadsPropType = {
     label: string;
     value: string;
   };
-  import_source: {
-    label: string;
-    value: string;
-  };
+
   name: string;
   update_existing: boolean;
 };

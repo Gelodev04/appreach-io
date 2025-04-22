@@ -4,15 +4,13 @@ import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
 import { PlatformOptionsType } from 'src/types/dropdown-types';
 
-type SenderConfigDropdownProps = {
+type EventSendersDropdownProps = {
   params: GridCellParams;
   options: PlatformOptionsType;
   onUpdate: (
     rowId: string,
-    selectedOption: { label: string; value: string },
-    path: string
+    selectedOption: { label: string; value: string }
   ) => Promise<{ success: boolean; message?: string }>;
-  path: string;
 };
 
 const ITEM_HEIGHT = 48;
@@ -26,12 +24,7 @@ const MenuProps = {
   },
 };
 
-export const SenderConfigDropdown = ({
-  params,
-  options,
-  onUpdate,
-  path,
-}: SenderConfigDropdownProps) => {
+export const EventSendersDropdown = ({ params, options, onUpdate }: EventSendersDropdownProps) => {
   const [isPending, startTransition] = useTransition();
   const currentValue = params.value ? String(params.value) : '';
   const handleChange = (e: SelectChangeEvent<any>) => {
@@ -39,14 +32,10 @@ export const SenderConfigDropdown = ({
       const selectedOption = options.find((opt) => opt.value === e.target.value);
       if (!selectedOption) return;
 
-      const response = await onUpdate(
-        params.id as string,
-        {
-          label: selectedOption.label,
-          value: selectedOption.value,
-        },
-        path
-      );
+      const response = await onUpdate(params.id as string, {
+        label: selectedOption.label,
+        value: selectedOption.value,
+      });
 
       if (!response.success) {
         enqueueSnackbar(response.message || 'Update failed', { variant: 'error', persist: true });

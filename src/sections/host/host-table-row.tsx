@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import { GridCellParams } from '@mui/x-data-grid';
 import { useRouter } from 'next/navigation';
 import Iconify from 'src/components/iconify/iconify';
@@ -15,10 +14,6 @@ import { generateLookerStudioUrl } from './utils';
 type ParamsProps = {
   params: GridCellParams;
 };
-
-export function RenderHostName({ params }: ParamsProps) {
-  return <Typography sx={{ my: 2 }}>{params.row.host}</Typography>;
-}
 
 export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { copy } = useCopyToClipboard();
@@ -68,8 +63,8 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
     router.push(paths.settings.seeds(params.id.toString()));
   };
 
-  const handleEditSenderRow = () => {
-    router.push(paths.senders.filter(params.id.toString()));
+  const handleEditNotificationsRow = () => {
+    router.push(paths.settings.notifications(params.id.toString()));
   };
 
   return (
@@ -85,65 +80,11 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
       </Tooltip>
       <Tooltip title="Edit sender address" placement="top">
         <Button
-          onClick={handleEditSenderRow}
+          onClick={handleEditNotificationsRow}
           sx={{ zIndex: 20, color: '#637381' }}
           startIcon={<Iconify icon="hugeicons:address-book" />}
         >
-          Senders
-        </Button>
-      </Tooltip>
-    </Stack>
-  );
-};
-
-export const AttributeActionCells = ({ params }: ParamsProps) => {
-  const router = useRouter();
-  const handleClick = () => {
-    router.push(paths.attributesUpload.root);
-  };
-  return (
-    <Stack direction="row">
-      <Tooltip title="Open attributes list" placement="top">
-        <Button
-          onClick={handleClick}
-          sx={{ zIndex: 20, color: '#637381' }}
-          startIcon={<Iconify icon="material-symbols:featured-play-list-outline" />}
-        >
-          Lists
-        </Button>
-      </Tooltip>
-    </Stack>
-  );
-};
-
-export const SmartleadActionCells = ({ params }: ParamsProps) => {
-  const router = useRouter();
-  const handleEditSmartleadRow = () => {
-    router.push(paths.settings.smartlead(params.id.toString()));
-  };
-
-  const handleOpenSmartlead = () => {
-    router.push(paths.smartlead.root);
-  };
-
-  return (
-    <Stack direction="row">
-      <Tooltip title="Edit smartlead" placement="top">
-        <Button
-          onClick={handleEditSmartleadRow}
-          sx={{ zIndex: 20, color: '#637381' }}
-          startIcon={<Iconify icon="humbleicons:share-alt" />}
-        >
-          Settings
-        </Button>
-      </Tooltip>
-      <Tooltip title="Open smartlead emails" placement="top">
-        <Button
-          onClick={handleOpenSmartlead}
-          sx={{ zIndex: 20, color: '#637381' }}
-          startIcon={<Iconify icon="material-symbols:stacked-email-outline" />}
-        >
-          Emails
+          Notifications
         </Button>
       </Tooltip>
     </Stack>

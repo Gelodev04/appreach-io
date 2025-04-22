@@ -14,7 +14,7 @@ export default function HomePage() {
   const isTrialExpired = useIsTrialExpired();
 
   useEffect(() => {
-    router.push(isTrialExpired ? '/subscription' : PATH_AFTER_LOGIN);
+    router.push(isTrialExpired ? '/billing' : PATH_AFTER_LOGIN);
   }, [router, isTrialExpired]);
 
   return null;

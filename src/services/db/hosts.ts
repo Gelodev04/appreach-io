@@ -6,7 +6,7 @@ import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/ut
 
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
-import { UpdateHostData, UpdateSmartLead } from 'src/types/host';
+import { UpdateHostData, UpdateHostNotification } from 'src/types/host';
 import {
   decrementSenderProfilesUsed,
   getUserSettings,
@@ -184,43 +184,42 @@ export const createHost = async (data: UpdateHostData) => {
   }
 };
 
-export const updateHostSmartlead = async (id: string, data: UpdateSmartLead) => {
+export const updateHostNotification = async (id: string, data: UpdateHostNotification) => {
   try {
     const existingHost = await prisma.hosts.findUnique({
       where: { id },
-      select: { smartlead: true },
+      select: { notifications: true },
     });
 
     if (!existingHost) {
       return { success: false, message: 'Host not found' };
     }
 
-    const updatedHostSmartlead = {
-      ...existingHost.smartlead, // Retain existing fields
-      apiKey: data.apiKey,
-      useWithSeeds: data.useWithSeeds,
-      notificationAddresses: data.notificationAddresses
+    const updatedHostNotifications = {
+      ...existingHost.notifications, // Retain existing fields
+      emailAddressArray: data.notificationAddresses
         ? data.notificationAddresses
             .split('\n')
             .map((item) => item.trim())
             .filter((item) => item !== '')
         : [],
+      slackChannel: data.slackChannelId,
     };
 
     await prisma.hosts.update({
       where: { id },
       data: {
-        smartlead: updatedHostSmartlead,
+        notifications: updatedHostNotifications,
       },
     });
-
+    revalidatePath(paths.settings.root);
     return { success: true };
   } catch (error) {
-    console.error('Error updating host smartlead:', error);
+    console.error('Error updating host notifications:', error);
 
     return {
       success: false,
-      message: 'Failed to update smartlead. Please try again later.',
+      message: 'Failed to update notifications. Please try again later.',
     };
   }
 };
