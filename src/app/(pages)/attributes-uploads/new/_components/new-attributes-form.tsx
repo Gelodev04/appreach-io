@@ -132,56 +132,59 @@ export const NewAttributesForm = ({
     }
   });
 
-  const handleDrop = useCallback(async (acceptedFiles: File[]) => {
-    const uploadedFile = acceptedFiles[0];
+  const handleDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const uploadedFile = acceptedFiles[0];
 
-    if (!uploadedFile) return;
+      if (!uploadedFile) return;
 
-    setFile(uploadedFile);
-    setFileError(null);
+      setFile(uploadedFile);
+      setFileError(null);
 
-    try {
-      // Parse CSV file
-      const result = await parseCSVFile(uploadedFile);
-      const headers = result.meta.fields || [];
-      const data = result.data;
-      // Validate CSV structure
-      if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
-        setFileError('CSV file must have an "email" column.');
-        return;
+      try {
+        // Parse CSV file
+        const result = await parseCSVFile(uploadedFile);
+        const headers = result.meta.fields || [];
+        const data = result.data;
+        // Validate CSV structure
+        if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
+          setFileError('CSV file must have an "email" column.');
+          return;
+        }
+
+        // Update state to open form
+        setCsvHeaders(headers);
+        setCsvData(data);
+
+        // Prefill mappedCols based on predefined mappings, ensuring unique assignments
+        const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
+
+        const initialMappedCols = headers.reduce(
+          (acc: Record<string, string>, header: string) => {
+            const normalizedHeader = normalizeHeader(header);
+            const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
+
+            if (mappedValue && !usedMappings[mappedValue]) {
+              usedMappings[mappedValue] = true; // Mark this value as used
+              acc[header] = mappedValue; // Assign the mapped value to the header
+            }
+
+            return acc;
+          },
+          {} as Record<string, string>
+        );
+
+        // Pre-populate selectedValues with unique prefilled mappings
+        const prefilledValues = Object.keys(usedMappings);
+        setMappedCols(initialMappedCols);
+        setSelectedValues(prefilledValues);
+      } catch (error) {
+        console.error('CSV Parsing Error', error);
+        setFileError('Error parsing CSV file. Please check the format.');
       }
-
-      // Update state to open form
-      setCsvHeaders(headers);
-      setCsvData(data);
-
-      // Prefill mappedCols based on predefined mappings, ensuring unique assignments
-      const usedMappings: Record<string, boolean> = {}; // Tracks assigned values
-
-      const initialMappedCols = headers.reduce(
-        (acc: Record<string, string>, header: string) => {
-          const normalizedHeader = normalizeHeader(header);
-          const mappedValue = headerMapping[normalizedHeader as keyof typeof headerMapping] || '';
-
-          if (mappedValue && !usedMappings[mappedValue]) {
-            usedMappings[mappedValue] = true; // Mark this value as used
-            acc[header] = mappedValue; // Assign the mapped value to the header
-          }
-
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-
-      // Pre-populate selectedValues with unique prefilled mappings
-      const prefilledValues = Object.keys(usedMappings);
-      setMappedCols(initialMappedCols);
-      setSelectedValues(prefilledValues);
-    } catch (error) {
-      console.error('CSV Parsing Error', error);
-      setFileError('Error parsing CSV file. Please check the format.');
-    }
-  }, []);
+    },
+    [headerMapping]
+  );
 
   const handleRemoveFile = () => {
     setFile(null);
