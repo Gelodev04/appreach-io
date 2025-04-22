@@ -16,45 +16,51 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { EditPopover } from 'src/components/custom-popover/dropdown-edit-popover';
 import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { paths } from 'src/routes/paths';
 import {
   deleteMultipleSenderAccountsById,
   updateMultipleSenderAccountsHost,
   updateMultipleSenderAccountsPlatform,
   updateMultipleSenderAccountsReseller,
   updateMultipleSenderAccountsServer,
+  updateMultipleSenderAccountsType,
 } from 'src/services/db/sender-accounts';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
 
-export const EditMultipleEmailEvents = ({
+export const EditMultipleEventSenders = ({
   selectedRowIds,
-  hostOptions,
-  platformOptions,
   emailServerOptions,
   emailResellerOptions,
+  platformOptions,
+  typeOptions,
+  hostOptions,
 }: {
-  hostOptions: HostOptionsType;
-  platformOptions: PlatformOptionsType;
+  selectedRowIds: GridRowSelectionModel;
   emailServerOptions: PlatformOptionsType;
   emailResellerOptions: PlatformOptionsType;
-  selectedRowIds: GridRowSelectionModel;
+  platformOptions: PlatformOptionsType;
+  typeOptions: PlatformOptionsType;
+  hostOptions: HostOptionsType;
 }) => {
   const [isDeleting, startDeleting] = useTransition();
-  const [isPlatformUpdating, startPlatformUpdate] = useTransition();
   const [isEmailServerUpdating, startEmailServerUpdate] = useTransition();
   const [isEmailResellerUpdating, startEmailResellerUpdate] = useTransition();
+  const [isPlatformUpdating, startPlatformUpdate] = useTransition();
+  const [isTypeUpdating, startTypeUpdate] = useTransition();
   const [isHostUpdating, startHostUpdate] = useTransition();
   const [value, setValue] = useState({
-    host: '',
-    platform: '',
     emailServer: '',
     emailReseller: '',
+    platform: '',
+    type: '',
+    host: '',
   });
 
   const emailServerPopover = usePopover();
   const emailResellerPopover = usePopover();
   const platformPopover = usePopover();
+  const typePopover = usePopover();
   const hostPopover = usePopover();
+
   const confirmDelete = useBoolean();
 
   const handleChange = (e: SelectChangeEvent<any>) => {
@@ -71,8 +77,7 @@ export const EditMultipleEmailEvents = ({
     startEmailServerUpdate(async () => {
       const response = await updateMultipleSenderAccountsServer(
         selectedRowIds as string[],
-        selectedServer.value,
-        paths.senders.emailEvents
+        selectedServer.value
       );
 
       if (!response.success) {
@@ -96,8 +101,7 @@ export const EditMultipleEmailEvents = ({
     startEmailResellerUpdate(async () => {
       const response = await updateMultipleSenderAccountsReseller(
         selectedRowIds as string[],
-        selectedReseller.value,
-        paths.senders.emailEvents
+        selectedReseller.value
       );
 
       if (!response.success) {
@@ -119,8 +123,7 @@ export const EditMultipleEmailEvents = ({
     startPlatformUpdate(async () => {
       const response = await updateMultipleSenderAccountsPlatform(
         selectedRowIds as string[],
-        selectedPlatform.value,
-        paths.senders.emailEvents
+        selectedPlatform.value
       );
 
       if (!response.success) {
@@ -128,6 +131,28 @@ export const EditMultipleEmailEvents = ({
       } else {
         enqueueSnackbar('Platform update success!');
         platformPopover.onClose();
+      }
+    });
+  };
+
+  const handleSaveType = () => {
+    const selectedType = typeOptions.find((type) => type.value === value.type);
+    if (!selectedType) {
+      enqueueSnackbar('Select a type', { variant: 'error', persist: true });
+      return;
+    }
+
+    startTypeUpdate(async () => {
+      const response = await updateMultipleSenderAccountsType(
+        selectedRowIds as string[],
+        selectedType.value
+      );
+
+      if (!response.success) {
+        enqueueSnackbar(response.message, { variant: 'error', persist: true });
+      } else {
+        enqueueSnackbar('Type update success!');
+        typePopover.onClose();
       }
     });
   };
@@ -143,8 +168,7 @@ export const EditMultipleEmailEvents = ({
       const response = await updateMultipleSenderAccountsHost(
         selectedRowIds as string[],
         selectedHost.id,
-        selectedHost.profile,
-        paths.senders.emailEvents
+        selectedHost.profile
       );
 
       if (!response.success) {
@@ -158,7 +182,7 @@ export const EditMultipleEmailEvents = ({
 
   const handleDeleteLinkedinSenders = () => {
     startDeleting(async () => {
-      await deleteMultipleSenderAccountsById(selectedRowIds as string[], paths.senders.emailEvents);
+      await deleteMultipleSenderAccountsById(selectedRowIds as string[]);
       confirmDelete.onFalse();
     });
   };
@@ -198,6 +222,16 @@ export const EditMultipleEmailEvents = ({
       <Button
         size="medium"
         color="primary"
+        disabled={isTypeUpdating}
+        onClick={typePopover.onOpen}
+        startIcon={<Iconify icon="flowbite:edit-outline" />}
+      >
+        Edit Type [{selectedRowIds.length}]
+      </Button>
+
+      <Button
+        size="medium"
+        color="primary"
         disabled={isHostUpdating}
         onClick={hostPopover.onOpen}
         startIcon={<Iconify icon="flowbite:edit-outline" />}
@@ -214,7 +248,6 @@ export const EditMultipleEmailEvents = ({
       >
         {isDeleting ? `Deleting...` : `Delete [${selectedRowIds.length}]`}
       </Button>
-
       <ConfirmDialog
         open={confirmDelete.value}
         onClose={confirmDelete.onFalse}
@@ -231,7 +264,6 @@ export const EditMultipleEmailEvents = ({
           </Button>
         }
       />
-
       <EditPopover
         open={emailServerPopover.open}
         onClose={emailServerPopover.onClose}
@@ -243,7 +275,6 @@ export const EditMultipleEmailEvents = ({
         onSave={handleSaveEmailServer}
         name="emailServer"
       />
-
       <EditPopover
         open={emailResellerPopover.open}
         onClose={emailResellerPopover.onClose}
@@ -255,7 +286,17 @@ export const EditMultipleEmailEvents = ({
         onSave={handleSaveEmailReseller}
         name="emailReseller"
       />
-
+      <EditPopover
+        open={typePopover.open}
+        onClose={typePopover.onClose}
+        label="Type"
+        value={value.type}
+        options={typeOptions}
+        loading={isTypeUpdating}
+        onChange={handleChange}
+        onSave={handleSaveType}
+        name="type"
+      />
       <EditPopover
         open={platformPopover.open}
         onClose={platformPopover.onClose}
@@ -267,12 +308,11 @@ export const EditMultipleEmailEvents = ({
         onSave={handleSavePlatform}
         name="platform"
       />
-
       <CustomPopover arrow="top-center" open={hostPopover.open} sx={{ width: 500, p: 0 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h6" noWrap>
-              Edit Host
+              Edit Assigned Profile
             </Typography>
             <IconButton onClick={hostPopover.onClose} aria-label="close">
               <Iconify icon="material-symbols:close" />

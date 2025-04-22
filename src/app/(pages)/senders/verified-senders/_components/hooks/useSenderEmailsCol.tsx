@@ -1,5 +1,6 @@
 import { Box, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { GridColDef, GridFilterInputValueProps, GridFilterOperator } from '@mui/x-data-grid';
+import { RenderCellText } from 'src/components/table/render-cell-rows';
 import Archive from '../buttons/archived';
 import DeleteSender from '../buttons/delete';
 import Reverify from '../buttons/reverify';
@@ -83,6 +84,9 @@ export const useSendersEmailCol = ({ options, isArchived }: TableColumnsType) =>
     {
       field: 'email',
       headerName: 'Name',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params?.row?.email} />;
+      },
       flex: 1,
     },
     {

@@ -3,41 +3,45 @@ import { getConfigDropdownOptions } from 'src/services/db/config';
 import { getSenderAccountByHostIdsAndType } from 'src/services/db/sender-accounts';
 import { getSenderProfiles } from 'src/services/db/user-settings';
 import { mapDisplayValueToLabelValue } from 'src/utils';
-import { EmailEventsHeader } from './_components/email-events-header';
-import { EmailEventsTable } from './_components/email-events-table';
+import { EventSendersHeader } from './_components/event-senders-header';
+import { EventSendersTable } from './_components/event-senders-table';
 
 export const metadata = {
-  title: 'Email Events | Outreach Magic',
+  title: 'Event Senders | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';
 
-const EmailEventsPage = async () => {
-  const rows = await getSenderAccountByHostIdsAndType({ type: 'email' });
+const EventSendersPage = async () => {
+  const rows = await getSenderAccountByHostIdsAndType({});
   const { allHosts: senderProfiles } = await getSenderProfiles();
   const platformOptions = await getConfigDropdownOptions({ key: 'platform_options' });
   const emailServerOptions = await getConfigDropdownOptions({ key: 'email_server_options' });
   const emailResellerOptions = await getConfigDropdownOptions({ key: 'email_reseller_options' });
+  const typeOptions = await getConfigDropdownOptions({ key: 'sender_account_types' });
 
   const platformOptionsMapped = mapDisplayValueToLabelValue(platformOptions);
   const emailServerOptionsMapped = mapDisplayValueToLabelValue(emailServerOptions);
   const emailResellerOptionsMapped = mapDisplayValueToLabelValue(emailResellerOptions);
+  const typeOptionsMapped = mapDisplayValueToLabelValue(typeOptions);
+
   return (
     <Container
       maxWidth={false}
       sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}
     >
-      <EmailEventsHeader />
+      <EventSendersHeader />
 
-      <EmailEventsTable
+      <EventSendersTable
         rows={rows}
         platFormOptions={platformOptionsMapped}
         hostOptions={senderProfiles}
         emailServerOptions={emailServerOptionsMapped}
         emailResellerOptions={emailResellerOptionsMapped}
+        typeOptions={typeOptionsMapped}
       />
     </Container>
   );
 };
 
-export default EmailEventsPage;
+export default EventSendersPage;

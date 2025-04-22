@@ -60,6 +60,7 @@ export const paths = {
     new: `${ROOTS.SETTINGS}/new`,
     smartlead: (id: string) => `${ROOTS.SETTINGS}/smartlead/${id}`,
     seeds: (id: string) => `${ROOTS.SETTINGS}/seeds/${id}`,
+    notifications: (id: string) => `${ROOTS.SETTINGS}/notifications/${id}`,
   },
 
   // SEEDS

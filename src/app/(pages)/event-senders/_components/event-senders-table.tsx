@@ -14,20 +14,32 @@ import {
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
-import { useLinkedinCol } from '../_hooks/useLinkedinCol';
-import { EditMutipleSenders } from './edit-multiple-senders';
+import { useEventSendersCol } from '../_hooks/useEventSendersCol';
+import { EditMultipleEventSenders } from './edit-multiple-event-senders';
 
-export const LinkedinTable = ({
+export const EventSendersTable = ({
   rows,
   hostOptions,
   platFormOptions,
+  emailServerOptions,
+  emailResellerOptions,
+  typeOptions,
 }: {
   rows: GridRowsProp;
   hostOptions: HostOptionsType;
   platFormOptions: PlatformOptionsType;
+  emailServerOptions: PlatformOptionsType;
+  emailResellerOptions: PlatformOptionsType;
+  typeOptions: PlatformOptionsType;
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useLinkedinCol(hostOptions, platFormOptions);
+  const { columns } = useEventSendersCol(
+    hostOptions,
+    platFormOptions,
+    emailServerOptions,
+    emailResellerOptions,
+    typeOptions
+  );
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -40,10 +52,7 @@ export const LinkedinTable = ({
   };
   const initialState: GridInitialState = {
     pagination: {
-      paginationModel: { pageSize: 10 },
-    },
-    sorting: {
-      sortModel: [{ field: 'lastUpdated', sort: 'desc' }],
+      paginationModel: { pageSize: 25 },
     },
   };
 
@@ -60,10 +69,13 @@ export const LinkedinTable = ({
         >
           {!!selectedRowIds.length && (
             <Box>
-              <EditMutipleSenders
+              <EditMultipleEventSenders
                 selectedRowIds={selectedRowIds}
                 hostOptions={hostOptions}
                 platformOptions={platFormOptions}
+                emailServerOptions={emailServerOptions}
+                emailResellerOptions={emailResellerOptions}
+                typeOptions={typeOptions}
               />
             </Box>
           )}

@@ -23,17 +23,12 @@ import EmptyContent from 'src/components/empty-content';
 import Iconify from 'src/components/iconify';
 import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { useSnackbar } from 'src/components/snackbar';
+import { RenderCellText } from 'src/components/table/render-cell-rows';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { deleteUserHost } from 'src/services/db/hosts';
 import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
-import {
-  AttributeActionCells,
-  RenderHostName,
-  RenderLookerStudioUrl,
-  SeedActionCells,
-  SmartleadActionCells,
-} from '../host-table-row';
+import { RenderLookerStudioUrl, SeedActionCells } from '../host-table-row';
 
 const HIDE_COLUMNS = {
   category: false,
@@ -74,13 +69,15 @@ export const HostListView = ({
       field: 'host',
       headerName: 'Name',
       hideable: false,
-      renderCell: (params) => <RenderHostName params={params} />,
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.host} />;
+      },
       flex: 1,
       minWidth: 120,
     },
     {
       field: 'lookerStudio',
-      headerName: 'Reporting',
+      headerName: 'Profile Report',
       type: 'singleSelect',
       renderCell: (params) => <RenderLookerStudioUrl params={params} />,
       flex: 1,
@@ -92,7 +89,7 @@ export const HostListView = ({
     {
       type: 'actions',
       field: 'seeds',
-      headerName: 'Seeds',
+      headerName: 'Settings',
       align: 'left',
       headerAlign: 'left',
       sortable: false,
@@ -100,43 +97,23 @@ export const HostListView = ({
       disableColumnMenu: true,
       renderCell: (params) => <SeedActionCells params={params} />,
       flex: 1,
-      minWidth: 200,
-    },
-    {
-      type: 'actions',
-      field: 'attributes',
-      headerName: 'Attributes',
-      align: 'left',
-      headerAlign: 'left',
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => <AttributeActionCells params={params} />,
-      flex: 1,
-      minWidth: 120,
-    },
-    {
-      type: 'actions',
-      field: 'smartlead',
-      headerName: 'Smartlead',
-      align: 'left',
-      headerAlign: 'left',
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => <SmartleadActionCells params={params} />,
-      flex: 1,
-      minWidth: 200,
-    },
-    {
-      field: 'ownerName',
-      headerName: 'Owner',
-      flex: 1,
-      minWidth: 120,
+      minWidth: 250,
     },
     {
       field: 'hostCrypt',
       headerName: 'Crypt',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.hostCrypt} />;
+      },
+      flex: 1,
+      minWidth: 120,
+    },
+    {
+      field: 'ownerName',
+      headerName: 'Owner',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.ownerName} />;
+      },
       flex: 1,
       minWidth: 120,
     },

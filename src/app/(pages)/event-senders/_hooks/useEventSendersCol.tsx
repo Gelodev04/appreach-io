@@ -1,84 +1,118 @@
 import { GridColDef } from '@mui/x-data-grid';
+import { EventSendersDropdown } from 'src/components/dropdown-select/event-senders-dropdown';
 import { HostDropdown } from 'src/components/dropdown-select/host-dropdown';
-import { SenderConfigDropdown } from 'src/components/dropdown-select/sender-config-dropdown';
 
-import { paths } from 'src/routes/paths';
+import { RenderCellText } from 'src/components/table/render-cell-rows';
 import {
   updateSenderAccountEmailReseller,
   updateSenderAccountEmailServer,
   updateSenderAccountHost,
   updateSenderAccountPlatform,
+  updateSenderAccountType,
 } from 'src/services/db/sender-accounts';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
-import { SenderAccountsActions } from '../../linkedin/_components/delete-sender-account';
+import { EventSendersActions } from '../_components/event-senders-actions';
+import { EventSendersTextbox } from '../_components/event-senders-textbox';
 
-export const useEmailEventsCol = (
+export const useEventSendersCol = (
   hostOptions: HostOptionsType,
   platFormOptions: PlatformOptionsType,
   emailServerOptions: PlatformOptionsType,
-  emailResellerOptions: PlatformOptionsType
+  emailResellerOptions: PlatformOptionsType,
+  typeOptions: PlatformOptionsType
 ) => {
   const columns: GridColDef[] = [
     {
       field: 'sender',
       headerName: 'Sender',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params?.row?.sender} />;
+      },
       flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: 'sender_label',
+      headerName: 'Sender Label',
+      renderCell: (params) => {
+        return <EventSendersTextbox params={params} />;
+      },
+      flex: 1,
+      minWidth: 200,
     },
     {
       field: 'email_server',
       headerName: 'Email Server',
       renderCell: (params) => {
         return (
-          <SenderConfigDropdown
+          <EventSendersDropdown
             params={params}
-            path={paths.senders.emailEvents}
             options={emailServerOptions}
             onUpdate={updateSenderAccountEmailServer}
           />
         );
       },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'email_reseller',
       headerName: 'Email Reseller',
       renderCell: (params) => {
         return (
-          <SenderConfigDropdown
+          <EventSendersDropdown
             params={params}
-            path={paths.senders.emailEvents}
             options={emailResellerOptions}
             onUpdate={updateSenderAccountEmailReseller}
           />
         );
       },
       flex: 1,
+      minWidth: 200,
     },
     {
       field: 'platform',
       headerName: 'Platform',
       renderCell: (params) => {
         return (
-          <SenderConfigDropdown
+          <EventSendersDropdown
             params={params}
-            path={paths.senders.emailEvents}
             options={platFormOptions}
             onUpdate={updateSenderAccountPlatform}
           />
         );
       },
       flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: 'type',
+      headerName: 'Type',
+      renderCell: (params) => {
+        return (
+          <EventSendersDropdown
+            params={params}
+            options={typeOptions}
+            onUpdate={updateSenderAccountType}
+          />
+        );
+      },
+      flex: 1,
+      minWidth: 200,
     },
     {
       field: 'host_id',
       headerName: 'Assigned Profile',
+      valueGetter: (params) => {
+        return params.row.host_name; // Use host_name for filtering/sorting
+      },
       renderCell: (params) => {
         return (
           <HostDropdown params={params} options={hostOptions} onUpdate={updateSenderAccountHost} />
         );
       },
       flex: 1,
-      minWidth: 150,
+      minWidth: 200,
     },
     {
       field: 'actions',
@@ -86,19 +120,14 @@ export const useEmailEventsCol = (
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
-        return (
-          <SenderAccountsActions
-            id={params?.row?.id}
-            username={params?.row?.sender}
-            path={paths.senders.emailEvents}
-          />
-        );
+        return <EventSendersActions id={params?.row?.id} username={params?.row?.sender} />;
       },
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
       hideable: false,
       flex: 1,
+      minWidth: 200,
     },
   ];
 

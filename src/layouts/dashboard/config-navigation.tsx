@@ -35,12 +35,12 @@ export function useNavData() {
             icon: <Iconify icon="mdi:email-arrow-right-outline" />,
             disabled: isTrialExpired,
           },
-          {
-            title: 'LinkedIn Events',
-            path: paths.senders.linkedin,
-            icon: <Iconify icon="bxl:linkedin" />,
-            disabled: isTrialExpired,
-          },
+          // {
+          //   title: 'LinkedIn Events',
+          //   path: paths.senders.linkedin,
+          //   icon: <Iconify icon="bxl:linkedin" />,
+          //   disabled: isTrialExpired,
+          // },
 
           // {
           //   title: 'Hubspot',
