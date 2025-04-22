@@ -31,12 +31,12 @@ export const EventSendersTextbox = ({ params }: EventSendersDropdownProps) => {
       e.stopPropagation();
     }
 
-    //Prevent Delete key from affecting grid selection
+    // Prevent Delete key from affecting grid selection
     if (e.key === 'Delete' || e.key === 'Backspace') {
       e.stopPropagation();
     }
 
-    //Prevent arrow keys from navigating the grid
+    // Prevent arrow keys from navigating the grid
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       e.stopPropagation();
     }

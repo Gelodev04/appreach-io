@@ -9,7 +9,7 @@ export const LeadStatusMessage = ({ params }: { params: GridCellParams }) => {
   const [expanded, setExpanded] = useState(false);
   const isLong = msg.length > previewLimit;
 
-  const previewText = isLong && !expanded ? msg.substring(0, previewLimit) + '...' : msg;
+  const previewText = isLong && !expanded ? `${msg.substring(0, previewLimit)}...` : msg;
 
   return (
     <Box
