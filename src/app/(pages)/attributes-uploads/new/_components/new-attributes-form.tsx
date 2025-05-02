@@ -146,11 +146,6 @@ export const NewAttributesForm = ({
         const result = await parseCSVFile(uploadedFile);
         const headers = result.meta.fields || [];
         const data = result.data;
-        // Validate CSV structure
-        if (!headers.some((header: string) => ['email', 'emails'].includes(header.toLowerCase()))) {
-          setFileError('CSV file must have an "email" column.');
-          return;
-        }
 
         // Update state to open form
         setCsvHeaders(headers);

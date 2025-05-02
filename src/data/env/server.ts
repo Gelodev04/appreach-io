@@ -14,6 +14,7 @@ const envSchema = Yup.object().shape({
   EMAIL_VALIDATOR_FUNCTION: Yup.string(),
   ATTRIBUTE_UPLOADS_FUNCTION: Yup.string(),
   SMARTLEAD_ACCOUNTS_FUNCTION: Yup.string(),
+  REPROCESS_SENDERS_FUNCTION: Yup.string(),
   G_SERVICE_ACCOUNT_KEY: Yup.string(),
   G_PROJECT_ID: Yup.string(),
   G_BUCKET_NAME_EMAIL_VALIDATOR: Yup.string(),

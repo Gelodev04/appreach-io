@@ -30,6 +30,8 @@ export const useEventSendersCol = (
       },
       flex: 1,
       minWidth: 200,
+      cellClassName: 'sticky-col-1',
+      headerClassName: 'sticky-col-1',
     },
     {
       field: 'sender_label',

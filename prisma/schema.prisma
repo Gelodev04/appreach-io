@@ -137,9 +137,9 @@ type EmailValidatorUpload {
 }
 
 type AttributeUploadsEntityResults {
-  matched Int @default(0)
   created Int @default(0)
   updated Int @default(0)
+  total   Int @default(0)
 }
 
 type AttributeUploadsProcessingResults {
@@ -642,4 +642,13 @@ model config {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   key   String @unique
   value Json?
+}
+
+model webhook_logs {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id         String   @db.ObjectId
+  platform        String
+  event_type      String
+  sender_account  String
+  event_timestamp DateTime @db.Date
 }

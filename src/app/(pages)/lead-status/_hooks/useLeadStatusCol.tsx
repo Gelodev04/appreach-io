@@ -65,9 +65,11 @@ export const useLeadStatusCol = () => {
     {
       field: 'lead_status.name',
       headerName: 'Status',
-      type: 'number',
       headerAlign: 'left',
       align: 'left',
+      valueGetter: (params) => {
+        return params.row.lead_status.name;
+      },
       renderCell: (params) => {
         return <RenderCellText displayValue={params.row?.lead_status?.name} />;
       },
@@ -75,13 +77,13 @@ export const useLeadStatusCol = () => {
       minWidth: 200,
     },
     {
-      field: 'lead_status.sentiment',
+      field: 'sentiment',
       headerName: 'Sentiment',
-      type: 'number',
       headerAlign: 'left',
       align: 'left',
+      filterable: false,
       renderCell: (params) => {
-        return <RenderCellText displayValue={params.row?.lead_status?.sentiment} />;
+        return <RenderCellText displayValue={params.row?.sentiment} />;
       },
       flex: 1,
       minWidth: 200,
@@ -89,9 +91,11 @@ export const useLeadStatusCol = () => {
     {
       field: 'content.body',
       headerName: 'Message',
-      type: 'number',
       headerAlign: 'left',
       align: 'left',
+      valueGetter: (params) => {
+        return params.row.content.body;
+      },
       renderCell: (params) => {
         return <LeadStatusMessage params={params} />;
       },

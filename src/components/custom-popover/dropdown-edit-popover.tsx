@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
+import { enqueueSnackbar } from 'notistack'; // 🧠 import this
 import Iconify from '../iconify';
 import CustomPopover from './custom-popover';
 
@@ -33,35 +34,54 @@ export const EditPopover = ({
   onChange,
   onSave,
   name,
-}: EditPopoverProps) => (
-  <CustomPopover arrow="top-center" open={open} sx={{ width: 500, p: 0 }}>
-    <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6" noWrap>
-          Edit {label}
-        </Typography>
-        <IconButton onClick={onClose} aria-label="close">
-          <Iconify icon="material-symbols:close" />
-        </IconButton>
-      </Box>
-      <Divider />
+}: EditPopoverProps) => {
+  const handleSaveClick = () => {
+    if (!value) {
+      enqueueSnackbar(`Please select a value for ${label} before saving.`, {
+        variant: 'error',
+        persist: true,
+      });
+      return;
+    }
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Typography variant="subtitle2" color="GrayText">
-          {label}
-        </Typography>
-        <Select name={name} value={value} disabled={loading} onChange={onChange}>
-          {options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
+    onSave();
+  };
 
-      <Button color="primary" variant="contained" disabled={loading} onClick={onSave}>
-        Save changes
-      </Button>
-    </Box>
-  </CustomPopover>
-);
+  return (
+    <CustomPopover arrow="top-center" open={open} sx={{ width: 500, p: 0 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" noWrap>
+            Edit {label}
+          </Typography>
+          <IconButton onClick={onClose} aria-label="close">
+            <Iconify icon="material-symbols:close" />
+          </IconButton>
+        </Box>
+        <Divider />
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Typography variant="subtitle2" color="GrayText">
+            {label}
+          </Typography>
+          <Select name={name} value={value} disabled={loading} onChange={onChange}>
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+
+        <Button
+          color="primary"
+          variant="contained"
+          disabled={loading}
+          onClick={handleSaveClick} // ✅ now using validated handler
+        >
+          Save changes
+        </Button>
+      </Box>
+    </CustomPopover>
+  );
+};
