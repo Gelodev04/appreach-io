@@ -7,6 +7,7 @@ interface OtherToolsPermission {
   setOtherTools: (permission: boolean) => void;
   hydrated: boolean;
   setHydrated: () => void;
+  reset: () => void;
 }
 
 export const useUserPlanPermissionsStore = create<OtherToolsPermission>()(
@@ -20,6 +21,11 @@ export const useUserPlanPermissionsStore = create<OtherToolsPermission>()(
             state.otherTools = permission;
           }),
         setHydrated: () => set({ hydrated: true }),
+        reset: () =>
+          set((state) => {
+            state.otherTools = false;
+            state.hydrated = false;
+          }),
       })),
       {
         name: 'userPlanPermissionsStore',

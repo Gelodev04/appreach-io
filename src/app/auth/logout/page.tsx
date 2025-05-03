@@ -10,10 +10,12 @@ import { useEffect } from 'react';
 import { MotionContainer, varBounce } from 'src/components/animate';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { useUserOnboardingStore } from 'src/store/user-onboarding';
+import { useUserPlanPermissionsStore } from 'src/store/user-plan-permissions';
 
 const handleLogout = async () => {
   try {
     useUserOnboardingStore.getState().reset();
+    useUserPlanPermissionsStore.getState().reset();
     await signOut();
   } catch (error) {
     console.error('Error signing out:', error);

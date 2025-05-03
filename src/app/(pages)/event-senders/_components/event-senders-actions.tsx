@@ -40,32 +40,31 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
       }
     });
   };
-
   const handleReprocess = () => {
     setData({});
     setIsProcessing(true);
     startTransition(async () => {
       const res = await getWebhookLogBySenderAccount(username);
 
-      if (!res.success) {
-        enqueueSnackbar(res.message, {
-          variant: 'error',
-        });
+      if (!res.success || !Array.isArray(res.data)) {
+        enqueueSnackbar(res.message || 'Unknown error', { variant: 'error' });
         setIsProcessing(false);
         return;
-      } else {
-        if (res.data?.length === 0) {
-          enqueueSnackbar('No events to reprocess', {
-            variant: 'info',
-          });
-          setIsProcessing(false);
-          return;
-        } else {
-          setEvents(res.data?.length || 0);
-          confirmProcess.onTrue();
-          setIsProcessing(false);
-        }
       }
+
+      if (res.data.length === 0) {
+        enqueueSnackbar('No events to reprocess', { variant: 'info' });
+        setIsProcessing(false);
+        return;
+      }
+
+      setEvents(res.data.length);
+      confirmProcess.onTrue();
+      setIsProcessing(false);
+
+      setEvents(res.data.length);
+      confirmProcess.onTrue();
+      setIsProcessing(false);
     });
   };
 
@@ -74,13 +73,11 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
       const res = await reprocessSendersWebhook(username);
 
       if (!res.success) {
-        enqueueSnackbar(res.message, {
-          variant: 'error',
-        });
+        enqueueSnackbar(res.message, { variant: 'error' });
         return;
-      } else {
-        setData(res.data);
       }
+
+      setData(res.data);
     });
   };
 

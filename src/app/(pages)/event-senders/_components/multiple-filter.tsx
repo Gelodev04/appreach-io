@@ -66,7 +66,7 @@ export const MultipleFilter = ({
     if (filterPopover.open) {
       setLocalFilters(filters); // pull latest filters when user opens the filter dialog
     }
-  }, [filterPopover.open]);
+  }, [filterPopover.open, filters]);
 
   return (
     <>

@@ -40,9 +40,10 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { completedOn, hydrated, isLoading } = useOnboardingStatus();
   const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
 
-  console.log({ completedOn });
+  const shouldRedirect = hydrated && planPermissionsHydrated && !isLoading;
+
   useEffect(() => {
-    if (!hydrated || !planPermissionsHydrated || isLoading) return;
+    if (!shouldRedirect) return;
 
     const isOn = {
       onboarding: pathname.includes('onboarding'),
@@ -67,7 +68,16 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       router.push(paths.dashboard.root);
       return;
     }
-  }, [isTrialExpired, completedOn, pathname, hydrated, planPermissionsHydrated, otherTools]);
+  }, [
+    isTrialExpired,
+    completedOn,
+    pathname,
+    hydrated,
+    planPermissionsHydrated,
+    otherTools,
+    isLoading,
+    router,
+  ]);
 
   useEffect(() => {
     if (openNav) {

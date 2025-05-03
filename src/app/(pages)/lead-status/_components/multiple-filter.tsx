@@ -4,7 +4,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
 import { useLeadStatusStore } from 'src/store/lead-status-store';
 
-export const MultipleFilter = ({}: {}) => {
+export const MultipleFilter = () => {
   const filterPopover = usePopover();
   const { filters, setFilter } = useLeadStatusStore();
   const activeFilterCount = Object.values(filters).filter((val) => val?.trim() !== '').length;
@@ -43,7 +43,7 @@ export const MultipleFilter = ({}: {}) => {
     if (filterPopover.open) {
       setLocalFilters(filters);
     }
-  }, [filterPopover.open]);
+  }, [filterPopover.open, filters]);
 
   return (
     <>

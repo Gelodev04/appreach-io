@@ -12,11 +12,11 @@ export function useNavData() {
 
   const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
 
-  if (!hydrated || !planPermissionsHydrated) return [];
-
   const disableAccess = isTrialExpired || completedOn === null;
 
   const data = useMemo(() => {
+    if (!hydrated || !planPermissionsHydrated) return [];
+
     const base: { subheader: string; items: any[] }[] = [
       {
         subheader: 'Unified Reporting',
