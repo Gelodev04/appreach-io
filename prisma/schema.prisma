@@ -222,8 +222,8 @@ type SeedBatchesGenerate {
   removeSpam      Boolean?
   replyMessage    Boolean?
   scrollMessage   Boolean?
-  total           Int
-  type            String
+  total           Int?
+  type            String?
 }
 
 type SeedBatchesGenerateEsps {
@@ -234,10 +234,10 @@ type SeedBatchesGenerateEsps {
 }
 
 type SeedBatchesResults {
-  csvUrl       String
+  csvUrl       String?
   errorDetails String?
   esps         SeedBatchesResultsEsps?
-  total        Int
+  total        Int?
 }
 
 type SeedBatchesResultsEsps {
@@ -538,10 +538,10 @@ model smartleadEmailAccounts {
 }
 
 model seedBatches {
-  id        String              @id @default(auto()) @map("_id") @db.ObjectId
-  dateAdded DateTime            @db.Date
-  generate  SeedBatchesGenerate
-  hostId    String              @db.ObjectId
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  dateAdded DateTime             @db.Date
+  generate  SeedBatchesGenerate?
+  hostId    String               @db.ObjectId
   name      String
   results   SeedBatchesResults?
   status    String

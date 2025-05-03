@@ -43,33 +43,32 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
 
   useEffect(() => {
-    // eslint-disable-next-line no-useless-return
-    if (shouldSkip) return;
+    if (!shouldSkip) {
+      const isOn = {
+        onboarding: pathname.includes('onboarding'),
+        billing: pathname.includes('billing'),
+        emailValidator: pathname.includes('email-validator'),
+      };
 
-    const isOn = {
-      onboarding: pathname.includes('onboarding'),
-      billing: pathname.includes('billing'),
-      emailValidator: pathname.includes('email-validator'),
-    };
+      // Block all access until onboarding is complete
+      if (rawCompletedOn === null && !isOn.onboarding) {
+        router.push(paths.onboarding.root);
+        return;
+      }
 
-    // Block all access until onboarding is complete
-    if (rawCompletedOn === null && !isOn.onboarding) {
-      router.push(paths.onboarding.root);
-      return;
-    }
+      // Redirect to billing if trial expired after onboarding
+      if (isTrialExpired && !isOn.billing) {
+        router.push(paths.checkout.root);
+        console.log('2nd redirect');
+        return;
+      }
 
-    // Redirect to billing if trial expired after onboarding
-    if (isTrialExpired && !isOn.billing) {
-      router.push(paths.checkout.root);
-      console.log('2nd redirect');
-      return;
-    }
-
-    // Block access to email-validator if user has no access
-    if (!otherTools && isOn.emailValidator) {
-      router.push(paths.dashboard.root);
-      console.log('3rd redirect');
-      return;
+      // Block access to email-validator if user has no access
+      if (!otherTools && isOn.emailValidator) {
+        router.push(paths.dashboard.root);
+        console.log('3rd redirect');
+        return;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldSkip, rawCompletedOn, pathname, isTrialExpired, otherTools]);
