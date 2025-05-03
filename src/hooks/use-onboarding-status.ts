@@ -11,6 +11,9 @@ export function useOnboardingStatus() {
     fetcher
   );
 
+  const rawCompletedOn = data?.onboarding?.completedOn ?? null;
+
+  // Sync to Zustand after SWR fetch
   useEffect(() => {
     if (data?.onboarding) {
       setCompletedOn(data.onboarding.completedOn ?? null);
@@ -18,7 +21,8 @@ export function useOnboardingStatus() {
   }, [data, setCompletedOn]);
 
   return {
-    completedOn,
+    completedOn, // Zustand value
+    rawCompletedOn, // SWR value — immediate
     isLoading,
     error,
     hydrated,

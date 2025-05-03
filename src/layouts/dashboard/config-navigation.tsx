@@ -157,7 +157,7 @@ export function useNavData() {
     }
 
     return base;
-  }, [disableAccess, completedOn, otherTools]);
+  }, [disableAccess, completedOn, otherTools, hydrated, planPermissionsHydrated]);
 
   return data;
 }

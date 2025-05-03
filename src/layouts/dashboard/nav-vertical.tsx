@@ -37,13 +37,13 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const navData = useNavData();
   const muiTheme = useTheme();
   const isTrialExpired = useIsTrialExpired();
-  const { completedOn, hydrated, isLoading } = useOnboardingStatus();
+  const { rawCompletedOn, hydrated, isLoading } = useOnboardingStatus();
   const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
 
-  const shouldRedirect = hydrated && planPermissionsHydrated && !isLoading;
+  const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
 
   useEffect(() => {
-    if (!shouldRedirect) return;
+    if (shouldSkip) return;
 
     const isOn = {
       onboarding: pathname.includes('onboarding'),
@@ -52,7 +52,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     };
 
     // Block all access until onboarding is complete
-    if (completedOn === null && !isOn.onboarding) {
+    if (rawCompletedOn === null && !isOn.onboarding) {
       router.push(paths.onboarding.root);
       return;
     }
@@ -60,24 +60,17 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     // Redirect to billing if trial expired after onboarding
     if (isTrialExpired && !isOn.billing) {
       router.push(paths.checkout.root);
+      console.log('2nd redirect');
       return;
     }
 
     // Block access to email-validator if user has no access
     if (!otherTools && isOn.emailValidator) {
       router.push(paths.dashboard.root);
+      console.log('3rd redirect');
       return;
     }
-  }, [
-    isTrialExpired,
-    completedOn,
-    pathname,
-    hydrated,
-    planPermissionsHydrated,
-    otherTools,
-    isLoading,
-    router,
-  ]);
+  }, [shouldSkip, rawCompletedOn, pathname, isTrialExpired, otherTools]);
 
   useEffect(() => {
     if (openNav) {
