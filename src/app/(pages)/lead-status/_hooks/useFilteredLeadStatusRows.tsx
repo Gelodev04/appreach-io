@@ -4,7 +4,6 @@ import { useLeadStatusStore } from 'src/store/lead-status-store';
 
 export const useFilteredLeadStatusRows = (rows: GridRowsProp) => {
   const filters = useLeadStatusStore((state) => state.filters);
-  console.log({ rows });
   return useMemo(() => {
     return rows.filter((row: any) => {
       const matchesProfile =

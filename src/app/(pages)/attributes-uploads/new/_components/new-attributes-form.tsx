@@ -15,13 +15,11 @@ import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
-import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import {
   attributeUploadsWebhook,
   createAttributeUploads,
 } from 'src/services/db/attributes-uploads';
-import { incrementAttributeCreditsUsed } from 'src/services/db/user-settings';
 import { CreateAttributeUploadsPropType } from 'src/types/attribute-uploads';
 import { PlatformOptionsType } from 'src/types/dropdown-types';
 import { normalizeHeader } from 'src/utils';
@@ -30,17 +28,14 @@ import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
 export const NewAttributesForm = ({
-  remainingCredits,
   columnOptions,
   headerMapping,
 }: {
-  remainingCredits: number;
   columnOptions: PlatformOptionsType;
   headerMapping: Record<string, string>;
 }) => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
-  console.log({ headerMapping, columnOptions });
   const { hosts } = useGetSeedSettings();
   const { prefillMessage } = useSalesmateChat();
 
@@ -116,7 +111,7 @@ export const NewAttributesForm = ({
       }
 
       // Increment attribute credits and trigger webhook
-      await Promise.all([incrementAttributeCreditsUsed(), attributeUploadsWebhook()]);
+      await attributeUploadsWebhook();
 
       enqueueSnackbar('Uploaded successfully');
       router.push(paths.attributesUpload.root);
@@ -346,20 +341,17 @@ export const NewAttributesForm = ({
               Upload CSV List
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              You have {remainingCredits} verification credits remaining.{' '}
-              <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
-                Upgrade your subscription
-              </Link>
-              . Or{' '}
+              Upload the csv list of emails you would like us to verify.{' '}
               <Link
                 variant="subtitle2"
                 sx={{ cursor: 'pointer' }}
                 onClick={() => prefillMessage('I have questions about the Attributes Uploads')}
               >
-                contact us
+                Contact support
               </Link>{' '}
               if you have questions.
             </Typography>
+
             <LoadingButton
               type="submit"
               variant="contained"

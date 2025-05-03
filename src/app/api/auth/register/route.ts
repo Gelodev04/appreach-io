@@ -26,6 +26,7 @@ interface Plan {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+
     const {
       email,
       password,
@@ -34,10 +35,11 @@ export async function POST(request: Request) {
       companyName,
       phoneNumber,
       hearAboutUs,
-      emailsSendsPerDay,
-      callRequested,
       isTrial,
+      platforms,
     } = data;
+
+    const normalizedPlatforms = platforms.split(',').map((item: string) => item.trim());
 
     const client = await clientPromise;
     const db = client.db();
@@ -78,9 +80,8 @@ export async function POST(request: Request) {
       },
       trackingMarketing: {
         hearAboutUs,
-        emailsSendsPerDay,
-        callRequested,
         ipAddress,
+        platforms: normalizedPlatforms,
       },
       approval: {
         lastSent: null,
@@ -125,17 +126,11 @@ export async function POST(request: Request) {
         seeds: 50,
         senderProfiles: 1,
         senderAddresses: 1,
-        verifyCredits: 0,
-        smartLeadAccounts: 5,
-        attributeCredits: 100,
       };
       signupParams.planPermissionsUsed = {
         seeds: 0,
         senderProfiles: 0,
         senderAddresses: 0,
-        verifyCredits: 0,
-        attributeCredits: 0,
-        smartLeadAccounts: 0,
       };
 
       signupParams.planPermissionFeatures = {
@@ -146,6 +141,7 @@ export async function POST(request: Request) {
         movePrimary: true,
         clickLink: true,
         replyMessage: true,
+        otherTools: false,
       };
     }
 

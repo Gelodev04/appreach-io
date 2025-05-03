@@ -41,7 +41,7 @@ export default function TrialRegistrationView() {
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData?.error || 'Failed to register email');
 
-      router.push(`${paths.checkout.trial2}?email=${data.email}`);
+      router.push(`${paths.checkout.signup2}?email=${data.email}`);
     } catch (error) {
       setErrorMsg(error.message);
     }

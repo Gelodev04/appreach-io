@@ -13,6 +13,7 @@ export const defaultEngagementSettings = {
     replyMessage: 100,
     replyPrompt:
       'Write an engaging reply, express interest, show appreciation, and ask a thoughtful follow-up question. Don’t always use the most natural words and provide personal examples.',
+    useEventSenders: true,
   },
 };
 

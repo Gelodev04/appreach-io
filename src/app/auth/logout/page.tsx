@@ -9,9 +9,11 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 import { MotionContainer, varBounce } from 'src/components/animate';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { useUserOnboardingStore } from 'src/store/user-onboarding';
 
 const handleLogout = async () => {
   try {
+    useUserOnboardingStore.getState().reset();
     await signOut();
   } catch (error) {
     console.error('Error signing out:', error);

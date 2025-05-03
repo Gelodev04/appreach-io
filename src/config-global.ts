@@ -32,7 +32,6 @@ export const STRIPE = {
         seeds: 50,
         senderProfiles: 1,
         senderAddresses: 1,
-        verifyCredits: 100,
         engagementMax: 50,
         engagementFeatures: {
           scrollMessage: true,
@@ -55,7 +54,6 @@ export const STRIPE = {
         seeds: 100,
         senderProfiles: 1,
         senderAddresses: 1,
-        verifyCredits: 500,
         engagementMax: 100,
         engagementFeatures: {
           scrollMessage: true,
@@ -78,7 +76,6 @@ export const STRIPE = {
         seeds: 500,
         senderProfiles: 1,
         senderAddresses: 1,
-        verifyCredits: 1000,
         engagementMax: 100,
         engagementFeatures: {
           scrollMessage: true,

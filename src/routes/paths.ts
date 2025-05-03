@@ -73,8 +73,8 @@ export const paths = {
   checkout: {
     root: '/billing',
     success: '/billing/success',
-    trial1: '/trial/1',
-    trial2: '/trial/2',
+    signup1: '/signup/1',
+    signup2: '/signup/2',
     billingPortal: (email: string) =>
       `https://clients.outreachmagic.io/order/OM/portal?email=${email}`,
   },
@@ -127,5 +127,9 @@ export const paths = {
 
   eventSenders: {
     root: '/event-senders',
+  },
+
+  onboarding: {
+    root: '/onboarding',
   },
 };

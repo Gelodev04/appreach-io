@@ -2,7 +2,6 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { InputAdornment, MenuItem } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -11,19 +10,32 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from 'src/auth/hooks';
-import FormProvider, { RHFCheckbox, RHFSelect, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFMultiSelect, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { PlatformOptionsType } from 'src/types/dropdown-types';
 import * as Yup from 'yup';
 import RegisterCommonForm from '../register-common-form';
 
 type Props = {
-  expanded?: boolean;
+  platformOptions: PlatformOptionsType;
 };
 
-export default function RegisterView({ expanded }: Props) {
+type RegisterFormValues = {
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  currentPlatforms: string[];
+  otherPlatforms?: string;
+  hearAboutUs: string;
+};
+
+export default function RegisterView({ platformOptions }: Props) {
   const { register } = useAuthContext();
   const [errorMsg, setErrorMsg] = useState('');
   const [successful, setSuccessful] = useState(false);
@@ -49,17 +61,24 @@ export default function RegisterView({ expanded }: Props) {
       .oneOf([Yup.ref('password'), ''], 'Passwords must match')
       .nullable()
       .required('Confirm Password is required'),
-    ...(expanded && {
-      emailsSendsPerDay: Yup.string().required('Choose an option'),
-      hearAboutUs: Yup.string().required(' '),
-      freePhoneSupport: Yup.boolean(),
-      phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
-        return freePhoneSupport ? schema.required('Phone number is required') : schema.nullable();
-      }),
+    // emailsSendsPerDay: Yup.string().required('Choose an option'),
+    // freePhoneSupport: Yup.boolean(),
+    // phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
+    //   return freePhoneSupport ? schema.required('Phone number is required') : schema.nullable();
+    // }),
+    currentPlatforms: Yup.array()
+      .min(1, 'Select at least one platform')
+      .required('Select at least one platform'),
+    otherPlatforms: Yup.string().when('currentPlatforms', {
+      is: (currentPlatforms: string[]) =>
+        Array.isArray(currentPlatforms) && currentPlatforms.includes('other'),
+      then: (schema) => schema.required('Please list other platforms'),
+      otherwise: (schema) => schema.notRequired(),
     }),
+    hearAboutUs: Yup.string().required(' '),
   });
 
-  const methods = useForm({
+  const methods = useForm<RegisterFormValues>({
     resolver: yupResolver(RegisterSchema),
     defaultValues: {
       firstName: '',
@@ -68,10 +87,12 @@ export default function RegisterView({ expanded }: Props) {
       email: email ?? '',
       password: '',
       confirmPassword: '',
-      emailsSendsPerDay: '',
+      // emailsSendsPerDay: '',
+      // freePhoneSupport: false,
+      // phoneNumber: '',
+      currentPlatforms: [],
+      otherPlatforms: '',
       hearAboutUs: '',
-      freePhoneSupport: false,
-      phoneNumber: '',
     },
   });
 
@@ -83,6 +104,7 @@ export default function RegisterView({ expanded }: Props) {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log({ dataFromForm: data });
     try {
       await register?.({
         email: data.email,
@@ -90,13 +112,15 @@ export default function RegisterView({ expanded }: Props) {
         firstName: data.firstName,
         lastName: data.lastName,
         companyName: data.companyName,
-        ...(expanded && {
-          isTrial: true,
-          phoneNumber: data.phoneNumber ?? undefined,
-          hearAboutUs: data.hearAboutUs ?? undefined,
-          emailsSendsPerDay: data.emailsSendsPerDay ?? undefined,
-          callRequested: data.freePhoneSupport ?? false,
-        }),
+        isTrial: true,
+        // phoneNumber: data.phoneNumber ?? undefined,
+        hearAboutUs: data.hearAboutUs ?? undefined,
+        platforms: [
+          ...data.currentPlatforms.filter((item) => item !== 'other'),
+          ...(data.currentPlatforms.includes('other') ? [data.otherPlatforms] : []),
+        ].join(', '),
+        // emailsSendsPerDay: data.emailsSendsPerDay ?? undefined,
+        // callRequested: data.freePhoneSupport ?? false,
       });
 
       setSuccessful(true);
@@ -107,6 +131,7 @@ export default function RegisterView({ expanded }: Props) {
       setSuccessful(false);
     }
   });
+  const selectedPlatforms = watch('currentPlatforms') ?? [];
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 3, position: 'relative' }}>
@@ -148,7 +173,7 @@ export default function RegisterView({ expanded }: Props) {
 
   const renderExpandedOptions = (
     <>
-      <RHFSelect name="emailsSendsPerDay" label="How many emails do you send per day?">
+      {/* <RHFSelect name="emailsSendsPerDay" label="How many emails do you send per day?">
         <MenuItem value="upTo1k" sx={{ color: 'text.secondary' }}>
           Up To 1K
         </MenuItem>
@@ -161,19 +186,39 @@ export default function RegisterView({ expanded }: Props) {
         <MenuItem value="over100k" sx={{ color: 'text.secondary' }}>
           Over 100K
         </MenuItem>
-      </RHFSelect>
+      </RHFSelect> */}
+
+      <RHFMultiSelect
+        name="currentPlatforms"
+        options={platformOptions}
+        label="Select all the platforms you currently use"
+      />
+
+      {selectedPlatforms.includes('other') && (
+        <RHFTextField
+          name="otherPlatforms"
+          label="List all other platforms you use not listed above"
+        />
+      )}
+
+      {/* <RHFAutocomplete
+        isOptionEqualToValue={(option, value) =>
+          option.value.leadStatusValue === value.value.leadStatusValue
+        }
+        name="leadStatus"
+        label="Choose Lead Status"
+        options={structuredLeadStatusOptions}
+      /> */}
 
       <RHFTextField name="hearAboutUs" label="How did you hear about us?" />
-      {expanded && (
-        <Stack spacing={2}>
+      {/* <Stack spacing={2}>
           <Typography variant="body2" color="text.secondary">
             You will receive a trial plan that allows you to test our software for 10 days. We
             highly recommend checking the box below to make the most of your trial.
           </Typography>
-        </Stack>
-      )}
+        </Stack> */}
 
-      <Stack spacing={1}>
+      {/* <Stack spacing={1}>
         <RHFCheckbox
           name="freePhoneSupport"
           label="Check here to have a team member contact you with features tailored to your use case."
@@ -198,20 +243,16 @@ export default function RegisterView({ expanded }: Props) {
             />
           </Stack>
         )}
-      </Stack>
+      </Stack> */}
     </>
   );
 
   const renderForm = (
     <Stack spacing={2.5}>
-      {expanded ? (
-        <Stack position="relative" spacing={2.5} p={1}>
-          <RegisterCommonForm />
-          {expanded && renderExpandedOptions}
-        </Stack>
-      ) : (
+      <Stack position="relative" spacing={2.5} p={1}>
         <RegisterCommonForm />
-      )}
+        {renderExpandedOptions}
+      </Stack>
 
       <LoadingButton
         fullWidth

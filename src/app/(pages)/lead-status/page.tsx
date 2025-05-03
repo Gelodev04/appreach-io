@@ -16,7 +16,6 @@ export default async function Page() {
     ...row,
     sentiment: row.lead_status?.sentiment,
   }));
-  console.log({ transformedRows });
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <LeadStatusHeader />

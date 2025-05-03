@@ -209,6 +209,7 @@ type HostsEngagementSettings {
   filterId        String?
   disableFilterId Boolean?
   replyPrompt     String
+  useEventSenders Boolean?
 }
 
 type SeedBatchesGenerate {
@@ -263,12 +264,12 @@ type UserSettingsAppLogin {
   view         String?
 }
 
-type UserSettingsApproval {
-  lastSent        DateTime? @db.Date
-  token           String?
-  tokenExpiration DateTime? @db.Date
-  verifiedOn      DateTime? @db.Date
-}
+// type UserSettingsApproval {
+//   lastSent        DateTime? @db.Date
+//   token           String?
+//   tokenExpiration DateTime? @db.Date
+//   verifiedOn      DateTime? @db.Date
+// }
 
 type UserSettingsLookerStudio {
   embedUrl        String
@@ -296,9 +297,9 @@ type UserSettingsResetPassword {
   tokenExpiration DateTime? @db.Date
 }
 
-type UserSettingsSeeds {
-  assignedCount Int?
-}
+// type UserSettingsSeeds {
+//   assignedCount Int?
+// }
 
 type UserSettingsSenders {
   /// Multiple data types found: Int: 96.5%, BigInt: 3.5% out of 57 sampled entries
@@ -316,10 +317,11 @@ type UserSettingsStripe {
 }
 
 type UserSettingsTrackingMarketing {
-  callRequested     Boolean?
-  emailsSendsPerDay String?
-  hearAboutUs       String?
-  ipAddress         String?
+  // callRequested     Boolean?
+  // emailsSendsPerDay String?
+  hearAboutUs String?
+  ipAddress   String?
+  platforms   String[]
 }
 
 type UserSettingsVerification {
@@ -376,12 +378,9 @@ type WebMailSummary {
 }
 
 type UserSettingsPlanPermissions {
-  seeds             Int @default(0)
-  senderProfiles    Int @default(0)
-  senderAddresses   Int @default(0)
-  verifyCredits     Int @default(0)
-  attributeCredits  Int @default(0)
-  smartLeadAccounts Int @default(0)
+  seeds           Int @default(0)
+  senderProfiles  Int @default(0)
+  senderAddresses Int @default(0)
 }
 
 type UserSettingsPlanPermissionFeatures {
@@ -392,10 +391,15 @@ type UserSettingsPlanPermissionFeatures {
   movePrimary   Boolean
   clickLink     Boolean
   replyMessage  Boolean
+  otherTools    Boolean
 }
 
 type UserSettingsWebhook {
   token String?
+}
+
+type UserSettingsOnboarding {
+  completedOn String?
 }
 
 type EngagementFeatures {
@@ -575,7 +579,7 @@ model senderDomains {
 model userSettings {
   id                      String                             @id @default(auto()) @map("_id") @db.ObjectId
   appLogin                UserSettingsAppLogin
-  approval                UserSettingsApproval
+  // approval                UserSettingsApproval
   created                 Json?
   embedUrl                String?
   hosts                   String[]                           @db.ObjectId
@@ -584,7 +588,7 @@ model userSettings {
   lookerStudio            UserSettingsLookerStudio?
   plan                    UserSettingsPlan?
   resetPassword           UserSettingsResetPassword
-  seeds                   UserSettingsSeeds?
+  // seeds                   UserSettingsSeeds?
   senders                 UserSettingsSenders?
   stripe                  UserSettingsStripe?
   trackingMarketing       UserSettingsTrackingMarketing?
@@ -594,6 +598,7 @@ model userSettings {
   planPermissionFeatures  UserSettingsPlanPermissionFeatures
   webhook                 UserSettingsWebhook?
   ownerHostId             String                             @db.ObjectId
+  onboarding              UserSettingsOnboarding?
 }
 
 model webMail {

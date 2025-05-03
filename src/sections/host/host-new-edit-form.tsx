@@ -58,6 +58,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       is: true,
       then: (schema) => schema.required('Reply prompt is required'),
     }),
+    useEventSenders: Yup.boolean(),
   });
 
   const getEngagementValue = (item: string) => {
@@ -99,6 +100,8 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
     replyPrompt:
       updatedHostItem?.engagementSettings?.replyPrompt ??
       defaultEngagementSettings.engagementSettings.replyPrompt,
+
+    useEventSenders: updatedHostItem?.engagementSettings?.useEventSenders ?? true,
   };
 
   const methods = useForm({

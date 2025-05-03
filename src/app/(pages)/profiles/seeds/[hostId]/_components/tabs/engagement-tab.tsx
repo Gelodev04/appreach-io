@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { RHFTextField } from 'src/components/hook-form';
+import { RHFSwitch, RHFTextField } from 'src/components/hook-form';
 import { HostProps } from 'src/types/host';
 import { SliderItem } from './slider-item';
 
@@ -103,6 +103,10 @@ export const EngagementTab = ({ planPermissions }: HostProps) => {
           minRows={1}
           maxRows={3}
         />
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <RHFSwitch name="useEventSenders" label="Use event senders for this profile?" />
       </Box>
     </Stack>
   );

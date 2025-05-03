@@ -15,17 +15,15 @@ import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSalesmateChat from 'src/hooks/use-salesmate-chat';
-import { RouterLink } from 'src/routes/components';
 
 import { paths } from 'src/routes/paths';
 import { createEmailValidator, emailValidatorWebhook } from 'src/services/db/email-validator';
-import { incrementVerifyCreditsUsed } from 'src/services/db/user-settings';
 import { CreateEmailValidatorPropType } from 'src/types/email-validator';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 
-export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number }) => {
+export const NewEmailForm = () => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
 
@@ -106,7 +104,7 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
       }
 
       // Increment attribute credits and trigger webhook
-      await Promise.all([incrementVerifyCreditsUsed(), emailValidatorWebhook()]);
+      await emailValidatorWebhook();
 
       enqueueSnackbar('Uploaded successfully');
       router.push(paths.emailValidator.root);
@@ -182,17 +180,13 @@ export const NewEmailForm = ({ remainingCredits }: { remainingCredits: number })
               Upload CSV List
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              You have {remainingCredits} verification credits remaining.{' '}
-              <Link component={RouterLink} href={paths.checkout.root} variant="subtitle2">
-                Upgrade your subscription
-              </Link>
-              . Or{' '}
+              Upload the csv list of emails you would like us to verify.{' '}
               <Link
                 variant="subtitle2"
                 sx={{ cursor: 'pointer' }}
                 onClick={() => prefillMessage('I have questions about the Email Validator')}
               >
-                contact us
+                Contact support
               </Link>{' '}
               if you have questions.
             </Typography>
