@@ -14,6 +14,7 @@ export const calculateRemainingDays = (inputDate: Date) => {
 
 export const normalizeHeader = (header: string) => {
   return header
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters (camelCase)
     .replace(/_/g, ' ') // Replace underscores with spaces first
     .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters like {{ }}
     .trim()

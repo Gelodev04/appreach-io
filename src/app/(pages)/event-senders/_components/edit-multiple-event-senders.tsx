@@ -13,7 +13,6 @@ import { enqueueSnackbar } from 'notistack';
 import { useState, useTransition } from 'react';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { EditPopover } from 'src/components/custom-popover/dropdown-edit-popover';
 import Iconify from 'src/components/iconify';
 import { useBoolean } from 'src/hooks/use-boolean';
 import {
@@ -25,6 +24,8 @@ import {
   updateMultipleSenderAccountsType,
 } from 'src/services/db/sender-accounts';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
+import { useEditableField } from '../_hooks/useEditableField';
+import { ConfirmEditPopover } from './confirm-edit-popover';
 
 export const EditMultipleEventSenders = ({
   selectedRowIds,
@@ -42,10 +43,6 @@ export const EditMultipleEventSenders = ({
   hostOptions: HostOptionsType;
 }) => {
   const [isDeleting, startDeleting] = useTransition();
-  const [isEmailServerUpdating, startEmailServerUpdate] = useTransition();
-  const [isEmailResellerUpdating, startEmailResellerUpdate] = useTransition();
-  const [isPlatformUpdating, startPlatformUpdate] = useTransition();
-  const [isTypeUpdating, startTypeUpdate] = useTransition();
   const [isHostUpdating, startHostUpdate] = useTransition();
   const [value, setValue] = useState({
     emailServer: '',
@@ -54,107 +51,13 @@ export const EditMultipleEventSenders = ({
     type: '',
     host: '',
   });
-
-  const emailServerPopover = usePopover();
-  const emailResellerPopover = usePopover();
-  const platformPopover = usePopover();
-  const typePopover = usePopover();
   const hostPopover = usePopover();
 
   const confirmDelete = useBoolean();
+  const confirmEditHost = useBoolean();
 
   const handleChange = (e: SelectChangeEvent<any>) => {
     setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSaveEmailServer = () => {
-    const selectedServer = emailServerOptions.find((server) => server.value === value.emailServer);
-    if (!selectedServer) {
-      enqueueSnackbar('Select an email server', { variant: 'error', persist: true });
-      return;
-    }
-
-    startEmailServerUpdate(async () => {
-      const response = await updateMultipleSenderAccountsServer(
-        selectedRowIds as string[],
-        selectedServer.value
-      );
-
-      if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
-      } else {
-        enqueueSnackbar('Platform update success!');
-        emailServerPopover.onClose();
-      }
-    });
-  };
-
-  const handleSaveEmailReseller = () => {
-    const selectedReseller = emailResellerOptions.find(
-      (reseller) => reseller.value === value.emailReseller
-    );
-    if (!selectedReseller) {
-      enqueueSnackbar('Select an email reseller', { variant: 'error', persist: true });
-      return;
-    }
-
-    startEmailResellerUpdate(async () => {
-      const response = await updateMultipleSenderAccountsReseller(
-        selectedRowIds as string[],
-        selectedReseller.value
-      );
-
-      if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
-      } else {
-        enqueueSnackbar('Platform update success!');
-        emailResellerPopover.onClose();
-      }
-    });
-  };
-
-  const handleSavePlatform = () => {
-    const selectedPlatform = platformOptions.find((platform) => platform.value === value.platform);
-    if (!selectedPlatform) {
-      enqueueSnackbar('Select a platform', { variant: 'error', persist: true });
-      return;
-    }
-
-    startPlatformUpdate(async () => {
-      const response = await updateMultipleSenderAccountsPlatform(
-        selectedRowIds as string[],
-        selectedPlatform.value
-      );
-
-      if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
-      } else {
-        enqueueSnackbar('Platform update success!');
-        platformPopover.onClose();
-      }
-    });
-  };
-
-  const handleSaveType = () => {
-    const selectedType = typeOptions.find((type) => type.value === value.type);
-    if (!selectedType) {
-      enqueueSnackbar('Select a type', { variant: 'error', persist: true });
-      return;
-    }
-
-    startTypeUpdate(async () => {
-      const response = await updateMultipleSenderAccountsType(
-        selectedRowIds as string[],
-        selectedType.value
-      );
-
-      if (!response.success) {
-        enqueueSnackbar(response.message, { variant: 'error', persist: true });
-      } else {
-        enqueueSnackbar('Type update success!');
-        typePopover.onClose();
-      }
-    });
   };
 
   const handleSaveHost = () => {
@@ -176,6 +79,7 @@ export const EditMultipleEventSenders = ({
       } else {
         enqueueSnackbar('Host update success!');
         hostPopover.onClose();
+        confirmEditHost.onFalse();
       }
     });
   };
@@ -187,47 +91,79 @@ export const EditMultipleEventSenders = ({
     });
   };
 
+  const emailServerField = useEditableField({
+    label: 'Email Server',
+    value: value.emailServer,
+    options: emailServerOptions,
+    selectedRowIds: selectedRowIds as string[],
+    onUpdate: updateMultipleSenderAccountsServer,
+  });
+
+  const emailResellerField = useEditableField({
+    label: 'Email Reseller',
+    value: value.emailReseller,
+    options: emailResellerOptions,
+    selectedRowIds: selectedRowIds as string[],
+    onUpdate: updateMultipleSenderAccountsReseller,
+  });
+
+  const platformField = useEditableField({
+    label: 'Platform',
+    value: value.platform,
+    options: platformOptions,
+    selectedRowIds: selectedRowIds as string[],
+    onUpdate: updateMultipleSenderAccountsPlatform,
+  });
+
+  const typeField = useEditableField({
+    label: 'Type',
+    value: value.type,
+    options: typeOptions,
+    selectedRowIds: selectedRowIds as string[],
+    onUpdate: updateMultipleSenderAccountsType,
+  });
+
   return (
     <>
-      <Button
-        size="medium"
-        color="primary"
-        disabled={isEmailServerUpdating}
-        onClick={emailServerPopover.onOpen}
-        startIcon={<Iconify icon="flowbite:edit-outline" />}
-      >
-        Edit Email Server [{selectedRowIds.length}]
-      </Button>
+      <ConfirmEditPopover
+        field={emailServerField}
+        name="emailServer"
+        label="Email Server"
+        value={value.emailServer}
+        options={emailServerOptions}
+        onChange={handleChange}
+        selectedCount={selectedRowIds.length}
+      />
 
-      <Button
-        size="medium"
-        color="primary"
-        disabled={isEmailResellerUpdating}
-        onClick={emailResellerPopover.onOpen}
-        startIcon={<Iconify icon="flowbite:edit-outline" />}
-      >
-        Edit Email Reseller [{selectedRowIds.length}]
-      </Button>
+      <ConfirmEditPopover
+        field={emailResellerField}
+        name="emailReseller"
+        label="Email Reseller"
+        value={value.emailReseller}
+        options={emailResellerOptions}
+        onChange={handleChange}
+        selectedCount={selectedRowIds.length}
+      />
 
-      <Button
-        size="medium"
-        color="primary"
-        disabled={isPlatformUpdating}
-        onClick={platformPopover.onOpen}
-        startIcon={<Iconify icon="flowbite:edit-outline" />}
-      >
-        Edit Platform [{selectedRowIds.length}]
-      </Button>
+      <ConfirmEditPopover
+        field={platformField}
+        name="platform"
+        label="Platform"
+        value={value.platform}
+        options={platformOptions}
+        onChange={handleChange}
+        selectedCount={selectedRowIds.length}
+      />
 
-      <Button
-        size="medium"
-        color="primary"
-        disabled={isTypeUpdating}
-        onClick={typePopover.onOpen}
-        startIcon={<Iconify icon="flowbite:edit-outline" />}
-      >
-        Edit Type [{selectedRowIds.length}]
-      </Button>
+      <ConfirmEditPopover
+        field={typeField}
+        name="type"
+        label="Type"
+        value={value.type}
+        options={typeOptions}
+        onChange={handleChange}
+        selectedCount={selectedRowIds.length}
+      />
 
       <Button
         size="medium"
@@ -264,50 +200,7 @@ export const EditMultipleEventSenders = ({
           </Button>
         }
       />
-      <EditPopover
-        open={emailServerPopover.open}
-        onClose={emailServerPopover.onClose}
-        label="Email Server"
-        value={value.emailServer}
-        options={emailServerOptions}
-        loading={isEmailServerUpdating}
-        onChange={handleChange}
-        onSave={handleSaveEmailServer}
-        name="emailServer"
-      />
-      <EditPopover
-        open={emailResellerPopover.open}
-        onClose={emailResellerPopover.onClose}
-        label="Email Reseller"
-        value={value.emailReseller}
-        options={emailResellerOptions}
-        loading={isEmailResellerUpdating}
-        onChange={handleChange}
-        onSave={handleSaveEmailReseller}
-        name="emailReseller"
-      />
-      <EditPopover
-        open={typePopover.open}
-        onClose={typePopover.onClose}
-        label="Type"
-        value={value.type}
-        options={typeOptions}
-        loading={isTypeUpdating}
-        onChange={handleChange}
-        onSave={handleSaveType}
-        name="type"
-      />
-      <EditPopover
-        open={platformPopover.open}
-        onClose={platformPopover.onClose}
-        label="Platform"
-        value={value.platform}
-        options={platformOptions}
-        loading={isPlatformUpdating}
-        onChange={handleChange}
-        onSave={handleSavePlatform}
-        name="platform"
-      />
+
       <CustomPopover arrow="top-center" open={hostPopover.open} sx={{ width: 500, p: 0 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', p: 2, pb: 1.5, gap: '20px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -345,12 +238,35 @@ export const EditMultipleEventSenders = ({
             color="primary"
             variant="contained"
             disabled={isHostUpdating}
-            onClick={handleSaveHost}
+            onClick={confirmEditHost.onTrue}
           >
             Save changes
           </Button>
         </Box>
       </CustomPopover>
+
+      <ConfirmDialog
+        open={confirmEditHost.value}
+        onClose={confirmEditHost.onFalse}
+        title="Update Assigned Profile"
+        content={
+          <>
+            You are about to update the <b>Assigned Profile</b> to{' '}
+            <b>{hostOptions.find((val) => value.host === val.id)?.profile}</b> for{' '}
+            <b>{selectedRowIds.length} account/s</b>.
+          </>
+        }
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={isHostUpdating}
+            onClick={handleSaveHost}
+          >
+            Confirm
+          </Button>
+        }
+      />
     </>
   );
 };

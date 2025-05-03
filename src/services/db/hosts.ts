@@ -107,6 +107,7 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
           linksNotToClick: data.linksNotToClick
             ? data.linksNotToClick.split(',').map((link) => link.trim())
             : [],
+          useEventSenders: data.useEventSenders,
         },
         userSettings: updatedUserSettings, // Update with merged settings
       },
@@ -157,6 +158,7 @@ export const createHost = async (data: UpdateHostData) => {
         replyMessage: data.replyMessage,
         filterId: data.filterId ? data.filterId : '',
         replyPrompt: data.replyPrompt ? data.replyPrompt : '',
+        useEventSenders: data.useEventSenders,
       },
     };
 

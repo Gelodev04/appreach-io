@@ -10,8 +10,11 @@ import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
 import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
+
 import { useIsTrialExpired } from 'src/hooks/use-is-trial-expired';
 import { useMockedUser } from 'src/hooks/use-mocked-user';
+import { useOnboardingStatus } from 'src/hooks/use-onboarding-status';
+import { usePlanPermissions } from 'src/hooks/use-plan-permission-features';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
@@ -34,10 +37,40 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const navData = useNavData();
   const muiTheme = useTheme();
   const isTrialExpired = useIsTrialExpired();
+  const { rawCompletedOn, hydrated, isLoading } = useOnboardingStatus();
+  const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
 
-  if (isTrialExpired && !pathname.includes('subscription')) {
-    router.push(paths.checkout.root);
-  }
+  const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
+
+  useEffect(() => {
+    if (shouldSkip) return;
+
+    const isOn = {
+      onboarding: pathname.includes('onboarding'),
+      billing: pathname.includes('billing'),
+      emailValidator: pathname.includes('email-validator'),
+    };
+
+    // Block all access until onboarding is complete
+    if (rawCompletedOn === null && !isOn.onboarding) {
+      router.push(paths.onboarding.root);
+      return;
+    }
+
+    // Redirect to billing if trial expired after onboarding
+    if (isTrialExpired && !isOn.billing) {
+      router.push(paths.checkout.root);
+      console.log('2nd redirect');
+      return;
+    }
+
+    // Block access to email-validator if user has no access
+    if (!otherTools && isOn.emailValidator) {
+      router.push(paths.dashboard.root);
+      console.log('3rd redirect');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldSkip, rawCompletedOn, pathname, isTrialExpired, otherTools]);
 
   useEffect(() => {
     if (openNav) {

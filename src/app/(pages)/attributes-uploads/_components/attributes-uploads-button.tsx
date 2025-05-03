@@ -16,7 +16,7 @@ export const AttributesUploadsButton = () => {
     });
   };
   return (
-    <Tooltip title="Revalidate email" placement="top">
+    <Tooltip title="Reprocess upload" placement="top">
       <Box sx={{ p: 0.5, position: 'relative' }}>
         {isPending && ( // Show progress only when pending
           <CircularProgress

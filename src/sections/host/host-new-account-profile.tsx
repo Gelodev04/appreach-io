@@ -58,6 +58,7 @@ export const HostNewAccountProfile = ({ isAllProfileUsed }: { isAllProfileUsed: 
       enqueueSnackbar(response.message, { variant: 'error', persist: true });
     } else {
       enqueueSnackbar('Update success!');
+      dialog.onFalse();
     }
   });
 

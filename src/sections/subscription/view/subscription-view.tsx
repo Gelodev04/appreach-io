@@ -208,7 +208,7 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
         price={STRIPE.subscriptions.starter.price}
         features={[
           'Send up to 100 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability.',
           'Includes 1 sender profile',
           'Email and live chat support included',
         ]}
@@ -225,7 +225,7 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
         price={STRIPE.subscriptions.established.price}
         features={[
           'Send up to 500 emails daily to our seed list',
-          'Outreach Magic unique reporting to identify what elements are hurting your deliverability',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability.',
           'Includes 5 sender profile',
           'Email and live chat support included',
         ]}
@@ -234,6 +234,21 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
         planStatus={subscription?.status}
         expirationDate={subscription?.current_period_end}
         disabled={subscription?.lookup_key === STRIPE.subscriptions.custom.key}
+      />
+      <CheckoutElementV2
+        title="Managed Service"
+        name={STRIPE.subscriptions.custom.key}
+        subtitle="Contact Us"
+        onSubmit={() => prefillMessage('I am interested in "Managed Service" plan.')}
+        features={[
+          'Send 500+ emails daily to our seed list',
+          'Outreach Magic unique reporting to identify what elements are hurting your deliverability.',
+          'Think of us as part of your team',
+          '1-on-1 zoom calls',
+        ]}
+        currentPlan={subscription?.lookup_key?.toLocaleLowerCase()}
+        planStatus={subscription?.status}
+        expirationDate={subscription?.current_period_end}
       /> */}
 
       <Box

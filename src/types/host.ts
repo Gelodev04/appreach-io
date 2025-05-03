@@ -60,6 +60,7 @@ export type UpdateHostData = {
   linksNotToClick?: string;
   timezone: string;
   externalSenderAddresses?: string;
+  useEventSenders?: boolean;
 };
 
 export type UpdateHostNotification = {

@@ -11,12 +11,16 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const rows = await getLeadStatusByHostIds();
-  console.log({ rows });
+
+  const transformedRows = rows.map((row) => ({
+    ...row,
+    sentiment: row.lead_status?.sentiment,
+  }));
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <LeadStatusHeader />
 
-      <LeadStatusTable rows={rows} />
+      <LeadStatusTable rows={transformedRows} />
     </Container>
   );
 }

@@ -1,7 +1,6 @@
 import { Container } from '@mui/material';
-import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { getSmartleadsByHostIds } from 'src/services/db/smartlead';
-import { getSenderProfiles, getSmartleadPlanPermissions } from 'src/services/db/user-settings';
+import { getSenderProfiles } from 'src/services/db/user-settings';
 import { SmartleadHeader } from './_components/smartlead-header';
 import { SmartleadTable } from './_components/smartlead-table';
 
@@ -13,19 +12,16 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const rows = await getSmartleadsByHostIds();
-  const smartleadPlanPermission = await getSmartleadPlanPermissions();
+
   const { allHosts: senderProfiles, hostsWithApiKey: senderProfilesWithApiKey } =
     await getSenderProfiles();
 
   return (
-    <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+    <Container
+      maxWidth={false}
+      sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}
+    >
       <SmartleadHeader allHosts={senderProfiles} options={senderProfilesWithApiKey} />
-
-      <ItemUsageDisplay
-        itemName="Accounts"
-        used={smartleadPlanPermission.numOfSmartleadUsed}
-        limit={smartleadPlanPermission.numOfSmartleadAssigned}
-      />
 
       <SmartleadTable rows={rows} options={senderProfiles} />
     </Container>

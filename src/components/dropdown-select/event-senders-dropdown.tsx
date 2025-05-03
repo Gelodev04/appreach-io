@@ -27,6 +27,7 @@ const MenuProps = {
 export const EventSendersDropdown = ({ params, options, onUpdate }: EventSendersDropdownProps) => {
   const [isPending, startTransition] = useTransition();
   const currentValue = params.value ? String(params.value) : '';
+
   const handleChange = (e: SelectChangeEvent<any>) => {
     startTransition(async () => {
       const selectedOption = options.find((opt) => opt.value === e.target.value);

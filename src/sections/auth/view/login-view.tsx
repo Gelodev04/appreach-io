@@ -52,9 +52,10 @@ export default function LoginView() {
       });
 
       if (result?.error) {
+        console.log({ error: result.error });
         throw new Error('Invalid Credentials');
       }
-
+      console.log({ result: result?.url });
       // Handle redirect after successful login if needed
       if (result?.url) {
         router.push(result.url);
@@ -74,7 +75,7 @@ export default function LoginView() {
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2">New user?</Typography>
 
-        <Link component={RouterLink} href={paths.checkout.trial2} variant="subtitle2">
+        <Link component={RouterLink} href={paths.checkout.signup2} variant="subtitle2">
           Signup for a free trial
         </Link>
       </Stack>

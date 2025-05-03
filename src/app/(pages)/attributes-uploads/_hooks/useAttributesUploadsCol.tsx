@@ -60,7 +60,7 @@ export const useAttributesUploadsCol = () => {
       minWidth: 120,
     },
     {
-      field: 'metadata.processing_results.persons.matched',
+      field: 'metadata.processing_results.persons.total',
       headerName: 'Person Attributes',
       type: 'number',
       headerAlign: 'left',
@@ -68,14 +68,14 @@ export const useAttributesUploadsCol = () => {
       renderCell: (params) => {
         return (
           <RenderCellText
-            displayValue={params?.row?.metadata?.processing_results?.persons?.matched}
+            displayValue={params?.row?.metadata?.processing_results?.persons?.total}
           />
         );
       },
       flex: 1,
     },
     {
-      field: 'metadata.processing_results.companies.matched',
+      field: 'metadata.processing_results.companies.total',
       headerName: 'Company Attributes',
       type: 'number',
       headerAlign: 'left',
@@ -83,23 +83,21 @@ export const useAttributesUploadsCol = () => {
       renderCell: (params) => {
         return (
           <RenderCellText
-            displayValue={params?.row?.metadata?.processing_results?.companies?.matched}
+            displayValue={params?.row?.metadata?.processing_results?.companies?.total}
           />
         );
       },
       flex: 1,
     },
     {
-      field: 'metadata.processing_results.custom.matched',
+      field: 'metadata.processing_results.custom.total',
       headerName: 'Custom Attributes',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
         return (
-          <RenderCellText
-            displayValue={params?.row?.metadata?.processing_results?.custom?.matched}
-          />
+          <RenderCellText displayValue={params?.row?.metadata?.processing_results?.custom?.total} />
         );
       },
       flex: 1,

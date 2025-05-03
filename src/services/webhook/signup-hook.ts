@@ -6,14 +6,17 @@ import { getUserSettingsById } from '../db/user-settings';
 export const signupWebhook = async (id: string) => {
   try {
     const { appLogin, trackingMarketing, plan } = await getUserSettingsById(id);
+
+    console.log({ platformWebhook: trackingMarketing?.platforms.join(', ') });
     const data = {
       email: appLogin.username,
       fullName: `${appLogin.firstName} ${appLogin.lastName}`,
       companyName: appLogin.companyName,
-      phone: appLogin.phone,
+      // phone: appLogin.phone,
       hearAboutUs: trackingMarketing?.hearAboutUs,
-      emailSendsPerDay: trackingMarketing?.emailsSendsPerDay,
-      callRequested: trackingMarketing?.callRequested,
+      // emailSendsPerDay: trackingMarketing?.emailsSendsPerDay,
+      // callRequested: trackingMarketing?.callRequested,
+      platforms: trackingMarketing?.platforms.join(', '),
       ipAdress: trackingMarketing?.ipAddress,
       status: plan?.status,
       start_date: plan?.start_date?.toISOString(),

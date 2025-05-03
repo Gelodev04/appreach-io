@@ -22,7 +22,6 @@ export const useSmartleadCol = (options: HostOptionsType) => {
       align: 'left',
       valueGetter: (params) => params?.row?.smartlead?.client_id,
       renderCell: (params) => {
-        console.log(params);
         return params?.row?.smartlead?.client_id;
       },
       flex: 1,

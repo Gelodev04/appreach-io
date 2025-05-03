@@ -8,16 +8,19 @@ import {
   GridRowsProp,
   GridToolbarColumnsButton,
   GridToolbarContainer,
-  GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
+import { useFilteredLeadStatusRows } from '../_hooks/useFilteredLeadStatusRows';
 import { useLeadStatusCol } from '../_hooks/useLeadStatusCol';
+import { MultipleFilter } from './multiple-filter';
 
 export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const { columns } = useLeadStatusCol();
+
+  const filteredRows = useFilteredLeadStatusRows(rows);
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
@@ -49,7 +52,7 @@ export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
           justifyContent="flex-end"
         >
           <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
+          <MultipleFilter />
         </Stack>
       </GridToolbarContainer>
     ),
@@ -68,7 +71,7 @@ export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
     >
       <DataGrid
         sx={sx}
-        rows={rows}
+        rows={filteredRows}
         slots={slots}
         columns={columns}
         disableRowSelectionOnClick

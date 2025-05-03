@@ -15,11 +15,23 @@ export default function ConfirmDialog({
   open,
   onClose,
   hideCancelButton,
+  isLoading,
   hideActions,
   ...other
 }: ConfirmDialogProps) {
   return (
-    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} {...other}>
+    <Dialog
+      fullWidth
+      maxWidth="xs"
+      open={open}
+      onClose={(event, reason) => {
+        if (isLoading && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+          return;
+        }
+        onClose?.(event, reason); // allow close if not loading
+      }}
+      {...other}
+    >
       <DialogTitle sx={{ pb: 2 }}>{title}</DialogTitle>
 
       {content && <DialogContent sx={{ typography: 'body2' }}> {content} </DialogContent>}
@@ -27,7 +39,7 @@ export default function ConfirmDialog({
       {!hideActions && (
         <DialogActions>
           {!hideCancelButton && (
-            <Button variant="outlined" color="inherit" onClick={onClose}>
+            <Button disabled={isLoading} variant="outlined" color="inherit" onClick={onClose}>
               Cancel
             </Button>
           )}
