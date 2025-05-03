@@ -43,7 +43,9 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
 
   useEffect(() => {
-    if (shouldSkip) return;
+    if (shouldSkip) {
+      return;
+    }
 
     const isOn = {
       onboarding: pathname.includes('onboarding'),
@@ -70,7 +72,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       console.log('3rd redirect');
       return;
     }
-  }, [shouldSkip, rawCompletedOn, pathname, isTrialExpired, otherTools]);
+  }, [shouldSkip, rawCompletedOn, pathname, isTrialExpired, otherTools, router]);
 
   useEffect(() => {
     if (openNav) {
