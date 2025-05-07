@@ -17,6 +17,11 @@ const ROOTS = {
 // ----------------------------------------------------------------------
 
 export const paths = {
+  sharable: {
+    root: '/sharable',
+    overview: (tokens: string = 'sample_token') => `/sharable/${tokens}`,
+  },
+
   flaskApp: {
     root: ROOTS.FLASK_APP,
   },

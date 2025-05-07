@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const db = client.db();
 
     const user = await getUser();
-    const host = await db.collection('hosts').findOne({ hostCrypt: hostName });
+    const host = await db.collection('hosts').findOne({ 'token.access': hostName });
 
     if (!host) {
       return new Response(JSON.stringify({ error: 'This host does not exist' }), { status: 404 });

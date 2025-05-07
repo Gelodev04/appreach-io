@@ -50,6 +50,7 @@
     "moment-timezone": "^0.5.45",
     "mongodb": "^6",
     "mongoose": "^8.4.0",
+    "nanoid": "^5.1.5",
     "next": "^14.2.3",
     "next-auth": "^5.0.0-beta.18",
     "notistack": "^3.0.1",

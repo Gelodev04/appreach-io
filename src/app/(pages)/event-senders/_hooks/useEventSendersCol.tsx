@@ -2,6 +2,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { EventSendersDropdown } from 'src/components/dropdown-select/event-senders-dropdown';
 import { HostDropdown } from 'src/components/dropdown-select/host-dropdown';
 
+import { Typography } from '@mui/material';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
 import {
   updateSenderAccountEmailReseller,
@@ -11,6 +12,7 @@ import {
   updateSenderAccountType,
 } from 'src/services/db/sender-accounts';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
+import { fDate } from 'src/utils/format-time';
 import { EventSendersActions } from '../_components/event-senders-actions';
 import { EventSendersTextbox } from '../_components/event-senders-textbox';
 
@@ -34,8 +36,8 @@ export const useEventSendersCol = (
       headerClassName: 'sticky-col-1',
     },
     {
-      field: 'sender_label',
-      headerName: 'Sender Label',
+      field: 'sender_name',
+      headerName: 'Sender Name',
       renderCell: (params) => {
         return <EventSendersTextbox params={params} />;
       },
@@ -128,6 +130,18 @@ export const useEventSendersCol = (
       filterable: false,
       disableColumnMenu: true,
       hideable: false,
+      flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Date Created',
+      sortable: true,
+      valueGetter: (params) => params.row.metadata.created_at,
+      renderCell: (params) => {
+        return <Typography sx={{ my: 2 }}>{fDate(params.row.metadata.created_at)}</Typography>;
+      },
+      type: 'date',
       flex: 1,
       minWidth: 200,
     },

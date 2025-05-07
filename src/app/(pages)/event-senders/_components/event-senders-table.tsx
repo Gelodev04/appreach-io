@@ -140,6 +140,9 @@ export const EventSendersTable = ({
     pagination: {
       paginationModel: { pageSize: 25 },
     },
+    sorting: {
+      sortModel: [{ field: 'createdAt', sort: 'desc' }],
+    },
   };
 
   const slots = {

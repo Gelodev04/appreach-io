@@ -25,6 +25,7 @@ import {
 } from 'src/services/db/sender-accounts';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
 import { useEditableField } from '../_hooks/useEditableField';
+import { BulkEditSenderName } from './BulkEditSenderName';
 import { ConfirmEditPopover } from './confirm-edit-popover';
 
 export const EditMultipleEventSenders = ({
@@ -125,6 +126,8 @@ export const EditMultipleEventSenders = ({
 
   return (
     <>
+      <BulkEditSenderName selectedRowIds={selectedRowIds} />
+
       <ConfirmEditPopover
         field={emailServerField}
         name="emailServer"
@@ -184,6 +187,7 @@ export const EditMultipleEventSenders = ({
       >
         {isDeleting ? `Deleting...` : `Delete [${selectedRowIds.length}]`}
       </Button>
+
       <ConfirmDialog
         open={confirmDelete.value}
         onClose={confirmDelete.onFalse}

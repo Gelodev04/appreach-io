@@ -10,13 +10,13 @@ type EventSendersDropdownProps = {
 };
 
 export const EventSendersTextbox = ({ params }: EventSendersDropdownProps) => {
-  const [senderLabel, setSenderLabel] = useState(params.value?.toString() || '');
+  const [senderName, setSenderName] = useState(params.value?.toString() || '');
 
   const [unsaved, setUnsaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSenderLabel(e.target.value);
+    setSenderName(e.target.value);
     setUnsaved(true);
   }, []);
 
@@ -46,14 +46,14 @@ export const EventSendersTextbox = ({ params }: EventSendersDropdownProps) => {
     startTransition(async () => {
       const response = await updateSenderAccountLabel({
         id: params.row.id,
-        sender_label: senderLabel,
+        sender_name: senderName,
       });
 
       if (!response.success) {
         enqueueSnackbar(response.message || 'Update failed', { variant: 'error', persist: true });
       } else {
         setUnsaved(false);
-        enqueueSnackbar('Sender Label updated', { variant: 'success' });
+        enqueueSnackbar('Sender Name updated', { variant: 'success' });
       }
     });
   };
@@ -63,7 +63,7 @@ export const EventSendersTextbox = ({ params }: EventSendersDropdownProps) => {
       <Tooltip title={unsaved && 'You have unsaved changes'} placement="top">
         <TextField
           error={unsaved}
-          value={senderLabel}
+          value={senderName}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />

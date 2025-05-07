@@ -341,7 +341,7 @@ export const NewAttributesForm = ({
               Upload CSV List
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              Upload the csv list of emails you would like us to verify.{' '}
+              Upload a csv file with your lead attributes.{' '}
               <Link
                 variant="subtitle2"
                 sx={{ cursor: 'pointer' }}

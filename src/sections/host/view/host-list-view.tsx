@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import {
   DataGrid,
   GridColDef,
-  GridColumnVisibilityModel,
   GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -30,10 +29,6 @@ import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
 import { RenderLookerStudioUrl, SeedActionCells } from '../host-table-row';
 
-const HIDE_COLUMNS = {
-  category: false,
-};
-
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
 type THostListView = {
@@ -52,8 +47,6 @@ export const HostListView = ({
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const [columnVisibilityModel, setColumnVisibilityModel] =
-    useState<GridColumnVisibilityModel>(HIDE_COLUMNS);
 
   const handleDeleteRows = useCallback(async () => {
     try {
@@ -100,10 +93,10 @@ export const HostListView = ({
       minWidth: 250,
     },
     {
-      field: 'hostCrypt',
-      headerName: 'Crypt',
+      field: 'tokenAccess',
+      headerName: 'Access token',
       renderCell: (params) => {
-        return <RenderCellText displayValue={params.row?.hostCrypt} />;
+        return <RenderCellText displayValue={params.row?.token.access} />;
       },
       flex: 1,
       minWidth: 120,
@@ -199,13 +192,16 @@ export const HostListView = ({
               pagination: {
                 paginationModel: { pageSize: 25 },
               },
+              columns: {
+                columnVisibilityModel: {
+                  tokenAccess: false,
+                },
+              },
             }}
             sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             onRowSelectionModelChange={(newSelectionModel) => {
               setSelectedRowIds(newSelectionModel);
             }}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
             slots={{
               toolbar: () => (
                 <GridToolbarContainer>
