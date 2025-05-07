@@ -20,16 +20,16 @@ export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { enqueueSnackbar } = useSnackbar();
   const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
-    const { hostCrypt } = params.row;
-    const generatedUrl = generateLookerStudioUrl([hostCrypt as string]);
+    const { access } = params.row.token;
+    const generatedUrl = generateLookerStudioUrl([access as string]);
     copy(generatedUrl);
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
 
   const handleGoToUrl = (event: React.MouseEvent) => {
     event.stopPropagation();
-    const { hostCrypt } = params.row;
-    const generatedUrl = generateLookerStudioUrl([hostCrypt as string]);
+    const { access } = params.row.token;
+    const generatedUrl = generateLookerStudioUrl([access as string]);
     window.open(generatedUrl, '_blank');
   };
 

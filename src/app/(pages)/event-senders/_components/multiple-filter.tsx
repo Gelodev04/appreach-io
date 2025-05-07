@@ -34,7 +34,7 @@ export const MultipleFilter = ({
 
   const defaultFilterValues = {
     sender: '',
-    sender_label: '',
+    sender_name: '',
     email_server: '',
     email_reseller: '',
     platform: '',
@@ -110,14 +110,14 @@ export const MultipleFilter = ({
 
             <Box>
               <Typography variant="subtitle2" color="GrayText">
-                Sender Label
+                Sender Name
               </Typography>
               <TextField
                 fullWidth
                 size="small"
-                placeholder="Enter sender label"
-                value={localFilters.sender_label}
-                onChange={(e) => handleChange('sender_label', e.target.value)}
+                placeholder="Enter sender name"
+                value={localFilters.sender_name}
+                onChange={(e) => handleChange('sender_name', e.target.value)}
               />
             </Box>
 

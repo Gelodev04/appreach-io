@@ -119,7 +119,7 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
       host_name: data.hostId!.label,
       host_crypt: hostCrypt,
       sender: normalizedLinkedInUrl,
-      sender_label: data.senderLabel,
+      sender_name: data.senderLabel,
       platform: 'non-api',
       type: 'linkedin',
       metadata: {
@@ -143,10 +143,10 @@ export const createSenderAccount = async (data: CreateSenderAccountData) => {
 
 export const updateSenderAccountLabel = async ({
   id,
-  sender_label,
+  sender_name,
 }: {
   id: string;
-  sender_label: string;
+  sender_name: string;
 }) => {
   try {
     const senderItem = await getSenderAccountById(id, { metadata: true });
@@ -162,7 +162,7 @@ export const updateSenderAccountLabel = async ({
         id,
       },
       data: {
-        sender_label,
+        sender_name,
         metadata: {
           ...metadata, // Retain existing fields
           updated_at: new Date(),
@@ -422,6 +422,43 @@ export const deleteMultipleSenderAccountsById = async (ids: string[]) => {
   } catch (error) {
     console.error('Unable to delete sender accounts:', error);
     return { success: false, message: 'Unable to delete sender accounts.' };
+  }
+};
+
+export const updateMultipleSenderName = async (ids: string[], value: string) => {
+  try {
+    // Fetch existing sender accounts metadata
+    const senderAccounts = await prisma.sender_accounts.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, metadata: true },
+    });
+
+    // Prepare bulk update payload
+    const updatePromises = senderAccounts.map((account) =>
+      prisma.sender_accounts.update({
+        where: { id: account.id },
+        data: {
+          sender_name: value,
+          metadata: {
+            ...account.metadata, // Retain existing metadata fields
+            updated_at: new Date(),
+            bigquery_sync_status: 'pending',
+          },
+        },
+      })
+    );
+
+    // Execute all updates concurrently
+    await Promise.all(updatePromises);
+
+    revalidatePath(paths.eventSenders.root);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating sender account records:', error);
+    return {
+      success: false,
+      message: 'Failed to update sender account records. Please try again later.',
+    };
   }
 };
 

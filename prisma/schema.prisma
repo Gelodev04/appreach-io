@@ -212,6 +212,12 @@ type HostsEngagementSettings {
   useEventSenders Boolean?
 }
 
+type HostToken {
+  access      String
+  lastResetAt DateTime @db.Date
+  history     String[]
+}
+
 type SeedBatchesGenerate {
   clickLink       Boolean?
   downloadMessage Boolean?
@@ -516,13 +522,14 @@ model attribute_uploads {
 model hosts {
   id                 String                   @id @default(auto()) @map("_id") @db.ObjectId
   host               String
-  hostCrypt          String
+  hostCrypt          String?
   userSettings       HostsUserSettings?
   lookerStudio       HostsLookerStudio?
   notifications      HostsNotifications?
   engagementSettings HostsEngagementSettings?
   ownerId            String?                  @db.ObjectId
   ownerName          String?
+  token              HostToken
 }
 
 model smartleadEmailAccounts {
@@ -618,7 +625,7 @@ model sender_accounts {
   host_name      String
   host_crypt     String?
   sender         String
-  sender_label   String?
+  sender_name    String?
   email_server   String?
   email_reseller String?
   platform       String

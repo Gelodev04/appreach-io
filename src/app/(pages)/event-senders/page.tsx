@@ -33,6 +33,7 @@ const EventSendersPage = async () => {
       <EventSendersHeader />
 
       <EventSendersTable
+        key={JSON.stringify(rows)}
         rows={rows}
         platFormOptions={platformOptionsMapped}
         hostOptions={senderProfiles}

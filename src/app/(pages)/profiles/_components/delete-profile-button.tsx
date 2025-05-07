@@ -47,10 +47,14 @@ export const DeleteProfileButton = ({
 
   return (
     <>
-      <Tooltip title="Delete email" placement="top">
+      <Tooltip title="Delete profile" placement="top">
         <Box sx={{ p: 0.5, position: 'relative' }}>
           <IconButton size="medium" onClick={handleOpenDialog}>
-            <Icon icon="material-symbols:delete" color={theme.palette.error.dark} />
+            <Icon
+              style={{ pointerEvents: 'none' }}
+              icon="material-symbols:delete"
+              color={theme.palette.error.dark}
+            />
           </IconButton>
         </Box>
       </Tooltip>

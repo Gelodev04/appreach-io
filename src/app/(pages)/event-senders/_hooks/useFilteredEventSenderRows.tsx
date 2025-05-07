@@ -12,8 +12,8 @@ export const useFilteredEventSenderRows = (rows: GridRowsProp) => {
         (row.sender ?? '').toLowerCase().includes(filters.sender.toLowerCase().trim());
 
       const matchesSenderLabel =
-        !filters.sender_label ||
-        (row.sender_label ?? '').toLowerCase().includes(filters.sender_label.toLowerCase().trim());
+        !filters.sender_name ||
+        (row.sender_name ?? '').toLowerCase().includes(filters.sender_name.toLowerCase().trim());
 
       return (
         matchesSender &&

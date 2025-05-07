@@ -7,8 +7,10 @@ import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { sendEmail } from 'src/auth/lib/sendgrid';
 import { TRIAL_STATUS } from 'src/config-global';
+import { defaultEngagementSettings } from 'src/constants';
 import { paths } from 'src/routes/paths';
-import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateUniqueAccessToken } from 'src/sections/host/utils/generate-unique-access-token';
 import { generateTokenFromObjectId } from 'src/sections/host/utils/generate-userId-token';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
 import { createSenderDomain, getSenderByDomain } from 'src/services/db/sender-domains';
@@ -27,17 +29,8 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      companyName,
-      phoneNumber,
-      hearAboutUs,
-      isTrial,
-      platforms,
-    } = data;
+    const { email, password, firstName, lastName, companyName, hearAboutUs, isTrial, platforms } =
+      data;
 
     const normalizedPlatforms = platforms.split(',').map((item: string) => item.trim());
 
@@ -70,13 +63,11 @@ export async function POST(request: Request) {
         firstName,
         lastName,
         companyName,
-        phone: phoneNumber,
         approved: false,
         currentLogin: null,
         lastLogin: null,
         password: hashedPassword,
         verified: false,
-        view: 'inboxPlacementAudit',
       },
       trackingMarketing: {
         hearAboutUs,
@@ -103,7 +94,6 @@ export async function POST(request: Request) {
       },
       created: new Date(),
       lastUpdated: new Date(),
-      seeds: {},
       plan: {
         customPlan: false,
       },
@@ -113,7 +103,6 @@ export async function POST(request: Request) {
     };
 
     if (isTrial) {
-      signupParams.seeds = { assignedCount: 50 };
       signupParams.plan = {
         ...signupParams.plan,
         lookup_key: 'trial',
@@ -164,15 +153,16 @@ export async function POST(request: Request) {
 
       return hostName;
     };
+
     const baseHostName = companyName.toLowerCase().replace(/\s+/g, '');
     const defaultHostName = await generateUniqueHostName(baseHostName);
-    const defaultHostCrypt = generateHostCrypt(defaultHostName);
-    const defaultHostLookerStudioUrl = generateLookerStudioUrl([defaultHostCrypt]);
+    const defaultAccessToken = await generateUniqueAccessToken();
+
+    const defaultHostLookerStudioUrl = generateLookerStudioUrl([defaultAccessToken]);
 
     // Create default host
     const { insertedId: hostId } = await db.collection('hosts').insertOne({
       host: defaultHostName,
-      hostCrypt: defaultHostCrypt,
       ownerId: userId,
       ownerName: email,
       userSettings: {
@@ -180,10 +170,13 @@ export async function POST(request: Request) {
         externalSenderAddresses: [],
         notificationAddressArray: [],
       },
-      smartlead: {
-        webhook: `https://api.outreachmagic.io/KIs96Yu9HQSy/${defaultHostCrypt}`,
-      },
       lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
+      token: {
+        access: defaultAccessToken,
+        lastResetAt: new Date(),
+        history: [],
+      },
+      engagementSettings: defaultEngagementSettings.engagementSettings,
     });
 
     // Update the user with the new host ObjectId

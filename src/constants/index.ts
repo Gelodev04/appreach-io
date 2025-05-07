@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 export const defaultEngagementSettings = {
   key: 'defaultEngagementSettings',
   engagementSettings: {
@@ -8,7 +10,7 @@ export const defaultEngagementSettings = {
     clickLink: 100,
     linksToClick: [],
     linksNotToClick: [],
-    filterId: null,
+    filterId: nanoid(5),
     disableFilterId: false,
     replyMessage: 100,
     replyPrompt:

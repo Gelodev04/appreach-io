@@ -2,10 +2,12 @@
 
 import { Prisma } from '@prisma/client';
 import prisma from 'src/auth/lib/prisma/db-prisma';
-import { generateHostCrypt, generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateLookerStudioUrl } from 'src/sections/host/utils';
 
+import { nanoid } from 'nanoid';
 import { revalidatePath } from 'next/cache';
 import { paths } from 'src/routes/paths';
+import { generateUniqueAccessToken } from 'src/sections/host/utils/generate-unique-access-token';
 import { UpdateHostData, UpdateHostNotification } from 'src/types/host';
 import {
   decrementSenderProfilesUsed,
@@ -129,15 +131,12 @@ export const createHost = async (data: UpdateHostData) => {
       return { success: false, message: 'Cannot create, profile name already in use' };
     }
 
-    const hostCrypt = generateHostCrypt(data.host);
-    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
+    const filterId = data.filterId ? data.filterId : nanoid(5);
+    const accessToken = await generateUniqueAccessToken();
+    const lookerStudioUrl = generateLookerStudioUrl([accessToken]);
 
     const normalizedData = {
       host: data.host,
-      hostCrypt,
-      smartlead: {
-        webhook: `https://api.outreachmagic.io/KIs96Yu9HQSy/${hostCrypt}`,
-      },
       userSettings: {
         timezone: data.timezone,
       },
@@ -156,9 +155,14 @@ export const createHost = async (data: UpdateHostData) => {
           ? data.linksNotToClick.split(',').map((link) => link.trim())
           : [],
         replyMessage: data.replyMessage,
-        filterId: data.filterId ? data.filterId : '',
+        filterId,
         replyPrompt: data.replyPrompt ? data.replyPrompt : '',
         useEventSenders: data.useEventSenders,
+      },
+      token: {
+        access: accessToken,
+        lastResetAt: new Date(),
+        history: [],
       },
     };
 
@@ -292,13 +296,12 @@ export const addNewProfile = async (host: string) => {
       return { success: false, message: 'Cannot create, profile name already in use' };
     }
 
-    const hostCrypt = generateHostCrypt(host);
-    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
+    const accessToken = await generateUniqueAccessToken();
+    const lookerStudioUrl = generateLookerStudioUrl([accessToken]);
 
     const createdHost = await prisma.hosts.create({
       data: {
         host,
-        hostCrypt,
         ownerId: id,
         ownerName: appLogin.username,
         userSettings: {
@@ -307,6 +310,26 @@ export const addNewProfile = async (host: string) => {
           notificationAddressArray: [],
         },
         lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
+        token: {
+          access: accessToken,
+          lastResetAt: new Date(),
+          history: [],
+        },
+        engagementSettings: {
+          scrollMessage: 100,
+          markImportant: 100,
+          removeSpam: 100,
+          movePrimary: 100,
+          clickLink: 100,
+          linksToClick: [],
+          linksNotToClick: [],
+          filterId: nanoid(5),
+          disableFilterId: false,
+          replyMessage: 100,
+          replyPrompt:
+            'Write an engaging reply, express interest, show appreciation, and ask a thoughtful follow-up question. Don’t always use the most natural words and provide personal examples.',
+          useEventSenders: true,
+        },
       },
     });
     const newHostId = createdHost.id;

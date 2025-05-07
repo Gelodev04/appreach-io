@@ -95,7 +95,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
       : '',
     filterId: updatedHostItem?.engagementSettings?.filterId
       ? updatedHostItem.engagementSettings.filterId
-      : (currentItem?.hostCrypt.split('_')[1] ?? ''),
+      : '',
     disableFilterId: updatedHostItem?.engagementSettings?.disableFilterId ?? false,
     replyPrompt:
       updatedHostItem?.engagementSettings?.replyPrompt ??

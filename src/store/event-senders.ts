@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type Filters = {
   sender: string;
-  sender_label: string;
+  sender_name: string;
   email_server: string;
   email_reseller: string;
   platform: string;
@@ -20,7 +20,7 @@ type EventSendersStore = {
 export const useEventSendersStore = create<EventSendersStore>((set) => ({
   filters: {
     sender: '',
-    sender_label: '',
+    sender_name: '',
     email_server: '',
     email_reseller: '',
     platform: '',
