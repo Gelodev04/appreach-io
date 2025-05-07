@@ -13,7 +13,7 @@ export async function generateUniqueAccessToken(): Promise<string> {
       $or: [{ 'token.access': token }, { 'token.history': token }],
     });
 
-    return found ? await generate() : token;
+    return found ? generate() : token;
   };
 
   return generate();
