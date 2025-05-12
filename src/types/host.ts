@@ -21,6 +21,11 @@ interface ISmartlead {
   webhook: string;
 }
 
+interface IToken {
+  access: string;
+  lastResetAt: string;
+}
+
 interface IInboxEngagement {
   markImportant: boolean;
   removeSpam: boolean;
@@ -77,4 +82,5 @@ export interface IHost {
   lookerStudio: ILookerStudio;
   smartlead: ISmartlead;
   inboxEngagement: IInboxEngagement;
+  token: IToken;
 }
