@@ -9,7 +9,7 @@ import { useUsersPlanStore } from 'src/store/user-setting';
 // ----------------------------------------------------------------------
 
 const loginPaths: Record<string, string> = {
-  nextAuth: paths.sharable.overview(),
+  nextAuth: paths.auth.login,
 };
 
 // ----------------------------------------------------------------------

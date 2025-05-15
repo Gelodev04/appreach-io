@@ -62,6 +62,32 @@ export const getHostByName = async (name: string) => {
   }
 };
 
+export const checkIfTokenExist = async (accessToken: string) => {
+  try {
+    const tokens = decodeURIComponent(accessToken)
+      .split(',')
+      .map((t) => t.trim());
+
+    const allHosts = await prisma.hosts.findMany({
+      select: {
+        id: true,
+        token: {
+          select: {
+            access: true,
+          },
+        },
+      },
+    });
+
+    const exists = allHosts.some((host) => tokens.includes(host.token.access));
+
+    return { success: true, exists };
+  } catch (error) {
+    console.error('Error checking token existence:', error);
+    return { success: false, message: 'Unable to check tokens' };
+  }
+};
+
 export const updateHostData = async (id: string, data: UpdateHostData) => {
   try {
     // Fetch current host data

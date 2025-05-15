@@ -219,7 +219,7 @@ type HostToken {
 }
 
 type HostMetadata {
-  created_at DateTime @db.Date
+  created_at DateTime? @db.Date
 }
 
 type SeedBatchesGenerate {
@@ -536,7 +536,7 @@ model hosts {
   ownerId            String?                  @db.ObjectId
   ownerName          String?
   token              HostToken
-  metadata           HostMetadata
+  metadata           HostMetadata?
 }
 
 model smartleadEmailAccounts {
