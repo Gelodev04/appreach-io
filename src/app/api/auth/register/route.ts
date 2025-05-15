@@ -177,6 +177,9 @@ export async function POST(request: Request) {
         history: [],
       },
       engagementSettings: defaultEngagementSettings.engagementSettings,
+      metadata: {
+        created_at: new Date(),
+      },
     });
 
     // Update the user with the new host ObjectId

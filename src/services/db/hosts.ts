@@ -62,6 +62,32 @@ export const getHostByName = async (name: string) => {
   }
 };
 
+export const checkIfTokenExist = async (accessToken: string) => {
+  try {
+    const tokens = decodeURIComponent(accessToken)
+      .split(',')
+      .map((t) => t.trim());
+
+    const allHosts = await prisma.hosts.findMany({
+      select: {
+        id: true,
+        token: {
+          select: {
+            access: true,
+          },
+        },
+      },
+    });
+
+    const exists = allHosts.some((host) => tokens.includes(host.token.access));
+
+    return { success: true, exists };
+  } catch (error) {
+    console.error('Error checking token existence:', error);
+    return { success: false, message: 'Unable to check tokens' };
+  }
+};
+
 export const updateHostData = async (id: string, data: UpdateHostData) => {
   try {
     // Fetch current host data
@@ -163,6 +189,9 @@ export const createHost = async (data: UpdateHostData) => {
         access: accessToken,
         lastResetAt: new Date(),
         history: [],
+      },
+      metadata: {
+        created_at: new Date(),
       },
     };
 
@@ -329,6 +358,9 @@ export const addNewProfile = async (host: string) => {
           replyPrompt:
             'Write an engaging reply, express interest, show appreciation, and ask a thoughtful follow-up question. Don’t always use the most natural words and provide personal examples.',
           useEventSenders: true,
+        },
+        metadata: {
+          created_at: new Date(),
         },
       },
     });

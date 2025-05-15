@@ -57,6 +57,51 @@ export function RenderLookerStudioUrl({ params }: ParamsProps) {
   );
 }
 
+export function RenderSharableReportURL({ params }: ParamsProps) {
+  const { copy } = useCopyToClipboard();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCopy = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    const { access } = params.row.token;
+    const relativeUrl = paths.sharable.overview(access);
+    const fullUrl = `${window.location.origin}${relativeUrl}`;
+    console.log({ fullUrl });
+    copy(fullUrl);
+    enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
+  };
+
+  const handleGoToUrl = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    const { access } = params.row.token;
+    const generatedUrl = paths.sharable.overview(access);
+    window.open(generatedUrl, '_blank');
+  };
+
+  return (
+    <Stack direction="row">
+      <Tooltip title="Copy url" placement="top">
+        <Button
+          onClick={handleCopy}
+          sx={{ zIndex: 20, color: '#637381' }}
+          startIcon={<Iconify icon="uil:copy" />}
+        >
+          Copy
+        </Button>
+      </Tooltip>
+      <Tooltip title="Go to url" placement="top">
+        <Button
+          onClick={handleGoToUrl}
+          sx={{ zIndex: 20, color: '#637381' }}
+          startIcon={<Iconify icon="humbleicons:external-link" />}
+        >
+          Open
+        </Button>
+      </Tooltip>
+    </Stack>
+  );
+}
+
 export const SeedActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
   const handleEditSeedsRow = () => {

@@ -41,8 +41,6 @@ export default function LookerStudioView() {
     </Alert>
   );
 
-  console.log({ lookerStudio: generateLookerStudioUrl(mappedTokens, url) });
-
   const renderLookerStudioIframe = (
     <iframe
       src={generateLookerStudioUrl(mappedTokens, url)}

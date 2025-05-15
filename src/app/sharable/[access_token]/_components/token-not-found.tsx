@@ -14,9 +14,7 @@ import CompactLayout from 'src/layouts/compact';
 import { MotionContainer, varBounce } from 'src/components/animate';
 import { paths } from 'src/routes/paths';
 
-// ----------------------------------------------------------------------
-
-export default function NotFoundView() {
+export const TokenNotFound = () => {
   return (
     <CompactLayout>
       <MotionContainer>
@@ -27,13 +25,13 @@ export default function NotFoundView() {
         </m.div>
         <m.div variants={varBounce().in}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            Sorry, Page Not Found!
+            Sorry, Sharable Report Not Found!
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary', mb: 2 }}>
-            Sorry, we couldn’t find the page you’re looking for.
+            We couldn’t find the report you’re looking for. Maybe it has expired?
           </Typography>
         </m.div>
 
@@ -61,4 +59,4 @@ export default function NotFoundView() {
       </MotionContainer>
     </CompactLayout>
   );
-}
+};

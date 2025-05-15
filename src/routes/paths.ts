@@ -29,7 +29,7 @@ export const paths = {
     root: ROOTS.MAIN_WEBSITE,
     terms: `${ROOTS.OUTREACH_MAGIC}/terms-of-use/`,
     privacy: `${ROOTS.OUTREACH_MAGIC}/privacy-policy/`,
-    contactUs: `${ROOTS.INBOX_DADDY}/contact-us`,
+    contactUs: `${ROOTS.OUTREACH_MAGIC}/contact-us`,
   },
   // AUTH
   auth: {

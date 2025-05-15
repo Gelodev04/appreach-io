@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@mui/material/Button';
+import { Box, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -14,20 +14,19 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
 import { hosts } from '@prisma/client';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { DeleteProfileButton } from 'src/app/(pages)/profiles/_components/delete-profile-button';
+import { ToolBarReports } from 'src/app/(pages)/profiles/_components/toolbar-reports';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import EmptyContent from 'src/components/empty-content';
-import Iconify from 'src/components/iconify';
 import { ItemUsageDisplay } from 'src/components/item-usage-tracker/item-usage-display';
 import { useSnackbar } from 'src/components/snackbar';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
 import { useBoolean } from 'src/hooks/use-boolean';
-import { deleteUserHost } from 'src/services/db/hosts';
+import { fDate } from 'src/utils/format-time';
 import HostAddExistingHost from '../host-add-existing-host';
 import { HostNewAccountProfile } from '../host-new-account-profile';
-import { RenderLookerStudioUrl, SeedActionCells } from '../host-table-row';
+import { RenderLookerStudioUrl, RenderSharableReportURL, SeedActionCells } from '../host-table-row';
 
 const HIDE_COLUMNS_TOGGLABLE = ['actions'];
 
@@ -47,30 +46,43 @@ export const HostListView = ({
   const { enqueueSnackbar } = useSnackbar();
   const confirmRows = useBoolean();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const [selectedRows, setSelectedRows] = useState<hosts[]>([]);
 
-  const handleDeleteRows = useCallback(async () => {
-    try {
-      await deleteUserHost(selectedRowIds as string[]);
-      enqueueSnackbar('Items deleted', { variant: 'warning' });
-    } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
-    }
-  }, [enqueueSnackbar, selectedRowIds]);
+  // const handleDeleteRows = useCallback(async () => {
+  //   try {
+  //     await deleteUserHost(selectedRowIds as string[]);
+  //     enqueueSnackbar('Items deleted', { variant: 'warning' });
+  //   } catch (error) {
+  //     enqueueSnackbar(error.message, { variant: 'error' });
+  //   }
+  // }, [enqueueSnackbar, selectedRowIds]);
 
   const columns: GridColDef[] = [
     {
       field: 'host',
       headerName: 'Name',
-      hideable: false,
       renderCell: (params) => {
+        if (params.row.id === 'all-profiles') {
+          return <Typography sx={{ fontWeight: 'bold' }}>All Account Profiles</Typography>;
+        }
         return <RenderCellText displayValue={params.row?.host} />;
       },
       flex: 1,
-      minWidth: 120,
+      minWidth: 200,
+    },
+    {
+      field: 'sharableReport',
+      headerName: 'Sharable Report',
+      renderCell: (params) => <RenderSharableReportURL params={params} />,
+      flex: 1,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      minWidth: 160,
     },
     {
       field: 'lookerStudio',
-      headerName: 'Profile Report',
+      headerName: 'White Label Report',
       type: 'singleSelect',
       renderCell: (params) => <RenderLookerStudioUrl params={params} />,
       flex: 1,
@@ -88,7 +100,10 @@ export const HostListView = ({
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      renderCell: (params) => <SeedActionCells params={params} />,
+      renderCell: (params) => {
+        if (params.row.id === 'all-profiles') return null;
+        return <SeedActionCells params={params} />;
+      },
       flex: 1,
       minWidth: 250,
     },
@@ -96,6 +111,7 @@ export const HostListView = ({
       field: 'tokenAccess',
       headerName: 'Access token',
       renderCell: (params) => {
+        if (params.row.id === 'all-profiles') return null;
         return <RenderCellText displayValue={params.row?.token.access} />;
       },
       flex: 1,
@@ -116,6 +132,7 @@ export const HostListView = ({
       headerAlign: 'left',
       align: 'left',
       renderCell: (params) => {
+        if (params.row.id === 'all-profiles') return null;
         return (
           <DeleteProfileButton
             id={params?.row?.id}
@@ -130,6 +147,19 @@ export const HostListView = ({
       hideable: false,
       flex: 1,
       minWidth: 120,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Date Created',
+      sortable: true,
+      valueGetter: (params) => params.row.metadata.created_at,
+      renderCell: (params) => {
+        if (params.row.id === 'all-profiles') return null;
+        return <Typography sx={{ my: 2 }}>{fDate(params.row.metadata.created_at)}</Typography>;
+      },
+      type: 'date',
+      flex: 1,
+      minWidth: 200,
     },
   ];
 
@@ -183,10 +213,14 @@ export const HostListView = ({
         >
           <DataGrid
             disableRowSelectionOnClick
+            checkboxSelection
             rows={userHosts}
             columns={columns}
             loading={false}
             getRowHeight={() => 'auto'}
+            getRowClassName={(params) =>
+              params.row.id === 'all-profiles' ? 'all-profile-row' : ''
+            }
             pageSizeOptions={[5, 10, 25, 50, 100]}
             initialState={{
               pagination: {
@@ -197,10 +231,13 @@ export const HostListView = ({
                   tokenAccess: false,
                 },
               },
+              sorting: {
+                sortModel: [{ field: 'createdAt', sort: 'desc' }],
+              },
             }}
-            sx={{ '& .MuiTablePagination-root': { display: 'flex' } }}
             onRowSelectionModelChange={(newSelectionModel) => {
-              setSelectedRowIds(newSelectionModel);
+              const selected = userHosts.filter((row) => newSelectionModel.includes(row.id));
+              setSelectedRows(selected);
             }}
             slots={{
               toolbar: () => (
@@ -214,17 +251,25 @@ export const HostListView = ({
                     alignItems="center"
                     justifyContent="flex-end"
                   >
-                    {!!selectedRowIds.length && (
-                      <Button
-                        size="small"
-                        color="error"
-                        startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
-                        onClick={confirmRows.onTrue}
+                    {!!selectedRows.length && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: 1,
+                        }}
                       >
-                        Delete ({selectedRowIds.length})
-                      </Button>
-                    )}
+                        <ToolBarReports selectedRows={selectedRows} />
 
+                        {/* <Button
+                          size="small"
+                          color="error"
+                          startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
+                          onClick={confirmRows.onTrue}
+                        >
+                          Delete [{selectedRowIds.length}]
+                        </Button> */}
+                      </Box>
+                    )}
                     <GridToolbarColumnsButton />
                     <GridToolbarFilterButton />
                   </Stack>
@@ -242,7 +287,7 @@ export const HostListView = ({
         </Card>
       </Container>
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={confirmRows.value}
         onClose={confirmRows.onFalse}
         title="Delete"
@@ -263,7 +308,7 @@ export const HostListView = ({
             Delete
           </Button>
         }
-      />
+      /> */}
     </>
   );
 };

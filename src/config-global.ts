@@ -10,6 +10,7 @@ export const { MONGODB_URI } = envServer;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root;
+export const PATH_IF_EXPIRED = paths.auth.login;
 
 // STRIPE
 

@@ -1,4 +1,5 @@
-import { format, getTime, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, getTime } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +21,16 @@ export function fDateTime(date: InputValue, newFormat?: string) {
   const fm = newFormat || 'dd MMM yyyy p';
 
   return date ? format(new Date(date), fm) : '';
+}
+
+export function fDateTimeEST(date: Date | string, newFormat?: string) {
+  if (!date) return '';
+
+  const timeZone = 'America/New_York';
+  const zonedDate = toZonedTime(new Date(date), timeZone);
+  const formatString = newFormat || 'dd MMM yyyy p';
+
+  return format(zonedDate, formatString);
 }
 
 export function fTimestamp(date: InputValue) {

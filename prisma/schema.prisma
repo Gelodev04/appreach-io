@@ -218,6 +218,10 @@ type HostToken {
   history     String[]
 }
 
+type HostMetadata {
+  created_at DateTime? @db.Date
+}
+
 type SeedBatchesGenerate {
   clickLink       Boolean?
   downloadMessage Boolean?
@@ -429,7 +433,9 @@ type SenderAccountsMetadata {
 }
 
 type EventContent {
-  body String?
+  body_html    String?
+  body_text    String?
+  body_preview String?
 }
 
 type EventLeadStatus {
@@ -449,8 +455,8 @@ type EventRecipient {
 }
 
 type EventSender {
-  linkedin_profile String?
-  email            String?
+  linkedin_url String?
+  email        String?
 }
 
 type EventUpdateHistory {
@@ -530,6 +536,7 @@ model hosts {
   ownerId            String?                  @db.ObjectId
   ownerName          String?
   token              HostToken
+  metadata           HostMetadata?
 }
 
 model smartleadEmailAccounts {
@@ -641,7 +648,6 @@ model events {
   content         EventContent?
   host_id         String?              @db.ObjectId
   host_name       String?
-  host_crypt      String?
   lead_status     EventLeadStatus?
   metadata        EventMetadata?
   recipient       EventRecipient?

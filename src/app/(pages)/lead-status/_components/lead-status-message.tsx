@@ -3,7 +3,7 @@ import { GridCellParams } from '@mui/x-data-grid';
 import { useState } from 'react';
 
 export const LeadStatusMessage = ({ params }: { params: GridCellParams }) => {
-  const msg = params?.row?.content?.body || '';
+  const msg = params?.row?.content?.body_preview || '';
   const previewLimit = 100;
 
   const [expanded, setExpanded] = useState(false);
