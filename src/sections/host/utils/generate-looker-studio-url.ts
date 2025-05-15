@@ -7,6 +7,5 @@ export function generateLookerStudioUrl(accessToken: string[], baseUrl?: string)
   if (!effectiveBaseUrl) throw new Error('Looker url is not defined');
 
   const idsString = accessToken.join(',');
-  console.log({ idsString: effectiveBaseUrl.replaceAll('{}', idsString) });
   return effectiveBaseUrl.replaceAll('{}', idsString);
 }

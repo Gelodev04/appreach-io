@@ -433,7 +433,9 @@ type SenderAccountsMetadata {
 }
 
 type EventContent {
-  body String?
+  body_html    String?
+  body_text    String?
+  body_preview String?
 }
 
 type EventLeadStatus {
@@ -453,8 +455,8 @@ type EventRecipient {
 }
 
 type EventSender {
-  linkedin_profile String?
-  email            String?
+  linkedin_url String?
+  email        String?
 }
 
 type EventUpdateHistory {
@@ -646,7 +648,6 @@ model events {
   content         EventContent?
   host_id         String?              @db.ObjectId
   host_name       String?
-  host_crypt      String?
   lead_status     EventLeadStatus?
   metadata        EventMetadata?
   recipient       EventRecipient?

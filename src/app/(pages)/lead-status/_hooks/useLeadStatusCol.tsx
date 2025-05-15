@@ -1,18 +1,18 @@
 import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
-import { fDateTime } from 'src/utils/format-time';
+import { fDateTimeEST } from 'src/utils/format-time';
 import { LeadStatusMessage } from '../_components/lead-status-message';
 
 export const useLeadStatusCol = () => {
   const columns: GridColDef[] = [
     {
       field: 'event_timestamp',
-      headerName: 'Date',
+      headerName: 'Date (EST)',
       sortable: true,
       valueGetter: (params) => params.row.event_timestamp,
       renderCell: (params) => {
-        return <Typography sx={{ my: 2 }}>{fDateTime(params.row.event_timestamp)}</Typography>;
+        return <Typography sx={{ my: 2 }}>{fDateTimeEST(params.row.event_timestamp)}</Typography>;
       },
       type: 'date',
       flex: 1,
@@ -46,7 +46,7 @@ export const useLeadStatusCol = () => {
       valueGetter: (params) => params.row.recipient.email || params.row.recipient.linkedin_url,
       renderCell: (params) => {
         const { sender } = params.row;
-        const displayValue = sender?.email || sender?.linkedin_profile || 'N/A';
+        const displayValue = sender?.email || sender?.linkedin_url || 'N/A';
 
         return <RenderCellText displayValue={displayValue} />;
       },
@@ -90,11 +90,11 @@ export const useLeadStatusCol = () => {
     },
     {
       field: 'content.body',
-      headerName: 'Message',
+      headerName: 'Message Preview',
       headerAlign: 'left',
       align: 'left',
       valueGetter: (params) => {
-        return params.row.content.body;
+        return params.row.content.body_preview;
       },
       renderCell: (params) => {
         return <LeadStatusMessage params={params} />;

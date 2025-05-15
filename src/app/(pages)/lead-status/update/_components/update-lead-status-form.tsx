@@ -5,14 +5,17 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Stack, Typography, useTheme } from '@mui/material';
 
 import Grid from '@mui/material/Unstable_Grid2';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
-import { RHFDatePicker } from 'src/components/hook-form/rhf-date-picker';
+import { RHFDateTimePicker } from 'src/components/hook-form/rhf-time-picker';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { paths } from 'src/routes/paths';
@@ -33,6 +36,8 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
   const router = useRouter();
   const { hosts } = useGetSeedSettings();
   const [isPending, startTransition] = useTransition();
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   const [senderAccountOptions, setSenderAccountOptions] = useState<
     Awaited<ReturnType<typeof getSenderAccountsByHostId>>
@@ -134,7 +139,9 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
   const onSubmit = handleSubmit(async (data) => {
     try {
       const normalizedData = {
-        event_timestamp: new Date(data.eventDate).toISOString(),
+        event_timestamp: dayjs
+          .tz(dayjs(data.eventDate).format('YYYY-MM-DDTHH:mm'), 'America/New_York')
+          .format(),
         platform: data.platform!.value,
         content: {
           body: data.content,
@@ -288,7 +295,8 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
                 />
               </Box>
 
-              <RHFDatePicker name="eventDate" label="Event Date" />
+              {/* <RHFDatePicker name="eventDate" label="Event Date" /> */}
+              <RHFDateTimePicker name="eventDate" label="Event Date (EST Timezone)" />
 
               <RHFTextField
                 name="content"
@@ -296,7 +304,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
                 InputLabelProps={{ shrink: true }}
                 placeholder="e.g. All replied positively after step 2 sequence."
                 minRows={3}
-                label="Optional Notes"
+                label="Event Message (optional)"
               />
             </Stack>
           </Card>

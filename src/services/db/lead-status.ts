@@ -2,7 +2,6 @@
 
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { LeadStatusData } from 'src/types/lead-status';
-import { getHostById } from './hosts';
 import { getUserSettings } from './user-settings';
 
 export const getLeadStatusByHostIds = async () => {
@@ -28,7 +27,6 @@ export const getLeadStatusByHostIds = async () => {
 };
 export const createLeadStatus = async (data: LeadStatusData) => {
   try {
-    const { hostCrypt } = await getHostById(data.host_id, { hostCrypt: true });
     const { id } = await getUserSettings({ id: true });
 
     const normalizedLeads = data.leads.map((lead) => {
@@ -49,7 +47,7 @@ export const createLeadStatus = async (data: LeadStatusData) => {
       if (data.senders === 'n/a') {
         sender = {};
       } else if (data.senders.includes('linkedin')) {
-        sender = { linkedin_profile: data.senders };
+        sender = { linkedin_url: data.senders };
       } else {
         sender = { email: data.senders };
       }
@@ -59,11 +57,12 @@ export const createLeadStatus = async (data: LeadStatusData) => {
         event_type: 'lead_status_updated',
         platform: data.platform,
         content: {
-          body: data.content.body,
+          body_html: data.content.body,
+          body_text: data.content.body,
+          body_preview: data.content.body?.replace(/\n/g, '').slice(0, 100),
         },
         host_id: data.host_id,
         host_name: data.host_name,
-        host_crypt: hostCrypt,
         lead_status: {
           name: data.lead_status.name,
           sentiment: data.lead_status.sentiment,
