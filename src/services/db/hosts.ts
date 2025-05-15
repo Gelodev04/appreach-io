@@ -164,6 +164,9 @@ export const createHost = async (data: UpdateHostData) => {
         lastResetAt: new Date(),
         history: [],
       },
+      metadata: {
+        created_at: new Date(),
+      },
     };
 
     try {
@@ -329,6 +332,9 @@ export const addNewProfile = async (host: string) => {
           replyPrompt:
             'Write an engaging reply, express interest, show appreciation, and ask a thoughtful follow-up question. Don’t always use the most natural words and provide personal examples.',
           useEventSenders: true,
+        },
+        metadata: {
+          created_at: new Date(),
         },
       },
     });

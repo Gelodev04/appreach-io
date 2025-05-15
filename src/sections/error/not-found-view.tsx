@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { m } from 'framer-motion';
+import Image from 'next/image';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -11,7 +11,8 @@ import { RouterLink } from 'src/routes/components';
 
 import CompactLayout from 'src/layouts/compact';
 
-import { varBounce, MotionContainer } from 'src/components/animate';
+import { MotionContainer, varBounce } from 'src/components/animate';
+import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -32,14 +33,31 @@ export default function NotFoundView() {
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary', mb: 2 }}>
-            Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be
-            sure to check your spelling.
+            Sorry, we couldn’t find the page you’re looking for.
           </Typography>
         </m.div>
 
-        <Button component={RouterLink} href="/" size="large" variant="contained">
-          Go to Home
-        </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2,
+          }}
+        >
+          <Button component={RouterLink} href="/" size="large" variant="contained">
+            Go to App
+          </Button>
+          <Button
+            component={RouterLink}
+            color="primary"
+            href={paths.website.root}
+            size="large"
+            variant="contained"
+          >
+            Go to Home
+          </Button>
+        </Box>
       </MotionContainer>
     </CompactLayout>
   );

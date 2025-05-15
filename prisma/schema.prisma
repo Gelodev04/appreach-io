@@ -218,6 +218,10 @@ type HostToken {
   history     String[]
 }
 
+type HostMetadata {
+  created_at DateTime @db.Date
+}
+
 type SeedBatchesGenerate {
   clickLink       Boolean?
   downloadMessage Boolean?
@@ -530,6 +534,7 @@ model hosts {
   ownerId            String?                  @db.ObjectId
   ownerName          String?
   token              HostToken
+  metadata           HostMetadata
 }
 
 model smartleadEmailAccounts {

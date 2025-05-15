@@ -28,7 +28,6 @@ export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) =
       {warningMessage}
     </Alert>
   );
-
   const renderLookerStudioIframe = (
     <iframe
       src={generateLookerStudioUrl([accessToken], url)}
