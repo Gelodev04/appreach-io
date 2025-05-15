@@ -90,17 +90,23 @@ export const EventSendersTable = ({
         },
       },
 
+    // Custom pinning styles:
     '& .MuiDataGrid-columnHeaders': {
       '& .MuiDataGrid-columnHeadersInner': {
         transform: 'none !important',
         '& div': {
           '& .MuiDataGrid-columnHeader:nth-child(1)': {
+            position: 'sticky',
+            left: 0,
             backgroundColor: '#F4F6F8',
-            zIndex: 5,
+            zIndex: 20,
           },
-          '& .MuiDataGrid-columnHeader.sticky-col-1': {
+          '& .MuiDataGrid-columnHeader:nth-child(2)': {
+            position: 'sticky',
+            left: 50,
             backgroundColor: '#F4F6F8',
-            zIndex: 2,
+            borderRight: '1px solid #E0E0E0',
+            zIndex: 5,
           },
         },
       },
@@ -108,32 +114,39 @@ export const EventSendersTable = ({
   });
 
   useEffect(() => {
-    const scroller = document.querySelector('.MuiDataGrid-virtualScroller');
-    const root = document.querySelector('.MuiDataGrid-root'); // or your Card wrapper if more precise
-
     const handleScrollHorizontal = () => {
-      const scrollLeft = scroller?.scrollLeft ?? 0;
+      const scroller = document.querySelector('.MuiDataGrid-virtualScroller');
+      if (!scroller) return;
 
-      // Add class if scrolled
-      if (scrollLeft > 0) {
-        root?.classList.add('has-horizontal-scroll');
-      } else {
-        root?.classList.remove('has-horizontal-scroll');
-      }
+      const scrollLeft = scroller.scrollLeft;
 
-      // Your existing transform logic
-      const headerColumns = document.querySelectorAll('.MuiDataGrid-columnHeader:nth-child(n+3)');
-      headerColumns.forEach((col: any) => {
-        col.style.transform = `translateX(-${scrollLeft}px)`;
+      const headers = document.querySelectorAll('.MuiDataGrid-columnHeader');
+
+      headers.forEach((header, index) => {
+        const el = header as HTMLElement;
+
+        // Don't transform the first (checkbox) and second (Sender Name) columns
+        if (index === 0 || index === 1) {
+          el.style.transform = 'none';
+        } else {
+          el.style.transform = `translate3d(-${scrollLeft}px, 0px, 0px)`;
+        }
       });
     };
 
-    if (scroller) {
-      scroller.addEventListener('scroll', handleScrollHorizontal);
-      return () => {
-        scroller.removeEventListener('scroll', handleScrollHorizontal);
-      };
-    }
+    const findVirtualScroller = () => {
+      const virtualScrollerElement = document.querySelector('.MuiDataGrid-virtualScroller');
+      if (!virtualScrollerElement) {
+        setTimeout(findVirtualScroller, 100);
+      } else {
+        virtualScrollerElement.addEventListener('scroll', handleScrollHorizontal);
+        return () => {
+          virtualScrollerElement.removeEventListener('scroll', handleScrollHorizontal);
+        };
+      }
+    };
+
+    findVirtualScroller();
   }, []);
 
   const initialState: GridInitialState = {
