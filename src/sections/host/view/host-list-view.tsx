@@ -152,10 +152,10 @@ export const HostListView = ({
       field: 'createdAt',
       headerName: 'Date Created',
       sortable: true,
-      valueGetter: (params) => params.row.metadata.created_at,
+      valueGetter: (params) => params.row.metadata?.created_at,
       renderCell: (params) => {
         if (params.row.id === 'all-profiles') return null;
-        return <Typography sx={{ my: 2 }}>{fDate(params.row.metadata.created_at)}</Typography>;
+        return <Typography sx={{ my: 2 }}>{fDate(params.row.metadata?.created_at)}</Typography>;
       },
       type: 'date',
       flex: 1,

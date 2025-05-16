@@ -118,7 +118,7 @@ export const EventSendersTable = ({
       const scroller = document.querySelector('.MuiDataGrid-virtualScroller');
       if (!scroller) return;
 
-      const scrollLeft = scroller.scrollLeft;
+      const { scrollLeft } = scroller;
 
       const headers = document.querySelectorAll('.MuiDataGrid-columnHeader');
 
