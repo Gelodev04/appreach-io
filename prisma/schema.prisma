@@ -213,8 +213,8 @@ type HostsEngagementSettings {
 }
 
 type HostToken {
-  access      String
-  lastResetAt DateTime @db.Date
+  access      String?
+  lastResetAt DateTime? @db.Date
   history     String[]
 }
 
@@ -535,7 +535,7 @@ model hosts {
   engagementSettings HostsEngagementSettings?
   ownerId            String?                  @db.ObjectId
   ownerName          String?
-  token              HostToken
+  token              HostToken?
   metadata           HostMetadata?
 }
 
