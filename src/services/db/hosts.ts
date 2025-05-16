@@ -79,8 +79,9 @@ export const checkIfTokenExist = async (accessToken: string) => {
       },
     });
 
-    const exists = allHosts.some((host) => tokens.includes(host.token.access));
-
+    const exists = allHosts.some((host) =>
+      host.token?.access ? tokens.includes(host.token.access) : false
+    );
     return { success: true, exists };
   } catch (error) {
     console.error('Error checking token existence:', error);
