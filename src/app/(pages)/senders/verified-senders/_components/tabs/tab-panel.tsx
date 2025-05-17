@@ -4,7 +4,7 @@ interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
   index: number;
-  value: number;
+  value: number | string;
 }
 export default function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;

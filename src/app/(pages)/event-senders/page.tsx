@@ -4,7 +4,7 @@ import { getSenderAccountByHostIdsAndType } from 'src/services/db/sender-account
 import { getSenderProfiles } from 'src/services/db/user-settings';
 import { mapDisplayValueToLabelValue } from 'src/utils';
 import { EventSendersHeader } from './_components/event-senders-header';
-import { EventSendersTable } from './_components/event-senders-table';
+import { EventSendersTab } from './_components/event-senders-tab';
 
 export const metadata = {
   title: 'Event Senders | Outreach Magic',
@@ -32,7 +32,7 @@ const EventSendersPage = async () => {
     >
       <EventSendersHeader />
 
-      <EventSendersTable
+      <EventSendersTab
         key={JSON.stringify(rows)}
         rows={rows}
         platFormOptions={platformOptionsMapped}
