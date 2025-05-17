@@ -91,32 +91,6 @@ export const checkIfTokenExist = async (accessToken: string) => {
 
 export const updateHostData = async (id: string, data: UpdateHostData) => {
   try {
-    // Fetch current host data
-    const existingHost = await prisma.hosts.findUnique({
-      where: { id },
-      select: { userSettings: true }, // Only fetch userSettings
-    });
-
-    if (!existingHost) {
-      return { success: false, message: 'Host not found' };
-    }
-    const updatedUserSettings = {
-      ...existingHost.userSettings, // Retain existing fields
-
-      // Ensure all array fields are always arrays
-      autoExcludeAddresses: existingHost.userSettings?.autoExcludeAddresses ?? [],
-      autoExcludeDomains: existingHost.userSettings?.autoExcludeDomains ?? [],
-      autoExcludeUsernames: existingHost.userSettings?.autoExcludeUsernames ?? [],
-      ccAddressArray: existingHost.userSettings?.ccAddressArray ?? [],
-      externalSenderAddresses: existingHost.userSettings?.externalSenderAddresses ?? [],
-      leadCategories: existingHost.userSettings?.leadCategories ?? [],
-      notificationAddressArray: existingHost.userSettings?.notificationAddressArray ?? [],
-      warmupTags: existingHost.userSettings?.warmupTags ?? [],
-
-      // Keep timezone update
-      timezone: data.timezone,
-    };
-
     await prisma.hosts.update({
       where: { id },
       data: {
@@ -138,7 +112,6 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
             : [],
           useEventSenders: data.useEventSenders,
         },
-        userSettings: updatedUserSettings, // Update with merged settings
       },
     });
 
@@ -164,9 +137,6 @@ export const createHost = async (data: UpdateHostData) => {
 
     const normalizedData = {
       host: data.host,
-      userSettings: {
-        timezone: data.timezone,
-      },
       lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
       engagementSettings: {
         scrollMessage: data.scrollMessage,
@@ -334,11 +304,6 @@ export const addNewProfile = async (host: string) => {
         host,
         ownerId: id,
         ownerName: appLogin.username,
-        userSettings: {
-          timezone: '',
-          externalSenderAddresses: [],
-          notificationAddressArray: [],
-        },
         lookerStudio: { embedUrl: lookerStudioUrl, hasToRegenerate: false },
         token: {
           access: accessToken,

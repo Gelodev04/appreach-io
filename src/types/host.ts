@@ -63,8 +63,6 @@ export type UpdateHostData = {
   replyPrompt?: string;
   linksToClick?: string;
   linksNotToClick?: string;
-  timezone: string;
-  externalSenderAddresses?: string;
   useEventSenders?: boolean;
 };
 

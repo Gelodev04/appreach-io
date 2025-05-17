@@ -69,11 +69,17 @@ export const EventSendersTextbox = ({ params }: EventSendersDropdownProps) => {
         />
       </Tooltip>
 
-      <Tooltip title="Save changes" placement="top">
-        <IconButton onClick={handleSave} disabled={isPending || !unsaved}>
+      {isPending || !unsaved ? (
+        <IconButton onClick={handleSave} disabled>
           <Iconify icon="material-symbols:save-outline-rounded" />
         </IconButton>
-      </Tooltip>
+      ) : (
+        <Tooltip title="Save changes" placement="top">
+          <IconButton onClick={handleSave}>
+            <Iconify icon="material-symbols:save-outline-rounded" />
+          </IconButton>
+        </Tooltip>
+      )}
     </Box>
   );
 };

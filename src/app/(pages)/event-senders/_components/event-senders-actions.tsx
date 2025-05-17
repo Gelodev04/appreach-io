@@ -23,6 +23,7 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
   const [isReprocessing, startReprocess] = useTransition();
   const [events, setEvents] = useState(0);
   const [data, setData] = useState<Record<string, any>>({});
+  const [isDoneReprocessing, setIsDoneReprocessing] = useState(false);
 
   const { isProcessing, setIsProcessing } = useEventSendersStore();
 
@@ -78,6 +79,7 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
       }
 
       setData(res.data);
+      setIsDoneReprocessing(true);
     });
   };
 
@@ -141,10 +143,20 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
         open={confirmProcess.value}
         onClose={confirmProcess.onFalse}
         isLoading={isReprocessing}
-        title="Reprocess"
+        title="Reprocess Sender Events"
+        hideCancelButton={isDoneReprocessing}
         content={
           <>
-            <b>{username}</b> has <b>{events}</b> events. Continue with reprocessing them all?
+            {!isDoneReprocessing ? (
+              <>
+                <b>{username}</b> has <b>{events}</b> events. Continue with reprocessing them all?
+              </>
+            ) : (
+              <>
+                Results from processing <b>{username}</b> events:
+              </>
+            )}
+
             {Object.keys(data).length > 0 && (
               <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 1 }}>
                 <Label variant="soft" color="success">
@@ -161,16 +173,32 @@ export const EventSendersActions = ({ id, username }: { id: string; username: st
           </>
         }
         action={
-          <LoadingButton
-            loading={isReprocessing}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              handleReprocessConfirm();
-            }}
-          >
-            Confirm
-          </LoadingButton>
+          isDoneReprocessing ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                confirmProcess.onFalse();
+                setTimeout(() => {
+                  setIsDoneReprocessing(false);
+                  setData({});
+                }, 300);
+              }}
+            >
+              Close window
+            </Button>
+          ) : (
+            <LoadingButton
+              loading={isReprocessing}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                handleReprocessConfirm();
+              }}
+            >
+              Confirm
+            </LoadingButton>
+          )
         }
       />
     </>
