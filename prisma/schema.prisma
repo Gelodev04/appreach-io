@@ -168,35 +168,6 @@ type HostsNotifications {
   slackChannel      String?
 }
 
-type HostsUserSettings {
-  autoExcludeAddresses      String[]
-  autoExcludeDomains        String[]
-  autoExcludeUsernames      String[]
-  ccAddressArray            String[]
-  ccAddressString           String?
-  ccMessage                 String?
-  ccName                    String?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  doNotContactAddresses     Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  doNotContactDomains       Json?
-  doNotContactGoogleSheet   String?
-  externalSenderAddresses   String[]
-  hasCustomMessage          Boolean?
-  leadCategories            HostsUserSettingsLeadCategories[]
-  notificationAddressArray  String[]
-  notificationAddressString String?
-  pronoun1                  String?
-  pronoun2                  String?
-  timezone                  String
-  warmupTags                String[]
-}
-
-type HostsUserSettingsLeadCategories {
-  name             String
-  sendNotification String
-}
-
 type HostsEngagementSettings {
   scrollMessage   Int
   markImportant   Int
@@ -213,8 +184,8 @@ type HostsEngagementSettings {
 }
 
 type HostToken {
-  access      String
-  lastResetAt DateTime @db.Date
+  access      String?
+  lastResetAt DateTime? @db.Date
   history     String[]
 }
 
@@ -529,13 +500,12 @@ model hosts {
   id                 String                   @id @default(auto()) @map("_id") @db.ObjectId
   host               String
   hostCrypt          String?
-  userSettings       HostsUserSettings?
   lookerStudio       HostsLookerStudio?
   notifications      HostsNotifications?
   engagementSettings HostsEngagementSettings?
   ownerId            String?                  @db.ObjectId
   ownerName          String?
-  token              HostToken
+  token              HostToken?
   metadata           HostMetadata?
 }
 
@@ -663,10 +633,9 @@ model config {
 }
 
 model webhook_logs {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  user_id         String   @db.ObjectId
-  platform        String
-  event_type      String
-  sender_account  String
-  event_timestamp DateTime @db.Date
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  user_id        String @db.ObjectId
+  platform       String
+  event_type     String
+  sender_account String
 }

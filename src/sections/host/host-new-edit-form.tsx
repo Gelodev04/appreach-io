@@ -7,12 +7,11 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { hosts } from '@prisma/client';
-import moment from 'moment-timezone';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { SenderProfileTabs } from 'src/app/(pages)/profiles/seeds/[hostId]/_components';
-import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { defaultEngagementSettings } from 'src/constants';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -32,11 +31,9 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
   const updatedHostItem = useDefaultEngagementSettings(currentItem);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const timezones = moment.tz.names();
 
   const newHostSchema = Yup.object().shape({
     host: Yup.string().required('Host name is required'),
-    timezone: Yup.string().required('Timezone is required'),
     externalSenderAddresses: Yup.string(),
     scrollMessage: Yup.number().required('This field cannot be empty.'),
     markImportant: Yup.number().required('This field cannot be empty.'),
@@ -79,7 +76,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
 
   const defaultValues = {
     host: updatedHostItem?.host ?? '',
-    timezone: updatedHostItem?.userSettings?.timezone ?? '',
     externalSenderAddresses: emails ? emails?.map((item) => item.email).join('\n') : '',
     scrollMessage: getEngagementValue('scrollMessage'),
     markImportant: getEngagementValue('markImportant'),
@@ -175,7 +171,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
                 display="grid"
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
-                  md: 'repeat(2, 1fr)',
                 }}
               >
                 <RHFTextField
@@ -183,14 +178,6 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
                   label="Sender profile name"
                   placeholder="outreachmagic"
                   disabled={!!currentItem}
-                />
-
-                <RHFAutocomplete
-                  name="timezone"
-                  label="Timezone"
-                  placeholder="Choose a timezone"
-                  options={timezones.map((timezone) => `${timezone}`)}
-                  getOptionLabel={(option) => option}
                 />
               </Box>
               {currentItem && (

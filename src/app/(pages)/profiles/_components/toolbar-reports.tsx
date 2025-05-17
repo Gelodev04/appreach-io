@@ -4,45 +4,38 @@ import Iconify from 'src/components/iconify';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 
 import { hosts } from '@prisma/client';
-import { paths } from 'src/routes/paths';
-import { generateLookerStudioUrl } from 'src/sections/host/utils';
+import { useHostTokenUtils } from '../_hooks/useHostTokenUtils';
 
 export const ToolBarReports = ({ selectedRows }: { selectedRows: hosts[] }) => {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
+  const { extractValidTokens, getSharableUrl, getLookerUrl } = useHostTokenUtils();
 
   const handleCopySharableReport = (event: React.MouseEvent) => {
     event.stopPropagation();
-    const access = selectedRows.map((host) => host.token.access);
-    const relativeUrl = paths.sharable.overview(access.join(','));
-    const fullUrl = `${window.location.origin}${relativeUrl}`;
-    copy(fullUrl);
+    const tokens = extractValidTokens(selectedRows, true);
+    copy(getSharableUrl(tokens));
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
 
   const handleGoToSharableReportUrl = (event: React.MouseEvent) => {
     event.stopPropagation();
-    const access = selectedRows.map((host) => host.token.access).join(',');
-    const generatedUrl = paths.sharable.overview(access);
-    window.open(generatedUrl, '_blank');
+    const tokens = extractValidTokens(selectedRows);
+    window.open(getSharableUrl(tokens), '_blank');
   };
 
-  const handleCopyWhiteLabelReport = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    const access = selectedRows.map((host) => host.token.access);
-    const generatedUrl = generateLookerStudioUrl(access);
-    copy(generatedUrl);
+  const handleCopyWhiteLabelReport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const tokens = extractValidTokens(selectedRows, true);
+    copy(getLookerUrl(tokens));
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
 
-  const handleGoToWhiteLabelReportUrl = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    const access = selectedRows.map((host) => host.token.access);
-    const generatedUrl = generateLookerStudioUrl(access);
-    window.open(generatedUrl, '_blank');
+  const handleGoToWhiteLabelReportUrl = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const tokens = extractValidTokens(selectedRows);
+    window.open(getLookerUrl(tokens), '_blank');
   };
-
-  console.log({ access: selectedRows.map((host) => host.token.access) });
 
   return (
     <>

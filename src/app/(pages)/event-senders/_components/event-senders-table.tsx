@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, Stack, SxProps, Theme } from '@mui/material';
+import { Box, Card, Stack } from '@mui/material';
 import {
   DataGrid,
   GridInitialState,
@@ -12,7 +12,9 @@ import {
 } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
+import { useEventSendersStore } from 'src/store/event-senders';
 import { HostOptionsType, PlatformOptionsType } from 'src/types/dropdown-types';
+import { EventSendersStyle } from '../_constants/style';
 import { useEventSendersCol } from '../_hooks/useEventSendersCol';
 import { useFilteredEventSenderRows } from '../_hooks/useFilteredEventSenderRows';
 import { EditMultipleEventSenders } from './edit-multiple-event-senders';
@@ -25,6 +27,7 @@ export const EventSendersTable = ({
   emailServerOptions,
   emailResellerOptions,
   typeOptions,
+  senderType,
 }: {
   rows: GridRowsProp;
   hostOptions: HostOptionsType;
@@ -32,6 +35,7 @@ export const EventSendersTable = ({
   emailServerOptions: PlatformOptionsType;
   emailResellerOptions: PlatformOptionsType;
   typeOptions: PlatformOptionsType;
+  senderType: 'email' | 'linkedin' | 'crm';
 }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const { columns } = useEventSendersCol(
@@ -39,79 +43,12 @@ export const EventSendersTable = ({
     platFormOptions,
     emailServerOptions,
     emailResellerOptions,
-    typeOptions
+    typeOptions,
+    senderType
   );
 
   const filteredRows = useFilteredEventSenderRows(rows);
-
-  const sx: SxProps<Theme> = (theme) => ({
-    '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
-      outline: 'none !important',
-    },
-    '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-cell:focus-within': {
-      outline: 'none !important',
-    },
-    '& .MuiTablePagination-root': { display: 'flex' },
-
-    '& .MuiDataGrid-cell:nth-child(1)': {
-      position: 'sticky',
-      left: 0,
-      zIndex: 1,
-      backgroundColor: theme.palette.background.paper,
-    },
-
-    '& .MuiDataGrid-cell:nth-child(2)': {
-      position: 'sticky',
-      left: 50,
-      zIndex: 1,
-      backgroundColor: theme.palette.background.paper,
-      borderRight: '1px solid #E0E0E0',
-    },
-
-    // 1. Selected
-    '& .MuiDataGrid-row.Mui-selected': {
-      '& .MuiDataGrid-cell:nth-child(1), & .MuiDataGrid-cell:nth-child(2)': {
-        backgroundColor: '#EBEFF6',
-      },
-    },
-
-    // 2. Selected + Hovered
-    '& .MuiDataGrid-row.Mui-selected:hover, & .MuiDataGrid-row.Mui-selected.Mui-hovered': {
-      '& .MuiDataGrid-cell:nth-child(1), & .MuiDataGrid-cell:nth-child(2)': {
-        backgroundColor: '#D6DEEC',
-      },
-    },
-
-    // 3. Hovered only (not selected)
-    '& .MuiDataGrid-row.Mui-hovered:not(.Mui-selected), & .MuiDataGrid-row:hover:not(.Mui-selected)':
-      {
-        '& .MuiDataGrid-cell:nth-child(1), & .MuiDataGrid-cell:nth-child(2)': {
-          backgroundColor: '#F6F7F8',
-        },
-      },
-
-    // Custom pinning styles:
-    '& .MuiDataGrid-columnHeaders': {
-      '& .MuiDataGrid-columnHeadersInner': {
-        transform: 'none !important',
-        '& div': {
-          '& .MuiDataGrid-columnHeader:nth-child(1)': {
-            position: 'sticky',
-            left: 0,
-            backgroundColor: '#F4F6F8',
-            zIndex: 20,
-          },
-          '& .MuiDataGrid-columnHeader:nth-child(2)': {
-            position: 'sticky',
-            left: 50,
-            backgroundColor: '#F4F6F8',
-            borderRight: '1px solid #E0E0E0',
-            zIndex: 5,
-          },
-        },
-      },
-    },
-  });
+  const { setFilter } = useEventSendersStore();
 
   useEffect(() => {
     const handleScrollHorizontal = () => {
@@ -148,6 +85,10 @@ export const EventSendersTable = ({
 
     findVirtualScroller();
   }, []);
+
+  useEffect(() => {
+    setFilter('type', senderType);
+  }, [senderType, setFilter]);
 
   const initialState: GridInitialState = {
     pagination: {
@@ -203,10 +144,12 @@ export const EventSendersTable = ({
         flexGrow: { md: 1 },
         display: { md: 'flex' },
         flexDirection: { md: 'column' },
+        minHeight: '70vh',
+        minWidth: 730,
       }}
     >
       <DataGrid
-        sx={sx}
+        sx={EventSendersStyle}
         rows={filteredRows}
         slots={slots}
         columns={columns}

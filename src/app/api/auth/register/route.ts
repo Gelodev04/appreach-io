@@ -165,11 +165,6 @@ export async function POST(request: Request) {
       host: defaultHostName,
       ownerId: userId,
       ownerName: email,
-      userSettings: {
-        timezone: '',
-        externalSenderAddresses: [],
-        notificationAddressArray: [],
-      },
       lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
       token: {
         access: defaultAccessToken,
