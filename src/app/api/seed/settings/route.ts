@@ -20,8 +20,6 @@ export async function GET() {
       );
     }
 
-    const { assignedCount } = userSettings.seeds;
-
     let hosts = await Promise.all(
       userSettings.hosts.map(async (hostId: ObjectId) =>
         db.collection('hosts').findOne({ _id: new ObjectId(hostId) })
@@ -34,7 +32,7 @@ export async function GET() {
     // Transform hosts array
     hosts = hosts.map((host) => ({ _id: host._id, host: host.host }));
 
-    return Response.json({ hosts, assignedCount });
+    return Response.json({ hosts });
   } catch (error) {
     return Response.json({ error: error.message }, { status: error.statusCode || 500 });
   }
