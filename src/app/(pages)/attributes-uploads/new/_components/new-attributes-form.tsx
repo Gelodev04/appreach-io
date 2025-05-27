@@ -378,7 +378,15 @@ export const NewAttributesForm = ({
                               );
                             })}
                             {validationErrors[header] && (
-                              <Typography variant="body2" color="error.main">
+                              <Typography
+                                variant="body2"
+                                color="error.main"
+                                sx={{
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'anywhere',
+                                  whiteSpace: 'normal',
+                                }}
+                              >
                                 {validationErrors[header].format}
                               </Typography>
                             )}
