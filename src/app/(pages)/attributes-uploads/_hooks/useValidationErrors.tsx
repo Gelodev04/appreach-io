@@ -81,10 +81,10 @@ export function useValidationErrors() {
             format: validator.format_description,
           },
         };
-      } else {
-        const { [header]: _, ...rest } = prev;
-        return rest;
       }
+
+      const { [header]: _, ...rest } = prev;
+      return rest;
     });
   };
 

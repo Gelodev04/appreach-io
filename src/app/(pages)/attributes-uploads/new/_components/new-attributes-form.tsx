@@ -154,7 +154,7 @@ export const NewAttributesForm = ({
         // Parse CSV file
         const result = await parseCSVFile(uploadedFile);
         const headers = result.meta.fields || [];
-        const data = result.data;
+        const { data } = result;
 
         // Update state to open form
         setCsvHeaders(headers);
@@ -189,7 +189,7 @@ export const NewAttributesForm = ({
         setFileError('Error parsing CSV file. Please check the format.');
       }
     },
-    [headerMapping]
+    [headerMapping, columnValidation, validateAll]
   );
 
   const handleRemoveFile = () => {
