@@ -36,12 +36,23 @@ export function useValidationErrors() {
       const validator = columnValidation.find((v) => v.value === value);
       if (validator) {
         const regex = new RegExp(validator.regex);
+
         const invalid = data
           .map((row, index) => ({
             value: row[header],
-            line: index + 2,
+            line: index + 2, // CSV headers are on line 1
           }))
-          .filter((item) => !regex.test(item.value));
+          .filter((item) => {
+            // Skip empty, null, or undefined values
+            if (
+              item.value === undefined ||
+              item.value === null ||
+              item.value.toString().trim() === ''
+            ) {
+              return false;
+            }
+            return !regex.test(item.value);
+          });
 
         if (invalid.length > 0) {
           errors[header] = {
@@ -65,12 +76,22 @@ export function useValidationErrors() {
     if (!validator) return;
 
     const regex = new RegExp(validator.regex);
+
     const invalid = data
       .map((row, index) => ({
         value: row[header],
         line: index + 2,
       }))
-      .filter((item) => !regex.test(item.value));
+      .filter((item) => {
+        if (
+          item.value === undefined ||
+          item.value === null ||
+          item.value.toString().trim() === ''
+        ) {
+          return false;
+        }
+        return !regex.test(item.value);
+      });
 
     setValidationErrors((prev) => {
       if (invalid.length > 0) {
