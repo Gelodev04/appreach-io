@@ -26,6 +26,7 @@ export const useAttributesUploadsCol = () => {
         return <RenderCellText displayValue={params.row?.host_name} />;
       },
       flex: 1,
+      minWidth: 150,
     },
     {
       field: 'import_name',
@@ -34,6 +35,7 @@ export const useAttributesUploadsCol = () => {
         return <AttributesUploadsImportName params={params} />;
       },
       flex: 1,
+      minWidth: 400,
     },
     {
       field: 'csv_link',
@@ -146,6 +148,7 @@ export const useAttributesUploadsCol = () => {
       },
       type: 'date',
       flex: 1,
+      minWidth: 150,
     },
   ];
 

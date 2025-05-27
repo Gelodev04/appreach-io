@@ -49,6 +49,25 @@ export const NewAttributesForm = ({
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
+  const itemsToTest = [
+    'LinkedIn URL (user profile)',
+    'LinkedIn URL (user profile    )',
+    'LinkedIn URL (company)',
+    'First name',
+  ];
+
+  const headerMappingTest = itemsToTest.map((item) => {
+    const normal = normalizeHeader(item);
+    return {
+      normalized: headerMapping[normal],
+    };
+  });
+
+  console.log({
+    normal: itemsToTest.map((item) => normalizeHeader(item)),
+    itemsToTest: headerMappingTest,
+  });
+
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('List name is required'),
     host_id: Yup.object()
