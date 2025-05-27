@@ -2,7 +2,7 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Card, Link, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -11,6 +11,7 @@ import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
+import Iconify from 'src/components/iconify';
 import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -26,12 +27,15 @@ import { normalizeHeader } from 'src/utils';
 import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
+import { useValidationErrors } from '../../_hooks/useValidationErrors';
 
 export const NewAttributesForm = ({
   columnOptions,
+  columnValidation,
   headerMapping,
 }: {
   columnOptions: PlatformOptionsType;
+  columnValidation: { value: string; regex: string; format_description: string }[];
   headerMapping: Record<string, string>;
 }) => {
   const mdUp = useResponsive('up', 'md');
@@ -46,27 +50,10 @@ export const NewAttributesForm = ({
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [csvData, setCsvData] = useState([]);
 
+  const { validationErrors, validateAll, validateSingle, resetValidationErrors } =
+    useValidationErrors();
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
-
-  const itemsToTest = [
-    'LinkedIn URL (user profile)',
-    'LinkedIn URL (user profile    )',
-    'LinkedIn URL (company)',
-    'First name',
-  ];
-
-  const headerMappingTest = itemsToTest.map((item) => {
-    const normal = normalizeHeader(item);
-    return {
-      normalized: headerMapping[normal],
-    };
-  });
-
-  console.log({
-    normal: itemsToTest.map((item) => normalizeHeader(item)),
-    itemsToTest: headerMappingTest,
-  });
 
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('List name is required'),
@@ -103,6 +90,14 @@ export const NewAttributesForm = ({
   const onSubmit = handleSubmit(async (data) => {
     if (!file) {
       setFileError('CSV File is required.');
+      return;
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      enqueueSnackbar('Please fix all column validation errors before uploading.', {
+        variant: 'error',
+        persist: true,
+      });
       return;
     }
 
@@ -187,6 +182,8 @@ export const NewAttributesForm = ({
         const prefilledValues = Object.keys(usedMappings);
         setMappedCols(initialMappedCols);
         setSelectedValues(prefilledValues);
+
+        validateAll(initialMappedCols, data, columnValidation);
       } catch (error) {
         console.error('CSV Parsing Error', error);
         setFileError('Error parsing CSV file. Please check the format.');
@@ -200,18 +197,32 @@ export const NewAttributesForm = ({
     setCsvHeaders([]);
     setMappedCols({});
     setSelectedValues([]);
+    resetValidationErrors();
   };
 
   const handleColumnChange = (newValue: any, header: string) => {
+    const previousValue = mappedCols[header];
     const newMappedCols = {
       ...mappedCols,
-      [header]: newValue ? newValue.value : '', // Use header as the key
+      [header]: newValue ? newValue.value : '',
     };
 
-    // Update selectedValues to remove the previously selected value
-    const updatedSelectedValues = newValue
-      ? [...selectedValues.filter((value) => value !== newValue.value), newValue.value]
-      : selectedValues.filter((value) => value !== mappedCols[header]);
+    let updatedSelectedValues = [...selectedValues];
+
+    // Remove the previous value if it exists
+    if (previousValue) {
+      updatedSelectedValues = updatedSelectedValues.filter((value) => value !== previousValue);
+    }
+
+    // Add the new value if it exists and isn't already added
+    if (newValue?.value) {
+      updatedSelectedValues.push(newValue.value);
+    }
+
+    // Perform regex validation on the column data
+    if (newValue?.value) {
+      validateSingle(header, newValue.value, csvData, columnValidation);
+    }
 
     setMappedCols(newMappedCols);
     setSelectedValues(updatedSelectedValues);
@@ -261,85 +272,148 @@ export const NewAttributesForm = ({
             {csvHeaders.length > 0 && (
               <Stack spacing={2} sx={{ mt: 2, overflowY: 'auto', maxHeight: '700px' }}>
                 <Box sx={{ padding: 3 }}>
-                  {csvHeaders.map((header) => (
-                    <Box
-                      key={header}
-                      columnGap={2}
-                      rowGap={3}
-                      display="grid"
-                      gridTemplateColumns={{
-                        xs: 'repeat(1, 1fr)',
-                        sm: 'repeat(2, 1fr)',
-                      }}
-                      sx={{ padding: 3 }}
-                    >
+                  {csvHeaders.map((header) => {
+                    const error = validationErrors[header];
+                    const maxVisibleRows = 10;
+                    const invalidLines = error?.invalid.map((item) => item.line) || [];
+                    const tooltipMessage =
+                      invalidLines.length > maxVisibleRows
+                        ? `Invalid value(s) on row(s): ${invalidLines
+                            .slice(0, maxVisibleRows)
+                            .join(', ')}... (+${invalidLines.length - maxVisibleRows} more)`
+                        : `Invalid value(s) on row(s): ${invalidLines.join(', ')}`;
+                    return (
                       <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 2,
+                        key={header}
+                        columnGap={2}
+                        rowGap={3}
+                        display="grid"
+                        gridTemplateColumns={{
+                          xs: 'repeat(1, 1fr)',
+                          sm: 'repeat(2, 1fr)',
                         }}
+                        sx={{ padding: 3 }}
                       >
-                        <Typography variant="subtitle1">{header}</Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                            }}
+                          >
+                            <Typography variant="subtitle1">{header}</Typography>
+                            {error && (
+                              <Tooltip
+                                title={tooltipMessage}
+                                placement="top"
+                                arrow
+                                slotProps={{
+                                  popper: {
+                                    modifiers: [
+                                      {
+                                        name: 'offset',
+                                        options: { offset: [0, -5] },
+                                      },
+                                    ],
+                                  },
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'error.main',
+                                    borderRadius: '100%',
+                                    width: 24,
+                                    height: 24,
+                                    transition: 'background-color 0.3s ease',
+                                    '&:hover': {
+                                      background: 'rgba(255, 0, 0, 0.1)',
+                                    },
+                                  }}
+                                >
+                                  <Iconify icon="material-symbols:exclamation-rounded" />
+                                </Box>
+                              </Tooltip>
+                            )}
+                          </Box>
+
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                            }}
+                          >
+                            {csvData.slice(0, 3).map((data, i) => {
+                              const value = data[header];
+                              const hasError = Boolean(validationErrors[header]);
+
+                              return (
+                                <Box
+                                  sx={{
+                                    borderLeft: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                    borderRight: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                    borderBottom: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                    ...(i === 0 && {
+                                      borderTop: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                    }),
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    padding: 1,
+                                    color: hasError ? 'error.main' : 'gray',
+                                  }}
+                                  key={`${value}-${i}`}
+                                >
+                                  {value ? `${i + 1}. ${value}` : `${i + 1}. No Value`}
+                                </Box>
+                              );
+                            })}
+                            {validationErrors[header] && (
+                              <Typography variant="body2" color="error.main">
+                                {validationErrors[header].format}
+                              </Typography>
+                            )}
+                          </Box>
+                        </Box>
 
                         <Box
                           sx={{
                             display: 'flex',
                             flexDirection: 'column',
+                            gap: 2,
                           }}
                         >
-                          {csvData.slice(0, 3).map((data, i) => {
-                            return (
-                              <Box
-                                sx={{
-                                  borderLeft: '1px solid lightgray',
-                                  borderRight: '1px solid lightgray',
-                                  borderBottom: '1px solid lightgray',
-                                  wordBreak: 'break-word',
-                                  overflowWrap: 'break-word',
-                                  whiteSpace: 'normal',
-                                  // Only add top border to the first item:
-                                  ...(i === 0 && { borderTop: '1px solid lightgray' }),
-                                  padding: 1,
-                                  color: 'gray',
-                                }}
-                                key={`${data[header]}-${i}`}
-                              >
-                                {data[header] ? `${i + 1}. ${data[header]}` : `${i + 1}. No Value`}
-                              </Box>
-                            );
-                          })}
+                          <Typography variant="subtitle1" sx={{ visibility: 'hidden' }}>
+                            Belongs to
+                          </Typography>
+
+                          <RHFAutocomplete
+                            isOptionEqualToValue={(option, value) => option.value === value.value}
+                            name={`mapping.${header}`}
+                            label="Set column name"
+                            value={
+                              columnOptions.find((opt) => opt.value === mappedCols[header]) || null
+                            }
+                            onChange={(_, newValue) => handleColumnChange(newValue, header)}
+                            options={columnOptions.filter(
+                              (opt) =>
+                                !selectedValues.includes(opt.value) ||
+                                mappedCols[header] === opt.value
+                            )}
+                          />
                         </Box>
                       </Box>
-
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 2,
-                        }}
-                      >
-                        <Typography variant="subtitle1" sx={{ visibility: 'hidden' }}>
-                          Belongs to
-                        </Typography>
-
-                        <RHFAutocomplete
-                          isOptionEqualToValue={(option, value) => option.value === value.value}
-                          name={`mapping.${header}`}
-                          label="Set column name"
-                          value={
-                            columnOptions.find((opt) => opt.value === mappedCols[header]) || null
-                          }
-                          onChange={(_, newValue) => handleColumnChange(newValue, header)}
-                          options={columnOptions.filter(
-                            (opt) =>
-                              !selectedValues.includes(opt.value) ||
-                              mappedCols[header] === opt.value
-                          )}
-                        />
-                      </Box>
-                    </Box>
-                  ))}
+                    );
+                  })}
                 </Box>
               </Stack>
             )}
