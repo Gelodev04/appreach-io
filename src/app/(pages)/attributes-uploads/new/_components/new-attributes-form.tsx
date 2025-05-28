@@ -47,8 +47,13 @@ export const NewAttributesForm = ({
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [csvData, setCsvData] = useState([]);
 
-  const { validationErrors, validateAll, validateSingle, resetValidationErrors } =
-    useValidationErrors();
+  const {
+    validationErrors,
+    validateAll,
+    validateSingle,
+    resetValidationErrors,
+    clearValidationError,
+  } = useValidationErrors();
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
@@ -181,7 +186,7 @@ export const NewAttributesForm = ({
         const prefilledValues = Object.keys(usedMappings);
         setMappedCols(initialMappedCols);
         setSelectedValues(prefilledValues);
-
+        console.log({ columnValidation });
         validateAll(initialMappedCols, data, columnValidation);
       } catch (error) {
         console.error('CSV Parsing Error', error);
@@ -221,8 +226,12 @@ export const NewAttributesForm = ({
     }
 
     // Perform regex validation on the column data
-    if (newValue?.value) {
+    const validator = columnValidation.find((v) => v.value === newValue?.value);
+
+    if (validator && validator.regex) {
       validateSingle(header, newValue.value, csvData, columnValidation);
+    } else {
+      clearValidationError(header);
     }
 
     setMappedCols(newMappedCols);

@@ -21,6 +21,13 @@ export function useValidationErrors() {
     {}
   );
 
+  const clearValidationError = (header: string) => {
+    setValidationErrors((prev) => {
+      const { [header]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
   const resetValidationErrors = () => {
     setValidationErrors({});
   };
@@ -34,16 +41,16 @@ export function useValidationErrors() {
 
     Object.entries(mappedCols).forEach(([header, value]) => {
       const validator = columnValidation.find((v) => v.value === value);
-      if (validator) {
+      if (validator && validator.regex) {
+        // check regex existence
         const regex = new RegExp(validator.regex);
 
         const invalid = data
           .map((row, index) => ({
             value: row[header],
-            line: index + 2, // CSV headers are on line 1
+            line: index + 2,
           }))
           .filter((item) => {
-            // Skip empty, null, or undefined values
             if (
               item.value === undefined ||
               item.value === null ||
@@ -73,7 +80,7 @@ export function useValidationErrors() {
     columnValidation: ColumnValidationRule[]
   ) => {
     const validator = columnValidation.find((v) => v.value === value);
-    if (!validator) return;
+    if (!validator || !validator.regex) return; // check regex existence
 
     const regex = new RegExp(validator.regex);
 
@@ -114,5 +121,6 @@ export function useValidationErrors() {
     validateAll,
     validateSingle,
     resetValidationErrors,
+    clearValidationError,
   };
 }
