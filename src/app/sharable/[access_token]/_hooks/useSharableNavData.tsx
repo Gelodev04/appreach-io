@@ -74,6 +74,11 @@ export const useSharableNavData = () => {
             icon: <Iconify icon="flowbite:file-invoice-outline" />,
             disabled: false,
           },
+          {
+            title: 'Need Support?',
+            path: paths.support.link,
+            icon: <Iconify icon="mdi:slack" />,
+          },
         ],
       },
     ];
