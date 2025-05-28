@@ -106,6 +106,11 @@ export function useNavData() {
             icon: <Iconify icon="flowbite:file-invoice-outline" />,
             disabled: completedOn === null,
           },
+          {
+            title: 'Need Support?',
+            path: paths.support.link,
+            icon: <Iconify icon="mdi:slack" />,
+          },
 
           // {
           //   title: 'Smartlead',

@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Link, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { format } from 'date-fns';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
@@ -15,7 +14,6 @@ import Iconify from 'src/components/iconify';
 import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { paths } from 'src/routes/paths';
 import {
   attributeUploadsWebhook,
@@ -41,7 +39,6 @@ export const NewAttributesForm = ({
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
   const { hosts } = useGetSeedSettings();
-  const { prefillMessage } = useSalesmateChat();
 
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
@@ -70,7 +67,7 @@ export const NewAttributesForm = ({
 
   const defaultValues = useMemo(
     () => ({
-      name: format(new Date(), 'MMM do yyyy'),
+      name: '',
       host_id: null,
       update_existing: true,
     }),
@@ -84,6 +81,7 @@ export const NewAttributesForm = ({
 
   const {
     handleSubmit,
+    setValue,
     formState: { isSubmitting },
   } = methods;
 
@@ -147,6 +145,7 @@ export const NewAttributesForm = ({
 
       if (!uploadedFile) return;
 
+      setValue('name', uploadedFile.name);
       setFile(uploadedFile);
       setFileError(null);
 
@@ -189,7 +188,7 @@ export const NewAttributesForm = ({
         setFileError('Error parsing CSV file. Please check the format.');
       }
     },
-    [headerMapping, columnValidation, validateAll]
+    [headerMapping, columnValidation, validateAll, setValue]
   );
 
   const handleRemoveFile = () => {
@@ -198,6 +197,8 @@ export const NewAttributesForm = ({
     setMappedCols({});
     setSelectedValues([]);
     resetValidationErrors();
+
+    setValue('name', '');
   };
 
   const handleColumnChange = (newValue: any, header: string) => {
@@ -444,9 +445,10 @@ export const NewAttributesForm = ({
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
               Upload a csv file with your lead attributes.{' '}
               <Link
+                href={paths.support.link}
+                target="_blank"
                 variant="subtitle2"
                 sx={{ cursor: 'pointer' }}
-                onClick={() => prefillMessage('I have questions about the Attributes Uploads')}
               >
                 Contact support
               </Link>{' '}

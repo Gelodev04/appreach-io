@@ -14,7 +14,6 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 
 import { paths } from 'src/routes/paths';
 import { createEmailValidator, emailValidatorWebhook } from 'src/services/db/email-validator';
@@ -28,7 +27,6 @@ export const NewEmailForm = () => {
   const theme = useTheme();
 
   const { hosts } = useGetSeedSettings();
-  const { prefillMessage } = useSalesmateChat();
 
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<null | string>(null);
@@ -182,9 +180,10 @@ export const NewEmailForm = () => {
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
               Upload the csv list of emails you would like us to verify.{' '}
               <Link
+                href={paths.support.link}
+                target="_blank"
                 variant="subtitle2"
                 sx={{ cursor: 'pointer' }}
-                onClick={() => prefillMessage('I have questions about the Email Validator')}
               >
                 Contact support
               </Link>{' '}

@@ -137,4 +137,8 @@ export const paths = {
   onboarding: {
     root: '/onboarding',
   },
+
+  support: {
+    link: 'https://join.slack.com/t/outreachmagic/shared_invite/zt-2gnuajfkz-7J9PzelJ21tstw4Axzj17Q',
+  },
 };
