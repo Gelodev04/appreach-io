@@ -43,7 +43,9 @@ export function useValidationErrors() {
       const validator = columnValidation.find((v) => v.value === value);
       if (validator && validator.regex) {
         // check regex existence
-        const regex = new RegExp(validator.regex);
+        // Unescape double backslashes into single backslashes
+        const raw = validator.regex.replace(/\\\\/g, '\\');
+        const regex = new RegExp(raw, 'u');
 
         const invalid = data
           .map((row, index) => ({
@@ -58,7 +60,7 @@ export function useValidationErrors() {
             ) {
               return false;
             }
-            return !regex.test(item.value);
+            return !regex.test(item.value.toString().trim());
           });
 
         if (invalid.length > 0) {
@@ -82,8 +84,7 @@ export function useValidationErrors() {
     const validator = columnValidation.find((v) => v.value === value);
     if (!validator || !validator.regex) return; // check regex existence
 
-    const regex = new RegExp(validator.regex);
-
+    const regex = new RegExp(validator.regex, 'u');
     const invalid = data
       .map((row, index) => ({
         value: row[header],
@@ -97,7 +98,7 @@ export function useValidationErrors() {
         ) {
           return false;
         }
-        return !regex.test(item.value);
+        return !regex.test(item.value.toString().trim());
       });
 
     setValidationErrors((prev) => {

@@ -491,7 +491,6 @@ model attribute_uploads {
   import_name     String
   last_updated    DateTime?                 @default(now())
   status          String?
-  update_existing Boolean
   column_mappings Json?
   metadata        AttributeUploadsMetadata?
 }

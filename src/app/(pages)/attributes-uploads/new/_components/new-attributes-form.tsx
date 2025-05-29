@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import FormProvider, { RHFAutocomplete, RHFSwitch, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
@@ -67,14 +67,12 @@ export const NewAttributesForm = ({
       .required('Sender profile is required')
       .nullable()
       .notOneOf([null], 'Sender profile is required'),
-    update_existing: Yup.boolean(),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: '',
       host_id: null,
-      update_existing: true,
     }),
     []
   );
@@ -186,7 +184,6 @@ export const NewAttributesForm = ({
         const prefilledValues = Object.keys(usedMappings);
         setMappedCols(initialMappedCols);
         setSelectedValues(prefilledValues);
-        console.log({ columnValidation });
         validateAll(initialMappedCols, data, columnValidation);
       } catch (error) {
         console.error('CSV Parsing Error', error);
@@ -267,10 +264,6 @@ export const NewAttributesForm = ({
                   options={hostOptions}
                 />
               </Box>
-              <RHFSwitch
-                name="update_existing"
-                label="Replace existing attributes with new import name (recommended)"
-              />
               <UploadDocument
                 file={file}
                 fileError={fileError}
