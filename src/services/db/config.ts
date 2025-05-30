@@ -2,7 +2,7 @@
 
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { ConfigDropdownOptions } from 'src/types/dropdown-types';
-import { LeadStatusOption } from 'src/types/lead-status';
+import { LeadStatusOption } from 'src/types/manual-events';
 
 export const getConfigDropdownOptions = async ({
   key,

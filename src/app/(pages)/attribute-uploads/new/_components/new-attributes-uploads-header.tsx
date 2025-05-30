@@ -9,7 +9,7 @@ export const NewAttributesUploadsHeader = () => {
       heading="Upload CSV List"
       links={[
         {
-          name: 'Attributes Uploads',
+          name: 'Attribute Uploads',
           href: paths.attributesUpload.root,
         },
         { name: 'Upload csv list' },

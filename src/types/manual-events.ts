@@ -4,11 +4,12 @@ export type LeadStatusOption = {
   sentiment: string;
 };
 
-export type LeadStatusData = {
+export type ManualEventsData = {
   event_timestamp: string;
   platform: string;
   content: {
     body: string | undefined;
+    view_url?: string;
   };
   host_id: string;
   host_name: string;
@@ -18,4 +19,5 @@ export type LeadStatusData = {
   };
   leads: string[];
   senders: string;
+  event_type: string;
 };

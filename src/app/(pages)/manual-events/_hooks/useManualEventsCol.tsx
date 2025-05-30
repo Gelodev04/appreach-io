@@ -2,9 +2,9 @@ import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
 import { fDateTimeEST } from 'src/utils/format-time';
-import { LeadStatusMessage } from '../_components/lead-status-message';
+import { ManualEventsMessage } from '../_components/manual-events-message';
 
-export const useLeadStatusCol = () => {
+export const useManualEventsCol = () => {
   const columns: GridColDef[] = [
     {
       field: 'event_timestamp',
@@ -97,7 +97,7 @@ export const useLeadStatusCol = () => {
         return params.row.content.body_preview;
       },
       renderCell: (params) => {
-        return <LeadStatusMessage params={params} />;
+        return <ManualEventsMessage params={params} />;
       },
       flex: 1,
       minWidth: 200,

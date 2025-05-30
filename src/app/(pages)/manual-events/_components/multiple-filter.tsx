@@ -2,11 +2,11 @@ import { Badge, Box, Button, Divider, IconButton, TextField, Typography } from '
 import { useEffect, useState } from 'react';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
-import { useLeadStatusStore } from 'src/store/lead-status-store';
+import { useManualEventsStore } from 'src/store/manual-events-store';
 
 export const MultipleFilter = () => {
   const filterPopover = usePopover();
-  const { filters, setFilter } = useLeadStatusStore();
+  const { filters, setFilter } = useManualEventsStore();
   const activeFilterCount = Object.values(filters).filter((val) => val?.trim() !== '').length;
 
   const defaultFilterValues = {

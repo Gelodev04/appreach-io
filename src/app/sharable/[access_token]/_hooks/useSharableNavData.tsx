@@ -22,7 +22,7 @@ export const useSharableNavData = () => {
             disabled: false,
           },
           {
-            title: 'Attributes Upload',
+            title: 'Attribute Uploads',
             path: paths.auth.login,
             icon: <Iconify icon="material-symbols:upload-2-outline-rounded" />,
             disabled: false,
@@ -31,6 +31,12 @@ export const useSharableNavData = () => {
             title: 'Event Senders',
             path: paths.auth.login,
             icon: <Iconify icon="mdi:email-arrow-right-outline" />,
+            disabled: false,
+          },
+          {
+            title: 'Account Profiles',
+            path: paths.auth.login,
+            icon: <Iconify icon="bx:server" />,
             disabled: false,
           },
         ],
@@ -55,13 +61,6 @@ export const useSharableNavData = () => {
       {
         subheader: 'Settings',
         items: [
-          {
-            title: 'Account Profiles',
-            path: paths.auth.login,
-            icon: <Iconify icon="bx:server" />,
-            disabled: false,
-          },
-
           {
             title: 'Webhooks',
             path: paths.auth.login,

@@ -12,15 +12,15 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
-import { useFilteredLeadStatusRows } from '../_hooks/useFilteredLeadStatusRows';
-import { useLeadStatusCol } from '../_hooks/useLeadStatusCol';
+import { useFilteredManualEventsRows } from '../_hooks/useFilteredManualEventsRows';
+import { useManualEventsCol } from '../_hooks/useManualEventsCol';
 import { MultipleFilter } from './multiple-filter';
 
-export const LeadStatusTable = ({ rows }: { rows: GridRowsProp }) => {
+export const ManualEventsTable = ({ rows }: { rows: GridRowsProp }) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useLeadStatusCol();
+  const { columns } = useManualEventsCol();
 
-  const filteredRows = useFilteredLeadStatusRows(rows);
+  const filteredRows = useFilteredManualEventsRows(rows);
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {

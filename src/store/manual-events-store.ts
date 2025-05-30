@@ -10,19 +10,19 @@ type Filters = {
   message: string;
 };
 
-type LeadStatusStore = {
+type ManualEventsStore = {
   filters: Filters;
   setFilter: (key: keyof Filters, value: string) => void;
 };
 
-export const useLeadStatusStore = create<LeadStatusStore>((set) => ({
+export const useManualEventsStore = create<ManualEventsStore>((set) => ({
   filters: {
     profile: '',
     recipient: '',
     sender: '',
     platform: '',
     status: '',
-    sentiment: 'positive',
+    sentiment: '',
     message: '',
   },
   setFilter: (key, value) =>

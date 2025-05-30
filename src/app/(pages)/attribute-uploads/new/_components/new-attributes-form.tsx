@@ -376,7 +376,9 @@ export const NewAttributesForm = ({
                                   }}
                                   key={`${value}-${i}`}
                                 >
-                                  {value ? `${i + 1}. ${value}` : `${i + 1}. No Value`}
+                                  {value
+                                    ? `${i + 1}. ${String(value).slice(0, 300)}${String(value).length > 300 ? '...' : ''}`
+                                    : `${i + 1}. No Value`}
                                 </Box>
                               );
                             })}

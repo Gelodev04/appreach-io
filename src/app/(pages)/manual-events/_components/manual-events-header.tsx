@@ -5,16 +5,16 @@ import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 
-export const LeadStatusHeader = () => {
+export const ManualEventsHeader = () => {
   return (
     <CustomBreadcrumbs
-      heading="Set Lead Status"
-      links={[{ name: 'Set Lead Status' }]}
+      heading="Manual Events"
+      links={[{ name: 'Manual Events' }]}
       action={
         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-          <Link component={RouterLink} href={paths.leadStatus.update} variant="subtitle2">
+          <Link component={RouterLink} href={paths.manualEvents.update} variant="subtitle2">
             <Button variant="contained" color="primary">
-              Update Lead Status
+              Add New Event
             </Button>
           </Link>
         </Stack>

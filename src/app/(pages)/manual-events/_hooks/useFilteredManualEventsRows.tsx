@@ -1,9 +1,9 @@
 import { GridRowsProp } from '@mui/x-data-grid';
 import { useMemo } from 'react';
-import { useLeadStatusStore } from 'src/store/lead-status-store';
+import { useManualEventsStore } from 'src/store/manual-events-store';
 
-export const useFilteredLeadStatusRows = (rows: GridRowsProp) => {
-  const filters = useLeadStatusStore((state) => state.filters);
+export const useFilteredManualEventsRows = (rows: GridRowsProp) => {
+  const filters = useManualEventsStore((state) => state.filters);
   return useMemo(() => {
     return rows.filter((row: any) => {
       const matchesProfile =

@@ -3,16 +3,16 @@
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { paths } from 'src/routes/paths';
 
-export const UpdateLeadStatusHeader = () => {
+export const AddEventsHeader = () => {
   return (
     <CustomBreadcrumbs
-      heading="Update Lead Status"
+      heading="Manually Add Events"
       links={[
         {
-          name: 'Set Lead Status',
-          href: paths.leadStatus.root,
+          name: 'All Events',
+          href: paths.manualEvents.root,
         },
-        { name: 'Update Lead Status' },
+        { name: 'Add Event' },
       ]}
       sx={{
         mb: { xs: 3, md: 5 },

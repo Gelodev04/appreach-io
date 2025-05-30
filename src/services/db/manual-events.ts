@@ -1,10 +1,10 @@
 'use server';
 
 import prisma from 'src/auth/lib/prisma/db-prisma';
-import { LeadStatusData } from 'src/types/lead-status';
+import { ManualEventsData } from 'src/types/manual-events';
 import { getUserSettings } from './user-settings';
 
-export const getLeadStatusByHostIds = async () => {
+export const getEventsByHostIds = async () => {
   try {
     const { hosts } = await getUserSettings({ hosts: true });
 
@@ -15,7 +15,11 @@ export const getLeadStatusByHostIds = async () => {
         host_id: {
           in: hosts,
         },
-        event_type: 'lead_status_updated',
+        update_history: {
+          some: {
+            source: 'webapp',
+          },
+        },
       },
     });
 
@@ -25,7 +29,7 @@ export const getLeadStatusByHostIds = async () => {
     throw new Error(`Unable to get lead status`);
   }
 };
-export const createLeadStatus = async (data: LeadStatusData) => {
+export const createManualEvents = async (data: ManualEventsData) => {
   try {
     const { id } = await getUserSettings({ id: true });
 
@@ -52,15 +56,23 @@ export const createLeadStatus = async (data: LeadStatusData) => {
         sender = { email: data.senders };
       }
 
+      const content: Record<string, string> = {};
+
+      if (data.content.body?.trim()) {
+        content.body_html = data.content.body;
+        content.body_text = data.content.body;
+        content.body_preview = data.content.body.replace(/\n/g, '').slice(0, 100);
+      }
+
+      if (data.content.view_url?.trim()) {
+        content.view_url = data.content.view_url;
+      }
+
       return {
         event_timestamp: data.event_timestamp,
-        event_type: 'lead_status_updated',
+        event_type: data.event_type,
         platform: data.platform,
-        content: {
-          body_html: data.content.body,
-          body_text: data.content.body,
-          body_preview: data.content.body?.replace(/\n/g, '').slice(0, 100),
-        },
+        content,
         host_id: data.host_id,
         host_name: data.host_name,
         lead_status: {

@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
 import { useState } from 'react';
 
-export const LeadStatusMessage = ({ params }: { params: GridCellParams }) => {
+export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
   const msg = params?.row?.content?.body_preview || '';
   const previewLimit = 100;
 

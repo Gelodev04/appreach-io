@@ -103,9 +103,9 @@ export const paths = {
     root: '/profiles',
   },
 
-  leadStatus: {
-    root: '/lead-status',
-    update: '/lead-status/update',
+  manualEvents: {
+    root: '/manual-events',
+    update: '/manual-events/update',
   },
 
   emailValidator: {
@@ -114,8 +114,8 @@ export const paths = {
   },
 
   attributesUpload: {
-    root: '/attributes-uploads',
-    new: '/attributes-uploads/new',
+    root: '/attribute-uploads',
+    new: '/attribute-uploads/new',
   },
 
   smartlead: {

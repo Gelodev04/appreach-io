@@ -19,18 +19,23 @@ import { RHFDateTimePicker } from 'src/components/hook-form/rhf-time-picker';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { paths } from 'src/routes/paths';
-import { createLeadStatus } from 'src/services/db/lead-status';
+import { createManualEvents } from 'src/services/db/manual-events';
 import { getSenderAccountsByHostId } from 'src/services/db/sender-accounts';
-import { ConfigDropdownOptions } from 'src/types/dropdown-types';
-import { LeadStatusOption } from 'src/types/lead-status';
+import { ConfigDropdownOptions, PlatformOptionsType } from 'src/types/dropdown-types';
+import { LeadStatusOption } from 'src/types/manual-events';
 import * as Yup from 'yup';
 
 type FormType = {
   platformOptions: ConfigDropdownOptions[] | undefined;
   leadStatusOptions: LeadStatusOption[] | undefined;
+  eventTypeOptions: PlatformOptionsType;
 };
 
-export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: FormType) => {
+export const AddEventsForm = ({
+  platformOptions,
+  leadStatusOptions,
+  eventTypeOptions,
+}: FormType) => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
   const router = useRouter();
@@ -111,6 +116,15 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
       .notOneOf([null], 'Sender account is required'),
     eventDate: Yup.date().required('Event date is required'),
     content: Yup.string().optional(),
+    event_type: Yup.object()
+      .shape({
+        label: Yup.string().required('Event Type label is required'),
+        value: Yup.string().required('Event Type value is required'),
+      })
+      .required('Event Type is required')
+      .nullable()
+      .notOneOf([null], 'Event Type is required'),
+    view_url: Yup.string().optional(),
   });
 
   const defaultValues = {
@@ -121,6 +135,8 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
     sender: null,
     eventDate: new Date(),
     content: '',
+    event_type: null,
+    view_url: '',
   };
 
   const methods = useForm({
@@ -145,6 +161,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
         platform: data.platform!.value,
         content: {
           body: data.content,
+          view_url: data.view_url,
         },
         host_id: data.hostId!.value,
         host_name: data.hostId!.label,
@@ -157,21 +174,22 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
           .map((lead) => lead.trim()) // Trim each line
           .filter((lead) => lead !== ''), // Filter out empty lines
         senders: data.sender!.value,
+        event_type: data.event_type!.value,
       };
 
-      const response = await createLeadStatus(normalizedData);
+      const response = await createManualEvents(normalizedData);
 
       if (!response.success) {
         enqueueSnackbar(response.message, { variant: 'error', persist: true });
         return;
       }
 
-      enqueueSnackbar('Lead Status Updated successfully');
-      router.push(paths.leadStatus.root);
+      enqueueSnackbar('Events Added successfully');
+      router.push(paths.manualEvents.root);
       router.refresh();
     } catch (error) {
-      console.error('Updating lead status failed', error);
-      enqueueSnackbar('An unexpected error occurred. Lead status update failed.', {
+      console.error('Adding events failed', error);
+      enqueueSnackbar('An unexpected error occurred. Adding events failed.', {
         variant: 'error',
         persist: true,
       });
@@ -209,7 +227,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <Card>
-            <Stack spacing={7} sx={{ p: 3 }}>
+            <Stack spacing={5} sx={{ p: 3 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -218,10 +236,10 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
                 }}
               >
                 <Typography variant="h5" sx={{ textAlign: 'center' }}>
-                  Bulk Update Lead Status
+                  Manually Add Events
                 </Typography>
                 <Typography variant="body2" sx={{ textAlign: 'center' }}>
-                  Update the status for multiple leads at one time.
+                  Add events for multiple leads at one time.
                 </Typography>
                 <Typography variant="body2" sx={{ textAlign: 'center' }}>
                   Paste in one lead per line — either an email address or a LinkedIn URL.
@@ -295,8 +313,30 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
                 />
               </Box>
 
-              {/* <RHFDatePicker name="eventDate" label="Event Date" /> */}
-              <RHFDateTimePicker name="eventDate" label="Event Date (EST Timezone)" />
+              <Box
+                columnGap={2}
+                rowGap={3}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: 'repeat(1, 1fr)',
+                  md: 'repeat(2, 1fr)',
+                }}
+              >
+                <RHFDateTimePicker name="eventDate" label="Event Date (EST Timezone)" />
+                <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  name="event_type"
+                  label="Choose Event type"
+                  options={eventTypeOptions}
+                />
+              </Box>
+
+              <RHFTextField
+                name="view_url"
+                InputLabelProps={{ shrink: true }}
+                placeholder="e.g. https://www.linkedin.com/feed/update/urn:li:activity:7332958753266221057/"
+                label="View Url"
+              />
 
               <RHFTextField
                 name="content"
@@ -326,10 +366,10 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
               priority
             />
             <Typography variant="h6" sx={{ mb: 0.5 }}>
-              Update Lead Status
+              Manually Add Events
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-              Update the status for multiple leads at one time.
+              Add events for multiple leads at one time.
             </Typography>
             <LoadingButton
               type="submit"
@@ -338,7 +378,7 @@ export const UpdateLeadStatusForm = ({ platformOptions, leadStatusOptions }: For
               loading={isSubmitting}
               sx={{ boxShadow: theme.customShadows.primary }}
             >
-              Save Changes
+              Add Events
             </LoadingButton>
           </Stack>
         </Grid>

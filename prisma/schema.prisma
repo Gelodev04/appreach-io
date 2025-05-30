@@ -407,6 +407,7 @@ type EventContent {
   body_html    String?
   body_text    String?
   body_preview String?
+  view_url     String?
 }
 
 type EventLeadStatus {
