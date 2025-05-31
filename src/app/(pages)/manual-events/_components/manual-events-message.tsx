@@ -48,7 +48,7 @@ export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
         variant="subtitle2"
         sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
       >
-        View URL
+        View Url
       </Link>
     );
   }
