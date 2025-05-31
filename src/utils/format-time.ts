@@ -23,11 +23,13 @@ export function fDateTime(date: InputValue, newFormat?: string) {
   return date ? format(new Date(date), fm) : '';
 }
 
-export function fDateTimeEST(date: Date | string, newFormat?: string) {
+export function fDateTimeLocal(date: Date | string, newFormat?: string) {
   if (!date) return '';
 
-  const timeZone = 'America/New_York';
-  const zonedDate = toZonedTime(new Date(date), timeZone);
+  // Get user's local timezone (e.g., "Asia/Manila", "America/New_York")
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const zonedDate = toZonedTime(new Date(date), userTimeZone);
   const formatString = newFormat || 'dd MMM yyyy p';
 
   return format(zonedDate, formatString);

@@ -155,9 +155,7 @@ export const AddEventsForm = ({
   const onSubmit = handleSubmit(async (data) => {
     try {
       const normalizedData = {
-        event_timestamp: dayjs
-          .tz(dayjs(data.eventDate).format('YYYY-MM-DDTHH:mm'), 'America/New_York')
-          .format(),
+        event_timestamp: dayjs(data.eventDate).format(),
         platform: data.platform!.value,
         content: {
           body: data.content,
@@ -267,27 +265,13 @@ export const AddEventsForm = ({
 
               <Box
                 columnGap={2}
-                rowGap={3}
+                rowGap={2}
                 display="grid"
                 gridTemplateColumns={{
                   xs: 'repeat(1, 1fr)',
                   md: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFAutocomplete
-                  isOptionEqualToValue={(option, value) => option.value === value.value}
-                  name="platform"
-                  label="Choose Platform"
-                  options={structuredPlatformOptions}
-                />
-                <RHFAutocomplete
-                  isOptionEqualToValue={(option, value) =>
-                    option.value.leadStatusValue === value.value.leadStatusValue
-                  }
-                  name="leadStatus"
-                  label="Choose Lead Status"
-                  options={structuredLeadStatusOptions}
-                />
                 <RHFAutocomplete
                   isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="hostId"
@@ -311,23 +295,28 @@ export const AddEventsForm = ({
                   ]}
                   helperText={senderAccountHelperText()}
                 />
-              </Box>
-
-              <Box
-                columnGap={2}
-                rowGap={3}
-                display="grid"
-                gridTemplateColumns={{
-                  xs: 'repeat(1, 1fr)',
-                  md: 'repeat(2, 1fr)',
-                }}
-              >
-                <RHFDateTimePicker name="eventDate" label="Event Date (EST Timezone)" />
                 <RHFAutocomplete
                   isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="event_type"
                   label="Choose Event type"
                   options={eventTypeOptions}
+                  helperText=" "
+                />
+                <RHFDateTimePicker name="eventDate" label="Event Date" />
+                <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  name="platform"
+                  label="Choose Platform"
+                  options={structuredPlatformOptions}
+                  helperText=" "
+                />
+                <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) =>
+                    option.value.leadStatusValue === value.value.leadStatusValue
+                  }
+                  name="leadStatus"
+                  label="Choose Lead Status"
+                  options={structuredLeadStatusOptions}
                 />
               </Box>
 

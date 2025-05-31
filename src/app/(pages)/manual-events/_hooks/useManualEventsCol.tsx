@@ -1,18 +1,18 @@
 import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
-import { fDateTimeEST } from 'src/utils/format-time';
+import { fDateTimeLocal } from 'src/utils/format-time';
 import { ManualEventsMessage } from '../_components/manual-events-message';
 
 export const useManualEventsCol = () => {
   const columns: GridColDef[] = [
     {
       field: 'event_timestamp',
-      headerName: 'Date (EST)',
+      headerName: 'Event Date',
       sortable: true,
       valueGetter: (params) => params.row.event_timestamp,
       renderCell: (params) => {
-        return <Typography sx={{ my: 2 }}>{fDateTimeEST(params.row.event_timestamp)}</Typography>;
+        return <Typography sx={{ my: 2 }}>{fDateTimeLocal(params.row.event_timestamp)}</Typography>;
       },
       type: 'date',
       flex: 1,
@@ -23,6 +23,15 @@ export const useManualEventsCol = () => {
       headerName: 'Profile',
       renderCell: (params) => {
         return <RenderCellText displayValue={params.row?.host_name} />;
+      },
+      flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: 'event_type',
+      headerName: 'Event Type',
+      renderCell: (params) => {
+        return <RenderCellText displayValue={params.row?.event_type} />;
       },
       flex: 1,
       minWidth: 200,

@@ -1,15 +1,24 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Link, Typography } from '@mui/material';
 import { GridCellParams } from '@mui/x-data-grid';
 import { useState } from 'react';
 
 export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
-  const msg = params?.row?.content?.body_preview || '';
+  const rawMsg: string = params?.row?.content?.body_preview || '';
+  const viewUrl: string | undefined = params.row?.content?.view_url;
   const previewLimit = 100;
 
   const [expanded, setExpanded] = useState(false);
-  const isLong = msg.length > previewLimit;
+  const isLong = rawMsg.length > previewLimit;
 
-  const previewText = isLong && !expanded ? `${msg.substring(0, previewLimit)}...` : msg;
+  const previewText =
+    rawMsg && isLong && !expanded ? `${rawMsg.substring(0, previewLimit)}...` : rawMsg;
+
+  const hasPreview = Boolean(previewText);
+  const hasView = Boolean(viewUrl);
+
+  if (!hasPreview && !hasView) {
+    return null;
+  }
 
   return (
     <Box
@@ -21,13 +30,43 @@ export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
         width: '100%',
       }}
     >
-      <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
-      {isLong && (
+      {hasPreview ? (
+        viewUrl ? (
+          <Link
+            href={viewUrl}
+            target="_blank"
+            underline="none"
+            sx={{
+              cursor: 'pointer',
+              width: '100%',
+
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
+          </Link>
+        ) : (
+          <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
+        )
+      ) : (
+        <Link
+          href={viewUrl}
+          target="_blank"
+          variant="subtitle2"
+          sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+        >
+          View URL
+        </Link>
+      )}
+
+      {hasPreview && isLong && (
         <Button
           sx={{ padding: 1, minWidth: 'auto', textTransform: 'none' }}
           size="small"
           variant="text"
-          onClick={() => setExpanded(!expanded)}
+          onClick={() => setExpanded((prev) => !prev)}
         >
           {expanded ? 'Show less' : 'Show more'}
         </Button>
