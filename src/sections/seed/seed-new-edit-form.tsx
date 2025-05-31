@@ -16,7 +16,6 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import { useSnackbar } from 'src/components/snackbar';
 import { useGetSeedAccounts } from 'src/hooks/api/seed';
 import { useResponsive } from 'src/hooks/use-responsive';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { ISeedForm } from 'src/types/seed';
@@ -37,7 +36,6 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
   const mdUp = useResponsive('up', 'md');
   const { seedAccounts, totalSeedAccounts: maxSeedAccounts } = useGetSeedAccounts();
   const { enqueueSnackbar } = useSnackbar();
-  const { prefillMessage } = useSalesmateChat();
   const newHostSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     hostId: Yup.object()
@@ -113,10 +111,6 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
-
-  const handleSalesmateOpen = () => {
-    prefillMessage('I am interested in more seeds account.');
-  };
 
   const handleTotalSeedAccounts = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let accountToGenerate = parseInt(e.target.value, 10);
@@ -236,7 +230,12 @@ export default function SeedNewEditForm({ currentItem, numOfSeedsAssigned, userH
               Upgrade your subscription
             </Link>
             . Or{' '}
-            <Link variant="subtitle2" sx={{ cursor: 'pointer' }} onClick={handleSalesmateOpen}>
+            <Link
+              href={paths.support.link}
+              target="_blank"
+              variant="subtitle2"
+              sx={{ cursor: 'pointer' }}
+            >
               contact us
             </Link>{' '}
             if you have questions.

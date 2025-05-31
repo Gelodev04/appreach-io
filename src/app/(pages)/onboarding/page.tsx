@@ -3,7 +3,7 @@ import { getUserSettings } from 'src/services/db/user-settings';
 import { Calendly } from './_components/calendly';
 
 export const metadata = {
-  title: 'Attributes Uploads | Outreach Magic',
+  title: 'Attribute Uploads | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';

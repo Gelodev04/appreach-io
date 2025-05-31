@@ -44,7 +44,6 @@ export const createAttributeUploads = async (
         host_name: data.host_id.label,
         host_crypt: hostCrypt,
         import_name: data.name,
-        update_existing: data.update_existing,
         metadata: {
           processing_status: 'pending',
         },
@@ -59,7 +58,7 @@ export const createAttributeUploads = async (
 
 export const attributeUploadsWebhook = async () => {
   try {
-    await axios.post(env.ATTRIBUTE_UPLOADS_FUNCTION as string);
+    const res = await axios.post(env.ATTRIBUTE_UPLOADS_FUNCTION as string);
   } catch (error) {
     throw new Error('Error on attribute uploads webhook.');
   }

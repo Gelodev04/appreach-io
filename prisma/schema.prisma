@@ -407,6 +407,7 @@ type EventContent {
   body_html    String?
   body_text    String?
   body_preview String?
+  view_url     String?
 }
 
 type EventLeadStatus {
@@ -491,7 +492,6 @@ model attribute_uploads {
   import_name     String
   last_updated    DateTime?                 @default(now())
   status          String?
-  update_existing Boolean
   column_mappings Json?
   metadata        AttributeUploadsMetadata?
 }

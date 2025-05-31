@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 export const AttributesUploadsHeader = () => {
   return (
     <CustomBreadcrumbs
-      heading="Attributes Uploads"
-      links={[{ name: 'Attributes Uploads' }]}
+      heading="Attribute Uploads"
+      links={[{ name: 'Attribute Uploads' }]}
       action={
         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
           <Link href={paths.attributesUpload.new}>

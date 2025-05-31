@@ -13,4 +13,6 @@ export type ConfigDropdownOptions = {
   value: string;
   signup_url?: string;
   description?: string;
+  regex?: string;
+  format_description?: string;
 };

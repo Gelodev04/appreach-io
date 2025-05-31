@@ -28,13 +28,13 @@ export function useNavData() {
             disabled: disableAccess,
           },
           {
-            title: 'Set Lead Status',
-            path: paths.leadStatus.root,
+            title: 'Manual Events',
+            path: paths.manualEvents.root,
             icon: <Iconify icon="material-symbols:view-timeline-outline-rounded" />,
             disabled: disableAccess,
           },
           {
-            title: 'Attributes Upload',
+            title: 'Attribute Uploads',
             path: paths.attributesUpload.root,
             icon: <Iconify icon="material-symbols:upload-2-outline-rounded" />,
             disabled: disableAccess,
@@ -43,6 +43,12 @@ export function useNavData() {
             title: 'Event Senders',
             path: paths.eventSenders.root,
             icon: <Iconify icon="mdi:email-arrow-right-outline" />,
+            disabled: disableAccess,
+          },
+          {
+            title: 'Account Profiles',
+            path: paths.settings.root,
+            icon: <Iconify icon="bx:server" />,
             disabled: disableAccess,
           },
           // {
@@ -88,13 +94,6 @@ export function useNavData() {
         subheader: 'Settings',
         items: [
           {
-            title: 'Account Profiles',
-            path: paths.settings.root,
-            icon: <Iconify icon="bx:server" />,
-            disabled: disableAccess,
-          },
-
-          {
             title: 'Webhooks',
             path: paths.webhooks.root,
             icon: <Iconify icon="material-symbols:webhook-rounded" />,
@@ -105,6 +104,11 @@ export function useNavData() {
             path: paths.checkout.root,
             icon: <Iconify icon="flowbite:file-invoice-outline" />,
             disabled: completedOn === null,
+          },
+          {
+            title: 'Need Support?',
+            path: paths.support.link,
+            icon: <Iconify icon="mdi:slack" />,
           },
 
           // {

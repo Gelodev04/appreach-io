@@ -30,3 +30,15 @@ export const mapDisplayValueToLabelValue = <T extends { display: string; value: 
     value: option.value,
   }));
 };
+
+export const mapColumnValidation = <
+  T extends { value: string; regex: string; format_description: string },
+>(
+  options: T[]
+) => {
+  return options.map((option) => ({
+    value: option.value,
+    regex: option.regex,
+    format_description: option.format_description,
+  }));
+};

@@ -23,7 +23,6 @@ import {
 
 import Image from 'next/image';
 import { useResponsive } from 'src/hooks/use-responsive';
-import useSalesmateChat from 'src/hooks/use-salesmate-chat';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { calculateRemainingDays } from 'src/utils';
@@ -44,7 +43,6 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
   const mdUp = useResponsive('up', 'md');
 
   // Prefill message for 'Contact Us'
-  const { prefillMessage } = useSalesmateChat();
 
   // Subscription state management
   const [nextPlan, setNextPlan] = useState<SubscriptionData>();
@@ -294,14 +292,16 @@ export default function SubscriptionView({ subscription, username }: Subscriptio
             . Send us a message if you have any questions.
           </Typography>
         )}
-
-        <Button
-          onClick={() => prefillMessage('I have questions about my subscription.')}
-          variant="contained"
-          color="primary"
+        <Link
+          href={paths.support.link}
+          target="_blank"
+          variant="subtitle2"
+          sx={{ cursor: 'pointer' }}
         >
-          Contact Us
-        </Button>
+          <Button variant="contained" color="primary">
+            Contact Us
+          </Button>
+        </Link>
       </Box>
       <Image
         src="/assets/illustrations/characters/subscription-graphic.png"

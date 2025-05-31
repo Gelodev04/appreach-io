@@ -1,16 +1,16 @@
 import { Container } from '@mui/material';
-import { getLeadStatusByHostIds } from 'src/services/db/lead-status';
-import { LeadStatusHeader } from './_components/lead-status-header';
-import { LeadStatusTable } from './_components/lead-status-table';
+import { getEventsByHostIds } from 'src/services/db/manual-events';
+import { ManualEventsHeader } from './_components/manual-events-header';
+import { ManualEventsTable } from './_components/manual-events-table';
 
 export const metadata = {
-  title: 'Set Lead Status | Outreach Magic',
+  title: 'Manual Events | Outreach Magic',
 };
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const rows = await getLeadStatusByHostIds();
+  const rows = await getEventsByHostIds();
 
   const transformedRows = rows.map((row) => ({
     ...row,
@@ -18,9 +18,9 @@ export default async function Page() {
   }));
   return (
     <Container maxWidth={false} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-      <LeadStatusHeader />
+      <ManualEventsHeader />
 
-      <LeadStatusTable rows={transformedRows} />
+      <ManualEventsTable rows={transformedRows} />
     </Container>
   );
 }

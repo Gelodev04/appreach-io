@@ -5,5 +5,4 @@ export type CreateAttributeUploadsPropType = {
   };
 
   name: string;
-  update_existing: boolean;
 };

@@ -1,9 +1,7 @@
 import { useSession } from 'next-auth/react';
-import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
-import { useRouter, useSearchParams, usePathname } from 'src/routes/hooks';
-import { env } from 'src/data/env/client';
+import { usePathname, useRouter, useSearchParams } from 'src/routes/hooks';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -75,7 +73,7 @@ export default function GuestGuard({ children }: Props) {
 
   return (
     <>
-      {user ? (
+      {/* {user ? (
         <>
           <Script strategy="afterInteractive">
             {`
@@ -113,7 +111,7 @@ export default function GuestGuard({ children }: Props) {
             `}
           </Script>
         </>
-      ) : null}
+      ) : null} */}
       {children}
     </>
   );

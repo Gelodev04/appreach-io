@@ -2,17 +2,20 @@
 
 import { Icon } from '@iconify/react';
 import { Box, CircularProgress, IconButton, Tooltip, useTheme } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { attributeUploadsWebhook } from 'src/services/db/attributes-uploads';
 
 export const AttributesUploadsButton = () => {
   const theme = useTheme();
+  const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
   const handleVerify = () => {
     startTransition(async () => {
       await attributeUploadsWebhook();
+      router.refresh();
     });
   };
   return (
