@@ -20,6 +20,39 @@ export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
     return null;
   }
 
+  let content;
+  if (hasPreview) {
+    content = hasView ? (
+      <Link
+        href={viewUrl}
+        target="_blank"
+        underline="none"
+        sx={{
+          cursor: 'pointer',
+          width: '100%',
+          '&:hover': {
+            textDecoration: 'underline',
+          },
+        }}
+      >
+        <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
+      </Link>
+    ) : (
+      <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
+    );
+  } else {
+    content = (
+      <Link
+        href={viewUrl}
+        target="_blank"
+        variant="subtitle2"
+        sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+      >
+        View URL
+      </Link>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -30,36 +63,7 @@ export const ManualEventsMessage = ({ params }: { params: GridCellParams }) => {
         width: '100%',
       }}
     >
-      {hasPreview ? (
-        viewUrl ? (
-          <Link
-            href={viewUrl}
-            target="_blank"
-            underline="none"
-            sx={{
-              cursor: 'pointer',
-              width: '100%',
-
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
-          </Link>
-        ) : (
-          <Typography sx={{ whiteSpace: 'pre-line' }}>{previewText}</Typography>
-        )
-      ) : (
-        <Link
-          href={viewUrl}
-          target="_blank"
-          variant="subtitle2"
-          sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-        >
-          View URL
-        </Link>
-      )}
+      {content}
 
       {hasPreview && isLong && (
         <Button
