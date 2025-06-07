@@ -203,7 +203,7 @@ export const useMissingAttributesCol = (attributeType: 'person' | 'company') => 
     };
 
     return columnOrderMap[attributeType].map((key) => baseColumns[key]);
-  }, [, attributeType]);
+  }, [attributeType]);
 
   return { columns };
 };

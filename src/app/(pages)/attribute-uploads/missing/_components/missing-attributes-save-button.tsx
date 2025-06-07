@@ -18,7 +18,7 @@ type RowSaveButtonProps = {
 const formatLinkedinUrl = (url: string, type: 'in' | 'company') => {
   if (!url) return undefined;
 
-  let cleanUrl = url
+  const cleanUrl = url
     .replace(/^https?:\/\//i, '')
     .replace(/^www\./i, '')
     .trim();

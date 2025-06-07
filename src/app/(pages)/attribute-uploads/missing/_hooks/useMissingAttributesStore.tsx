@@ -4,9 +4,10 @@ import {
 } from 'src/store/attribute-uploads';
 
 export const useMissingAttributesStore = (attributeType: 'person' | 'company') => {
-  if (attributeType === 'person') {
-    return useMissingAttributesPersonStore();
-  } else {
-    return useMissingAttributesCompanyStore();
-  }
+  // Call both hooks unconditionally
+  const personStore = useMissingAttributesPersonStore();
+  const companyStore = useMissingAttributesCompanyStore();
+
+  // Select the one to use based on the attributeType
+  return attributeType === 'person' ? personStore : companyStore;
 };

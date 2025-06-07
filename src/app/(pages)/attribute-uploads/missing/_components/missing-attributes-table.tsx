@@ -14,6 +14,7 @@ import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { useMissingAttributesCol } from '../_hooks/useMissingAttributesCol';
 import { useStickyPinnedColumn } from '../_hooks/useStickyPinnedColumn';
+
 export const MissingAttributesTable = ({
   rows,
   attributeType,
