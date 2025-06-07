@@ -140,11 +140,11 @@ export const EventSendersTable = ({
   return (
     <Card
       sx={{
-        height: { xs: 800, md: 2 },
+        height: { xs: 800 },
         flexGrow: { md: 1 },
         display: { md: 'flex' },
         flexDirection: { md: 'column' },
-        minHeight: '70vh',
+        minHeight: '100%',
         minWidth: 730,
       }}
     >

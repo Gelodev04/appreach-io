@@ -36,6 +36,7 @@ export default function SendersTabs({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'auto',
+        height: '100%',
       }}
     >
       <AppBar position="static">

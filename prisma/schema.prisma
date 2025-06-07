@@ -437,6 +437,19 @@ type EventUpdateHistory {
   updated_at DateTime @db.Date
 }
 
+type MissingAttributesMetadata {
+  created_at           DateTime? @db.Date
+  updated_at           DateTime? @db.Date
+  bigquery_sync_status String?
+}
+
+type MissingAttributesUpdateHistory {
+  source     String
+  user_id    String?  @db.ObjectId
+  updated_at DateTime @db.Date
+  webapp     Boolean?
+}
+
 model emailAccounts {
   id                  String                          @id @default(auto()) @map("_id") @db.ObjectId
   accessToken         String?
@@ -638,4 +651,29 @@ model webhook_logs {
   platform       String
   event_type     String
   sender_account String
+}
+
+model person_attributes {
+  id                   String                           @id @default(auto()) @map("_id") @db.ObjectId
+  email                String?
+  first_name           String?
+  last_name            String?
+  linkedin_url         String?
+  linkedin_company_url String?
+  reporting_location   String?
+  job_title            String?
+  domain               String?
+  metadata             MissingAttributesMetadata?
+  update_history       MissingAttributesUpdateHistory[]
+}
+
+model company_attributes {
+  id             String                           @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  domain         String?
+  linkedin_url   String?
+  industry       String?
+  employee_count Int?
+  metadata       MissingAttributesMetadata?
+  update_history MissingAttributesUpdateHistory[]
 }

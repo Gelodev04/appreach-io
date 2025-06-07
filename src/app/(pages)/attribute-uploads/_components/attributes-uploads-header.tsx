@@ -13,6 +13,14 @@ export const AttributesUploadsHeader = () => {
       links={[{ name: 'Attribute Uploads' }]}
       action={
         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+          <Link href={paths.attributesUpload.missing}>
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="flowbite:cell-attributes-outline" />}
+            >
+              Missing Attributes
+            </Button>
+          </Link>
           <Link href={paths.attributesUpload.new}>
             <Button
               variant="contained"

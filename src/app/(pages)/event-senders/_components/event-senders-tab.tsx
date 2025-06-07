@@ -41,6 +41,7 @@ export const EventSendersTab = ({
         flexDirection: 'column',
         overflow: 'auto',
         mt: 3,
+        height: '100%',
       }}
     >
       <TabContext value={value}>
@@ -58,7 +59,7 @@ export const EventSendersTab = ({
             <Tab label={<TabTitle title="CRM" icon="fa-solid:user-cog" />} value="crm" />
           </TabList>
         </Box>
-        <TabPanel value={value} sx={{ p: 0 }}>
+        <TabPanel value={value} sx={{ p: 0, height: '100%' }}>
           {value === 'email' && (
             <EventSendersTable
               rows={rows}

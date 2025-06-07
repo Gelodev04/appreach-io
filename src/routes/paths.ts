@@ -116,6 +116,7 @@ export const paths = {
   attributesUpload: {
     root: '/attribute-uploads',
     new: '/attribute-uploads/new',
+    missing: '/attribute-uploads/missing',
   },
 
   smartlead: {

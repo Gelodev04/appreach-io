@@ -14,8 +14,8 @@ export type ManualEventsData = {
   host_id: string;
   host_name: string;
   lead_status: {
-    name: string;
-    sentiment: string;
+    name?: string;
+    sentiment?: string;
   };
   leads: string[];
   senders: string;
