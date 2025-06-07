@@ -224,7 +224,7 @@ export const AddEventsForm = ({
   };
 
   const leadStatusHelperText = () => {
-    if (eventType?.value != 'lead_status_updated')
+    if (eventType?.value !== 'lead_status_updated')
       return 'Use update lead status to update the lead status';
     return ' ';
   };
