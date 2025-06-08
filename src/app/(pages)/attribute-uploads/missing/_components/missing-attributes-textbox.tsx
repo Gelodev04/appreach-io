@@ -50,7 +50,7 @@ export const MissingAttributesTextbox = ({ params, attributeType, type }: Props)
     setFieldValue(rowId, field, trimmedInitial, trimmedInitial);
     clearFieldChange(rowId, field);
     debouncedSetFieldValue.cancel();
-  }, [rowId, field, initial, setFieldValue, debouncedSetFieldValue]);
+  }, [rowId, field, initial, setFieldValue, debouncedSetFieldValue, clearFieldChange]);
 
   useEffect(() => {
     setValue(displayValue);
