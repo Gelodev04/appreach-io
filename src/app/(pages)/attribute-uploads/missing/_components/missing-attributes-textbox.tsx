@@ -12,7 +12,8 @@ type Props = {
 };
 
 export const MissingAttributesTextbox = ({ params, attributeType, type }: Props) => {
-  const { setFieldValue, unsaved, editedValues } = useMissingAttributesStore(attributeType);
+  const { setFieldValue, unsaved, editedValues, clearFieldChange } =
+    useMissingAttributesStore(attributeType);
 
   const rowId = params.row.id;
   const field = params.field;
@@ -47,6 +48,7 @@ export const MissingAttributesTextbox = ({ params, attributeType, type }: Props)
     const trimmedInitial = initial.trim();
     setValue(trimmedInitial);
     setFieldValue(rowId, field, trimmedInitial, trimmedInitial);
+    clearFieldChange(rowId, field);
     debouncedSetFieldValue.cancel();
   }, [rowId, field, initial, setFieldValue, debouncedSetFieldValue]);
 
