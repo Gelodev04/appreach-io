@@ -117,20 +117,15 @@ export const useMissingAttributesCol = (attributeType: 'person' | 'company') => 
         flex: 1,
         minWidth: 250,
       },
-      // host_id: {
-      //   field: 'host_id',
-      //   headerName: 'Profile',
-      //   valueGetter: (params) => params.row.host_name,
-      //   renderCell: (params) => (
-      //     <HostDropdown
-      //       params={params}
-      //       options={hostOptions}
-      //       onUpdate={updatePersonAttributeHost}
-      //     />
-      //   ),
-      //   flex: 1,
-      //   minWidth: 250,
-      // },
+      host_name: {
+        field: 'host_name',
+        headerName: 'Profile',
+        valueGetter: (params) => params.row.host_name,
+        renderCell: (params) => params.row.host_name,
+        flex: 1,
+        minWidth: 250,
+        hideable: false,
+      },
       person_updated_at: {
         field: 'person_updated_at',
         headerName: 'Last Synced',
@@ -190,6 +185,7 @@ export const useMissingAttributesCol = (attributeType: 'person' | 'company') => 
         // 'host_id',
         'person_updated_at',
         'actions',
+        'host_name',
       ],
       company: [
         'domain',
@@ -199,6 +195,7 @@ export const useMissingAttributesCol = (attributeType: 'person' | 'company') => 
         'employee_count',
         'company_updated_at',
         'actions',
+        'host_name',
       ],
     };
 

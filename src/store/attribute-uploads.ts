@@ -14,6 +14,12 @@ type MissingAttributesState = {
   updateSavedValues: (rowId: string, updatedFields: FieldUpdates) => void;
 };
 
+interface MissingAttributesFiltersState {
+  hostName: string;
+  setHostName: (hostName: string) => void;
+  clearFilters: () => void;
+}
+
 const createMissingAttributesStore = () =>
   create<MissingAttributesState>((set) => ({
     unsaved: {},
@@ -111,3 +117,19 @@ const createMissingAttributesStore = () =>
 
 export const useMissingAttributesPersonStore = createMissingAttributesStore();
 export const useMissingAttributesCompanyStore = createMissingAttributesStore();
+
+export const useMissingPersonAttributesFiltersStore = create<MissingAttributesFiltersState>(
+  (set) => ({
+    hostName: '',
+    setHostName: (hostName) => set({ hostName }),
+    clearFilters: () => set({ hostName: '' }),
+  })
+);
+
+export const useMissingCompanyAttributesFiltersStore = create<MissingAttributesFiltersState>(
+  (set) => ({
+    hostName: '',
+    setHostName: (hostName) => set({ hostName }),
+    clearFilters: () => set({ hostName: '' }),
+  })
+);

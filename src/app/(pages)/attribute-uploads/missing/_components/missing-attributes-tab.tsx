@@ -9,22 +9,46 @@ import Tab from '@mui/material/Tab';
 import { GridRowsProp } from '@mui/x-data-grid';
 import * as React from 'react';
 import TabTitle from 'src/app/(pages)/senders/verified-senders/_components/tabs/tab-title';
+import { HostOptionsType } from 'src/types/dropdown-types';
 import { MissingAttributesCompanyStyle, MissingAttributesPersonStyle } from '../style';
 import { MissingAttributesTable } from './missing-attributes-table';
 
 export const MissingAttributesTab = ({
   personRows,
   companyRows,
+  hostOptions,
 }: {
   personRows: GridRowsProp;
   companyRows: GridRowsProp;
+  hostOptions: HostOptionsType;
 }) => {
   const [value, setValue] = React.useState('person');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  console.log({ companyRows });
+  const personProfileCounts = React.useMemo(() => {
+    return personRows.reduce(
+      (acc, row) => {
+        const profile = row.host_name || 'Unknown';
+        acc[profile] = (acc[profile] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  }, [personRows]);
+
+  const companyProfileCounts = React.useMemo(() => {
+    return companyRows.reduce(
+      (acc, row) => {
+        const profile = row.host_name || 'Unknown';
+        acc[profile] = (acc[profile] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  }, [companyRows]);
+
   return (
     <Card
       sx={{
@@ -67,6 +91,8 @@ export const MissingAttributesTab = ({
           {value === 'person' && (
             <MissingAttributesTable
               rows={personRows}
+              hostCounts={personProfileCounts}
+              hostOptions={hostOptions}
               attributeType="person"
               lastCol={8}
               customStyle={MissingAttributesPersonStyle}
@@ -75,6 +101,8 @@ export const MissingAttributesTab = ({
           {value === 'company' && (
             <MissingAttributesTable
               rows={companyRows}
+              hostCounts={companyProfileCounts}
+              hostOptions={hostOptions}
               attributeType="company"
               lastCol={6}
               customStyle={MissingAttributesCompanyStyle}

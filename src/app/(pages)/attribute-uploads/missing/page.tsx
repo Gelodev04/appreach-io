@@ -3,6 +3,7 @@ import {
   getCompanyMissingAttributes,
   getPositiveLeadsWithAttributes,
 } from 'src/services/db/attributes-uploads';
+import { getSenderProfiles } from 'src/services/db/user-settings';
 import { MissingAttributesHeader } from './_components/missing-attributes-header';
 import { MissingAttributesTab } from './_components/missing-attributes-tab';
 
@@ -27,6 +28,7 @@ export default async function Page() {
     id: `${row.company_attributes_id || row.companies_array_id}|${row.company_linkedin_url},`,
   }));
 
+  const { allHosts: senderProfiles } = await getSenderProfiles();
   return (
     <Container
       maxWidth={false}
@@ -34,7 +36,11 @@ export default async function Page() {
     >
       <MissingAttributesHeader />
 
-      <MissingAttributesTab personRows={personRows} companyRows={companyRows} />
+      <MissingAttributesTab
+        hostOptions={senderProfiles}
+        personRows={personRows}
+        companyRows={companyRows}
+      />
     </Container>
   );
 }
