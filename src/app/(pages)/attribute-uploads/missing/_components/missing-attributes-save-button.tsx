@@ -27,11 +27,14 @@ const formatLinkedinUrl = (url: string, fallbackType: 'in' | 'company'): string 
 
   const match = cleanUrl.match(/^linkedin\.com\/(in|company|school)\/(.+)$/i);
   const type = match ? match[1] : fallbackType;
-  const handle = match ? match[2] : cleanUrl;
+  let handle = match ? match[2] : cleanUrl;
+
+  if (handle.endsWith('/')) {
+    handle = handle.slice(0, -1);
+  }
 
   return `linkedin.com/${type}/${handle}`;
 };
-
 export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProps) => {
   const { unsaved, clearRowChanges, updateSavedValues, editedValues } =
     useMissingAttributesFieldStore();
@@ -85,7 +88,7 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
         first_name: getValue('first_name'),
         last_name: getValue('last_name'),
         job_title: getValue('job_title')?.toLowerCase(),
-        reporting_location: getValue('reporting_location')?.toLowerCase(),
+        reporting_location: getValue('reporting_location'),
         domain: getValue('company_domain')?.toLowerCase(),
         linkedin_company_url: rawCompanyLinkedin
           ? formatLinkedinUrl(rawCompanyLinkedin, 'company')
@@ -109,6 +112,7 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
         industry: getValue('industry')?.toLowerCase(),
         employee_count: finalEmployeeCount,
       };
+      console.log({ personRow, companyRow });
 
       try {
         const response = await updateMissingAttributes({
