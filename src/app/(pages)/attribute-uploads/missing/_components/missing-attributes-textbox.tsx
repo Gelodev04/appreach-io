@@ -33,7 +33,7 @@ export const MissingAttributesTextbox = ({ params, type }: Props) => {
   const debouncedSetFieldValue = useMemo(() => {
     return debounce((val: string) => {
       // Compare the new value with the *current* saved value, not the original one.
-      setFieldValue(rowId, field, val.trim(), String(savedValue).trim());
+      setFieldValue(rowId, field, val, String(savedValue).trim());
     }, 300);
   }, [rowId, field, setFieldValue, savedValue]);
 
@@ -53,6 +53,15 @@ export const MissingAttributesTextbox = ({ params, type }: Props) => {
     clearFieldChange(rowId, field);
     debouncedSetFieldValue.cancel();
   }, [rowId, field, savedValue, setFieldValue, debouncedSetFieldValue, clearFieldChange]);
+
+  const handleBlur = () => {
+    debouncedSetFieldValue.cancel();
+    const trimmedValue = value.trim();
+
+    setValue(trimmedValue);
+
+    setFieldValue(rowId, field, trimmedValue, String(savedValue).trim());
+  };
 
   // 5. Effect to sync local state if the underlying saved value changes (e.g., from an external update)
   useEffect(() => {
@@ -78,7 +87,7 @@ export const MissingAttributesTextbox = ({ params, type }: Props) => {
         type={type}
         value={value}
         error={dirty}
-        onBlur={() => setValue(value.trim())}
+        onBlur={handleBlur}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         fullWidth
