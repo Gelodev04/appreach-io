@@ -1,11 +1,8 @@
 import { Container } from '@mui/material';
-import {
-  getCompanyMissingAttributes,
-  getPositiveLeadsWithAttributes,
-} from 'src/services/db/attributes-uploads';
+import { getEnrichedPositiveLeads } from 'src/services/db/attributes-uploads';
 import { getSenderProfiles } from 'src/services/db/user-settings';
 import { MissingAttributesHeader } from './_components/missing-attributes-header';
-import { MissingAttributesTab } from './_components/missing-attributes-tab';
+import { MissingAttributesTable } from './_components/missing-attributes-table';
 
 export const metadata = {
   title: 'Missing Attributes | Outreach Magic',
@@ -14,18 +11,11 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const rawPersonRows = await getPositiveLeadsWithAttributes();
+  const rawRows = await getEnrichedPositiveLeads();
 
-  const personRows = rawPersonRows.map((row) => ({
+  const missingAttributeRows = rawRows.map((row) => ({
     ...row,
-    id: row.person_attributes_id || row.persons_array_id,
-  }));
-
-  const rawCompanyRows = await getCompanyMissingAttributes();
-
-  const companyRows = rawCompanyRows.map((row) => ({
-    ...row,
-    id: `${row.company_attributes_id || row.companies_array_id}|${row.company_linkedin_url},`,
+    id: row.array_id,
   }));
 
   const { allHosts: senderProfiles } = await getSenderProfiles();
@@ -36,11 +26,7 @@ export default async function Page() {
     >
       <MissingAttributesHeader />
 
-      <MissingAttributesTab
-        hostOptions={senderProfiles}
-        personRows={personRows}
-        companyRows={companyRows}
-      />
+      <MissingAttributesTable rows={missingAttributeRows} hostOptions={senderProfiles} />
     </Container>
   );
 }

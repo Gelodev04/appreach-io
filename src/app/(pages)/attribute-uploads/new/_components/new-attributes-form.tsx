@@ -469,7 +469,7 @@ export const NewAttributesForm = ({
                             <Box sx={{ alignSelf: 'center' }}>
                               <RHFCheckbox
                                 name={`proceedAnyway.${header}`}
-                                label={`${invalidLines.length} rows have errors, proceed anyway?`}
+                                label={`${invalidLines.length} cells might not process correctly, proceed anyway?`}
                               />
                             </Box>
                           )}

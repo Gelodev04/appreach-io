@@ -432,6 +432,7 @@ type EventSender {
 }
 
 type EventUpdateHistory {
+  webapp     Boolean?
   source     String
   host_id    String?  @db.ObjectId
   updated_at DateTime @db.Date
@@ -663,6 +664,7 @@ model person_attributes {
   reporting_location   String?
   job_title            String?
   domain               String?
+  company_name         String?
   metadata             MissingAttributesMetadata?
   update_history       MissingAttributesUpdateHistory[]
 }

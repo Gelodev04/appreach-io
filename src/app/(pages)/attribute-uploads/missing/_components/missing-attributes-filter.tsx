@@ -10,22 +10,20 @@ import {
 } from '@mui/material';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
+import { useMissingAttributesFiltersStore } from 'src/store/attribute-uploads';
 import { HostOptionsType } from 'src/types/dropdown-types';
-import { useMissingAttributesHostStore } from '../_hooks/useMissingAttributesHostStore';
 
 type MissingAttributesFilterType = {
   hostOptions: HostOptionsType;
   hostCounts: Record<string, number>;
-  attributeType: 'person' | 'company';
 };
 
 export const MissingAttributesFilter = ({
   hostOptions,
   hostCounts,
-  attributeType,
 }: MissingAttributesFilterType) => {
   const filterPopover = usePopover();
-  const { hostName, setHostName, clearFilters } = useMissingAttributesHostStore(attributeType);
+  const { hostName, setHostName, clearFilters } = useMissingAttributesFiltersStore();
 
   const handleApplyFilters = () => {
     console.log('Applying filter: host_name =', hostName);

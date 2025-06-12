@@ -3,19 +3,19 @@ import { GridCellParams } from '@mui/x-data-grid';
 import { enqueueSnackbar } from 'notistack';
 import { useTransition } from 'react';
 import Iconify from 'src/components/iconify';
-import {
-  updateCompanyMissingAttributes,
-  updatePersonMissingAttributes,
-} from 'src/services/db/attributes-uploads';
-import { useMissingAttributesStore } from '../_hooks/useMissingAttributesStore';
+import { updateMissingAttributes } from 'src/services/db/attributes-uploads';
+import { useMissingAttributesFieldStore } from 'src/store/attribute-uploads';
 
 type RowSaveButtonProps = {
   rowId: string;
   params: GridCellParams;
-  attributeType: 'person' | 'company';
 };
+const personRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[A-Za-z0-9%\-]+\/?$/;
+const companyRegex =
+  /^(https?:\/\/)?(www\.)?linkedin\.com\/(company|school)\/[a-zA-Z0-9\-.'&()%_]+(?:%[0-9A-Fa-f]{2})*\/?$/;
+const emailRegex = /^[\w.\-]+@([\w\-]+\.)+[a-zA-Z]{2,}$/;
 
-const formatLinkedinUrl = (url: string, type: 'in' | 'company') => {
+const formatLinkedinUrl = (url: string, fallbackType: 'in' | 'company'): string | undefined => {
   if (!url) return undefined;
 
   const cleanUrl = url
@@ -23,64 +23,105 @@ const formatLinkedinUrl = (url: string, type: 'in' | 'company') => {
     .replace(/^www\./i, '')
     .trim();
 
-  const match = cleanUrl.match(/^linkedin\.com\/(?:in|company)\/(.+)$/i);
-  const handle = match ? match[1] : cleanUrl;
+  const match = cleanUrl.match(/^linkedin\.com\/(in|company|school)\/(.+)$/i);
+  const type = match ? match[1] : fallbackType;
+  const handle = match ? match[2] : cleanUrl;
 
   return `linkedin.com/${type}/${handle}`;
 };
 
-export const MissingAttributesSaveButton = ({
-  rowId,
-  params,
-  attributeType,
-}: RowSaveButtonProps) => {
-  const { unsaved, clearFieldChange, updateSavedValues } = useMissingAttributesStore(attributeType);
+export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProps) => {
+  const { unsaved, clearRowChanges, updateSavedValues, editedValues } =
+    useMissingAttributesFieldStore();
   const changes = unsaved[rowId];
   const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
+    if (disabled) return;
     startTransition(async () => {
-      const personRow = {
-        email: (changes?.email ?? params.row.email)?.toLowerCase(),
-        first_name: changes?.first_name ?? params.row.first_name,
-        last_name: changes?.last_name ?? params.row.last_name,
-        linkedin_url: formatLinkedinUrl(changes?.linkedin_url ?? params.row.linkedin_url, 'in'),
-        linkedin_company_url: formatLinkedinUrl(
-          changes?.linkedin_company_url ?? params.row.linkedin_company_url,
-          'company'
-        ),
-        job_title: (changes?.job_title ?? params.row.job_title)?.toLowerCase(),
-        domain: (changes?.email ?? params.row.email)?.split('@')[1],
-        reporting_location: (
-          changes?.reporting_location ?? params.row.reporting_location
-        )?.toLowerCase(),
+      const getValue = (field: string) => {
+        if (changes && changes[field] !== undefined) {
+          return changes[field];
+        }
+        if (editedValues[rowId] && editedValues[rowId][field] !== undefined) {
+          return editedValues[rowId][field];
+        }
+        return params.row[field];
       };
+
+      const rawPersonLinkedin = getValue('linkedin_url');
+      const rawCompanyLinkedin = getValue('company_linkedin_url');
+      const rawEmail = getValue('email')?.toLowerCase();
+      const currentChanges = { ...(unsaved[rowId] || {}) };
+
+      // Validate email
+      if (rawEmail && !emailRegex.test(rawEmail)) {
+        enqueueSnackbar('Invalid email format.', { variant: 'error', persist: true });
+        return;
+      }
+
+      // Validate LinkedIn URLs
+      if (rawPersonLinkedin && !personRegex.test(rawPersonLinkedin)) {
+        enqueueSnackbar('Invalid LinkedIn Person Standard URL format.', {
+          variant: 'error',
+          persist: true,
+        });
+        return;
+      }
+
+      if (rawCompanyLinkedin && !companyRegex.test(rawCompanyLinkedin)) {
+        console.log({ rawCompanyLinkedin });
+        enqueueSnackbar('Invalid Company LinkedIn URL format.', {
+          variant: 'error',
+          persist: true,
+        });
+        return;
+      }
+      const personRow = {
+        email: rawEmail || undefined,
+        linkedin_url: rawPersonLinkedin ? formatLinkedinUrl(rawPersonLinkedin, 'in') : undefined,
+        first_name: getValue('first_name'),
+        last_name: getValue('last_name'),
+        job_title: getValue('job_title')?.toLowerCase(),
+        reporting_location: getValue('reporting_location')?.toLowerCase(),
+        domain: getValue('company_domain')?.toLowerCase(),
+        linkedin_company_url: rawCompanyLinkedin
+          ? formatLinkedinUrl(rawCompanyLinkedin, 'company')
+          : undefined,
+        company_name: getValue('company_name'),
+      };
+
+      // Safely get and convert employee_count
+      const employeeCountValue = getValue('employee_count');
+      const finalEmployeeCount =
+        employeeCountValue != null && !isNaN(Number(employeeCountValue))
+          ? Number(employeeCountValue)
+          : undefined;
+
       const companyRow = {
-        company_domain: (changes?.company_domain ?? params.row.company_domain)?.toLowerCase(),
-        company_linkedin_url: formatLinkedinUrl(
-          changes?.company_linkedin_url ?? params.row.company_linkedin_url,
-          'company'
-        ),
-        company_name: changes?.company_name ?? params.row.company_name,
-        industry: (changes?.industry ?? params.row.industry)?.toLowerCase(),
-        employee_count: changes?.employee_count ?? params.row.employee_count,
+        domain: getValue('company_domain')?.toLowerCase(),
+        linkedin_url: rawCompanyLinkedin
+          ? formatLinkedinUrl(rawCompanyLinkedin, 'company')
+          : undefined,
+        name: getValue('company_name'),
+        industry: getValue('industry')?.toLowerCase(),
+        employee_count: finalEmployeeCount,
       };
 
       try {
-        let response;
-        if (attributeType === 'person') {
-          response = await updatePersonMissingAttributes(rowId, personRow);
-        } else {
-          response = await updateCompanyMissingAttributes(rowId, companyRow);
-        }
-
+        const response = await updateMissingAttributes({
+          personRow,
+          companyRow,
+          arrayId: rowId,
+          changedFields: currentChanges,
+        });
         if (response.success) {
           enqueueSnackbar('Attribute updated successfully!', { variant: 'success' });
           // Update savedValues
-          updateSavedValues(rowId, changes);
-
+          updateSavedValues(rowId, currentChanges);
           // Clear unsaved
-          Object.keys(changes).forEach((field) => clearFieldChange(rowId, field));
+          clearRowChanges(rowId);
+          console.log({ currentChanges });
         } else {
           enqueueSnackbar(response.message || 'Failed to save', {
             variant: 'error',
@@ -93,11 +134,12 @@ export const MissingAttributesSaveButton = ({
     });
   };
 
-  const disabled = isPending || !changes;
+  const hasChanges = changes && Object.keys(changes).length > 0;
+  const disabled = isPending || !hasChanges;
 
   return (
-    <Tooltip title={disabled ? '' : 'Save changes'}>
-      <IconButton component="span" onClick={disabled ? undefined : handleSave} disabled={disabled}>
+    <Tooltip title={'Save changes'}>
+      <IconButton component="span" onClick={handleSave} disabled={disabled}>
         <Iconify icon="material-symbols:save-outline-rounded" />
       </IconButton>
     </Tooltip>

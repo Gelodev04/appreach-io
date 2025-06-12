@@ -91,6 +91,7 @@ export const createManualEvents = async (data: ManualEventsData) => {
         sender,
         update_history: [
           {
+            webapp: true,
             source: 'webapp',
             host_id: data.host_id,
             updated_at: new Date(),

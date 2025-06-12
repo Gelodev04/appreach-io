@@ -20,116 +20,101 @@ interface MissingAttributesFiltersState {
   clearFilters: () => void;
 }
 
-const createMissingAttributesStore = () =>
-  create<MissingAttributesState>((set) => ({
-    unsaved: {},
-    editedValues: {},
-    savedValues: {},
-    setFieldValue: (rowId, field, value) =>
-      set((state) => {
-        const savedValue = state.savedValues[rowId]?.[field] ?? '';
+export const useMissingAttributesFieldStore = create<MissingAttributesState>((set) => ({
+  unsaved: {},
+  editedValues: {},
+  savedValues: {},
+  setFieldValue: (rowId, field, value, originalValue) =>
+    set((state) => {
+      const isChanged = String(value).trim() !== String(originalValue).trim();
 
-        const isSameAsSaved = value === savedValue;
+      const updatedRowUnsaved = { ...(state.unsaved[rowId] || {}) };
 
-        const newEditedValues = {
-          ...state.editedValues,
-          [rowId]: { ...(state.editedValues[rowId] || {}), [field]: value },
-        };
+      if (isChanged) {
+        // If it's changed, add/update it in the unsaved changes
+        updatedRowUnsaved[field] = value;
+      } else {
+        // If it's NOT changed (i.e., reverted to original), remove it from unsaved
+        delete updatedRowUnsaved[field];
+      }
 
-        if (isSameAsSaved) {
-          const updatedRow = { ...(state.unsaved[rowId] || {}) };
-          delete updatedRow[field];
+      const newUnsaved = { ...state.unsaved };
+      if (Object.keys(updatedRowUnsaved).length === 0) {
+        // If the row has no more unsaved changes, remove the row object itself for cleanliness
+        delete newUnsaved[rowId];
+      } else {
+        newUnsaved[rowId] = updatedRowUnsaved;
+      }
 
-          const newUnsaved = { ...state.unsaved };
-          if (Object.keys(updatedRow).length === 0) {
-            delete newUnsaved[rowId];
-          } else {
-            newUnsaved[rowId] = updatedRow;
-          }
+      // Only return the updated 'unsaved' state.
+      return { unsaved: newUnsaved };
+    }),
 
-          return {
-            unsaved: newUnsaved,
-            editedValues: newEditedValues,
-          };
-        }
+  clearRowChanges: (rowId) =>
+    set((state) => {
+      const { [rowId]: _, ...restUnsaved } = state.unsaved;
+      // Optionally reset editedValues on row clear or keep as is (you can tweak)
+      // Let's keep editedValues as is so UI reflects saved values.
+      return { unsaved: restUnsaved };
+    }),
 
-        // Mark as unsaved
-        return {
-          unsaved: {
-            ...state.unsaved,
-            [rowId]: { ...(state.unsaved[rowId] || {}), [field]: value },
-          },
-          editedValues: newEditedValues,
-        };
-      }),
+  clearFieldChange: (rowId, field) =>
+    set((state) => {
+      const updatedRow = { ...(state.unsaved[rowId] || {}) };
+      delete updatedRow[field];
 
-    clearRowChanges: (rowId) =>
-      set((state) => {
-        const { [rowId]: _, ...restUnsaved } = state.unsaved;
-        // Optionally reset editedValues on row clear or keep as is (you can tweak)
-        // Let's keep editedValues as is so UI reflects saved values.
-        return { unsaved: restUnsaved };
-      }),
+      const newUnsaved = { ...state.unsaved };
+      if (Object.keys(updatedRow).length === 0) {
+        delete newUnsaved[rowId];
+      } else {
+        newUnsaved[rowId] = updatedRow;
+      }
 
-    clearFieldChange: (rowId, field) =>
-      set((state) => {
-        const updatedRow = { ...(state.unsaved[rowId] || {}) };
-        delete updatedRow[field];
+      return { unsaved: newUnsaved };
+    }),
 
-        const newUnsaved = { ...state.unsaved };
-        if (Object.keys(updatedRow).length === 0) {
-          delete newUnsaved[rowId];
-        } else {
-          newUnsaved[rowId] = updatedRow;
-        }
+  setEditedValue: (rowId, field, value) =>
+    set((state) => ({
+      editedValues: {
+        ...state.editedValues,
+        [rowId]: { ...(state.editedValues[rowId] || {}), [field]: value },
+      },
+    })),
 
-        return { unsaved: newUnsaved };
-      }),
+  resetEditedValues: (rowId) =>
+    set((state) => {
+      const newEditedValues = { ...state.editedValues };
+      delete newEditedValues[rowId];
+      return { editedValues: newEditedValues };
+    }),
 
-    setEditedValue: (rowId, field, value) =>
-      set((state) => ({
-        editedValues: {
-          ...state.editedValues,
-          [rowId]: { ...(state.editedValues[rowId] || {}), [field]: value },
+  updateSavedValues: (rowId, updatedFields) =>
+    set((state) => {
+      const newEditedValues = {
+        ...state.editedValues,
+        [rowId]: {
+          ...(state.editedValues[rowId] || {}),
+          ...updatedFields,
         },
-      })),
+      };
 
-    resetEditedValues: (rowId) =>
-      set((state) => {
-        const newEditedValues = { ...state.editedValues };
-        delete newEditedValues[rowId];
-        return { editedValues: newEditedValues };
-      }),
+      const newSavedValues = {
+        ...state.savedValues,
+        [rowId]: {
+          ...(state.savedValues[rowId] || {}),
+          ...updatedFields,
+        },
+      };
 
-    updateSavedValues: (rowId, updatedFields) =>
-      set((state) => {
-        return {
-          savedValues: {
-            ...state.savedValues,
-            [rowId]: {
-              ...(state.savedValues[rowId] || {}),
-              ...updatedFields,
-            },
-          },
-        };
-      }),
-  }));
+      return {
+        savedValues: newSavedValues,
+        editedValues: newEditedValues,
+      };
+    }),
+}));
 
-export const useMissingAttributesPersonStore = createMissingAttributesStore();
-export const useMissingAttributesCompanyStore = createMissingAttributesStore();
-
-export const useMissingPersonAttributesFiltersStore = create<MissingAttributesFiltersState>(
-  (set) => ({
-    hostName: '',
-    setHostName: (hostName) => set({ hostName }),
-    clearFilters: () => set({ hostName: '' }),
-  })
-);
-
-export const useMissingCompanyAttributesFiltersStore = create<MissingAttributesFiltersState>(
-  (set) => ({
-    hostName: '',
-    setHostName: (hostName) => set({ hostName }),
-    clearFilters: () => set({ hostName: '' }),
-  })
-);
+export const useMissingAttributesFiltersStore = create<MissingAttributesFiltersState>((set) => ({
+  hostName: '',
+  setHostName: (hostName) => set({ hostName }),
+  clearFilters: () => set({ hostName: '' }),
+}));

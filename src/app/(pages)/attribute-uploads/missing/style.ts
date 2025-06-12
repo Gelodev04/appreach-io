@@ -9,7 +9,7 @@ export const MissingAttributesPersonStyle: SxProps<Theme> = (theme) => ({
   },
   '& .MuiTablePagination-root': { display: 'flex' },
 
-  '& .MuiDataGrid-cell:nth-child(9)': {
+  '& .MuiDataGrid-cell:nth-child(14)': {
     position: 'sticky',
     right: 0,
     zIndex: 1,
@@ -19,14 +19,14 @@ export const MissingAttributesPersonStyle: SxProps<Theme> = (theme) => ({
 
   // 1. Selected
   '& .MuiDataGrid-row.Mui-selected': {
-    '& .MuiDataGrid-cell:nth-child(9)': {
+    '& .MuiDataGrid-cell:nth-child(14)': {
       backgroundColor: '#EBEFF6',
     },
   },
 
   // 2. Selected + Hovered
   '& .MuiDataGrid-row.Mui-selected:hover, & .MuiDataGrid-row.Mui-selected.Mui-hovered': {
-    '& .MuiDataGrid-cell:nth-child(9)': {
+    '& .MuiDataGrid-cell:nth-child(14)': {
       backgroundColor: '#D6DEEC',
     },
   },
@@ -34,7 +34,7 @@ export const MissingAttributesPersonStyle: SxProps<Theme> = (theme) => ({
   // 3. Hovered only (not selected)
   '& .MuiDataGrid-row.Mui-hovered:not(.Mui-selected), & .MuiDataGrid-row:hover:not(.Mui-selected)':
     {
-      '& .MuiDataGrid-cell:nth-child(9)': {
+      '& .MuiDataGrid-cell:nth-child(14)': {
         backgroundColor: '#F6F7F8',
       },
     },
@@ -44,7 +44,7 @@ export const MissingAttributesPersonStyle: SxProps<Theme> = (theme) => ({
     '& .MuiDataGrid-columnHeadersInner': {
       transform: 'none !important',
       '& div': {
-        '& .MuiDataGrid-columnHeader:nth-child(9)': {
+        '& .MuiDataGrid-columnHeader:nth-child(14)': {
           position: 'sticky',
           backgroundColor: '#F4F6F8',
           borderLeft: '1px solid #E0E0E0',

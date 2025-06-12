@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getScrollbarSize } from 'src/utils';
 
-export const useStickyPinnedColumn = (pinnedIndex: number = 9) => {
+export const useStickyPinnedColumn = (pinnedIndex: number = 13) => {
   useEffect(() => {
     let scrollerListenerCleanup: (() => void) | null = null;
     let resizeObserverCleanup: (() => void) | null = null;

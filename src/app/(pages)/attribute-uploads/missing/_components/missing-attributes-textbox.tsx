@@ -3,37 +3,39 @@ import { GridCellParams } from '@mui/x-data-grid';
 import debounce from 'lodash/debounce';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Iconify from 'src/components/iconify';
-import { useMissingAttributesStore } from '../_hooks/useMissingAttributesStore';
+import { useMissingAttributesFieldStore } from 'src/store/attribute-uploads';
 
 type Props = {
   params: GridCellParams;
-  attributeType: 'person' | 'company';
   type?: React.HTMLInputTypeAttribute;
 };
 
-export const MissingAttributesTextbox = ({ params, attributeType, type }: Props) => {
+export const MissingAttributesTextbox = ({ params, type }: Props) => {
   const { setFieldValue, unsaved, editedValues, clearFieldChange } =
-    useMissingAttributesStore(attributeType);
-
+    useMissingAttributesFieldStore();
   const rowId = params.row.id;
   const field = params.field;
-  const initial = params.value?.toString() || '';
 
-  // Use edited value if exists, else fallback to initial
-  const displayValue = editedValues[rowId]?.[field] ?? initial;
+  // 1. Get the most up-to-date "saved" value from the store.
+  //    Fallback to the initial params.value if not in the store yet.
+  const savedValue = useMemo(
+    () => editedValues[rowId]?.[field]?.toString() ?? params.value?.toString() ?? '',
+    [editedValues, rowId, field, params.value]
+  );
 
-  const [value, setValue] = useState(displayValue);
+  // 2. The local state should be initialized with this up-to-date value.
+  const [value, setValue] = useState(savedValue);
 
-  // dirty if unsaved has this field in this row
+  // 3. The `dirty` state is determined by checking the `unsaved` store.
   const dirty = unsaved[rowId]?.[field] !== undefined;
 
+  // 4. Re-create the debounced function ONLY when the `savedValue` changes.
   const debouncedSetFieldValue = useMemo(() => {
     return debounce((val: string) => {
-      const trimmed = val.trim();
-      const trimmedInitial = initial.trim();
-      setFieldValue(rowId, field, trimmed, trimmedInitial);
+      // Compare the new value with the *current* saved value, not the original one.
+      setFieldValue(rowId, field, val.trim(), String(savedValue).trim());
     }, 300);
-  }, [rowId, field, setFieldValue, initial]);
+  }, [rowId, field, setFieldValue, savedValue]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,16 +47,20 @@ export const MissingAttributesTextbox = ({ params, attributeType, type }: Props)
   );
 
   const handleReset = useCallback(() => {
-    const trimmedInitial = initial.trim();
-    setValue(trimmedInitial);
-    setFieldValue(rowId, field, trimmedInitial, trimmedInitial);
+    // Reset to the most recent saved value.
+    setValue(savedValue);
+    setFieldValue(rowId, field, savedValue, savedValue);
     clearFieldChange(rowId, field);
     debouncedSetFieldValue.cancel();
-  }, [rowId, field, initial, setFieldValue, debouncedSetFieldValue, clearFieldChange]);
+  }, [rowId, field, savedValue, setFieldValue, debouncedSetFieldValue, clearFieldChange]);
 
+  // 5. Effect to sync local state if the underlying saved value changes (e.g., from an external update)
   useEffect(() => {
-    setValue(displayValue);
-  }, [displayValue]);
+    // Only update the input if it's not currently being edited (not dirty)
+    if (!dirty) {
+      setValue(savedValue);
+    }
+  }, [savedValue, dirty]);
 
   useEffect(() => {
     return () => {
@@ -63,10 +69,7 @@ export const MissingAttributesTextbox = ({ params, attributeType, type }: Props)
   }, [debouncedSetFieldValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.ctrlKey && e.key.toLowerCase() === 'a') e.stopPropagation();
-    if (e.key === ' ' && !e.ctrlKey && !e.altKey && !e.metaKey) e.stopPropagation();
-    if (['Delete', 'Backspace'].includes(e.key)) e.stopPropagation();
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.stopPropagation();
+    e.stopPropagation();
   };
 
   return (
