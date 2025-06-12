@@ -57,6 +57,7 @@ export const createManualEvents = async (data: ManualEventsData) => {
       }
 
       const content: Record<string, string> = {};
+      const lead_status: Record<string, string> = {};
 
       if (data.content.body?.trim()) {
         content.body_html = data.content.body;
@@ -68,6 +69,11 @@ export const createManualEvents = async (data: ManualEventsData) => {
         content.view_url = data.content.view_url;
       }
 
+      if (data.lead_status?.name && data.lead_status?.sentiment) {
+        lead_status.name = data.lead_status.name;
+        lead_status.sentiment = data.lead_status.sentiment;
+      }
+
       return {
         event_timestamp: data.event_timestamp,
         event_type: data.event_type,
@@ -75,10 +81,7 @@ export const createManualEvents = async (data: ManualEventsData) => {
         content,
         host_id: data.host_id,
         host_name: data.host_name,
-        lead_status: {
-          name: data.lead_status.name,
-          sentiment: data.lead_status.sentiment,
-        },
+        lead_status,
         metadata: {
           bigquery_sync_status: 'pending',
           created_at: new Date(),
@@ -88,6 +91,7 @@ export const createManualEvents = async (data: ManualEventsData) => {
         sender,
         update_history: [
           {
+            webapp: true,
             source: 'webapp',
             host_id: data.host_id,
             updated_at: new Date(),

@@ -49,7 +49,7 @@ export const HostDropdown = ({ params, options, onUpdate }: HostDropdownProps) =
       value={params.row.host_id}
       disabled={isPending}
       onChange={handleChange}
-      style={{ width: '70%', marginTop: 10, marginBottom: 10 }}
+      style={{ width: '100%', marginTop: 10, marginBottom: 10 }}
       MenuProps={MenuProps}
     >
       {options.map((profile) => (

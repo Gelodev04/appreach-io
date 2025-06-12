@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 
 import timezone from 'dayjs/plugin/timezone';
@@ -89,15 +89,13 @@ export const AddEventsForm = ({
       .notOneOf([null], 'Platform is required'),
     leadStatus: Yup.object()
       .shape({
-        label: Yup.string().required('Lead Status label is required'),
+        label: Yup.string(),
         value: Yup.object().shape({
-          leadStatusValue: Yup.string().required('Lead Status value is required'),
-          sentiment: Yup.string().required('Lead Status Sentiment is required'),
+          leadStatusValue: Yup.string(),
+          sentiment: Yup.string(),
         }),
       })
-      .required('Lead Status is required')
-      .nullable()
-      .notOneOf([null], 'Lead Status is required'),
+      .nullable(),
     hostId: Yup.object()
       .shape({
         label: Yup.string().required('Sender profile label is required'),
@@ -148,9 +146,12 @@ export const AddEventsForm = ({
     handleSubmit,
     formState: { isSubmitting },
     watch,
+    setValue,
+    trigger,
   } = methods;
 
   const host = watch('hostId');
+  const eventType = watch('event_type');
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -164,8 +165,8 @@ export const AddEventsForm = ({
         host_id: data.hostId!.value,
         host_name: data.hostId!.label,
         lead_status: {
-          name: data.leadStatus!.value.leadStatusValue,
-          sentiment: data.leadStatus!.value.sentiment,
+          name: data.leadStatus?.value?.leadStatusValue,
+          sentiment: data.leadStatus?.value?.sentiment,
         },
         leads: data.leads
           .split('\n') // Split the string by new lines
@@ -197,28 +198,42 @@ export const AddEventsForm = ({
   const handleProfileChange = async (value: { label: string; value: string } | null) => {
     if (!value) {
       setSenderAccountOptions([]);
-      methods.setValue('sender', null);
-      methods.setValue('hostId', null);
+      setValue('sender', null);
+      setValue('hostId', null);
 
       // Trigger validation after resetting the fields
-      await methods.trigger('hostId');
-      await methods.trigger('sender');
+      await trigger('hostId');
+      await trigger('sender');
       return;
     }
-    methods.setValue('hostId', value);
+    setValue('hostId', value);
+    setSenderAccountOptions([]);
 
     startTransition(async () => {
       const senders = await getSenderAccountsByHostId(value?.value!, { sender: true });
       setSenderAccountOptions(senders);
-      await methods.trigger('hostId');
+      setValue('sender', null);
+      await trigger('hostId');
     });
   };
 
   const senderAccountHelperText = () => {
     if (!host) return 'Please select a sender profile first';
     if (isPending) return 'Loading sender accounts...';
-    return '';
+    return ' ';
   };
+
+  const leadStatusHelperText = () => {
+    if (eventType?.value !== 'lead_status_updated')
+      return 'Use update lead status to update the lead status';
+    return ' ';
+  };
+
+  useEffect(() => {
+    if (eventType?.value !== 'lead_status_updated') {
+      setValue('leadStatus', null);
+    }
+  }, [eventType, setValue]);
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -280,6 +295,7 @@ export const AddEventsForm = ({
                   onChange={(_, value) => {
                     handleProfileChange(value as { label: string; value: string } | null);
                   }}
+                  helperText=" "
                 />
                 <RHFAutocomplete
                   disabled={!host || isPending}
@@ -317,24 +333,30 @@ export const AddEventsForm = ({
                   name="leadStatus"
                   label="Choose Lead Status"
                   options={structuredLeadStatusOptions}
+                  helperText={leadStatusHelperText()}
+                  disabled={eventType?.value !== 'lead_status_updated'}
+                />
+
+                <RHFTextField
+                  name="view_url"
+                  InputLabelProps={{ shrink: true }}
+                  placeholder="e.g. https://www.linkedin.com/feed/update/urn:li:activity:7332958753266221057/"
+                  label="View Url"
+                  sx={{ gridColumn: { md: 'span 2' } }}
+                  helperText=" "
+                />
+
+                <RHFTextField
+                  name="content"
+                  multiline
+                  InputLabelProps={{ shrink: true }}
+                  placeholder="e.g. All replied positively after step 2 sequence."
+                  minRows={3}
+                  label="Event Text Or Description"
+                  sx={{ gridColumn: { md: 'span 2' } }}
+                  helperText=" "
                 />
               </Box>
-
-              <RHFTextField
-                name="view_url"
-                InputLabelProps={{ shrink: true }}
-                placeholder="e.g. https://www.linkedin.com/feed/update/urn:li:activity:7332958753266221057/"
-                label="View Url"
-              />
-
-              <RHFTextField
-                name="content"
-                multiline
-                InputLabelProps={{ shrink: true }}
-                placeholder="e.g. All replied positively after step 2 sequence."
-                minRows={3}
-                label="Event Message (optional)"
-              />
             </Stack>
           </Card>
         </Grid>

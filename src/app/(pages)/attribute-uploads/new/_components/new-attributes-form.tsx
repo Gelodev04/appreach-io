@@ -2,14 +2,14 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Link, Stack, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Card, Link, Stack, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFAutocomplete, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
 import UploadDocument from 'src/components/upload/upload-document';
 import { useGetSeedSettings } from 'src/hooks/api/seed';
@@ -26,6 +26,13 @@ import { parseCSVFile } from 'src/utils/csv-parse';
 import { handleFileUpload } from 'src/utils/upload-file-to-signed-url';
 import * as Yup from 'yup';
 import { useValidationErrors } from '../../_hooks/useValidationErrors';
+import { VisibleOnScrollTooltip } from './visible-on-screen-tootip';
+
+type NewHostFormData = {
+  name: string;
+  host_id: { label: string; value: string } | null;
+  proceedAnyway: Record<string, boolean>;
+};
 
 export const NewAttributesForm = ({
   columnOptions,
@@ -46,7 +53,7 @@ export const NewAttributesForm = ({
   const [mappedCols, setMappedCols] = useState<Record<string, string>>({});
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [csvData, setCsvData] = useState([]);
-
+  const scrollContainerRef = useRef(null);
   const {
     validationErrors,
     validateAll,
@@ -54,6 +61,7 @@ export const NewAttributesForm = ({
     resetValidationErrors,
     clearValidationError,
   } = useValidationErrors();
+
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
@@ -67,17 +75,19 @@ export const NewAttributesForm = ({
       .required('Sender profile is required')
       .nullable()
       .notOneOf([null], 'Sender profile is required'),
+    proceedAnyway: Yup.object<Record<string, boolean>>().default({}),
   });
 
-  const defaultValues = useMemo(
+  const defaultValues: NewHostFormData = useMemo(
     () => ({
       name: '',
       host_id: null,
+      proceedAnyway: {},
     }),
     []
   );
 
-  const methods = useForm({
+  const methods = useForm<NewHostFormData>({
     resolver: yupResolver(newHostSchema),
     defaultValues,
   });
@@ -94,8 +104,13 @@ export const NewAttributesForm = ({
       return;
     }
 
-    if (Object.keys(validationErrors).length > 0) {
-      enqueueSnackbar('Please fix all column validation errors before uploading.', {
+    // Determine which columns have errors
+    const columnsWithErrors = Object.keys(validationErrors);
+    // Check if all columns with errors have the corresponding proceed checkbox checked
+    const uncheckedColumns = columnsWithErrors.filter((header) => !data.proceedAnyway?.[header]);
+
+    if (columnsWithErrors.length > 0 && uncheckedColumns.length > 0) {
+      enqueueSnackbar('Please acknowledge the errors by checking all "Proceed Anyway" boxes.', {
         variant: 'error',
         persist: true,
       });
@@ -273,18 +288,42 @@ export const NewAttributesForm = ({
               />
             </Stack>
             {csvHeaders.length > 0 && (
-              <Stack spacing={2} sx={{ mt: 2, overflowY: 'auto', maxHeight: '700px' }}>
+              <Stack
+                ref={scrollContainerRef}
+                spacing={2}
+                sx={{ mt: 2, overflowY: 'auto', maxHeight: '700px' }}
+              >
                 <Box sx={{ padding: 3 }}>
                   {csvHeaders.map((header) => {
                     const error = validationErrors[header];
+
                     const maxVisibleRows = 10;
                     const invalidLines = error?.invalid.map((item) => item.line) || [];
+
                     const tooltipMessage =
                       invalidLines.length > maxVisibleRows
                         ? `Invalid value(s) on row(s): ${invalidLines
                             .slice(0, maxVisibleRows)
                             .join(', ')}... (+${invalidLines.length - maxVisibleRows} more)`
                         : `Invalid value(s) on row(s): ${invalidLines.join(', ')}`;
+
+                    let rowsToDisplay = [];
+                    if (error && error.invalid?.length > 0) {
+                      // If there's an error, get the first 3 invalid items
+                      rowsToDisplay = error.invalid.slice(0, 3).map((invalidItem) => ({
+                        value: invalidItem.value,
+                        lineNumber: invalidItem.line,
+                        isError: true,
+                      }));
+                    } else {
+                      // Otherwise, get the first 3 normal data rows
+                      rowsToDisplay = csvData.slice(0, 3).map((data, index) => ({
+                        value: data[header],
+                        lineNumber: index + 1,
+                        isError: false,
+                      }));
+                    }
+
                     return (
                       <Box
                         key={header}
@@ -313,10 +352,11 @@ export const NewAttributesForm = ({
                           >
                             <Typography variant="subtitle1">{header}</Typography>
                             {error && (
-                              <Tooltip
+                              <VisibleOnScrollTooltip
                                 title={tooltipMessage}
                                 placement="top"
-                                arrow
+                                PopperProps={{ disablePortal: true }}
+                                scrollContainerRef={scrollContainerRef}
                                 slotProps={{
                                   popper: {
                                     modifiers: [
@@ -345,7 +385,7 @@ export const NewAttributesForm = ({
                                 >
                                   <Iconify icon="material-symbols:exclamation-rounded" />
                                 </Box>
-                              </Tooltip>
+                              </VisibleOnScrollTooltip>
                             )}
                           </Box>
 
@@ -355,30 +395,31 @@ export const NewAttributesForm = ({
                               flexDirection: 'column',
                             }}
                           >
-                            {csvData.slice(0, 3).map((data, i) => {
-                              const value = data[header];
-                              const hasError = Boolean(validationErrors[header]);
+                            {rowsToDisplay.map((row, i) => {
+                              const { value, lineNumber, isError } = row;
 
                               return (
                                 <Box
                                   sx={{
-                                    borderLeft: `1px solid ${hasError ? 'red' : 'lightgray'}`,
-                                    borderRight: `1px solid ${hasError ? 'red' : 'lightgray'}`,
-                                    borderBottom: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                    borderLeft: `1px solid ${isError ? 'red' : 'lightgray'}`,
+                                    borderRight: `1px solid ${isError ? 'red' : 'lightgray'}`,
+                                    borderBottom: `1px solid ${isError ? 'red' : 'lightgray'}`,
                                     ...(i === 0 && {
-                                      borderTop: `1px solid ${hasError ? 'red' : 'lightgray'}`,
+                                      borderTop: `1px solid ${isError ? 'red' : 'lightgray'}`,
                                     }),
                                     wordBreak: 'break-word',
                                     overflowWrap: 'break-word',
                                     whiteSpace: 'normal',
                                     padding: 1,
-                                    color: hasError ? 'error.main' : 'gray',
+                                    color: isError ? 'error.main' : 'text.secondary',
                                   }}
-                                  key={`${value}-${i}`}
+                                  key={`${header}-${lineNumber}-${i}`}
                                 >
                                   {value
-                                    ? `${i + 1}. ${String(value).slice(0, 300)}${String(value).length > 300 ? '...' : ''}`
-                                    : `${i + 1}. No Value`}
+                                    ? `${lineNumber}. ${String(value).slice(0, 300)}${
+                                        String(value).length > 300 ? '...' : ''
+                                      }`
+                                    : `${lineNumber}. No Value`}
                                 </Box>
                               );
                             })}
@@ -423,6 +464,15 @@ export const NewAttributesForm = ({
                                 mappedCols[header] === opt.value
                             )}
                           />
+
+                          {error && (
+                            <Box sx={{ alignSelf: 'center' }}>
+                              <RHFCheckbox
+                                name={`proceedAnyway.${header}`}
+                                label={`${invalidLines.length} cells might not process correctly, proceed anyway?`}
+                              />
+                            </Box>
+                          )}
                         </Box>
                       </Box>
                     );

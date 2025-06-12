@@ -20,7 +20,15 @@ const SendersAddressesPage = async () => {
   const { allHosts: senderProfiles } = await getSenderProfiles();
   const addressesPlanPermissions = await getAddressesPlanPermissions();
   return (
-    <Container maxWidth={false} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Container
+      maxWidth={false}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        height: '100%',
+      }}
+    >
       <AddressesHeader isAllAddressedUsed={addressesPlanPermissions.isAllAddressesUsed} />
 
       <ItemUsageDisplay

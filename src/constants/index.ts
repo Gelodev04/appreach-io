@@ -41,3 +41,29 @@ export const espData = {
     server: 'microsoft',
   },
 };
+
+export const PERSON_ATTRIBUTE_KEYS = [
+  'email',
+  'linkedin_url',
+  'first_name',
+  'last_name',
+  'job_title',
+  'reporting_location',
+  'company_name',
+  'company_domain',
+  'company_linkedin_url',
+];
+
+export const COMPANY_ATTRIBUTE_KEYS = [
+  'name',
+  'industry',
+  'employee_count',
+  'domain',
+  'linkedin_url',
+];
+
+export const UI_TO_COMPANY_KEY_MAP: Record<string, string> = {
+  company_name: 'name',
+  company_domain: 'domain',
+  company_linkedin_url: 'linkedin_url',
+};

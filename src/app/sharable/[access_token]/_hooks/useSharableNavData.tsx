@@ -41,23 +41,23 @@ export const useSharableNavData = () => {
           },
         ],
       },
-      {
-        subheader: 'Seed Accounts',
-        items: [
-          {
-            title: 'Seed List',
-            path: paths.auth.login,
-            icon: <Iconify icon="pepicons-pop:seedling" />,
-            disabled: false,
-          },
-          {
-            title: 'Verified Senders',
-            path: paths.auth.login,
-            icon: <Iconify icon="hugeicons:address-book" />,
-            disabled: false,
-          },
-        ],
-      },
+      // {
+      //   subheader: 'Seed Accounts',
+      //   items: [
+      //     {
+      //       title: 'Seed List',
+      //       path: paths.auth.login,
+      //       icon: <Iconify icon="pepicons-pop:seedling" />,
+      //       disabled: false,
+      //     },
+      //     {
+      //       title: 'Verified Senders',
+      //       path: paths.auth.login,
+      //       icon: <Iconify icon="hugeicons:address-book" />,
+      //       disabled: false,
+      //     },
+      //   ],
+      // },
       {
         subheader: 'Settings',
         items: [

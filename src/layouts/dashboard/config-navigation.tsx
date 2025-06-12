@@ -73,23 +73,7 @@ export function useNavData() {
           // },
         ],
       },
-      {
-        subheader: 'Seed Accounts',
-        items: [
-          {
-            title: 'Seed List',
-            path: paths.seed.root,
-            icon: <Iconify icon="pepicons-pop:seedling" />,
-            disabled: disableAccess,
-          },
-          {
-            title: 'Verified Senders',
-            path: paths.senders.verifiedSenders,
-            icon: <Iconify icon="hugeicons:address-book" />,
-            disabled: disableAccess,
-          },
-        ],
-      },
+
       {
         subheader: 'Settings',
         items: [
@@ -154,6 +138,18 @@ export function useNavData() {
             title: 'Email Validator',
             path: paths.emailValidator.root,
             icon: <Iconify icon="material-symbols:mark-email-read-outline" />,
+            disabled: disableAccess,
+          },
+          {
+            title: 'Seed List',
+            path: paths.seed.root,
+            icon: <Iconify icon="pepicons-pop:seedling" />,
+            disabled: disableAccess,
+          },
+          {
+            title: 'Verified Senders',
+            path: paths.senders.verifiedSenders,
+            icon: <Iconify icon="hugeicons:address-book" />,
             disabled: disableAccess,
           },
         ],
