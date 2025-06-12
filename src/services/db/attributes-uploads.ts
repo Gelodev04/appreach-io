@@ -419,19 +419,19 @@ export const updateLeadsMissingAttributes = async ({
 const getPersonWhere = (input: { linkedin_url?: string; email?: string }) => {
   if (input.linkedin_url) {
     return { linkedin_url: input.linkedin_url };
-  } else if (input.email) {
-    return { email: input.email };
-  } else {
-    return null;
   }
+  if (input.email) {
+    return { email: input.email };
+  }
+  return null;
 };
 
 const getCompanyWhere = (input: { linkedin_url?: string; domain?: string }) => {
   if (input.linkedin_url) {
     return { linkedin_url: input.linkedin_url };
-  } else if (input.domain) {
-    return { domain: input.domain };
-  } else {
-    return null;
   }
+  if (input.domain) {
+    return { domain: input.domain };
+  }
+  return null;
 };
