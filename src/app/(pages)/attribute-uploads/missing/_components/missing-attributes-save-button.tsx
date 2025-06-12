@@ -35,6 +35,26 @@ const formatLinkedinUrl = (url: string, fallbackType: 'in' | 'company'): string 
 
   return `linkedin.com/${type}/${handle}`;
 };
+
+const formatDomain = (url: string | undefined): string | undefined => {
+  if (!url) {
+    return undefined;
+  }
+  try {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    const parsedUrl = new URL(fullUrl);
+
+    return parsedUrl.hostname.replace(/^www\./i, '');
+  } catch (error) {
+    return url
+      .replace(/^https?:\/\//i, '') // Remove http/https
+      .replace(/^www\./i, '') // Remove www.
+      .split('/')[0] // Remove anything after the first slash
+      .toLowerCase() // Convert to lowercase
+      .trim();
+  }
+};
+
 export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProps) => {
   const { unsaved, clearRowChanges, updateSavedValues, editedValues } =
     useMissingAttributesFieldStore();
@@ -57,6 +77,10 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
       const rawPersonLinkedin = getValue('linkedin_url');
       const rawCompanyLinkedin = getValue('company_linkedin_url');
       const rawEmail = getValue('email')?.toLowerCase();
+
+      const rawCompanyDomain = getValue('company_domain');
+      const formattedDomain = formatDomain(rawCompanyDomain);
+
       const currentChanges = { ...(unsaved[rowId] || {}) };
 
       // Validate email
@@ -89,7 +113,7 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
         last_name: getValue('last_name'),
         job_title: getValue('job_title')?.toLowerCase(),
         reporting_location: getValue('reporting_location'),
-        domain: getValue('company_domain')?.toLowerCase(),
+        domain: formattedDomain,
         linkedin_company_url: rawCompanyLinkedin
           ? formatLinkedinUrl(rawCompanyLinkedin, 'company')
           : undefined,
@@ -104,7 +128,7 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
           : undefined;
 
       const companyRow = {
-        domain: getValue('company_domain')?.toLowerCase(),
+        domain: formattedDomain,
         linkedin_url: rawCompanyLinkedin
           ? formatLinkedinUrl(rawCompanyLinkedin, 'company')
           : undefined,
@@ -112,7 +136,6 @@ export const MissingAttributesSaveButton = ({ rowId, params }: RowSaveButtonProp
         industry: getValue('industry')?.toLowerCase(),
         employee_count: finalEmployeeCount,
       };
-      console.log({ personRow, companyRow });
 
       try {
         const response = await updateMissingAttributes({
