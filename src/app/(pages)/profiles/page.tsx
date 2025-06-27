@@ -11,6 +11,5 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
   const profilePlanPermission = await getProfilePlanPermissions();
   const userHosts = await getUserHosts();
-
   return <HostListView {...profilePlanPermission} userHosts={userHosts} />;
 }

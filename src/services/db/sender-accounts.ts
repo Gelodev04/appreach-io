@@ -23,7 +23,35 @@ export const getSenderAccountByHostIdsAndType = async ({ type }: { type?: string
       },
     });
 
-    return senders;
+    const userIds = senders.map((item) => item.user_id);
+
+    const owners = await prisma.userSettings.findMany({
+      where: {
+        id: {
+          in: userIds,
+        },
+      },
+      select: {
+        id: true,
+        appLogin: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+    const ownerMap = owners.reduce<Record<string, string>>((acc, curr) => {
+      acc[curr.id] = curr.appLogin?.username || 'Unknown';
+      return acc;
+    }, {});
+
+    // Attach owner to each sender
+    const enrichedSenders = senders.map((sender) => ({
+      ...sender,
+      owner: ownerMap[sender.user_id] || 'Unknown',
+    }));
+
+    return enrichedSenders;
   } catch (error) {
     console.error('Error on getting senders:', error);
     throw new Error(`Unable to get senders`);

@@ -112,6 +112,10 @@ export const updateHostData = async (id: string, data: UpdateHostData) => {
             : [],
           useEventSenders: data.useEventSenders,
         },
+        metadata: {
+          updated_at: new Date(),
+          bigquery_sync_status: 'pending',
+        },
       },
     });
 
@@ -216,6 +220,10 @@ export const updateHostNotification = async (id: string, data: UpdateHostNotific
       where: { id },
       data: {
         notifications: updatedHostNotifications,
+        metadata: {
+          updated_at: new Date(),
+          bigquery_sync_status: 'pending',
+        },
       },
     });
     revalidatePath(paths.settings.root);
