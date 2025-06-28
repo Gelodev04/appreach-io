@@ -28,7 +28,6 @@ export const EventSendersTab = ({
   typeOptions: PlatformOptionsType;
 }) => {
   const [value, setValue] = React.useState('email');
-
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };

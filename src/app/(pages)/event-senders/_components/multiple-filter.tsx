@@ -21,12 +21,14 @@ export const MultipleFilter = ({
   platformOptions,
   typeOptions,
   hostOptions,
+  ownerOptions,
 }: {
   emailServerOptions: PlatformOptionsType;
   emailResellerOptions: PlatformOptionsType;
   platformOptions: PlatformOptionsType;
   typeOptions: PlatformOptionsType;
   hostOptions: HostOptionsType;
+  ownerOptions: string[];
 }) => {
   const filterPopover = usePopover();
   const { filters, setFilter } = useEventSendersStore();
@@ -40,6 +42,7 @@ export const MultipleFilter = ({
     platform: '',
     type: '',
     host_id: '',
+    owner: '',
   };
 
   const [localFilters, setLocalFilters] = useState(defaultFilterValues);
@@ -216,6 +219,26 @@ export const MultipleFilter = ({
                 {hostOptions.map((opt) => (
                   <MenuItem key={opt.id} value={opt.id}>
                     {opt.profile}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+
+            <Box>
+              <Typography variant="subtitle2" color="GrayText">
+                Owner
+              </Typography>
+              <Select
+                fullWidth
+                size="small"
+                value={localFilters.owner}
+                displayEmpty
+                onChange={(e) => handleChange('owner', e.target.value)}
+              >
+                <MenuItem value="">All Owner</MenuItem>
+                {ownerOptions.map((opt) => (
+                  <MenuItem key={opt} value={opt}>
+                    {opt}
                   </MenuItem>
                 ))}
               </Select>

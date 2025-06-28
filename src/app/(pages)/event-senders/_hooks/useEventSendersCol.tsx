@@ -120,6 +120,14 @@ export const useEventSendersCol = (
         flex: 1,
         minWidth: 200,
       },
+
+      owner: {
+        field: 'owner',
+        headerName: 'Owner',
+        renderCell: (params) => <RenderCellText displayValue={params?.row?.owner} />,
+        flex: 1,
+        minWidth: senderType === 'email' ? 250 : 200,
+      },
       createdAt: {
         field: 'createdAt',
         headerName: 'Date Created',
@@ -146,10 +154,29 @@ export const useEventSendersCol = (
         'email_reseller',
         'type',
         'actions',
+        'owner',
         'createdAt',
       ],
-      linkedin: ['sender', 'sender_name', 'host_id', 'platform', 'type', 'actions', 'createdAt'],
-      crm: ['sender', 'sender_name', 'host_id', 'platform', 'type', 'actions', 'createdAt'],
+      linkedin: [
+        'sender',
+        'sender_name',
+        'host_id',
+        'platform',
+        'type',
+        'actions',
+        'owner',
+        'createdAt',
+      ],
+      crm: [
+        'sender',
+        'sender_name',
+        'host_id',
+        'platform',
+        'type',
+        'actions',
+        'owner',
+        'createdAt',
+      ],
     };
 
     return columnOrderMap[senderType].map((key) => baseColumns[key]);

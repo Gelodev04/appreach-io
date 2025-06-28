@@ -190,7 +190,9 @@ type HostToken {
 }
 
 type HostMetadata {
-  created_at DateTime? @db.Date
+  created_at           DateTime? @db.Date
+  updated_at           DateTime? @db.Date
+  bigquery_sync_status String?
 }
 
 type SeedBatchesGenerate {

@@ -8,6 +8,7 @@ type Filters = {
   platform: string;
   type: string;
   host_id: string;
+  owner: string;
 };
 
 type EventSendersStore = {
@@ -26,6 +27,7 @@ export const useEventSendersStore = create<EventSendersStore>((set) => ({
     platform: '',
     type: '',
     host_id: '',
+    owner: '',
   },
   setFilter: (key, value) =>
     set((state) => ({

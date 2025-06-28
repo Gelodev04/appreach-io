@@ -174,6 +174,8 @@ export async function POST(request: Request) {
       engagementSettings: defaultEngagementSettings.engagementSettings,
       metadata: {
         created_at: new Date(),
+        updated_at: new Date(),
+        bigquery_sync_status: 'pending',
       },
     });
 

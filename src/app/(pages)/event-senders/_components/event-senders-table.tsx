@@ -47,9 +47,16 @@ export const EventSendersTable = ({
     senderType
   );
 
+  const uniqueOwners = rows.reduce<string[]>((acc, item) => {
+    const owner = item.owner || 'Unknown';
+    if (!acc.includes(owner)) {
+      acc.push(owner);
+    }
+    return acc;
+  }, []);
+
   const filteredRows = useFilteredEventSenderRows(rows);
   const { setFilter } = useEventSendersStore();
-
   useEffect(() => {
     const handleScrollHorizontal = () => {
       const scroller = document.querySelector('.MuiDataGrid-virtualScroller');
@@ -129,6 +136,7 @@ export const EventSendersTable = ({
             emailServerOptions={emailServerOptions}
             emailResellerOptions={emailResellerOptions}
             typeOptions={typeOptions}
+            ownerOptions={uniqueOwners}
           />
         </Stack>
       </GridToolbarContainer>

@@ -15,9 +15,13 @@ export const useFilteredEventSenderRows = (rows: GridRowsProp) => {
         !filters.sender_name ||
         (row.sender_name ?? '').toLowerCase().includes(filters.sender_name.toLowerCase().trim());
 
+      const matchesOwner =
+        !filters.owner || (row.owner ?? '').toLowerCase() === filters.owner.toLowerCase().trim();
+
       return (
         matchesSender &&
         matchesSenderLabel &&
+        matchesOwner &&
         (!filters.email_server || row.email_server === filters.email_server) &&
         (!filters.email_reseller || row.email_reseller === filters.email_reseller) &&
         (!filters.platform || row.platform === filters.platform) &&
