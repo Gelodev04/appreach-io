@@ -36,7 +36,11 @@ export default function Error({
       </m.div>
 
       <m.div variants={varBounce().in}>
-        <Typography sx={{ color: 'text.secondary', mb: 2 }}>{error.message}</Typography>
+        <Typography sx={{ color: 'text.secondary', mb: 2 }}>
+          {error.digest
+            ? 'An unexpected error occurred on our server. Please try again later.'
+            : error.message}
+        </Typography>
       </m.div>
 
       <Button onClick={reset} size="large" variant="contained">
