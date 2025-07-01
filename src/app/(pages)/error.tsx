@@ -43,7 +43,7 @@ export default function Error({
         </Typography>
       </m.div>
 
-      <Button onClick={reset} size="large" variant="contained">
+      <Button onClick={() => window.location.reload()} size="large" variant="contained">
         Retry
       </Button>
     </MotionContainer>
