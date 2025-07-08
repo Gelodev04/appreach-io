@@ -3,8 +3,10 @@
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { auth } from 'src/auth/lib/mongodb/auth-mongodb';
+import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import prisma from 'src/auth/lib/prisma/db-prisma';
 import { paths } from 'src/routes/paths';
+import { ObjectId } from 'mongodb';
 
 export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) => {
   const session = await auth();
@@ -13,15 +15,26 @@ export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) 
     if (!id) {
       throw new Error('Access denied.');
     }
-    const userSettings = await prisma.userSettings.findUnique({
-      where: {
-        id,
-      },
-      select: selectFields,
-    });
+
+    const client = await clientPromise;
+    const db = client.db();
+
+    const projection = selectFields
+      ? Object.entries(selectFields).reduce(
+          (acc, [key, value]) => {
+            acc[key] = value ? 1 : 0;
+            return acc;
+          },
+          {} as Record<string, 1 | 0>
+        )
+      : undefined;
+
+    const userSettings = await db
+      .collection('userSettings')
+      .findOne({ _id: new ObjectId(id) }, { projection });
 
     if (!userSettings) {
-      throw new Error('No user found with the provided username.');
+      throw new Error('No user found with the provided ID.');
     }
 
     return userSettings;
