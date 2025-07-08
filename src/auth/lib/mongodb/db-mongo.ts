@@ -13,6 +13,12 @@ const options = {
     strict: true,
     deprecationErrors: true,
   },
+  // Optimized for serverless environments
+  maxPoolSize: 10, // Limit the number of connections in the connection pool
+  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  socketTimeoutMS: 45000, // Close connections after 45 seconds of inactivity
+  maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+  family: 4, // Use IPv4, skip trying IPv6
 };
 
 let client;
