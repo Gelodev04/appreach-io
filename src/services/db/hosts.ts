@@ -267,7 +267,7 @@ export const deleteUserHost = async (ids: string[]) => {
       hosts: true,
       planPermissionsUsed: true,
     });
-    const updatedHosts = hosts.filter((host) => !ids.includes(host));
+    const updatedHosts = hosts.filter((host: string) => !ids.includes(host));
     const newSenderProfilesUsed = planPermissionsUsed.senderProfiles - ids.length;
     await prisma.userSettings.update({
       where: {
@@ -360,7 +360,7 @@ export const deleteHostFromUser = async (hostIdToRemove: string) => {
     }
 
     // Filter out the hostId to remove
-    const updatedHosts = hosts.filter((id) => id !== hostIdToRemove);
+    const updatedHosts = hosts.filter((id: string) => id !== hostIdToRemove);
 
     await updateUserSettings({ hosts: updatedHosts }, { appLogin: false, id: true });
     const response = await decrementSenderProfilesUsed();
