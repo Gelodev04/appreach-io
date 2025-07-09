@@ -12,28 +12,52 @@ const options = {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
+    family: 4,
+    connectTimeoutMS: 60000,
+    serverSelectionTimeoutMS: 60000,
   },
 };
 
-let client;
+// --- Retry wrapper
+const connectWithRetry = async (retries = 2, delay = 1000): Promise<MongoClient> => {
+  let attempt = 0;
+
+  while (attempt < retries) {
+    try {
+      const client = new MongoClient(uri, options);
+      await client.connect();
+      console.log(
+        `Successfully connected after ${attempt + 1} ${attempt > 0 ? 'attempts' : 'attempt'}`
+      );
+      return client;
+    } catch (error) {
+      console.warn(`MongoDB connection failed (attempt ${attempt + 1}):`, error);
+      attempt++;
+      if (attempt >= retries) throw error;
+      console.log(`Trying again in ${delay}ms...`);
+      await new Promise((res) => setTimeout(res, delay));
+    }
+  }
+
+  throw new Error('Failed to connect to MongoDB after retries');
+};
+
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  let globalWithMongo = global as typeof globalThis & {
+  const globalWithMongo = global as typeof globalThis & {
     _mongoClientPromise?: Promise<MongoClient>;
   };
 
   if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
+    globalWithMongo._mongoClientPromise = connectWithRetry();
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
   // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+  clientPromise = connectWithRetry();
 }
 
 // Export a module-scoped MongoClient promise. By doing this in a
