@@ -378,7 +378,8 @@ type UserSettingsPlanPermissionFeatures {
 }
 
 type UserSettingsWebhook {
-  token String?
+  token                String?
+  notify_on_disconnect Json?
 }
 
 type UserSettingsOnboarding {

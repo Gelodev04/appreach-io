@@ -11,10 +11,9 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const { webhook } = await getUserSettings({ webhook: { select: { token: true } } });
+  const { webhook } = await getUserSettings({ webhook: true });
   const platformOptions = await getConfigDropdownOptions({ key: 'platform_options' });
   const rows = platformOptions.filter((option) => !!option.signup_url);
-
   return (
     <Container
       maxWidth={false}
@@ -22,7 +21,11 @@ export default async function Page() {
     >
       <WebhooksHeader />
 
-      <WebhooksTable rows={rows} token={webhook?.token} />
+      <WebhooksTable
+        rows={rows}
+        token={webhook?.token}
+        notifyOnDisconnect={webhook?.notify_on_disconnect}
+      />
     </Container>
   );
 }

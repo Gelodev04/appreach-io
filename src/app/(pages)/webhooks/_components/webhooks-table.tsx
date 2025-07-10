@@ -15,9 +15,17 @@ import { useState } from 'react';
 import EmptyContent from 'src/components/empty-content';
 import { useWebhooksCol } from '../_hooks/useWebhooksCol';
 
-export const WebhooksTable = ({ rows, token }: { rows: GridRowsProp; token?: string | null }) => {
+export const WebhooksTable = ({
+  rows,
+  token,
+  notifyOnDisconnect,
+}: {
+  rows: GridRowsProp;
+  token?: string | null;
+  notifyOnDisconnect?: Record<string, boolean>;
+}) => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
-  const { columns } = useWebhooksCol(token);
+  const { columns } = useWebhooksCol(token, notifyOnDisconnect);
 
   const sx: SxProps<Theme> = {
     '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-cell:focus': {
