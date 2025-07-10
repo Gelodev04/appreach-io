@@ -4,11 +4,13 @@ import { SessionProvider } from 'next-auth/react';
 import Script from 'next/script';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
+import { ClarityProvider } from 'src/components/clarity';
 import ProgressBar from 'src/components/progress-bar';
 import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
+import { env } from 'src/data/env/server';
 
 export const viewport = {
   themeColor: '#000000',
@@ -82,6 +84,9 @@ type Props = {
 };
 
 export default function RootLayout({ children }: Props) {
+  // Replace 'yourProjectId' with your actual Microsoft Clarity project ID
+  const clarityProjectId = env.CLARITY_PROJECT_ID!;
+
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
@@ -96,26 +101,28 @@ setTimeout(ldinsp, 0);
         </Script>
         <SessionProvider>
           <AuthProvider>
-            <SettingsProvider
-              defaultSettings={{
-                themeMode: 'light', // 'light' | 'dark'
-                themeDirection: 'ltr', //  'rtl' | 'ltr'
-                themeContrast: 'default', // 'default' | 'bold'
-                themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-                themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                themeStretch: false,
-              }}
-            >
-              <ThemeProvider>
-                <MotionLazy>
-                  <SnackbarProvider>
-                    <SettingsDrawer />
-                    <ProgressBar />
-                    {children}
-                  </SnackbarProvider>
-                </MotionLazy>
-              </ThemeProvider>
-            </SettingsProvider>
+            <ClarityProvider projectId={clarityProjectId}>
+              <SettingsProvider
+                defaultSettings={{
+                  themeMode: 'light', // 'light' | 'dark'
+                  themeDirection: 'ltr', //  'rtl' | 'ltr'
+                  themeContrast: 'default', // 'default' | 'bold'
+                  themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+                  themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                  themeStretch: false,
+                }}
+              >
+                <ThemeProvider>
+                  <MotionLazy>
+                    <SnackbarProvider>
+                      <SettingsDrawer />
+                      <ProgressBar />
+                      {children}
+                    </SnackbarProvider>
+                  </MotionLazy>
+                </ThemeProvider>
+              </SettingsProvider>
+            </ClarityProvider>
           </AuthProvider>
         </SessionProvider>
       </body>
