@@ -1,15 +1,18 @@
 import { generateApiKey } from 'src/sections/host/utils/generate-account-api-key';
-import { updateUserSettings } from 'src/services/db/user-settings';
+import { getUserSettings, updateUserSettings } from 'src/services/db/user-settings';
 
 export async function POST() {
   try {
     const apiKey = await generateApiKey();
+
+    const { api } = await getUserSettings({ api: true });
 
     const response = await updateUserSettings(
       {
         api: {
           token: apiKey,
           updated_at: new Date(),
+          webhook: api?.webhook || {},
         },
       },
       { api: true }
@@ -17,12 +20,12 @@ export async function POST() {
 
     if (response.success) {
       return Response.json({ success: true, apiKey });
-    } else {
-      return Response.json(
-        { success: false, message: response.message || 'Failed to regenerate API key' },
-        { status: 400 }
-      );
     }
+
+    return Response.json(
+      { success: false, message: response.message || 'Failed to regenerate API key' },
+      { status: 400 }
+    );
   } catch (error) {
     return Response.json(
       { success: false, message: 'Failed to save due to an error.' },

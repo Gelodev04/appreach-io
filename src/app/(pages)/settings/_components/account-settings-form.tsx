@@ -31,6 +31,7 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
   const [apiKey, setApiKey] = useState(userApi.token);
+  console.log({ userApi });
   const [isRegeneratingApiKey, startRegeneratingApiKey] = useTransition();
 
   const handleCopyApiKey = () => {
@@ -62,12 +63,9 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
     email: Yup.string().email('Invalid email format').required('Email is required'),
   });
 
-  const defaultValues = useMemo(
-    () => ({
-      email: userApi.webhook?.notification_email || '',
-    }),
-    []
-  );
+  const defaultValues = {
+    email: userApi.webhook?.notification_email || '',
+  };
 
   const methods = useForm({
     resolver: yupResolver(accountSettingsSchema),
@@ -84,6 +82,7 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
       const response = await updateUserSettings(
         {
           api: {
+            token: apiKey,
             updated_at: new Date(),
             webhook: {
               notification_email: data.email,
@@ -152,7 +151,7 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
               />
               <Typography variant="body2" color="text.secondary">
                 This API key is used to authenticate your account with external services. Keep it
-                secure and don't share it publicly.
+                secure and don&apos;t share it publicly.
               </Typography>
             </Stack>
           </FormProvider>

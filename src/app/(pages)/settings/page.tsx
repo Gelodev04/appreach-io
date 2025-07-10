@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
+import { getUserSettings } from 'src/services/db/user-settings';
 import { AccountSettingsHeader } from './_components/account-settings-header';
 import { AccountSettingsForm } from './_components/account-settings-form';
-import { getUserSettings } from 'src/services/db/user-settings';
 
 export const metadata = {
   title: 'Account Settings | Outreach Magic',
