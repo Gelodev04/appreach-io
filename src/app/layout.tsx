@@ -84,9 +84,6 @@ type Props = {
 };
 
 export default function RootLayout({ children }: Props) {
-  // Replace 'yourProjectId' with your actual Microsoft Clarity project ID
-  const clarityProjectId = env.CLARITY_PROJECT_ID!;
-
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
@@ -101,7 +98,7 @@ setTimeout(ldinsp, 0);
         </Script>
         <SessionProvider>
           <AuthProvider>
-            <ClarityProvider projectId={clarityProjectId}>
+            <ClarityProvider>
               <SettingsProvider
                 defaultSettings={{
                   themeMode: 'light', // 'light' | 'dark'
