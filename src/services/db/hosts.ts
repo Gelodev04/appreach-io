@@ -226,7 +226,7 @@ export const updateHostNotification = async (id: string, data: UpdateHostNotific
         },
       },
     });
-    revalidatePath(paths.settings.root);
+    revalidatePath(paths.profiles.root);
     return { success: true };
   } catch (error) {
     console.error('Error updating host notifications:', error);

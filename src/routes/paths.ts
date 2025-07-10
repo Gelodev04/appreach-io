@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
-  SETTINGS: '/profiles',
+  PROFILES: '/profiles',
   SEEDS: '/seeds',
   SENDERS: '/senders',
   MAIN_WEBSITE: 'https://outreachmagic.io',
@@ -59,13 +59,13 @@ export const paths = {
     },
   },
 
-  // SETTINGS
-  settings: {
-    root: ROOTS.SETTINGS,
-    new: `${ROOTS.SETTINGS}/new`,
-    smartlead: (id: string) => `${ROOTS.SETTINGS}/smartlead/${id}`,
-    seeds: (id: string) => `${ROOTS.SETTINGS}/seeds/${id}`,
-    notifications: (id: string) => `${ROOTS.SETTINGS}/notifications/${id}`,
+  // PROFILES
+  profiles: {
+    root: ROOTS.PROFILES,
+    new: `${ROOTS.PROFILES}/new`,
+    smartlead: (id: string) => `${ROOTS.PROFILES}/smartlead/${id}`,
+    seeds: (id: string) => `${ROOTS.PROFILES}/seeds/${id}`,
+    notifications: (id: string) => `${ROOTS.PROFILES}/notifications/${id}`,
   },
 
   // SEEDS
@@ -98,11 +98,6 @@ export const paths = {
     domain: `${ROOTS.SENDERS}/domain`,
     filter: (id: string) => `${ROOTS.SENDERS}/verified-senders/?hostId=${id}`,
   },
-
-  profiles: {
-    root: '/profiles',
-  },
-
   manualEvents: {
     root: '/manual-events',
     update: '/manual-events/update',
@@ -141,5 +136,9 @@ export const paths = {
 
   support: {
     link: 'https://join.slack.com/t/outreachmagic/shared_invite/zt-2gnuajfkz-7J9PzelJ21tstw4Axzj17Q',
+  },
+
+  settings: {
+    root: '/settings',
   },
 };

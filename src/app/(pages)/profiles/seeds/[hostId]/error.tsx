@@ -14,7 +14,7 @@ export default function Error({ error }: { error: Error & { digest?: string } })
       action={
         <Button
           component={RouterLink}
-          href={paths.settings.root}
+          href={paths.profiles.root}
           startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
           sx={{ mt: 3 }}
         >

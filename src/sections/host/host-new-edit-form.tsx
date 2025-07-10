@@ -122,7 +122,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
             enqueueSnackbar(response.message, { variant: 'error', persist: true });
           } else {
             enqueueSnackbar('Update success!');
-            router.push(paths.settings.root);
+            router.push(paths.profiles.root);
           }
         } else {
           const response = await createHost(data);
@@ -130,7 +130,7 @@ export default function HostNewEditForm({ currentItem, planPermissions, emails }
             enqueueSnackbar(response.message, { variant: 'error', persist: true });
           } else {
             enqueueSnackbar('Create success!');
-            router.push(paths.settings.root);
+            router.push(paths.profiles.root);
           }
         }
       } catch (error) {

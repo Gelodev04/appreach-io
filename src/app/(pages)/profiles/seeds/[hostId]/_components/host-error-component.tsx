@@ -14,7 +14,7 @@ export const HostErrorComponent = ({ status, message }: { status: string; messag
       action={
         <Button
           component={RouterLink}
-          href={paths.settings.root}
+          href={paths.profiles.root}
           startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
           sx={{ mt: 3 }}
         >

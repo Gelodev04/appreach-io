@@ -10,6 +10,7 @@ import { TRIAL_STATUS } from 'src/config-global';
 import { defaultEngagementSettings } from 'src/constants';
 import { paths } from 'src/routes/paths';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
+import { generateApiKey } from 'src/sections/host/utils/generate-account-api-key';
 import { generateUniqueAccessToken } from 'src/sections/host/utils/generate-unique-access-token';
 import { generateTokenFromObjectId } from 'src/sections/host/utils/generate-userId-token';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
@@ -57,6 +58,8 @@ export async function POST(request: Request) {
     // Set token expiration to 24h from now
     const tokenExpiration = addDays(new Date(), 1);
 
+    const accountApiKey = await generateApiKey();
+
     const signupParams = {
       appLogin: {
         username: email,
@@ -100,6 +103,10 @@ export async function POST(request: Request) {
       planPermissionsUsed: {},
       planPermissionsAssigned: {},
       planPermissionFeatures: {},
+      api: {
+        token: accountApiKey,
+        updated_at: new Date(),
+      },
     };
 
     if (isTrial) {

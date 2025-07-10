@@ -17,7 +17,7 @@ export const HostCreateView = ({ planPermissions }: HostProps) => {
         links={[
           {
             name: 'Sender Profiles',
-            href: paths.settings.root,
+            href: paths.profiles.root,
           },
           { name: 'New sender profile' },
         ]}

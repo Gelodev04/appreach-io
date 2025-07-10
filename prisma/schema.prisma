@@ -385,6 +385,16 @@ type UserSettingsOnboarding {
   completedOn String?
 }
 
+type UserAPIWebhook {
+  notification_email String?
+}
+
+type UserSettingsApi {
+  token      String?
+  updated_at DateTime?       @db.Date
+  webhook    UserAPIWebhook?
+}
+
 type EngagementFeatures {
   scrollMessage Boolean
   markImportant Boolean
@@ -599,6 +609,7 @@ model userSettings {
   webhook                 UserSettingsWebhook?
   ownerHostId             String                             @db.ObjectId
   onboarding              UserSettingsOnboarding?
+  api                     UserSettingsApi?
 }
 
 model webMail {

@@ -105,11 +105,11 @@ export function RenderSharableReportURL({ params }: ParamsProps) {
 export const SeedActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
   const handleEditSeedsRow = () => {
-    router.push(paths.settings.seeds(params.id.toString()));
+    router.push(paths.profiles.seeds(params.id.toString()));
   };
 
   const handleEditNotificationsRow = () => {
-    router.push(paths.settings.notifications(params.id.toString()));
+    router.push(paths.profiles.notifications(params.id.toString()));
   };
 
   return (

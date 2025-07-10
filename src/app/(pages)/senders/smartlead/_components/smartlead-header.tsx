@@ -81,7 +81,7 @@ export const SmartleadHeader = ({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push(paths.settings.smartlead(smartlead))}
+                onClick={() => router.push(paths.profiles.smartlead(smartlead))}
                 disabled={isPending}
               >
                 Open settings

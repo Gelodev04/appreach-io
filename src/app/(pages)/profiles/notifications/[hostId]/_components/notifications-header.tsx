@@ -10,7 +10,7 @@ export const NotificationsHeader = () => {
       links={[
         {
           name: 'Sender Profiles',
-          href: paths.settings.root,
+          href: paths.profiles.root,
         },
         { name: 'Edit notification settings' },
       ]}
