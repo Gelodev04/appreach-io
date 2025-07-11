@@ -10,7 +10,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const { api } = await getUserSettings({ api: true });
+  const { api, webhook } = await getUserSettings({ api: true, webhook: true });
 
   return (
     <Container
@@ -18,7 +18,7 @@ export default async function Page() {
       sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}
     >
       <AccountSettingsHeader />
-      <AccountSettingsForm userApi={api} />
+      <AccountSettingsForm userApi={api} email={webhook?.notification_email} />
     </Container>
   );
 }

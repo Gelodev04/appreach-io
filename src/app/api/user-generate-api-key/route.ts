@@ -5,14 +5,11 @@ export async function POST() {
   try {
     const apiKey = await generateApiKey();
 
-    const { api } = await getUserSettings({ api: true });
-
     const response = await updateUserSettings(
       {
         api: {
           token: apiKey,
           updated_at: new Date(),
-          webhook: api?.webhook || {},
         },
       },
       { api: true }

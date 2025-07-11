@@ -22,21 +22,27 @@ import * as Yup from 'yup';
 type userAPI = {
   token: string;
   updated_at: Date;
-  webhook: {
-    notification_email: string;
-  };
 };
 
-export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
+type AccountSettingsFormProps = {
+  userApi: userAPI;
+  email: string;
+};
+
+export const AccountSettingsForm = ({ userApi, email }: AccountSettingsFormProps) => {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
-  const [apiKey, setApiKey] = useState(userApi.token);
-  console.log({ userApi });
+  const [apiKey, setApiKey] = useState(userApi?.token || '');
   const [isRegeneratingApiKey, startRegeneratingApiKey] = useTransition();
+  const [showApiKey, setShowApiKey] = useState(false);
 
   const handleCopyApiKey = () => {
     copy(apiKey);
     enqueueSnackbar('API key copied to clipboard', { autoHideDuration: 2000 });
+  };
+
+  const handleToggleApiKeyVisibility = () => {
+    setShowApiKey(!showApiKey);
   };
 
   const handleRegenerateApiKey = async () => {
@@ -59,12 +65,14 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
     });
   };
 
+  const displayApiKey = showApiKey ? apiKey : '•'.repeat(Math.min(apiKey.length, 32));
+
   const accountSettingsSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Email is required'),
   });
 
   const defaultValues = {
-    email: userApi.webhook?.notification_email || '',
+    email: email || '',
   };
 
   const methods = useForm({
@@ -79,29 +87,17 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const response = await updateUserSettings(
-        {
-          api: {
-            token: apiKey,
-            updated_at: new Date(),
-            webhook: {
-              notification_email: data.email,
-            },
-          },
-        },
-        { api: true }
-      );
+      const response = await axios.post('/api/update-user-webhook', {
+        notification_email: data.email,
+      });
 
-      if (response.success) {
-        enqueueSnackbar('Notification email updated successfully', { variant: 'success' });
+      if (response.data.success) {
+        enqueueSnackbar('Saved successfully', { variant: 'success' });
       } else {
-        enqueueSnackbar(response.message || 'Failed to update notification email', {
-          variant: 'error',
-          persist: true,
-        });
+        enqueueSnackbar(response.data.message || 'Failed to save setting', { variant: 'error' });
       }
     } catch (error) {
-      enqueueSnackbar('Failed to update notification email', { variant: 'error', persist: true });
+      enqueueSnackbar('Failed to save setting', { variant: 'error' });
     }
   });
 
@@ -118,12 +114,24 @@ export const AccountSettingsForm = ({ userApi }: { userApi: userAPI }) => {
               <RHFTextField
                 name="apiKey"
                 label="API Key"
-                value={apiKey}
+                value={displayApiKey}
                 disabled
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <Stack direction="row" spacing={1}>
+                        <Tooltip title={showApiKey ? 'Hide API key' : 'Show API key'}>
+                          <Button
+                            onClick={handleToggleApiKeyVisibility}
+                            startIcon={
+                              <Iconify
+                                icon={showApiKey ? 'solar:eye-closed-linear' : 'solar:eye-linear'}
+                              />
+                            }
+                          >
+                            {showApiKey ? 'Hide' : 'Show'}
+                          </Button>
+                        </Tooltip>
                         <Tooltip title="Copy API key">
                           <Button
                             onClick={handleCopyApiKey}

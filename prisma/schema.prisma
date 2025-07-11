@@ -379,6 +379,7 @@ type UserSettingsPlanPermissionFeatures {
 
 type UserSettingsWebhook {
   token                String?
+  notification_email   String?
   notify_on_disconnect Json?
 }
 
@@ -386,14 +387,9 @@ type UserSettingsOnboarding {
   completedOn String?
 }
 
-type UserAPIWebhook {
-  notification_email String?
-}
-
 type UserSettingsApi {
   token      String?
-  updated_at DateTime?       @db.Date
-  webhook    UserAPIWebhook?
+  updated_at DateTime? @db.Date
 }
 
 type EngagementFeatures {

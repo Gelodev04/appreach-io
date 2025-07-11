@@ -2,20 +2,15 @@ import { getUserSettings, updateUserSettings } from 'src/services/db/user-settin
 
 export async function POST(request: Request) {
   try {
-    const { value, newValue } = await request.json();
+    const { notification_email } = await request.json();
 
     const { webhook } = await getUserSettings({ webhook: true });
-
-    const updatedNotifyOnDisconnect = {
-      ...webhook.notify_on_disconnect,
-      [value]: newValue,
-    };
 
     const response = await updateUserSettings(
       {
         webhook: {
           ...webhook,
-          notify_on_disconnect: updatedNotifyOnDisconnect,
+          notification_email,
         },
       },
       { webhook: true }
@@ -26,15 +21,12 @@ export async function POST(request: Request) {
     }
 
     return Response.json(
-      {
-        success: false,
-        message: response.message || 'Failed to update webhook notification setting',
-      },
+      { success: false, message: response.message || 'Failed to update notification email' },
       { status: 400 }
     );
   } catch (error) {
     return Response.json(
-      { success: false, message: 'Failed to save due to an error.' },
+      { success: false, message: 'Failed to update notification email due to an error.' },
       { status: 500 }
     );
   }
