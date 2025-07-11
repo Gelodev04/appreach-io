@@ -378,11 +378,18 @@ type UserSettingsPlanPermissionFeatures {
 }
 
 type UserSettingsWebhook {
-  token String?
+  token                String?
+  notification_email   String?
+  notify_on_disconnect Json?
 }
 
 type UserSettingsOnboarding {
   completedOn String?
+}
+
+type UserSettingsApi {
+  token      String?
+  updated_at DateTime? @db.Date
 }
 
 type EngagementFeatures {
@@ -599,6 +606,7 @@ model userSettings {
   webhook                 UserSettingsWebhook?
   ownerHostId             String                             @db.ObjectId
   onboarding              UserSettingsOnboarding?
+  api                     UserSettingsApi?
 }
 
 model webMail {

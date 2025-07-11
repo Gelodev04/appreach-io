@@ -5,8 +5,12 @@ import Iconify from 'src/components/iconify';
 import { RenderCellText } from 'src/components/table/render-cell-rows';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
 import { ProductLink } from '../_components/product-link';
+import { DisconnectNoticeSwitch } from '../_components/disconnect-notice-switch';
 
-export const useWebhooksCol = (token?: string | null) => {
+export const useWebhooksCol = (
+  token?: string | null,
+  notifyOnDisconnect?: Record<string, boolean>
+) => {
   const { copy } = useCopyToClipboard();
 
   const handleCopyUrl = (params: GridCellParams) => {
@@ -52,6 +56,15 @@ export const useWebhooksCol = (token?: string | null) => {
       ),
       flex: 1,
       minWidth: 80,
+    },
+    {
+      field: 'disconnect_notice',
+      headerName: 'Disconnect Notification',
+      renderCell: (params) => {
+        const isEnabled = notifyOnDisconnect?.[params.row.value] || false;
+        return <DisconnectNoticeSwitch value={params.row.value} initialChecked={isEnabled} />;
+      },
+      flex: 1,
     },
   ];
 

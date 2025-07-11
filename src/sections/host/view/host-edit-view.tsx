@@ -14,7 +14,7 @@ export const HostEditView = ({ currentItem, planPermissions, emails }: HostProps
         links={[
           {
             name: 'Sender Profiles',
-            href: paths.settings.root,
+            href: paths.profiles.root,
           },
           { name: 'Edit seed settings' },
         ]}

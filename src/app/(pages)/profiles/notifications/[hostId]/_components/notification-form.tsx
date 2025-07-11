@@ -56,7 +56,7 @@ export default function NotificationForm({ currentItem }: { currentItem: hosts }
       enqueueSnackbar(response.message, { variant: 'error', persist: true });
     } else {
       enqueueSnackbar('Update success!');
-      router.push(paths.settings.root);
+      router.push(paths.profiles.root);
     }
   });
 

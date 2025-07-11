@@ -10,6 +10,7 @@ const envSchema = Yup.object().shape({
   NEXT_PUBLIC_ASSETS_API: Yup.string(), // TODO: Is still being used?. Not found in vercel
   NEXT_PUBLIC_HOST_API: Yup.string(), // TODO: This is not currently used. Not found in vercel
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: Yup.string(),
+  NEXT_PUBLIC_CLARITY_PROJECT_ID: Yup.string(),
 });
 
 const parsedEnv = envSchema.validateSync(
@@ -22,6 +23,7 @@ const parsedEnv = envSchema.validateSync(
     NEXT_PUBLIC_ASSETS_API: process.env.NEXT_PUBLIC_ASSETS_API, // TODO: Is still being used?. Not found in vercel
     NEXT_PUBLIC_HOST_API: process.env.NEXT_PUBLIC_HOST_API, // TODO: This is not currently used. Not found in vercel
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_CLARITY_PROJECT_ID: process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID,
   },
   { abortEarly: false }
 );

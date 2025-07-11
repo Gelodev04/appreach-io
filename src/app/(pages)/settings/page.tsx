@@ -1,0 +1,24 @@
+import { Container } from '@mui/material';
+import { getUserSettings } from 'src/services/db/user-settings';
+import { AccountSettingsHeader } from './_components/account-settings-header';
+import { AccountSettingsForm } from './_components/account-settings-form';
+
+export const metadata = {
+  title: 'Account Settings | Outreach Magic',
+};
+
+export const dynamic = 'force-dynamic';
+
+export default async function Page() {
+  const { api, webhook } = await getUserSettings({ api: true, webhook: true });
+
+  return (
+    <Container
+      maxWidth={false}
+      sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}
+    >
+      <AccountSettingsHeader />
+      <AccountSettingsForm userApi={api} email={webhook?.notification_email} />
+    </Container>
+  );
+}

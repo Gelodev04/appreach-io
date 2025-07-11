@@ -62,10 +62,11 @@ export const updateUserSettings = async (
       select: selectFields,
     });
 
-    return updatedUserSettings;
+    return { success: true, data: updatedUserSettings };
   } catch (error) {
     console.error('Error updating user settings:', error);
-    throw new Error('Error updating user settings.');
+
+    return { success: false, message: 'Failed to update user settings.' };
   }
 };
 

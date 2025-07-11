@@ -21,6 +21,7 @@ const envSchema = Yup.object().shape({
   HUBSPOT_CLIENT_ID: Yup.string(),
   HUBSPOT_REDIRECT_URI: Yup.string(),
   HUBSPOT_OAUTH_FUNCTION: Yup.string(),
+  CLARITY_PROJECT_ID: Yup.string(),
 });
 const parsedEnv = envSchema.validateSync(process.env, { abortEarly: false });
 

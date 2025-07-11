@@ -47,7 +47,7 @@ export function useNavData() {
           },
           {
             title: 'Account Profiles',
-            path: paths.settings.root,
+            path: paths.profiles.root,
             icon: <Iconify icon="bx:server" />,
             disabled: disableAccess,
           },
@@ -75,8 +75,14 @@ export function useNavData() {
       },
 
       {
-        subheader: 'Settings',
+        subheader: 'Account',
         items: [
+          {
+            title: 'Settings',
+            path: paths.settings.root,
+            icon: <Iconify icon="material-symbols:settings-outline-rounded" />,
+            disabled: disableAccess,
+          },
           {
             title: 'Webhooks',
             path: paths.webhooks.root,
