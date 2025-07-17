@@ -28,7 +28,7 @@ export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) 
         (acc, [key, value]) => {
           // Map 'id' to '_id' for MongoDB projection
           if (key === 'id') {
-            acc['_id'] = value ? 1 : 0;
+            acc._id = value ? 1 : 0;
           } else {
             acc[key] = value ? 1 : 0;
           }
