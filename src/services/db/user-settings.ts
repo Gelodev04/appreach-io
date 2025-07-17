@@ -19,15 +19,24 @@ export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) 
     const client = await clientPromise;
     const db = client.db();
 
-    const projection = selectFields
-      ? Object.entries(selectFields).reduce(
-          (acc, [key, value]) => {
+    // Handle the id field mapping for MongoDB
+    const includeId = selectFields?.id;
+    let projection;
+
+    if (selectFields) {
+      projection = Object.entries(selectFields).reduce(
+        (acc, [key, value]) => {
+          // Map 'id' to '_id' for MongoDB projection
+          if (key === 'id') {
+            acc['_id'] = value ? 1 : 0;
+          } else {
             acc[key] = value ? 1 : 0;
-            return acc;
-          },
-          {} as Record<string, 1 | 0>
-        )
-      : undefined;
+          }
+          return acc;
+        },
+        {} as Record<string, 1 | 0>
+      );
+    }
 
     const userSettings = await db
       .collection('userSettings')
@@ -35,6 +44,11 @@ export const getUserSettings = async (selectFields?: Prisma.userSettingsSelect) 
 
     if (!userSettings) {
       throw new Error('No user found with the provided ID.');
+    }
+
+    // If id was requested, map _id to id in the result
+    if (includeId) {
+      userSettings.id = userSettings._id.toString();
     }
 
     return userSettings;
