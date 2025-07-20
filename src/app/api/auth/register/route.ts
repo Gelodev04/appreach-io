@@ -60,6 +60,10 @@ export async function POST(request: Request) {
 
     const accountApiKey = await generateApiKey();
 
+    // Get default looker studio URL from config collection
+    const configDoc = await db.collection('config').findOne({ key: 'default_looker_studio_url' });
+    const defaultLookerStudioUrl = configDoc?.value || '';
+
     const signupParams = {
       appLogin: {
         username: email,
@@ -106,6 +110,9 @@ export async function POST(request: Request) {
       api: {
         token: accountApiKey,
         updated_at: new Date(),
+      },
+      reporting: {
+        looker_studio_url: defaultLookerStudioUrl,
       },
     };
 
@@ -165,7 +172,7 @@ export async function POST(request: Request) {
     const defaultHostName = await generateUniqueHostName(baseHostName);
     const defaultAccessToken = await generateUniqueAccessToken();
 
-    const defaultHostLookerStudioUrl = generateLookerStudioUrl([defaultAccessToken]);
+    const defaultHostLookerStudioUrl = await generateLookerStudioUrl([defaultAccessToken]);
 
     // Create default host
     const { insertedId: hostId } = await db.collection('hosts').insertOne({

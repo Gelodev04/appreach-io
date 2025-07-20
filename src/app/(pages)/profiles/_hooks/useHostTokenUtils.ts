@@ -19,7 +19,7 @@ export const useHostTokenUtils = () => {
   const getSharableUrl = (tokens: string[]) =>
     `${window.location.origin}${paths.sharable.overview(tokens.join(','))}`;
 
-  const getLookerUrl = (tokens: string[]) => generateLookerStudioUrl(tokens);
+  const getLookerUrl = async (tokens: string[]) => await generateLookerStudioUrl(tokens);
 
   return {
     extractValidTokens,

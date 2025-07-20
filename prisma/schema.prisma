@@ -392,6 +392,10 @@ type UserSettingsApi {
   updated_at DateTime? @db.Date
 }
 
+type UserSettingsReporting {
+  looker_studio_url String?
+}
+
 type EngagementFeatures {
   scrollMessage Boolean
   markImportant Boolean
@@ -607,6 +611,7 @@ model userSettings {
   ownerHostId             String                             @db.ObjectId
   onboarding              UserSettingsOnboarding?
   api                     UserSettingsApi?
+  reporting               UserSettingsReporting?
 }
 
 model webMail {

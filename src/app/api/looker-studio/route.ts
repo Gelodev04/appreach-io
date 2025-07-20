@@ -2,7 +2,9 @@
 // import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 // import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
+import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 import { env } from 'src/data/env/client';
+import { getUserSettings } from 'src/services/db/user-settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,8 +35,11 @@ export async function GET() {
     //   );
     // }
 
+    const { reporting } = await getUserSettings({ reporting: true });
+    const lookerStudioUrl = reporting?.looker_studio_url;
+
     return NextResponse.json(
-      { embedUrl: env.NEXT_PUBLIC_LIVE_LOOKER_URL },
+      { embedUrl: lookerStudioUrl },
       { headers: { 'Cache-Control': 'no-store, max-age=0' } }
     );
   } catch (error) {

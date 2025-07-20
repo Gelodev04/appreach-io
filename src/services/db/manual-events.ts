@@ -17,7 +17,7 @@ export const getEventsByHostIds = async () => {
         },
         update_history: {
           some: {
-            source: 'webapp',
+            webapp: true,
           },
         },
       },

@@ -137,7 +137,7 @@ export const createHost = async (data: UpdateHostData) => {
 
     const filterId = data.filterId ? data.filterId : nanoid(5);
     const accessToken = await generateUniqueAccessToken();
-    const lookerStudioUrl = generateLookerStudioUrl([accessToken]);
+    const lookerStudioUrl = await generateLookerStudioUrl([accessToken]);
 
     const normalizedData = {
       host: data.host,
@@ -305,7 +305,7 @@ export const addNewProfile = async (host: string) => {
     }
 
     const accessToken = await generateUniqueAccessToken();
-    const lookerStudioUrl = generateLookerStudioUrl([accessToken]);
+    const lookerStudioUrl = await generateLookerStudioUrl([accessToken]);
 
     const createdHost = await prisma.hosts.create({
       data: {
