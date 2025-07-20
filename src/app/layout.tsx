@@ -10,7 +10,6 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-import { env } from 'src/data/env/server';
 
 export const viewport = {
   themeColor: '#000000',
@@ -20,11 +19,29 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: 'Outreach Magic',
+  title: 'The Outreach Magic Intelligence Layer™',
   description:
-    'Leverage our powerful email deliverability tools to ensure your emails land directly in the primary inbox. ',
+    'Outreach Magic is the intelligence platform for B2B teams, unifying your favorite outreach tools. Get a single source of truth to optimize campaigns & scale performance.',
   keywords: 'react,material,kit,application,dashboard,admin,template',
   manifest: '/manifest.json',
+
+  // Open Graph meta tags for social sharing
+  openGraph: {
+    title: 'The Outreach Magic Intelligence Layer™',
+    description:
+      'Outreach Magic is the intelligence platform for B2B teams, unifying your favorite outreach tools. Get a single source of truth to optimize campaigns & scale performance.',
+    images: [
+      {
+        url: '/assets/social-share-preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'The Outreach Magic Intelligence Layer™',
+      },
+    ],
+    type: 'website',
+    siteName: 'Outreach Magic',
+  },
+
   icons: [
     {
       rel: 'icon',
