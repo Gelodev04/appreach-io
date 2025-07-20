@@ -360,8 +360,8 @@ export const deleteHostFromUser = async (hostIdToRemove: string) => {
     }
 
     // Filter out the hostId to remove
-    const updatedHosts = hosts.filter((id: string) => id !== hostIdToRemove);
-
+    const updatedHosts = hosts.filter((id: any) => id.toString() !== hostIdToRemove);
+    console.log({ hostIdToRemove, updatedHosts });
     await updateUserSettings({ hosts: updatedHosts }, { appLogin: false, id: true });
     const response = await decrementSenderProfilesUsed();
 

@@ -82,7 +82,7 @@ export const HostListView = ({
     },
     {
       field: 'lookerStudio',
-      headerName: 'White Label Report',
+      headerName: 'Embeddable Report',
       type: 'singleSelect',
       renderCell: (params) => <RenderLookerStudioUrl params={params} />,
       flex: 1,
@@ -94,7 +94,7 @@ export const HostListView = ({
     {
       type: 'actions',
       field: 'seeds',
-      headerName: 'Settings',
+      headerName: 'Profile Settings',
       align: 'left',
       headerAlign: 'left',
       sortable: false,

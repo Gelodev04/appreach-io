@@ -114,7 +114,8 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
 
   return (
     <Stack direction="row">
-      <Tooltip title="Edit seed settings" placement="top">
+      {/* Seeds no longer being used as of July 2025 so this section has been removed */}
+      {/* <Tooltip title="Edit seed settings" placement="top">
         <Button
           onClick={handleEditSeedsRow}
           sx={{ zIndex: 20, color: '#637381' }}
@@ -122,7 +123,7 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
         >
           Settings
         </Button>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Edit sender address" placement="top">
         <Button
           onClick={handleEditNotificationsRow}
