@@ -2,8 +2,6 @@
 // import clientPromise from 'src/auth/lib/mongodb/db-mongo';
 // import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
-import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-import { env } from 'src/data/env/client';
 import { getUserSettings } from 'src/services/db/user-settings';
 
 export const dynamic = 'force-dynamic';

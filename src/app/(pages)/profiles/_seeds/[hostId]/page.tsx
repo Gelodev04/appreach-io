@@ -3,14 +3,12 @@ import { getHostById } from 'src/services/db/hosts';
 import { getVerifiedSenderAddressByHostId } from 'src/services/db/sender-addresses';
 import { getUserSettings } from 'src/services/db/user-settings';
 
-{
-  /* Seeds no longer being used as of July 2025 so this section has been removed */
-}
 export const metadata = {
   title: 'Edit seed settings | Outreach Magic',
 };
 
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
+  /* Seeds no longer being used as of July 2025 so this section has been removed */
   const { hostId } = params;
   const host = await getHostById(hostId);
   const emails = await getVerifiedSenderAddressByHostId(hostId);

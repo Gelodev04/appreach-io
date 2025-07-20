@@ -69,7 +69,7 @@ export const createAttributeUploads = async (
 
 export const attributeUploadsWebhook = async () => {
   try {
-    const res = await axios.post(env.ATTRIBUTE_UPLOADS_FUNCTION as string);
+    await axios.post(env.ATTRIBUTE_UPLOADS_FUNCTION as string);
   } catch (error) {
     throw new Error('Error on attribute uploads webhook.');
   }
