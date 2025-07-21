@@ -18,18 +18,18 @@ type ParamsProps = {
 export function RenderLookerStudioUrl({ params }: ParamsProps) {
   const { copy } = useCopyToClipboard();
   const { enqueueSnackbar } = useSnackbar();
-  const handleCopy = (event: React.MouseEvent) => {
+  const handleCopy = async (event: React.MouseEvent) => {
     event.stopPropagation();
     const { access } = params.row.token;
-    const generatedUrl = generateLookerStudioUrl([access as string]);
+    const generatedUrl = await generateLookerStudioUrl([access as string]);
     copy(generatedUrl);
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
 
-  const handleGoToUrl = (event: React.MouseEvent) => {
+  const handleGoToUrl = async (event: React.MouseEvent) => {
     event.stopPropagation();
     const { access } = params.row.token;
-    const generatedUrl = generateLookerStudioUrl([access as string]);
+    const generatedUrl = await generateLookerStudioUrl([access as string]);
     window.open(generatedUrl, '_blank');
   };
 
@@ -104,9 +104,9 @@ export function RenderSharableReportURL({ params }: ParamsProps) {
 
 export const SeedActionCells = ({ params }: ParamsProps) => {
   const router = useRouter();
-  const handleEditSeedsRow = () => {
-    router.push(paths.profiles.seeds(params.id.toString()));
-  };
+  // const handleEditSeedsRow = () => {
+  //   router.push(paths.profiles.seeds(params.id.toString()));
+  // };
 
   const handleEditNotificationsRow = () => {
     router.push(paths.profiles.notifications(params.id.toString()));
@@ -114,7 +114,8 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
 
   return (
     <Stack direction="row">
-      <Tooltip title="Edit seed settings" placement="top">
+      {/* Seeds no longer being used as of July 2025 so this section has been removed */}
+      {/* <Tooltip title="Edit seed settings" placement="top">
         <Button
           onClick={handleEditSeedsRow}
           sx={{ zIndex: 20, color: '#637381' }}
@@ -122,7 +123,7 @@ export const SeedActionCells = ({ params }: ParamsProps) => {
         >
           Settings
         </Button>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Edit sender address" placement="top">
         <Button
           onClick={handleEditNotificationsRow}

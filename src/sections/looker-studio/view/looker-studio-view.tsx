@@ -14,6 +14,7 @@ export default function LookerStudioView() {
   const { url, urlLoading, urlError, warningMessage } = useGetLookerStudioUrl();
   const { hosts } = useGetHosts();
   const [mappedTokens, setMappedtokens] = useState<string[]>([]);
+  const [lookerStudioUrl, setLookerStudioUrl] = useState<string>('');
   const lgUp = useResponsive('up', 'lg');
 
   // Use useEffect to map hosts and set token access into mappedTokens
@@ -23,6 +24,13 @@ export default function LookerStudioView() {
       setMappedtokens(mapped);
     }
   }, [hosts]);
+
+  // Generate Looker Studio URL asynchronously
+  useEffect(() => {
+    if (mappedTokens.length > 0) {
+      generateLookerStudioUrl(mappedTokens, url).then(setLookerStudioUrl);
+    }
+  }, [mappedTokens, url]);
 
   const renderSkeleton = <LookerStudioSkeleton />;
 
@@ -43,7 +51,7 @@ export default function LookerStudioView() {
 
   const renderLookerStudioIframe = (
     <iframe
-      src={generateLookerStudioUrl(mappedTokens, url)}
+      src={lookerStudioUrl}
       width="100%"
       title="Looker Studio Dashboard"
       style={{ borderRadius: '10px', border: 'none', height: lgUp ? '100%' : '100vh' }}
@@ -55,7 +63,7 @@ export default function LookerStudioView() {
       {warningMessage && renderWarning}
       {urlLoading && renderSkeleton}
       {urlError && renderError}
-      {url && renderLookerStudioIframe}
+      {lookerStudioUrl && renderLookerStudioIframe}
     </Box>
   );
 }

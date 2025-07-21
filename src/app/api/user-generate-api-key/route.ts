@@ -1,5 +1,5 @@
 import { generateApiKey } from 'src/sections/host/utils/generate-account-api-key';
-import { getUserSettings, updateUserSettings } from 'src/services/db/user-settings';
+import { updateUserSettings } from 'src/services/db/user-settings';
 
 export async function POST() {
   try {

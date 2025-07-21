@@ -2,6 +2,7 @@
 
 import { Alert } from '@mui/material';
 import Box from '@mui/material/Box';
+import { useEffect, useState } from 'react';
 import Error from 'src/components/error/error';
 import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -10,7 +11,15 @@ import { LookerStudioSkeleton } from 'src/sections/looker-studio/looker-studio-s
 
 export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) => {
   const { url, urlLoading, urlError, warningMessage } = useGetLookerStudioUrl();
+  const [lookerStudioUrl, setLookerStudioUrl] = useState<string>('');
   const lgUp = useResponsive('up', 'lg');
+
+  // Generate Looker Studio URL asynchronously
+  useEffect(() => {
+    if (accessToken) {
+      generateLookerStudioUrl([accessToken], url).then(setLookerStudioUrl);
+    }
+  }, [accessToken, url]);
 
   const renderSkeleton = <LookerStudioSkeleton />;
 
@@ -30,7 +39,7 @@ export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) =
   );
   const renderLookerStudioIframe = (
     <iframe
-      src={generateLookerStudioUrl([accessToken], url)}
+      src={lookerStudioUrl}
       width="100%"
       title="Looker Studio Dashboard"
       style={{ borderRadius: '10px', border: 'none', height: lgUp ? '100%' : '100vh' }}
@@ -42,7 +51,7 @@ export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) =
       {warningMessage && renderWarning}
       {urlLoading && renderSkeleton}
       {urlError && renderError}
-      {url && renderLookerStudioIframe}
+      {lookerStudioUrl && renderLookerStudioIframe}
     </Box>
   );
 };

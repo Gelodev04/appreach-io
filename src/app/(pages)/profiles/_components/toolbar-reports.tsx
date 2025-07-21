@@ -24,17 +24,19 @@ export const ToolBarReports = ({ selectedRows }: { selectedRows: hosts[] }) => {
     window.open(getSharableUrl(tokens), '_blank');
   };
 
-  const handleCopyWhiteLabelReport = (e: React.MouseEvent) => {
+  const handleCopyWhiteLabelReport = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const tokens = extractValidTokens(selectedRows, true);
-    copy(getLookerUrl(tokens));
+    const url = await getLookerUrl(tokens);
+    copy(url);
     enqueueSnackbar('Copied to clipboard', { autoHideDuration: 1500 });
   };
 
-  const handleGoToWhiteLabelReportUrl = (e: React.MouseEvent) => {
+  const handleGoToWhiteLabelReportUrl = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const tokens = extractValidTokens(selectedRows);
-    window.open(getLookerUrl(tokens), '_blank');
+    const url = await getLookerUrl(tokens);
+    window.open(url, '_blank');
   };
 
   return (

@@ -8,6 +8,7 @@ export const metadata = {
 };
 
 export default async function HostsEditPage({ params }: { params: { hostId: string } }) {
+  /* Seeds no longer being used as of July 2025 so this section has been removed */
   const { hostId } = params;
   const host = await getHostById(hostId);
   const emails = await getVerifiedSenderAddressByHostId(hostId);

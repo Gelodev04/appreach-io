@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 
 const envSchema = Yup.object().shape({
   // Client-exposed variables (must start with NEXT_PUBLIC_)
-  NEXT_PUBLIC_LIVE_LOOKER_URL: Yup.string(),
   NEXT_PUBLIC_SAMPLE_LOOKER_URL: Yup.string(),
   NEXT_PUBLIC_SALESMATE_WORKSPACE_ID: Yup.string(),
   NEXT_PUBLIC_SALESMATE_APP_KEY: Yup.string(),
@@ -15,7 +14,6 @@ const envSchema = Yup.object().shape({
 
 const parsedEnv = envSchema.validateSync(
   {
-    NEXT_PUBLIC_LIVE_LOOKER_URL: process.env.NEXT_PUBLIC_LIVE_LOOKER_URL,
     NEXT_PUBLIC_SAMPLE_LOOKER_URL: process.env.NEXT_PUBLIC_SAMPLE_LOOKER_URL,
     NEXT_PUBLIC_SALESMATE_WORKSPACE_ID: process.env.NEXT_PUBLIC_SALESMATE_WORKSPACE_ID,
     NEXT_PUBLIC_SALESMATE_APP_KEY: process.env.NEXT_PUBLIC_SALESMATE_APP_KEY,

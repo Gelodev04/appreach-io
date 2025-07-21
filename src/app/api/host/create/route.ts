@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     if (duplicateEmail) throw new Error('Cannot save, sender address already in use.');
 
     const hostCrypt = generateHostCrypt(host);
-    const lookerStudioUrl = generateLookerStudioUrl([hostCrypt]);
+    const lookerStudioUrl = await generateLookerStudioUrl([hostCrypt]);
     const notificationAddressesArray = generateArrayAddresses(notificationAddresses);
 
     // Create a new host and get the _id of the new document

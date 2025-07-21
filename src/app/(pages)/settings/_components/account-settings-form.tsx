@@ -8,13 +8,12 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import { useMemo, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard';
-import { updateUserSettings } from 'src/services/db/user-settings';
 import * as Yup from 'yup';
 
 // ----------------------------------------------------------------------

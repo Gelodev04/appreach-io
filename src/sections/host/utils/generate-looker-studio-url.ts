@@ -1,10 +1,18 @@
-import { env } from 'src/data/env/client';
+import { getUserSettings } from 'src/services/db/user-settings';
 
-const liveBaseUrl = env.NEXT_PUBLIC_LIVE_LOOKER_URL;
+export async function generateLookerStudioUrl(
+  accessToken: string[],
+  baseUrl?: string
+): Promise<string> {
+  if (baseUrl) {
+    const idsString = accessToken.join(',');
+    console.log({ baseUrl });
+    return baseUrl.replaceAll('{}', idsString);
+  }
 
-export function generateLookerStudioUrl(accessToken: string[], baseUrl?: string): string {
-  const effectiveBaseUrl = baseUrl || liveBaseUrl;
-  if (!effectiveBaseUrl) throw new Error('Looker url is not defined');
+  const { reporting } = await getUserSettings({ reporting: true });
+  const effectiveBaseUrl = reporting?.looker_studio_url;
+  if (!effectiveBaseUrl) throw new Error('Looker Studio URL is not defined in user settings');
 
   const idsString = accessToken.join(',');
   return effectiveBaseUrl.replaceAll('{}', idsString);

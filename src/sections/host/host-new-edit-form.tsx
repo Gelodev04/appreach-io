@@ -10,7 +10,7 @@ import { hosts } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SenderProfileTabs } from 'src/app/(pages)/profiles/seeds/[hostId]/_components';
+import { SenderProfileTabs } from 'src/app/(pages)/profiles/_seeds/[hostId]/_components';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useSnackbar } from 'src/components/snackbar';
 import { defaultEngagementSettings } from 'src/constants';
