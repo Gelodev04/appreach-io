@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
-import { LookerStudioSkeleton } from 'src/sections/looker-studio/looker-studio-skeleton';
 
 export const SharableLookerStudio = ({
   accessToken,
