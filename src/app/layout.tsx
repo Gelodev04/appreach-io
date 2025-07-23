@@ -114,7 +114,7 @@ setTimeout(ldinsp, 0);
                     <SnackbarProvider>
                       <SettingsDrawer />
                       <ProgressBar />
-                      <ClientInstallBlocker />
+                      {/* <ClientInstallBlocker /> */}
                       {children}
                     </SnackbarProvider>
                   </MotionLazy>
