@@ -1,8 +1,8 @@
 import { checkIfTokenExist } from 'src/services/db/hosts';
+import { getConfigDropdownOptions } from 'src/services/db/config';
 import { SharableLayout } from './_components/sharable-layout';
 import { SharableLookerStudio } from './_components/sharable-looker-studio';
 import { TokenNotFound } from './_components/token-not-found';
-import { getConfigDropdownOptions } from 'src/services/db/config';
 
 export const metadata = {
   title: 'Dashboard overview | Outreach Magic',
