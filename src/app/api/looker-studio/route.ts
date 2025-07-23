@@ -1,8 +1,5 @@
-// import { getUser } from 'src/auth/lib/mongodb/get-user';
-// import clientPromise from 'src/auth/lib/mongodb/db-mongo';
-// import { ObjectId } from 'mongodb';
+import { getUser } from 'src/auth/lib/mongodb/get-user';
 import { NextResponse } from 'next/server';
-import { getUserSettings } from 'src/services/db/user-settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,8 +30,8 @@ export async function GET() {
     //   );
     // }
 
-    const { reporting } = await getUserSettings({ reporting: true });
-    const lookerStudioUrl = reporting?.looker_studio_url;
+    const userSettings = await getUser();
+    const lookerStudioUrl = userSettings?.reporting?.looker_studio_url;
 
     return NextResponse.json(
       { embedUrl: lookerStudioUrl },

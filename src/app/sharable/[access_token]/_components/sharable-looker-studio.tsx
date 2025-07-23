@@ -9,7 +9,13 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
 import { LookerStudioSkeleton } from 'src/sections/looker-studio/looker-studio-skeleton';
 
-export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) => {
+export const SharableLookerStudio = ({
+  accessToken,
+  defaultLookerStudioUrl,
+}: {
+  accessToken: string;
+  defaultLookerStudioUrl?: string;
+}) => {
   const { url, urlLoading, urlError, warningMessage } = useGetLookerStudioUrl();
   const [lookerStudioUrl, setLookerStudioUrl] = useState<string>('');
   const lgUp = useResponsive('up', 'lg');
@@ -17,9 +23,9 @@ export const SharableLookerStudio = ({ accessToken }: { accessToken: string }) =
   // Generate Looker Studio URL asynchronously
   useEffect(() => {
     if (accessToken) {
-      generateLookerStudioUrl([accessToken], url).then(setLookerStudioUrl);
+      generateLookerStudioUrl([accessToken], defaultLookerStudioUrl).then(setLookerStudioUrl);
     }
-  }, [accessToken, url]);
+  }, [accessToken, defaultLookerStudioUrl]);
 
   const renderSkeleton = <LookerStudioSkeleton />;
 
