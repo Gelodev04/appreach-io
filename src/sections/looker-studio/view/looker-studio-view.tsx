@@ -7,9 +7,8 @@ import Error from 'src/components/error/error';
 import { useGetHosts } from 'src/hooks/api/host';
 import { useGetLookerStudioUrl } from 'src/hooks/api/looker-studio';
 import { useResponsive } from 'src/hooks/use-responsive';
-import { generateLookerStudioUrl } from 'src/sections/host/utils';
-import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 import { generateLookerStudioOld } from 'src/sections/host/utils/generate-looker-studio-old';
+import { LookerStudioSkeleton } from '../looker-studio-skeleton';
 
 export default function LookerStudioView() {
   const { url, urlLoading, urlError, warningMessage } = useGetLookerStudioUrl();
