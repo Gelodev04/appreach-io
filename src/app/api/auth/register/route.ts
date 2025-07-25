@@ -173,14 +173,11 @@ export async function POST(request: Request) {
     const defaultHostName = await generateUniqueHostName(baseHostName);
     const defaultAccessToken = await generateUniqueAccessToken();
 
-    const defaultHostLookerStudioUrl = generateLookerStudioOld([defaultAccessToken]);
-
     // Create default host
     const { insertedId: hostId } = await db.collection('hosts').insertOne({
       host: defaultHostName,
       ownerId: userId,
       ownerName: email,
-      lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
       token: {
         access: defaultAccessToken,
         lastResetAt: new Date(),
