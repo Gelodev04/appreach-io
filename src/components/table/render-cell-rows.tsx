@@ -9,10 +9,31 @@ export const RenderCellStatus = ({ status }: { status: string }) => {
   );
 };
 
-export const RenderCellText = ({ displayValue }: { displayValue: string }) => {
+export const RenderCellText = ({
+  displayValue,
+  multiline = true,
+}: {
+  displayValue: string;
+  multiline?: boolean;
+}) => {
   return (
     <div title={displayValue} style={{ overflow: 'hidden' }}>
-      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap', my: 2 }}>
+      <Typography
+        sx={{
+          overflow: 'hidden',
+          ...(multiline
+            ? {
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                lineHeight: 1.4,
+              }
+            : {
+                textOverflow: 'ellipsis',
+                textWrap: 'nowrap',
+              }),
+          my: 2,
+        }}
+      >
         {displayValue}
       </Typography>
     </div>

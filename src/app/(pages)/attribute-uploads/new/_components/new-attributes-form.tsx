@@ -163,7 +163,7 @@ export const NewAttributesForm = ({
 
       if (!uploadedFile) return;
 
-      setValue('name', uploadedFile.name);
+      setValue('name', uploadedFile.name.replace(/\.csv$/i, ''));
       setFile(uploadedFile);
       setFileError(null);
 
@@ -268,6 +268,7 @@ export const NewAttributesForm = ({
                 <RHFTextField
                   name="name"
                   label="List name"
+                  type="text"
                   placeholder="Assign a name to this list"
                 />
 
