@@ -10,7 +10,6 @@ import { SettingsDrawer, SettingsProvider } from 'src/components/settings';
 import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-import ClientInstallBlocker from 'src/components/client-install-blocker/client-install-blocker';
 
 export const viewport = {
   themeColor: '#000000',
@@ -132,7 +131,7 @@ setTimeout(ldinsp, 0);
                     <SnackbarProvider>
                       <SettingsDrawer />
                       <ProgressBar />
-                      <ClientInstallBlocker />
+                      {/* <ClientInstallBlocker /> */}
                       {children}
                     </SnackbarProvider>
                   </MotionLazy>

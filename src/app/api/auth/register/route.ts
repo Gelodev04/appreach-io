@@ -11,6 +11,7 @@ import { defaultEngagementSettings } from 'src/constants';
 import { paths } from 'src/routes/paths';
 import { generateLookerStudioUrl } from 'src/sections/host/utils';
 import { generateApiKey } from 'src/sections/host/utils/generate-account-api-key';
+import { generateLookerStudioOld } from 'src/sections/host/utils/generate-looker-studio-old';
 import { generateUniqueAccessToken } from 'src/sections/host/utils/generate-unique-access-token';
 import { generateTokenFromObjectId } from 'src/sections/host/utils/generate-userId-token';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
@@ -172,14 +173,11 @@ export async function POST(request: Request) {
     const defaultHostName = await generateUniqueHostName(baseHostName);
     const defaultAccessToken = await generateUniqueAccessToken();
 
-    const defaultHostLookerStudioUrl = await generateLookerStudioUrl([defaultAccessToken]);
-
     // Create default host
     const { insertedId: hostId } = await db.collection('hosts').insertOne({
       host: defaultHostName,
       ownerId: userId,
       ownerName: email,
-      lookerStudio: { embedUrl: defaultHostLookerStudioUrl, hasToRegenerate: false },
       token: {
         access: defaultAccessToken,
         lastResetAt: new Date(),

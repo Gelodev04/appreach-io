@@ -6,7 +6,6 @@ export async function generateLookerStudioUrl(
 ): Promise<string> {
   if (baseUrl) {
     const idsString = accessToken.join(',');
-    console.log({ baseUrl });
     return baseUrl.replaceAll('{}', idsString);
   }
 
