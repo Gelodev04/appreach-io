@@ -47,6 +47,8 @@ export const createAttributeUploads = async (
   try {
     const { id } = await getUserSettings({ id: true });
     const { hostCrypt } = await getHostById(data.host_id.value, { hostCrypt: true });
+    const listSource =
+      data.list_source.value === 'others' ? data.otherListSource : data.list_source.value;
 
     await prisma.attribute_uploads.create({
       data: {
@@ -55,6 +57,7 @@ export const createAttributeUploads = async (
         host_name: data.host_id.label,
         host_crypt: hostCrypt,
         import_name: data.name,
+        list_source: listSource,
         metadata: {
           processing_status: 'pending',
         },

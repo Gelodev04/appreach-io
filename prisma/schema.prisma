@@ -517,6 +517,7 @@ model attribute_uploads {
   host_name       String
   host_crypt      String?
   import_name     String
+  list_source     String?
   last_updated    DateTime?                 @default(now())
   status          String?
   column_mappings Json?
