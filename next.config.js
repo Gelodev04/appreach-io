@@ -11,6 +11,15 @@ module.exports = {
       transform: '@mui/lab/{{member}}',
     },
   },
+  async redirects() {
+    return [
+      {
+        source: '/signup',
+        destination: '/signup/1',
+        permanent: false,
+      },
+    ];
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

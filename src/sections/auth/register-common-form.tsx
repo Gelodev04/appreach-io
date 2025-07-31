@@ -9,11 +9,6 @@ export default function RegisterCommonForm() {
 
   return (
     <>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <RHFTextField name="firstName" label="First name" />
-        <RHFTextField name="lastName" label="Last name" />
-      </Stack>
-
       <RHFTextField name="companyName" label="Company name" />
       <RHFTextField name="email" label="Email address" />
 
