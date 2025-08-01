@@ -290,13 +290,6 @@ export const NewAttributesForm = ({
                   md: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFTextField
-                  name="name"
-                  label="Import name"
-                  type="text"
-                  placeholder="Assign a name to this list"
-                />
-
                 <RHFAutocomplete
                   isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="host_id"
@@ -304,21 +297,33 @@ export const NewAttributesForm = ({
                   placeholder="outreachmagic"
                   options={hostOptions}
                 />
-              </Box>
-              <RHFAutocomplete
-                isOptionEqualToValue={(option, value) => option.value === value.value}
-                name="list_source"
-                label="Choose list source"
-                options={listSourceOptionsWithOthers}
-              />
-              {watchedListSource?.value === 'others' && (
-                <RHFTextField
-                  name="otherListSource"
-                  label="Other list source"
-                  type="text"
-                  placeholder="Enter other list source"
+                <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  name="list_source"
+                  label="Choose list source"
+                  options={listSourceOptionsWithOthers}
                 />
-              )}
+
+                {watchedListSource?.value === 'others' && (
+                  <>
+                    <Box />
+                    <RHFTextField
+                      name="otherListSource"
+                      label="Other list source"
+                      type="text"
+                      placeholder="Enter other list source"
+                    />
+                  </>
+                )}
+              </Box>
+
+              <RHFTextField
+                name="name"
+                label="Import name"
+                type="text"
+                placeholder="Assign a name to this list"
+              />
+
               <UploadDocument
                 file={file}
                 fileError={fileError}

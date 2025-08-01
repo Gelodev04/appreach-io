@@ -27,7 +27,7 @@ type RegisterFormValues = {
   companyName: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  // confirmPassword: string;
   currentPlatforms: string[];
   otherPlatforms?: string;
   hearAboutUs: string;
@@ -55,10 +55,10 @@ export default function RegisterView({ platformOptions }: Props) {
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!/@$%^&*-]).{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), ''], 'Passwords must match')
-      .nullable()
-      .required('Confirm Password is required'),
+    // confirmPassword: Yup.string()
+    //   .oneOf([Yup.ref('password'), ''], 'Passwords must match')
+    //   .nullable()
+    //   .required('Confirm Password is required'),
     // emailsSendsPerDay: Yup.string().required('Choose an option'),
     // freePhoneSupport: Yup.boolean(),
     // phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
@@ -83,7 +83,7 @@ export default function RegisterView({ platformOptions }: Props) {
       companyName: '',
       email: email ?? '',
       password: '',
-      confirmPassword: '',
+      // confirmPassword: '',
       // emailsSendsPerDay: '',
       // freePhoneSupport: false,
       // phoneNumber: '',
@@ -95,7 +95,6 @@ export default function RegisterView({ platformOptions }: Props) {
   });
 
   const {
-    reset,
     handleSubmit,
     watch,
     formState: { isSubmitting },

@@ -5,7 +5,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 export default function RegisterCommonForm() {
   const password = useBoolean();
-  const confirmPassword = useBoolean();
+  // const confirmPassword = useBoolean();
 
   return (
     <>
@@ -27,7 +27,7 @@ export default function RegisterCommonForm() {
         }}
       />
 
-      <RHFTextField
+      {/* <RHFTextField
         name="confirmPassword"
         label="Confirm Password"
         type={confirmPassword.value ? 'text' : 'password'}
@@ -42,7 +42,7 @@ export default function RegisterCommonForm() {
             </InputAdornment>
           ),
         }}
-      />
+      /> */}
     </>
   );
 }
