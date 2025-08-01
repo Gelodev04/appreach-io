@@ -24,15 +24,14 @@ type Props = {
 };
 
 type RegisterFormValues = {
-  firstName: string;
-  lastName: string;
   companyName: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  // confirmPassword: string;
   currentPlatforms: string[];
   otherPlatforms?: string;
   hearAboutUs: string;
+  discountCode?: string;
 };
 
 export default function RegisterView({ platformOptions }: Props) {
@@ -42,10 +41,9 @@ export default function RegisterView({ platformOptions }: Props) {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const email = searchParams.get('email');
+  const discountCode = searchParams.get('discount_code');
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
     companyName: Yup.string()
       .required('Company name required')
       .max(20, 'Company name can not be longer than 20 characters'),
@@ -57,10 +55,10 @@ export default function RegisterView({ platformOptions }: Props) {
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!/@$%^&*-]).{6,}$/,
         'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
       ),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), ''], 'Passwords must match')
-      .nullable()
-      .required('Confirm Password is required'),
+    // confirmPassword: Yup.string()
+    //   .oneOf([Yup.ref('password'), ''], 'Passwords must match')
+    //   .nullable()
+    //   .required('Confirm Password is required'),
     // emailsSendsPerDay: Yup.string().required('Choose an option'),
     // freePhoneSupport: Yup.boolean(),
     // phoneNumber: Yup.string().when('freePhoneSupport', ([freePhoneSupport], schema) => {
@@ -76,45 +74,42 @@ export default function RegisterView({ platformOptions }: Props) {
       otherwise: (schema) => schema.notRequired(),
     }),
     hearAboutUs: Yup.string().required(' '),
+    discountCode: Yup.string().optional(),
   });
 
   const methods = useForm<RegisterFormValues>({
     resolver: yupResolver(RegisterSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
       companyName: '',
       email: email ?? '',
       password: '',
-      confirmPassword: '',
+      // confirmPassword: '',
       // emailsSendsPerDay: '',
       // freePhoneSupport: false,
       // phoneNumber: '',
       currentPlatforms: [],
       otherPlatforms: '',
       hearAboutUs: '',
+      discountCode: discountCode ?? '',
     },
   });
 
   const {
-    reset,
     handleSubmit,
     watch,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log({ dataFromForm: data });
     try {
       await register?.({
         email: data.email,
         password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
         companyName: data.companyName,
         isTrial: true,
         // phoneNumber: data.phoneNumber ?? undefined,
         hearAboutUs: data.hearAboutUs ?? undefined,
+        discountCode: data?.discountCode,
         platforms: [
           ...data.currentPlatforms.filter((item) => item !== 'other'),
           ...(data.currentPlatforms.includes('other') ? [data.otherPlatforms] : []),
@@ -123,10 +118,17 @@ export default function RegisterView({ platformOptions }: Props) {
         // callRequested: data.freePhoneSupport ?? false,
       });
 
+      // Track successful signup with Google Analytics
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'sign_up', {
+          plan_type: 'trial',
+          method: 'email_password',
+        });
+      }
+
       setSuccessful(true);
     } catch (error) {
       console.error(error);
-      reset();
       setErrorMsg(typeof error === 'string' ? error : error.message);
       setSuccessful(false);
     }
@@ -200,6 +202,8 @@ export default function RegisterView({ platformOptions }: Props) {
           label="List all other platforms you use not listed above"
         />
       )}
+
+      <RHFTextField name="discountCode" label="Discount code" />
 
       {/* <RHFAutocomplete
         isOptionEqualToValue={(option, value) =>

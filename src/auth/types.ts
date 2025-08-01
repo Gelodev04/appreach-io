@@ -57,11 +57,10 @@ export type JWTContextType = CanRemove & {
   register: (data: {
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
     companyName: string;
     // phoneNumber?: string;
     hearAboutUs?: string;
+    discountCode?: string;
     // emailsSendsPerDay?: string;
     // callRequested?: boolean;
     isTrial?: boolean;

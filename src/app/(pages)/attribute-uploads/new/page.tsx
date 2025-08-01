@@ -16,6 +16,9 @@ export default async function Page() {
   const columnValidation = mapColumnValidation(
     columnOptions as { value: string; regex: string; format_description: string }[]
   );
+  const listSourceOptions = await getConfigDropdownOptions({ key: 'list_source_options' });
+  const listSourceOptionsMapped = mapDisplayValueToLabelValue(listSourceOptions);
+
   const headerMapping = await getConfigHeaderMapping({ key: 'attribute_uploads_header_mapping' });
 
   return (
@@ -26,6 +29,7 @@ export default async function Page() {
         columnValidation={columnValidation}
         columnOptions={columnOptionsMapped}
         headerMapping={(headerMapping!.value as Record<string, string>) || {}}
+        listSourceOptions={listSourceOptionsMapped}
       />
     </Container>
   );

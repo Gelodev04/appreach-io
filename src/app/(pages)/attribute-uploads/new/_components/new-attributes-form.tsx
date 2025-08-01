@@ -30,7 +30,9 @@ import { VisibleOnScrollTooltip } from './visible-on-screen-tootip';
 
 type NewHostFormData = {
   name: string;
+  otherListSource?: string;
   host_id: { label: string; value: string } | null;
+  list_source: { label: string; value: string } | null;
   proceedAnyway: Record<string, boolean>;
 };
 
@@ -38,10 +40,12 @@ export const NewAttributesForm = ({
   columnOptions,
   columnValidation,
   headerMapping,
+  listSourceOptions,
 }: {
   columnOptions: PlatformOptionsType;
   columnValidation: { value: string; regex: string; format_description: string }[];
   headerMapping: Record<string, string>;
+  listSourceOptions: PlatformOptionsType;
 }) => {
   const mdUp = useResponsive('up', 'md');
   const theme = useTheme();
@@ -65,8 +69,16 @@ export const NewAttributesForm = ({
   const router = useRouter();
   const hostOptions = hosts.map((host) => ({ label: host.host, value: host._id }));
 
+  // Add "others" option to listSourceOptions
+  const listSourceOptionsWithOthers = [...listSourceOptions, { label: 'Others', value: 'others' }];
+
   const newHostSchema = Yup.object().shape({
-    name: Yup.string().required('List name is required'),
+    name: Yup.string().required('Import name is required'),
+    otherListSource: Yup.string().when('list_source', ([listSource], schema) => {
+      return listSource?.value === 'others'
+        ? schema.required('Other list source is required')
+        : schema.notRequired();
+    }),
     host_id: Yup.object()
       .shape({
         label: Yup.string().required('Sender profile label is required'),
@@ -75,13 +87,23 @@ export const NewAttributesForm = ({
       .required('Sender profile is required')
       .nullable()
       .notOneOf([null], 'Sender profile is required'),
+    list_source: Yup.object()
+      .shape({
+        label: Yup.string().required('List source label is required'),
+        value: Yup.string().required('List source value is required'),
+      })
+      .required('List source is required')
+      .nullable()
+      .notOneOf([null], 'List source is required'),
     proceedAnyway: Yup.object<Record<string, boolean>>().default({}),
   });
 
   const defaultValues: NewHostFormData = useMemo(
     () => ({
       name: '',
+      otherListSource: '',
       host_id: null,
+      list_source: null,
       proceedAnyway: {},
     }),
     []
@@ -96,7 +118,10 @@ export const NewAttributesForm = ({
     handleSubmit,
     setValue,
     formState: { isSubmitting },
+    watch,
   } = methods;
+
+  const watchedListSource = watch('list_source');
 
   const onSubmit = handleSubmit(async (data) => {
     if (!file) {
@@ -265,13 +290,6 @@ export const NewAttributesForm = ({
                   md: 'repeat(2, 1fr)',
                 }}
               >
-                <RHFTextField
-                  name="name"
-                  label="List name"
-                  type="text"
-                  placeholder="Assign a name to this list"
-                />
-
                 <RHFAutocomplete
                   isOptionEqualToValue={(option, value) => option.value === value.value}
                   name="host_id"
@@ -279,7 +297,33 @@ export const NewAttributesForm = ({
                   placeholder="outreachmagic"
                   options={hostOptions}
                 />
+                <RHFAutocomplete
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  name="list_source"
+                  label="Choose list source"
+                  options={listSourceOptionsWithOthers}
+                />
+
+                {watchedListSource?.value === 'others' && (
+                  <>
+                    <Box />
+                    <RHFTextField
+                      name="otherListSource"
+                      label="Other list source"
+                      type="text"
+                      placeholder="Enter other list source"
+                    />
+                  </>
+                )}
               </Box>
+
+              <RHFTextField
+                name="name"
+                label="Import name"
+                type="text"
+                placeholder="Assign a name to this list"
+              />
+
               <UploadDocument
                 file={file}
                 fileError={fileError}

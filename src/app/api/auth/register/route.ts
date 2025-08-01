@@ -9,9 +9,7 @@ import { sendEmail } from 'src/auth/lib/sendgrid';
 import { TRIAL_STATUS } from 'src/config-global';
 import { defaultEngagementSettings } from 'src/constants';
 import { paths } from 'src/routes/paths';
-import { generateLookerStudioUrl } from 'src/sections/host/utils';
 import { generateApiKey } from 'src/sections/host/utils/generate-account-api-key';
-import { generateLookerStudioOld } from 'src/sections/host/utils/generate-looker-studio-old';
 import { generateUniqueAccessToken } from 'src/sections/host/utils/generate-unique-access-token';
 import { generateTokenFromObjectId } from 'src/sections/host/utils/generate-userId-token';
 import { createSenderAddress, getSenderByEmail } from 'src/services/db/sender-addresses';
@@ -31,15 +29,14 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    const { email, password, firstName, lastName, companyName, hearAboutUs, isTrial, platforms } =
-      data;
+    const { email, password, companyName, hearAboutUs, isTrial, platforms, discountCode } = data;
 
     const normalizedPlatforms = platforms.split(',').map((item: string) => item.trim());
 
     const client = await clientPromise;
     const db = client.db();
 
-    if (!email || !password || !firstName || !lastName || !companyName) {
+    if (!email || !password || !companyName) {
       throw new Error('Missing required fields');
     }
 
@@ -68,8 +65,6 @@ export async function POST(request: Request) {
     const signupParams = {
       appLogin: {
         username: email,
-        firstName,
-        lastName,
         companyName,
         approved: false,
         currentLogin: null,
@@ -81,6 +76,7 @@ export async function POST(request: Request) {
         hearAboutUs,
         ipAddress,
         platforms: normalizedPlatforms,
+        discount_code: discountCode,
       },
       approval: {
         lastSent: null,
@@ -267,7 +263,6 @@ export async function POST(request: Request) {
       {
         to: email,
         dynamicTemplateData: {
-          first_name: firstName,
           subject: 'Verify email',
           headline: 'Verify email',
           message: 'Please click the button below to verify your email.',

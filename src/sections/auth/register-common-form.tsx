@@ -5,15 +5,10 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 export default function RegisterCommonForm() {
   const password = useBoolean();
-  const confirmPassword = useBoolean();
+  // const confirmPassword = useBoolean();
 
   return (
     <>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <RHFTextField name="firstName" label="First name" />
-        <RHFTextField name="lastName" label="Last name" />
-      </Stack>
-
       <RHFTextField name="companyName" label="Company name" />
       <RHFTextField name="email" label="Email address" />
 
@@ -32,7 +27,7 @@ export default function RegisterCommonForm() {
         }}
       />
 
-      <RHFTextField
+      {/* <RHFTextField
         name="confirmPassword"
         label="Confirm Password"
         type={confirmPassword.value ? 'text' : 'password'}
@@ -47,7 +42,7 @@ export default function RegisterCommonForm() {
             </InputAdornment>
           ),
         }}
-      />
+      /> */}
     </>
   );
 }

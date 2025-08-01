@@ -3,7 +3,11 @@ export type CreateAttributeUploadsPropType = {
     label: string;
     value: string;
   };
-
+  list_source: {
+    label: string;
+    value: string;
+  };
+  otherListSource?: string;
   name: string;
 };
 
