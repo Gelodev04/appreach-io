@@ -22,6 +22,8 @@ import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
+import { TourDialog, TourGuide } from 'src/components/tour';
+import { useTourDialogStore } from 'src/store/tour-dialog';
 
 type Props = {
   openNav: boolean;
@@ -39,6 +41,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const isTrialExpired = useIsTrialExpired();
   const { rawCompletedOn, hydrated, isLoading } = useOnboardingStatus();
   const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
+  const { start } = useTourDialogStore((state) => state);
 
   const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
 
@@ -97,6 +100,16 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           currentRole: user?.role,
         }}
       />
+
+      <div
+        style={{
+          margin: '1rem',
+        }}
+      >
+        <TourDialog />
+      </div>
+      {start && data?.user?.email === 'spencer@outreachmagic.io' && <TourGuide />}
+
       <Box sx={{ height: '50px' }} />
       <Box sx={{ marginTop: 'auto' }}>
         <NavBottom />
