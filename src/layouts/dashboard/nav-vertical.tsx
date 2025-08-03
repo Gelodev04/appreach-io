@@ -18,12 +18,12 @@ import { usePlanPermissions } from 'src/hooks/use-plan-permission-features';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { TourDialog, TourGuide } from 'src/components/tour';
+import { useTourDialogStore } from 'src/store/tour-dialog';
 import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
-import { TourDialog, TourGuide } from 'src/components/tour';
-import { useTourDialogStore } from 'src/store/tour-dialog';
 
 type Props = {
   openNav: boolean;
