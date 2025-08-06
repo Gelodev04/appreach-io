@@ -118,11 +118,12 @@ export default function RootLayout({ children }: Props) {
                     {/* Google Tag Manager (noscript) */}
                     <noscript>
                       <iframe
+                        title="Google Tag Manager"
                         src="https://s.outreachmagic.io/ns.html?id=GTM-M7SPP44"
                         height="0"
                         width="0"
                         style={{ display: 'none', visibility: 'hidden' }}
-                      ></iframe>
+                      />
                     </noscript>
                     {children}
                   </SnackbarProvider>
