@@ -118,11 +118,14 @@ export default function RegisterView({ platformOptions }: Props) {
         // callRequested: data.freePhoneSupport ?? false,
       });
 
-      // Track successful signup with Google Analytics
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'sign_up', {
-          plan_type: 'trial',
-          method: 'email_password',
+      // Track successful signup with Google Tag Manager
+      if (typeof window !== 'undefined') {
+        // Ensure the dataLayer exists before trying to use it.
+        window.dataLayer = window.dataLayer || [];
+
+        // Push the 'trial_signup' event to the dataLayer.
+        window.dataLayer.push({
+          event: 'trial_signup',
         });
       }
 

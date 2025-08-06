@@ -12,12 +12,9 @@ declare global {
         };
       }) => void;
     };
-    gtag?: (
-      command: 'config' | 'event' | 'js' | 'set',
-      targetId: string | Date,
-      config?: {
-        [key: string]: any;
-      }
-    ) => void;
+    dataLayer?: Array<{
+      event?: string;
+      [key: string]: any;
+    }>;
   }
 }
