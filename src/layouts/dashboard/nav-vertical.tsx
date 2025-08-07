@@ -82,6 +82,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  console.log({ allowed: data?.user?.email === 'spencer@outreachmagic.io' });
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -100,18 +102,17 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           currentRole: user?.role,
         }}
       />
-      {start && data?.user?.email === 'spencer@outreachmagic.io' && (
-        <>
-          <div
-            style={{
-              margin: '1rem',
-            }}
-          >
-            <TourDialog />
-          </div>
-          <TourGuide />
-        </>
+
+      {data?.user?.email === 'spencer@outreachmagic.io' && (
+        <div
+          style={{
+            margin: '1rem',
+          }}
+        >
+          <TourDialog />
+        </div>
       )}
+      {start && <TourGuide />}
 
       <Box sx={{ height: '50px' }} />
       <Box sx={{ marginTop: 'auto' }}>
