@@ -67,9 +67,8 @@ export default function LoginView() {
           setUserEmail(data.email);
           setShowResendVerification(true);
           return; // Don't show snackbar, show resend verification instead
-        } else {
-          throw new Error('Invalid Credentials');
         }
+        throw new Error('Invalid Credentials');
       }
 
       console.log({ result: result?.url });
