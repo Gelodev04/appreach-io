@@ -100,15 +100,18 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           currentRole: user?.role,
         }}
       />
-
-      <div
-        style={{
-          margin: '1rem',
-        }}
-      >
-        <TourDialog />
-      </div>
-      {start && data?.user?.email === 'spencer@outreachmagic.io' && <TourGuide />}
+      {start && data?.user?.email === 'spencer@outreachmagic.io' && (
+        <>
+          <div
+            style={{
+              margin: '1rem',
+            }}
+          >
+            <TourDialog />
+          </div>
+          <TourGuide />
+        </>
+      )}
 
       <Box sx={{ height: '50px' }} />
       <Box sx={{ marginTop: 'auto' }}>
