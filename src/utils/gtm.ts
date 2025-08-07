@@ -40,7 +40,7 @@ export const pushGTMEvent = async (eventName: string): Promise<void> => {
   const maxAttempts = 20; // 10 seconds max wait
 
   const checkAndPush = async (): Promise<void> => {
-    attempts++;
+    attempts += 1;
     if (isGTMLoaded()) {
       pushEvent();
       return;
