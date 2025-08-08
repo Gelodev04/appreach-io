@@ -48,7 +48,7 @@ function Container({ children }: Props) {
         appLogin: { select: { username: true } },
       });
       // added the user name in inspectlet
-      window.__insp.push(['identify', username]);
+      // window.__insp.push(['identify', username]);
       if (!plan) {
         console.log('No plan found.');
         return undefined;

@@ -16,6 +16,7 @@ import { RouterLink } from 'src/routes/components';
 import { useSearchParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 import { PlatformOptionsType } from 'src/types/dropdown-types';
+import { pushGTMEvent } from 'src/utils/gtm';
 import * as Yup from 'yup';
 import RegisterCommonForm from '../register-common-form';
 
@@ -118,15 +119,11 @@ export default function RegisterView({ platformOptions }: Props) {
         // callRequested: data.freePhoneSupport ?? false,
       });
 
-      // Track successful signup with Google Analytics
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'sign_up', {
-          plan_type: 'trial',
-          method: 'email_password',
-        });
-      }
-
+      // Set successful state first
       setSuccessful(true);
+
+      // Track successful signup with Google Tag Manager
+      await pushGTMEvent('trial_signup');
     } catch (error) {
       console.error(error);
       setErrorMsg(typeof error === 'string' ? error : error.message);

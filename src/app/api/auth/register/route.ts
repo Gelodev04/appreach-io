@@ -263,6 +263,7 @@ export async function POST(request: Request) {
       {
         to: email,
         dynamicTemplateData: {
+          first_name: email,
           subject: 'Verify email',
           headline: 'Verify email',
           message: 'Please click the button below to verify your email.',
