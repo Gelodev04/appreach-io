@@ -13,7 +13,7 @@ export const TourDialog = () => {
   const checklist = [
     {
       isFinished: status.step1Finished,
-      stepTitle: 'Generate seed emails',
+      stepTitle: 'Start with Dashboard',
       stepIndex: 0,
     },
     {
@@ -33,7 +33,7 @@ export const TourDialog = () => {
     },
     {
       isFinished: status.step5Finished,
-      stepTitle: 'View reports',
+      stepTitle: 'Manual Events',
       stepIndex: 4,
     },
     {
