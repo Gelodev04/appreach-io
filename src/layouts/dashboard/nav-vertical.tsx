@@ -18,6 +18,8 @@ import { usePlanPermissions } from 'src/hooks/use-plan-permission-features';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { usePathname } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { TourDialog, TourGuide } from 'src/components/tour';
+import { useTourDialogStore } from 'src/store/tour-dialog';
 import NavBottom from '../common/nav-bottom';
 import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
@@ -39,6 +41,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const isTrialExpired = useIsTrialExpired();
   const { rawCompletedOn, hydrated, isLoading } = useOnboardingStatus();
   const { otherTools, hydrated: planPermissionsHydrated } = usePlanPermissions();
+  const { start } = useTourDialogStore((state) => state);
 
   const shouldSkip = !hydrated || !planPermissionsHydrated || isLoading;
 
@@ -79,6 +82,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  console.log({ allowed: data?.user?.email === 'spencer@outreachmagic.io' });
+
   const renderContent = (
     <Scrollbar
       sx={{
@@ -97,6 +102,18 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           currentRole: user?.role,
         }}
       />
+
+      {data?.user?.email === 'spencer@outreachmagic.io' && (
+        <div
+          style={{
+            margin: '1rem',
+          }}
+        >
+          <TourDialog />
+        </div>
+      )}
+      {start && <TourGuide />}
+
       <Box sx={{ height: '50px' }} />
       <Box sx={{ marginTop: 'auto' }}>
         <NavBottom />

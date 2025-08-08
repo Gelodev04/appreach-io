@@ -7,8 +7,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
@@ -22,6 +24,9 @@ export default function LoginView() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const password = useBoolean();
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
@@ -45,6 +50,9 @@ export default function LoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      // Reset verification state
+      setShowResendVerification(false);
+
       const result = await signIn('credentials', {
         redirect: false,
         email: data.email,
@@ -53,8 +61,16 @@ export default function LoginView() {
 
       if (result?.error) {
         console.log({ error: result.error });
+
+        // Check if it's an AccessDenied error (from signIn callback)
+        if (result.error === 'AccessDenied') {
+          setUserEmail(data.email);
+          setShowResendVerification(true);
+          return; // Don't show snackbar, show resend verification instead
+        }
         throw new Error('Invalid Credentials');
       }
+
       console.log({ result: result?.url });
       // Handle redirect after successful login if needed
       if (result?.url) {
@@ -67,6 +83,25 @@ export default function LoginView() {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   });
+
+  const handleResendVerification = async () => {
+    try {
+      setIsResending(true);
+      const response = await axios.post('/api/auth/resend-verification', {
+        email: userEmail,
+      });
+
+      enqueueSnackbar(response.data.message, { variant: 'success' });
+      setShowResendVerification(false);
+    } catch (error) {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to resend verification email';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5 }}>
@@ -121,6 +156,24 @@ export default function LoginView() {
       >
         Login
       </LoadingButton>
+
+      {showResendVerification && (
+        <Stack spacing={1} sx={{ mt: 2, p: 2, bgcolor: 'warning.lighter', borderRadius: 1 }}>
+          <Typography variant="body2" color="warning.dark">
+            Email has not been verified, would you like us to resend the verification link?
+          </Typography>
+          <LoadingButton
+            variant="contained"
+            color="warning"
+            size="small"
+            onClick={handleResendVerification}
+            loading={isResending}
+            disabled={isResending}
+          >
+            Resend Verification Email
+          </LoadingButton>
+        </Stack>
+      )}
     </Stack>
   );
 

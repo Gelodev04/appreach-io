@@ -15,12 +15,9 @@ export const TourGuide = () => {
       ),
 
       placement: 'right',
-      target: '#seeds',
-      title: 'Generate seed emails',
+      target: '#dashboard',
+      title: 'Start with Dashboard',
       disableBeacon: true,
-      data: {
-        close: '/seeds',
-      },
     },
 
     {
@@ -38,7 +35,7 @@ export const TourGuide = () => {
         },
       },
       placement: 'right',
-      target: '#sender_addresses',
+      target: '#verified_senders',
       title: 'Add sender emails',
       disableBeacon: true,
     },
@@ -54,7 +51,7 @@ export const TourGuide = () => {
         },
       },
       placement: 'right',
-      target: '#sender_profiles',
+      target: '#account_profiles',
       title: 'Create sender profile',
       disableBeacon: true,
     },
@@ -89,23 +86,6 @@ export const TourGuide = () => {
       target: '#dashboard',
       title: 'View reports',
       disableBeacon: true,
-    },
-    {
-      content: (
-        <div>
-          <p>Send us a message with any questions you might have</p>
-        </div>
-      ),
-      styles: {
-        options: {
-          width: 380,
-        },
-      },
-      placement: 'right',
-      target: '#sm-widget-launcher-btn',
-      title: 'View reports',
-      disableBeacon: true,
-      spotlightClicks: false,
     },
   ];
 
